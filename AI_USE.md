@@ -2,7 +2,7 @@
 
 **Project:** From datasheet to diagnosis: tracing gender bias through open training-data pipelines into LLM health advice
 **Course:** Ethics in Artificial Intelligence (McGill University)
-**Authors:** Evans Kumi, Aymen _[surname]_
+**Authors:** Evans Kumi, Aymen Boustani
 **Last updated:** 2026-10-09
 
 ## Summary

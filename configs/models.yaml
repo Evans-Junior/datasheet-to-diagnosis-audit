@@ -68,17 +68,23 @@ contrast:
 # JUDGE — never audited, never scored. Disjoint from the sets above (D006).
 # ---------------------------------------------------------------------------
 judge:
-  id: mlx-community/Mistral-Small-24B-Instruct-2501-4bit
-  revision: 51ed0c6d2f98a25d8a60f19994f0e86c944995e0
+  # Production: 8-bit (D010). The 4-bit build below is kept for smoke tests, and
+  # kappa is reported at BOTH precisions on the same validation subsample.
+  id: mlx-community/Mistral-Small-24B-Instruct-2501-8bit
   runtime: mlx
-  quantization: {bits: 4, group_size: 64}
-  weights_gb: 13.26
+  quantization: {bits: 8}
+  weights_gb: 25.05
+  smoke_variant:
+    id: mlx-community/Mistral-Small-24B-Instruct-2501-4bit
+    revision: 51ed0c6d2f98a25d8a60f19994f0e86c944995e0
+    quantization: {bits: 4, group_size: 64}
+    weights_gb: 13.26
   # Codes are admissible only if agreement with hand-coding clears this.
   validation:
     subsample_n: 100
     coders: [evans, aymen]
     min_kappa: 0.70
-    on_failure: escalate_to_8bit
+    report_kappa_at: [4bit, 8bit]
 
 # ---------------------------------------------------------------------------
 # Smoke configuration: full pipeline, minimal cost. Differs from production by

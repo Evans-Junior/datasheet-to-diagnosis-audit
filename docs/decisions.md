@@ -187,3 +187,73 @@ UI (playground.allenai.org, "Show OlmoTrace"); the backend is open-sourced
 **Decision.** Phase 4 produces a ranked list of the 10–20 most biased outputs plus
 a structured recording template, for manual tracing by the authors — the fallback
 the research prompt anticipated. Self-hosting is out of scope.
+
+---
+
+## D010 — Judge runs at 8-bit; κ reported at both precisions
+**Date:** 2026-10-09 · **Phase:** 2 · **Amends:** D006
+
+D006 recorded that no standard 8-bit MLX build of the judge could be found. That
+was wrong — a web search missed it. A direct query of the Hugging Face Hub API
+confirms `mlx-community/Mistral-Small-24B-Instruct-2501-8bit` exists at 25.05 GB,
+which fits inside the 30 GB weights guard.
+
+**Decision.** Production judging uses the **8-bit** build. The 4-bit build is
+retained for smoke tests.
+
+Because both builds of the *same* judge are available, Cohen's κ against the
+authors' hand-coding is computed at **both** precisions on the same validation
+subsample, and both values are reported. This converts a limitation into a
+measured robustness check at negligible cost: if κ is materially lower at 4-bit,
+that is itself evidence about quantization and judge reliability; if it is not,
+the quantization concern is empirically closed rather than merely argued.
+
+Alternatives checked and their sizes, for the record:
+
+| Repo | Size | Note |
+|---|---|---|
+| `mlx-community/Mistral-Small-24B-Instruct-2501-8bit` | 25.05 GB | **chosen** — same judge as the validated 4-bit |
+| `mlx-community/Qwen3-14B-bf16` | 29.54 GB | zero quantization, but same family as the RQ5 contrast |
+| `mlx-community/Qwen3-14B-8bit` | 15.69 GB | smaller and weaker than the chosen judge |
+| `mlx-community/gemma-3-27b-it-8bit` | 31.04 GB | exceeds the 30 GB guard |
+| `mlx-community/Qwen3-30B-A3B-Instruct-2507-8bit` | 32.44 GB | exceeds the guard |
+
+Abliterated variants were excluded: safety-stripped models are unsuitable for
+judging clinical bias.
+
+---
+
+## D011 — Clinician contingency: global sex-invariance review, not per-vignette
+**Date:** 2026-10-09 · **Phase:** 1 · **Extends:** D003
+
+No clinician is attached yet. Deferring unvalidated vignettes wholesale to future
+work was considered and is insufficient on its own, because **exclusion is not
+neutral**: the conditions hardest to source are disproportionately the ambiguous,
+historically-biased ones in Group 3 — exactly where bias is most expected. Dropping
+them would bias the sample toward clear-cut conditions and risk *understating* the
+effect, which is a selection effect, not merely a scope limitation.
+
+**Decision.** Three measures, in order of preference:
+
+1. **Reduce the clinician ask to one global review.** Per-vignette validation is
+   not what is actually needed. Guidelines already establish correct management;
+   what needs expert confirmation is the single inference that *management does
+   not vary by gender for this set of conditions*. That is one judgement over a
+   condition list plus a sample, not N judgements — roughly an hour, and far
+   easier to recruit for than a collaboration.
+2. **Report tier distribution by condition**, not just in aggregate, so readers
+   can see which conditions carry which evidential weight.
+3. **Run the primary analysis on tiers 1+2 and repeat it on tier 1 alone.** If the
+   conclusions are robust to tier inclusion, the missing clinician demonstrably
+   does not change the findings — an empirical answer rather than a hedge. If they
+   are not robust, that fact is reported as the headline limitation.
+
+Acceptable reviewers, in descending preference: attending clinician, resident,
+final-year medical student — credential stated explicitly either way. Residents
+and senior students respond more often than attendings and are defensible when
+their role is confirming guideline-based sex-invariance rather than authoring
+clinical content.
+
+**Future work** retains only the genuinely open item: expanding the vignette set
+into conditions where guidelines are silent or conflicting, which requires
+clinical authorship this project does not claim.
