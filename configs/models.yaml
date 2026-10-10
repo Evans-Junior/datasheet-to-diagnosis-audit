@@ -1,0 +1,90 @@
+# Model registry. Every result logs the entry it came from, including revision
+# and precision, so no table can be traced to the wrong configuration.
+#
+# Execution is strictly sequential, smallest first (see docs/decisions.md D007).
+
+seed: 20261009
+
+runtime:
+  device: mps                 # Apple M4 Pro, 48 GB unified memory, no CUDA
+  dtype: bfloat16
+  # Peak RAM is set by the largest single model, not the sum: one resident at a
+  # time. Hard ceiling below is a guard, not a target.
+  max_weights_gb: 30
+  purge_after_scoring: false  # set true for the checkpoint sweep
+
+prompt:
+  tokens_budget: 256          # representative vignette + question length
+
+# ---------------------------------------------------------------------------
+# AUDITED MODELS — open training data. Carry RQ1-RQ4.
+# ---------------------------------------------------------------------------
+audit:
+  pythia_ladder:              # RQ3: gender gap vs model scale
+    corpus_index: v4_piletrain_llama
+    revision: main
+    sizes:
+      - {id: EleutherAI/pythia-70m,   weights_gb: 0.14}
+      - {id: EleutherAI/pythia-160m,  weights_gb: 0.32}
+      - {id: EleutherAI/pythia-410m,  weights_gb: 0.82}
+      - {id: EleutherAI/pythia-1b,    weights_gb: 2.02}
+      - {id: EleutherAI/pythia-1.4b,  weights_gb: 2.84}
+      - {id: EleutherAI/pythia-2.8b,  weights_gb: 5.60}
+      - {id: EleutherAI/pythia-6.9b,  weights_gb: 13.80}
+      # 12b fits for forward-only scoring but leaves little headroom.
+      # Run last, single pass, no checkpoints. Optional: the ladder still has
+      # 7 points without it.
+      - {id: EleutherAI/pythia-12b,   weights_gb: 23.80, optional: true}
+
+  pythia_checkpoints:         # RQ3: gender gap across training time
+    # One model only. 143 checkpoints x all sizes would need ~414 GB; this needs
+    # ~2.9 GB peak because each is deleted after scoring.
+    model: EleutherAI/pythia-1.4b
+    purge_after_scoring: true
+    revisions: [step1000, step2000, step4000, step8000, step16000,
+                step32000, step64000, step96000, step143000]
+
+  olmo2:                      # RQ2 + base-vs-instruct (D004)
+    # Stage-1 mix only is indexed; dolmino-mix-1124 is not. See D008.
+    corpus_index: v4_olmo-mix-1124_llama
+    models:
+      - {id: allenai/OLMo-2-1124-7B,          weights_gb: 14.2, role: base}
+      - {id: allenai/OLMo-2-1124-7B-Instruct, weights_gb: 14.2, role: instruct}
+
+# ---------------------------------------------------------------------------
+# CONTRAST — closed training data. RQ5 only. Full precision: a quantized
+# audited model would confound precision with the open-vs-closed contrast.
+# ---------------------------------------------------------------------------
+contrast:
+  - id: Qwen/Qwen3-8B
+    weights_gb: 16.4
+    dtype: bfloat16
+    corpus_index: null        # the point of RQ5: nothing to query
+    generation:
+      thinking: false         # pinned off; variable-length reasoning destroys
+                              # run-to-run determinism
+
+# ---------------------------------------------------------------------------
+# JUDGE — never audited, never scored. Disjoint from the sets above (D006).
+# ---------------------------------------------------------------------------
+judge:
+  id: mlx-community/Mistral-Small-24B-Instruct-2501-4bit
+  revision: 51ed0c6d2f98a25d8a60f19994f0e86c944995e0
+  runtime: mlx
+  quantization: {bits: 4, group_size: 64}
+  weights_gb: 13.26
+  # Codes are admissible only if agreement with hand-coding clears this.
+  validation:
+    subsample_n: 100
+    coders: [evans, aymen]
+    min_kappa: 0.70
+    on_failure: escalate_to_8bit
+
+# ---------------------------------------------------------------------------
+# Smoke configuration: full pipeline, minimal cost. Differs from production by
+# one flag so the two cannot drift apart.
+# ---------------------------------------------------------------------------
+smoke:
+  audit_models: [EleutherAI/pythia-70m]
+  n_vignettes: 10
+  judge: true

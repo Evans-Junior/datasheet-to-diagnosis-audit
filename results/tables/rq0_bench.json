@@ -1,0 +1,36 @@
+{
+  "device": "mps",
+  "torch": "2.14.1",
+  "prompt_tokens": 256,
+  "trials": 20,
+  "rows": [
+    {
+      "model": "EleutherAI/pythia-70m",
+      "params_b": 0.0704,
+      "weights_gb_bf16": 0.14,
+      "load_s": 16.2,
+      "forward_ms": 6.5
+    },
+    {
+      "model": "EleutherAI/pythia-160m",
+      "params_b": 0.1623,
+      "weights_gb_bf16": 0.32,
+      "load_s": 17.3,
+      "forward_ms": 15.5
+    },
+    {
+      "model": "EleutherAI/pythia-410m",
+      "params_b": 0.4053,
+      "weights_gb_bf16": 0.81,
+      "load_s": 44.8,
+      "forward_ms": 39.6
+    },
+    {
+      "model": "EleutherAI/pythia-1.4b",
+      "params_b": 1.4146,
+      "weights_gb_bf16": 2.83,
+      "load_s": 119.3,
+      "forward_ms": 116.7
+    }
+  ]
+}

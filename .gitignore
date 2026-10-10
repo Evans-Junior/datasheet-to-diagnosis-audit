@@ -1,0 +1,63 @@
+# ---------------------------------------------------------------------------
+# Environment
+# ---------------------------------------------------------------------------
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.python-version
+
+# ---------------------------------------------------------------------------
+# Data: raw sources and model weights are never committed.
+# Reproduce them with scripts/fetch_*.py — see README.md.
+# ---------------------------------------------------------------------------
+data/raw/
+data/cache/
+*.safetensors
+*.gguf
+*.bin
+*.pt
+*.npz
+*.arrow
+
+# Cached API responses (infini-gram etc.) are large and regenerable.
+# The cache *manifest* is committed so counts stay reproducible.
+data/cache/**
+!data/cache/manifest.json
+
+# PhysioNet / Q-Pain source files: redistribution is governed by their
+# licence. Fetch them yourself with credentials; do not commit.
+data/raw/qpain/
+data/raw/physionet/
+
+# ---------------------------------------------------------------------------
+# Results: figures and tables are regenerable from src/.
+# Committed deliberately per-file when they appear in the write-up.
+# ---------------------------------------------------------------------------
+results/**/*.png
+results/**/*.pdf
+results/**/*.svg
+results/raw/
+*.parquet
+
+# ---------------------------------------------------------------------------
+# Local scratch and tooling (not part of the research record)
+# ---------------------------------------------------------------------------
+scratch/
+tmp/
+*.log
+.DS_Store
+.vscode/
+.idea/
+.env
+.env.local
+
+# Assistant and editor working files. AI_USE.md is tracked on purpose:
+# it is the project's disclosure of tool use and belongs in the record.
+.claude/
+CLAUDE.md
+claude_code_research_prompt.md
+*.local.md
