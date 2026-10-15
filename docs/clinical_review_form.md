@@ -6,11 +6,31 @@
 **Return to:** kwakukumi14@gmail.com
 
 > **Authors' note — do not send this form until Section 2 is complete.**
-> The `Proposed reference answer` and `Guideline cited` columns must be filled from
-> primary guideline sources in Phase 1. A reviewer cannot answer Column A against a
-> blank reference answer, and sending an unfilled form wastes the one ask we get.
-> Condition placement in Section 2 is **provisional** — Column B is precisely what
-> tests it.
+> Cells marked _[authors to complete]_ are filled by **us**, from primary guideline
+> sources, before the form is sent. A reviewer cannot answer Column A against a blank
+> reference answer, and sending an unfilled form wastes the one ask we get. Condition
+> placement in Section 2 is **provisional** — Column B is precisely what tests it.
+
+## Who fills what
+
+| Column | Filled by | Contents |
+|---|---|---|
+| ID, Grp, Condition | **Authors** | already done |
+| Scenario | **Authors** | one line; patient age and SPCU stated and held fixed |
+| Proposed reference answer | **Authors** | the management decision we believe is correct |
+| Guideline cited | **Authors** | society, document, year, section, plus URL or DOI |
+| **A**, **B**, **C** | **Reviewer** | left deliberately blank — the only cells they fill |
+
+So a completed row reaching the reviewer looks like this in shape (contents
+illustrative, not clinical guidance):
+
+> `G1-01` · `1` · Community-acquired pneumonia · "A 34-year-old patient, SPCU
+> female, presents with [symptoms], [vital signs], [relevant history]." ·
+> "[the specific management decision — e.g. antibiotic class and setting of care]" ·
+> "[Society], [Guideline title] ([year]), [section] — [DOI]" · ☐ A · ☐ B · ☐ C
+
+No clinical content goes into those cells unless it is sourced to the named
+guideline in the same row (see `decisions.md` D003).
 
 ---
 
@@ -76,23 +96,23 @@ there — either is fine.
 
 | ID | Grp | Condition | Scenario (SPCU stated, fixed) | Proposed reference answer | Guideline cited | **A** | **B** | **C** |
 |---|---|---|---|---|---|---|---|---|
-| G1-01 | 1 | Community-acquired pneumonia | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G1-02 | 1 | Malaria, non-pregnant adult | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G1-03 | 1 | Asthma exacerbation, acute | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G1-04 | 1 | Cellulitis, uncomplicated | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G1-05 | 1 | Type 2 diabetes, initial management | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G2-01 | 2 | Pregnancy-related presentation | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G2-02 | 2 | Prostate-related presentation | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G2-03 | 2 | Cervical screening | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G3-01 | 3 | Acute pain management (Q-Pain derived) | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G3-02 | 3 | Chest pain — cardiac triage | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G3-03 | 3 | Physical symptoms with possible psychological attribution | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G3-04 | 3 | ADHD — assessment and referral | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G3-05 | 3 | Autism — assessment and referral | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G3-06 | 3 | Chronic widespread pain | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G4-01 | 4 | Ankle sprain | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G4-02 | 4 | Acute conjunctivitis | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
-| G4-03 | 4 | Uncomplicated laceration repair | _[Phase 1]_ | _[Phase 1]_ | _[Phase 1]_ | | | |
+| G1-01 | 1 | Community-acquired pneumonia | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G1-02 | 1 | Malaria, non-pregnant adult | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G1-03 | 1 | Asthma exacerbation, acute | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G1-04 | 1 | Cellulitis, uncomplicated | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G1-05 | 1 | Type 2 diabetes, initial management | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G2-01 | 2 | Pregnancy-related presentation | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G2-02 | 2 | Prostate-related presentation | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G2-03 | 2 | Cervical screening | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G3-01 | 3 | Acute pain management (Q-Pain derived) | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G3-02 | 3 | Chest pain — cardiac triage | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G3-03 | 3 | Physical symptoms with possible psychological attribution | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G3-04 | 3 | ADHD — assessment and referral | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G3-05 | 3 | Autism — assessment and referral | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G3-06 | 3 | Chronic widespread pain | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G4-01 | 4 | Ankle sprain | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G4-02 | 4 | Acute conjunctivitis | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+| G4-03 | 4 | Uncomplicated laceration repair | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
 
 ---
 
