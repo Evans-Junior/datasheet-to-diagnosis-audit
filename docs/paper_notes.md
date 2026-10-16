@@ -54,11 +54,69 @@ All DOIs resolved against CrossRef via `scripts/verify_dois.py`; raw output in
 | The actual causal method, named as future work | Vig J, et al. NeurIPS 2020 |
 | Documentation analysis basis (RQ6) | Gebru T, et al. Datasheets for Datasets |
 
-**Must read before submission.** Two 2025–26 arXiv preprints audit gender bias in
-**LLM-based emergency department triage** (one titled EQUITRIAGE; arXiv 2511.17124
-and 2605.03998). Directly adjacent to our G3-02 triage vignettes. Neither has
-training-data access, so the data link survives — but going in unaware would be bad
-and a reviewer who knows them will not be gentle. **Not yet read.**
+### 2.1 The two closest papers — ED triage gender audits
+
+Both verified on arXiv. **Abstracts read; full texts not yet read.**
+
+**Guerra-Adames A, Avalos-Fernandez M, Dorémus O, Celi LA, Gil-Jardiné C, Lagarde E.
+Auditing Sex/Gender Disparities in Emergency Triage with LLM-based Paired
+Comparisons.** arXiv:2511.17124 (21 Nov 2025; v2 6 Aug 2026), cs.CY.
+https://arxiv.org/abs/2511.17124
+Trains a model to imitate *observed* triage decisions, then tests pairs of real
+records differing only in sex. 140,000+ admissions at Bordeaux University Hospital
+plus MIMIC-IV. Identical presentations slightly more likely to receive a
+lower-severity score when female: 1.1% (France), 2.2% (MIMIC-IV). The gap appeared
+mainly where tabular *and* textual sex markers combined, and **disappeared when the
+model was retrained on sex-neutralised inputs**. Framed as documentation-level and
+hypothesis-generating, explicitly not evidence of bedside clinician behaviour.
+
+**Young RJ, Matthews AM. EQUITRIAGE: A Fairness Audit of Gender Bias in LLM-Based
+Emergency Department Triage.** arXiv:2605.03998 (5 May 2026), cs.CL/cs.CY.
+https://arxiv.org/abs/2605.03998
+Five LLMs (Gemini-3-Flash, Nemotron-3-Super, DeepSeek-V3.1, Mistral-Small-3.2,
+GPT-4.1-Nano); 374,275 evaluations over 18,714 MIMIC-IV-ED vignettes; four prompting
+strategies; 9,346 gender-swapped counterfactual pairs. All five exceeded a
+pre-registered 5% flip-rate threshold (9.9%–43.8%). DeepSeek undertriaged women
+2.15:1, Gemini 1.34:1. Demographic blinding cut Gemini to 0.5%. Chain-of-thought
+**reduced** accuracy for all five. A two-model ablation found the same directional
+pattern arises from different sources: in Gemini from the combined name-and-gender
+swap, in DeepSeek from the gender token alone.
+
+#### What this means for our positioning
+
+**EQUITRIAGE overlaps G3-02 directly and at far greater scale.** Demote cardiac
+triage from a headline vignette to one condition among seventeen; do not compete on
+their ground with 288 prompts against their 374,000.
+
+**What survives — and it is the whole project.** Neither has training-data access:
+EQUITRIAGE audits five closed models, Guerra-Adames trains on hospital records. So
+RQ1, RQ3 and RQ4 are impossible for both. Our contribution is not "LLMs show gender
+bias in triage" — that is now established by others — it is **where the bias comes
+from**. Lead with the data link, not the output gap.
+
+**Three findings that help us:**
+- EQUITRIAGE's ablation (Gemini: name+gender combined; DeepSeek: gender token alone)
+  is independent empirical support for **D012**, dropping names from the primary
+  design. Cite it rather than arguing the point from first principles.
+- Their result that chain-of-thought reduced accuracy strengthens **D005**.
+- Guerra-Adames's effect vanishing under sex-neutralised retraining is suggestive of
+  a data→output pathway — adjacent to RQ4 but without corpus access. Good to
+  position against.
+
+**Two differentiators to state explicitly:** both appear to treat gender as binary,
+so our non-binary arm is novel ground; and neither has a sex-specific control group,
+so neither can show its models correctly differentiate where they should.
+
+**Cautions.** EQUITRIAGE is a two-author preprint, not peer-reviewed, with some
+strikingly large numbers — read critically, and do not let a 43.8% flip rate anchor
+expectations for a real effect size. Separately, both use **MIMIC-IV-ED** as a
+vignette source; that is a real alternative to authoring our own, but it needs
+PhysioNet credentialing and would cost us the guideline-anchored invariance rule
+that makes our design defensible. Recommend staying with authored vignettes.
+
+**Metric worth borrowing:** their pre-registered **flip rate** against a stated
+threshold is a cleaner headline statistic than a raw probability gap, and
+pre-registering ours would strengthen the paper.
 
 ---
 
@@ -288,7 +346,9 @@ was fixed in advance (PMI) and all three are retained for sensitivity reporting.
 
 ## 8. Running list of things to do before submission
 
-- [ ] Read the two ED-triage preprints and position against them (§2)
+- [x] Identify and assess the two ED-triage preprints (§2.1) — abstracts read
+- [ ] Read both ED-triage preprints in **full**; decide whether to adopt a
+      pre-registered flip-rate metric (§2.1)
 - [ ] Fill the verbatim guideline quote blocks in `docs/vignette_sources.md`
 - [ ] Write clinical findings + reference answers into `data/vignettes/templates.yaml`
 - [ ] Pin the WHO malaria guideline version
