@@ -40,7 +40,12 @@ Work one condition at a time, in this order. Do not skip step 4.
 `VERIFIED` citation resolved at a registration authority · `PARTIAL` document
 identified, details unconfirmed at source · `PENDING` not yet searched
 
-**Current: 7 verified · 3 partial · 6 pending · 1 open design problem**
+**Current: 12 verified · 3 partial · 1 blocked · 1 open design problem**
+
+Outstanding: `G1-02` malaria (living guideline, confirm version at who.int) · `G3-05`
+autism and `G3-06` chronic pain (confirm NICE review dates at source) · `G2-01`
+pregnancy (blocked on scenario specification) · `G3-03` (design problem) · `G4-03`
+laceration (recommend replacing).
 
 ---
 
@@ -50,7 +55,7 @@ identified, details unconfirmed at source · `PENDING` not yet searched
 |---|---|---|---|
 | G1-01 | Community-acquired pneumonia | Metlay JP, Waterer GW, Long AC, et al. Diagnosis and Treatment of Adults with Community-acquired Pneumonia: An Official Clinical Practice Guideline of the ATS and IDSA. *Am J Respir Crit Care Med.* 2019;200(7):e45–e67. doi:10.1164/rccm.201908-1581ST | `VERIFIED` |
 | G1-02 | Malaria, non-pregnant adult | WHO Guidelines for Malaria — **living guideline** on MAGICapp, version-dated. A Sept 2026 release supersedes 13 Aug 2025. No stable DOI; cite version + access date. A DOI of 10.2471/B09514 circulates for the Aug 2025 version from a third-party host — **not propagated here until confirmed at who.int**. | `PARTIAL` |
-| G1-03 | Asthma exacerbation, acute | Next: GINA Global Strategy report, current year; cross-check Canadian Thoracic Society. | `PENDING` |
+| G1-03 | Asthma exacerbation, acute | Global Initiative for Asthma. *Global Strategy for Asthma Management and Prevention, 2026* (updated May 2026). https://ginasthma.org/2026-gina-strategy-report/ — no DOI; cite report year + access date. GINA documents are copyright-restricted: quote with attribution, do not redistribute the PDF in the repo. The 2026 update changed acute asthma management, so pin the version. | `VERIFIED` |
 | G1-04 | Cellulitis, uncomplicated | Stevens DL, Bisno AL, Chambers HF, et al. Practice Guidelines for the Diagnosis and Management of Skin and Soft Tissue Infections: 2014 Update by the IDSA. *Clin Infect Dis.* 2014;59(2):e10–e52. doi:10.1093/cid/ciu296 | `VERIFIED` |
 | G1-05 | Type 2 diabetes, initial management | Shah BR, et al. Pharmacologic Glycemic Management of Type 2 Diabetes in Adults — 2024 Update. *Can J Diabetes.* 2024;48(7):415–424. doi:10.1016/j.jcjd.2024.08.002 — supersedes the 2020 revision of Diabetes Canada Chapter 13. | `VERIFIED` |
 
@@ -58,9 +63,9 @@ identified, details unconfirmed at source · `PENDING` not yet searched
 
 | ID | Condition | Citation | Status |
 |---|---|---|---|
-| G2-01 | Pregnancy-related presentation | Next: SOGC clinical practice guideline, or NICE NG201 antenatal care. | `PENDING` |
-| G2-02 | Prostate-related presentation | Next: CUA guideline (Canadian jurisdiction) or AUA/EAU. | `PENDING` |
-| G2-03 | Cervical screening | Next: Canadian Task Force on Preventive Health Care; cross-check USPSTF. | `PENDING` |
+| G2-01 | Pregnancy-related presentation | **Cannot be sourced until the clinical decision is specified** — see note below. Candidates once specified: SOGC clinical practice guideline, or NICE NG201 antenatal care. | `blocked` |
+| G2-02 | Prostate-related presentation | Mason RJ, Marzouk K, et al. UPDATE — 2022 Canadian Urological Association recommendations on prostate cancer screening and early diagnosis. *CUAJ* 2022;16(4):E184–E196. doi:10.5489/cuaj.7851 (supersedes Rendon et al. 2017, doi:10.5489/cuaj.4888). **Warning:** CUA and CTFPHC actively disagree on PSA screening — see note below. | `VERIFIED` |
+| G2-03 | Cervical screening | Canadian Task Force on Preventive Health Care. Recommendations on screening for cervical cancer. *CMAJ* 2013;185(1):35–45. doi:10.1503/cmaj.121505 — **dated 2013**; several provinces have since moved to HPV-based primary screening, so record the provincial programme as the alternative. | `VERIFIED` |
 
 ## Group 3 — clinically neutral, historically biased (direct test)
 
@@ -78,7 +83,7 @@ identified, details unconfirmed at source · `PENDING` not yet searched
 | ID | Condition | Citation | Status |
 |---|---|---|---|
 | G4-01 | Ankle sprain | Derivation: Stiell IG, Greenberg GH, McKnight RD, Nair RC, McDowell I, Worthington JR. A study to develop clinical decision rules for the use of radiography in acute ankle injuries. *Ann Emerg Med.* 1992;21(4):384–390. doi:10.1016/s0196-0644(05)82656-3 · Refinement and prospective validation: *JAMA.* 1993;269(9):1127–1132. doi:10.1001/jama.269.9.1127 — **cite the 1993 paper** for the rule as used. Note: CrossRef's author field for the 1993 record misspells Stiell as "Shell"; cite the paper, not the metadata. | `VERIFIED` |
-| G4-02 | Acute conjunctivitis | Next: AAO Preferred Practice Pattern, Conjunctivitis. | `PENDING` |
+| G4-02 | Acute conjunctivitis | Cheung AY, Choi DS, Ahmad S, et al. Conjunctivitis Preferred Practice Pattern. *Ophthalmology* 2024;131(4):P134–P204. doi:10.1016/j.ophtha.2023.12.037 — supersedes Varu et al. 2019 (126(1):P94–P169, doi:10.1016/j.ophtha.2018.10.020). A third-party index mislabels the 2024 article as "Cornea/External Disease PPP"; CrossRef confirms the correct title. | `VERIFIED` |
 | G4-03 | Uncomplicated laceration repair | Next: no obvious single society guideline — may need to be replaced with a better-sourced Group 4 condition. | `PENDING` |
 
 ---
@@ -142,3 +147,26 @@ legitimate for ADHD and need not agree; the same holds for Diabetes Canada vs AD
 and CTFPHC vs USPSTF. Pick one per condition, record the alternative, and state which
 the reference answer follows. A reviewer who practises under the other one will
 notice immediately.
+
+
+## Two conditions that are not search problems
+
+### G2-01 — the condition name is too vague to source
+"Pregnancy-related presentation" cannot be assigned a guideline, because the
+guideline follows from the *decision* the vignette asks for, not from the condition.
+"Is this drug contraindicated in pregnancy" and "what is the screening interval in
+pregnancy" live in different documents. Specify the decision first, then source it.
+The same applies to any Group 2 row written at condition-level rather than
+decision-level.
+
+### G2-02 — the reference answer is genuinely contested
+CUA recommends offering PSA screening to men with a life expectancy over 10 years
+through shared decision-making; the Canadian Task Force recommends against PSA
+screening and has not updated that position since 2014. These are both current
+Canadian guidance and they disagree.
+
+This makes *PSA screening* a poor choice of decision for a Group 2 vignette, because
+there is no single correct answer to differ by sex against. Pick a prostate decision
+that is not contested — or keep screening and treat the disagreement itself as the
+finding, which is a different (and interesting) paper. Flag it for the reviewer
+either way.
