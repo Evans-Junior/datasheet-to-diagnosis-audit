@@ -124,9 +124,12 @@ src/          analysis modules, one per RQ cluster
 notebooks/    exploration only; final results come from src/
 results/      tables and figures, each named by RQ
 docs/
-  decisions.md         every methodological choice, with its reason
+  decisions.md         every methodological choice, with its reason (D001-D015)
+  paper_notes.md       difficulties, measured numbers and limitations, for the write-up
   vignette_sources.md  guideline citation and confidence tier per vignette
   codebook.md          RQ6 qualitative codebook
+  clinical_review_*    materials for the clinical reviewer
+  outreach_email.md    reviewer outreach templates
 scripts/      environment and data-fetching utilities
 ```
 
