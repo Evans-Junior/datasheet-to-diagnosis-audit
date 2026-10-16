@@ -7,7 +7,12 @@ seed: 20261009
 
 runtime:
   device: mps                 # Apple M4 Pro, 48 GB unified memory, no CUDA
-  dtype: bfloat16
+  # float32, NOT bfloat16 (D015). Measured bf16 body noise is ~0.24 nats, which
+  # exceeded the 0.14-nat gap between competing options in a test prompt and
+  # flipped their ranking. Gender gaps of interest may be that small, so bf16
+  # noise could swamp the signal. fp32 doubles memory and roughly doubles time;
+  # both are affordable here because scoring is one forward pass per option.
+  dtype: float32
   # Peak RAM is set by the largest single model, not the sum: one resident at a
   # time. Hard ceiling below is a guard, not a target.
   max_weights_gb: 30
@@ -34,7 +39,12 @@ audit:
       # 12b fits for forward-only scoring but leaves little headroom.
       # Run last, single pass, no checkpoints. Optional: the ladder still has
       # 7 points without it.
-      - {id: EleutherAI/pythia-12b,   weights_gb: 23.80, optional: true}
+      # 12b cannot run in fp32 on 48 GB (would need ~48 GB of weights alone),
+      # so it runs in float16 — 10 mantissa bits rather than bf16's 7, and the
+      # logit range fits comfortably. Report it with a sensitivity check:
+      # rescore pythia-6.9b in fp16 and compare against its fp32 result to
+      # bound the error this introduces.
+      - {id: EleutherAI/pythia-12b,   weights_gb: 23.80, optional: true, dtype: float16}
 
   pythia_checkpoints:         # RQ3: gender gap across training time
     # One model only. 143 checkpoints x all sizes would need ~414 GB; this needs
@@ -58,7 +68,7 @@ audit:
 contrast:
   - id: Qwen/Qwen3-8B
     weights_gb: 16.4
-    dtype: bfloat16
+    dtype: float32
     corpus_index: null        # the point of RQ5: nothing to query
     generation:
       thinking: false         # pinned off; variable-length reasoning destroys

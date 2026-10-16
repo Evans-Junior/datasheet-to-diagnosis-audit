@@ -337,3 +337,54 @@ triage levels), so the bias is not constant across vignettes.
 All three scores are written to every output row, so the sensitivity of each result
 to the choice can be reported rather than asserted. Any headline result must be
 shown to hold under at least `pmi` and `mean_logprob`.
+
+---
+
+## D015 — Scoring runs in float32, with a float32 output head
+**Date:** 2026-10-15 · **Phase:** 2
+
+The first scored output gave P(Yes) = 0.500 for every prompt in every arm. That
+is not a null result; it was a numerical fault, and it is worth recording in full
+because it would have been publishable-looking nonsense.
+
+**What happened.** Pythia's logits reach magnitudes around 1080. bfloat16 carries
+8 mantissa bits, so near 1080 the representable spacing is several units — wider
+than the gap between the logits for " Yes" and " No". Both rounded to *exactly*
+the same bf16 value, every option tied, the softmax over the option set returned a
+uniform distribution, and the measured gender gap was identically zero everywhere.
+A uniform zero gap across all models, vignettes and arms is precisely the shape of
+result one might have written up as "no unwarranted gender difference detected".
+
+Casting the logits to float32 after the forward pass does not help: the precision
+is already gone. The projection itself must happen in float32.
+
+**Two fixes, because the first was insufficient.**
+
+1. `fp32_head()` keeps a float32 copy of the output embedding and performs the
+   final projection in float32 from the sliced hidden states. Only the head is
+   upcast, so the cost is ~1 GB even for pythia-12b. This removed the ties.
+2. A regression test then showed the *body* precision also matters. Measured on
+   pythia-70m: bf16 body deviates from float32 by up to **0.242 nats**, while the
+   gap between the two leading options was **0.140 nats** — so bf16 noise exceeded
+   the signal and reversed their ranking. Gender gaps of interest may well be of
+   that magnitude.
+
+**Decision.** `runtime.dtype` is **float32**, not bfloat16. This doubles memory and
+roughly doubles runtime, both affordable because scoring is one forward pass per
+option (the whole ladder was projected at well under an hour).
+
+**Exception.** pythia-12b cannot run in float32 on 48 GB and runs in **float16**
+(10 mantissa bits rather than 7, with ample range for these logit magnitudes). Its
+results carry a sensitivity check: rescore pythia-6.9b in float16 and compare
+against its float32 result to bound the error introduced.
+
+**Guards added.**
+- `_assert_not_degenerate()` aborts a model's run if more than half its prompts
+  have all options tied within 1e-9, rather than emitting a spurious null.
+- `scripts/test_scoring.py` asserts options are distinguishable and never tie, and
+  reports the bf16 deviation against the closest option gap so the precision
+  choice is justified by measurement rather than assertion.
+
+**Lesson for the write-up.** Both this and D013 were found by inspecting generated
+output, not by reading code. Any result that looks suspiciously clean gets a
+numerical check before it gets an interpretation.

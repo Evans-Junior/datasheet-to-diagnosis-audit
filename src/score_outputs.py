@@ -60,7 +60,7 @@ PROMPT_FMT = "{prompt_text}\nQuestion: {question}\nAnswer:"
 class ModelSpec:
     model_id: str
     revision: str = "main"
-    dtype: str = "bfloat16"
+    dtype: str = "float32"
     role: str = "audit"
     corpus_index: str | None = None
 
@@ -97,8 +97,28 @@ def env_record(seed: int) -> dict:
 # Scoring
 # --------------------------------------------------------------------------- #
 
+def fp32_head(model) -> tuple[torch.Tensor, torch.Tensor | None]:
+    """A float32 copy of the output embedding, built once per model.
+
+    MUST NOT be skipped. Pythia's logits reach magnitudes around 1080, where
+    bfloat16's spacing is wider than the gap between competing option tokens —
+    so "Yes" and "No" round to the *same* bf16 value and every option ties at
+    p=0.5. That produces a clean, entirely spurious null result.
+
+    Casting the logits after the forward pass does not help: the precision is
+    already gone. The final projection itself has to happen in float32. Only
+    the head is upcast, not the body, so the memory cost is ~1 GB even for
+    pythia-12b while the 40 transformer layers stay in bfloat16.
+    """
+    head = model.get_output_embeddings()
+    w = head.weight.detach().to(torch.float32)
+    b = head.bias.detach().to(torch.float32) if getattr(head, "bias", None) is not None else None
+    return w, b
+
+
 @torch.no_grad()
-def option_logprob(model, tok, context: str, option: str, device: str) -> tuple[float, int]:
+def option_logprob(model, tok, context: str, option: str, device: str,
+                   head: tuple[torch.Tensor, torch.Tensor | None]) -> tuple[float, int]:
     """Total log P(option tokens | context), and the option's token count."""
     ctx_ids = tok(context, return_tensors="pt").input_ids
     # Leading space so the option tokenises as a continuation, not a new word.
@@ -108,11 +128,19 @@ def option_logprob(model, tok, context: str, option: str, device: str) -> tuple[
         return float("nan"), 0
 
     ids = torch.cat([ctx_ids, opt_ids], dim=1).to(device)
-    logits = model(ids).logits.float()
-    # logits[:, i] predicts token i+1, so option token j sits at position
-    # ctx_len + j and is predicted by logits at ctx_len + j - 1.
     ctx_len = ctx_ids.shape[1]
-    logprobs = torch.log_softmax(logits[0, ctx_len - 1 : -1, :], dim=-1)
+
+    out = model(ids, output_hidden_states=True)
+    # Position i predicts token i+1, so option token j is predicted from the
+    # hidden state at ctx_len + j - 1.
+    h = out.hidden_states[-1][0, ctx_len - 1 : -1, :].to(torch.float32)
+
+    w, b = head
+    logits = h @ w.T
+    if b is not None:
+        logits = logits + b
+
+    logprobs = torch.log_softmax(logits, dim=-1)
     tgt = ids[0, ctx_len:]
     picked = logprobs.gather(-1, tgt.unsqueeze(-1)).squeeze(-1)
     return float(picked.sum().item()), int(opt_ids.shape[1])
@@ -128,7 +156,9 @@ def score_model(spec: ModelSpec, prompts: pd.DataFrame, device: str,
     )
     model.to(device).eval()
     load_s = time.perf_counter() - t0
-    print(f"    loaded in {load_s:.1f}s", flush=True)
+    head = fp32_head(model)
+    print(f"    loaded in {load_s:.1f}s  (fp32 head: "
+          f"{head[0].numel() * 4 / 1e9:.2f} GB)", flush=True)
 
     # PMI baselines depend only on (question, option), so cache them.
     baseline: dict[tuple[str, str], float] = {}
@@ -144,10 +174,11 @@ def score_model(spec: ModelSpec, prompts: pd.DataFrame, device: str,
 
         scored = []
         for opt in options:
-            total, n_tok = option_logprob(model, tok, context, opt, device)
+            total, n_tok = option_logprob(model, tok, context, opt, device, head)
             bkey = (str(r.question), opt)
             if bkey not in baseline:
-                baseline[bkey], _ = option_logprob(model, tok, neutral, opt, device)
+                baseline[bkey], _ = option_logprob(model, tok, neutral, opt,
+                                                   device, head)
             scored.append({
                 "option": opt,
                 "sum_logprob": total,
@@ -177,11 +208,36 @@ def score_model(spec: ModelSpec, prompts: pd.DataFrame, device: str,
             print(f"    {n}/{len(prompts)} prompts  ({el/n*1000:.0f} ms/prompt)",
                   flush=True)
 
-    del model
+    del model, head
     gc.collect()
     if device == "mps":
         torch.mps.empty_cache()
-    return pd.DataFrame(rows)
+
+    out = pd.DataFrame(rows)
+    _assert_not_degenerate(out, spec)
+    return out
+
+
+def _assert_not_degenerate(df: pd.DataFrame, spec: ModelSpec) -> None:
+    """Abort if options tie across the board.
+
+    A numerical-precision fault makes every option score identically, which
+    yields a uniform distribution over the option set and therefore zero
+    measured gap everywhere -- a null result that looks like a finding. It is
+    cheaper to fail loudly here than to discover it after the write-up.
+    """
+    if df.empty:
+        raise RuntimeError(f"{spec.key}: no rows scored")
+    spread = df.groupby("prompt_id")["sum_logprob"].agg(lambda s: s.max() - s.min())
+    tied = float((spread < 1e-9).mean())
+    if tied > 0.5:
+        raise RuntimeError(
+            f"{spec.key}: {tied:.0%} of prompts have all answer options tied to "
+            f"within 1e-9. This is a precision fault, not a finding -- see "
+            f"fp32_head() and docs/decisions.md D015. Refusing to emit results."
+        )
+    if tied:
+        print(f"    note: {tied:.1%} of prompts have tied options")
 
 
 # --------------------------------------------------------------------------- #
@@ -189,14 +245,16 @@ def score_model(spec: ModelSpec, prompts: pd.DataFrame, device: str,
 # --------------------------------------------------------------------------- #
 
 def build_specs(cfg: dict, smoke: bool, checkpoints: bool) -> list[ModelSpec]:
+    default_dtype = cfg["runtime"].get("dtype", "float32")
     if smoke:
-        return [ModelSpec(m) for m in cfg["smoke"]["audit_models"]]
+        return [ModelSpec(m, dtype=default_dtype)
+                for m in cfg["smoke"]["audit_models"]]
 
     specs: list[ModelSpec] = []
     audit = cfg["audit"]
     if checkpoints:
         ck = audit["pythia_checkpoints"]
-        return [ModelSpec(ck["model"], revision=rev,
+        return [ModelSpec(ck["model"], revision=rev, dtype=default_dtype,
                           corpus_index=audit["pythia_ladder"]["corpus_index"])
                 for rev in ck["revisions"]]
 
@@ -205,13 +263,15 @@ def build_specs(cfg: dict, smoke: bool, checkpoints: bool) -> list[ModelSpec]:
         if s.get("optional"):
             continue  # pythia-12b: run explicitly, last
         specs.append(ModelSpec(s["id"], revision=ladder.get("revision", "main"),
+                               dtype=s.get("dtype", default_dtype),
                                corpus_index=ladder["corpus_index"]))
     olmo = audit["olmo2"]
     for m in olmo["models"]:
         specs.append(ModelSpec(m["id"], role=m.get("role", "audit"),
+                               dtype=m.get("dtype", default_dtype),
                                corpus_index=olmo["corpus_index"]))
     for m in cfg.get("contrast", []):
-        specs.append(ModelSpec(m["id"], dtype=m.get("dtype", "bfloat16"),
+        specs.append(ModelSpec(m["id"], dtype=m.get("dtype", default_dtype),
                                role="contrast", corpus_index=None))
     return specs
 
