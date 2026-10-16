@@ -1,0 +1,47 @@
+[
+  {
+    "doi": "10.1016/s0196-0644(05)82656-3",
+    "ok": true,
+    "title": "A study to develop clinical decision rules for the use of radiography in acute ankle injuries",
+    "container": "Annals of Emergency Medicine",
+    "year": 1992,
+    "volume": "21",
+    "issue": "4",
+    "page": "384-390",
+    "type": "journal-article",
+    "first_author": "Stiell",
+    "label": "10.1016/s0196-0644(05)82656-3"
+  },
+  {
+    "doi": "10.1001/jama.269.9.1127",
+    "ok": true,
+    "title": "Decision Rules for the Use of Radiography in Acute Ankle Injuries",
+    "container": "JAMA",
+    "year": 1993,
+    "volume": "269",
+    "issue": "9",
+    "page": "1127",
+    "type": "journal-article",
+    "first_author": "Shell",
+    "label": "10.1001/jama.269.9.1127"
+  },
+  {
+    "doi": "10.1016/j.jcjd.2024.08.002",
+    "ok": true,
+    "title": "Pharmacologic Glycemic Management of Type 2 Diabetes in Adults---2024 Update",
+    "container": "Canadian Journal of Diabetes",
+    "year": 2024,
+    "volume": "48",
+    "issue": "7",
+    "page": "415-424",
+    "type": "journal-article",
+    "first_author": "Shah",
+    "label": "10.1016/j.jcjd.2024.08.002"
+  },
+  {
+    "doi": "10.13026/2tdv-hj07",
+    "ok": false,
+    "error": "not registered",
+    "label": "10.13026/2tdv-hj07"
+  }
+]
