@@ -306,3 +306,34 @@ hard-coded verbs. A build-time check fails on any unsubstituted placeholder.
 `{CLINICAL_FINDINGS}`, which silently broke the "is this vignette ready to score"
 check. A brace-free marker cannot be mangled by the formatter. Both bugs were caught
 by inspecting generated output rather than by reading the templates.
+
+---
+
+## D014 — Score options by PMI; report all three scores
+**Date:** 2026-10-15 · **Phase:** 2
+
+Log-probability scoring of answer options can be summarised three ways, and on a
+first pipeline run against pythia-70m they turned out to disagree substantially:
+Spearman rank correlation was 0.64 between `sum_logprob` and `mean_logprob`, and
+only **0.15** between `sum_logprob` and `pmi`.
+
+That is large enough that the choice of score could determine the paper's
+conclusions, so it is fixed in advance rather than after seeing results.
+
+**Decision.** `norm_prob` — the softmax over the option set that the statistics
+operate on — is computed from **PMI** by default.
+
+| Score | Definition | Problem it has |
+|---|---|---|
+| `sum_logprob` | raw sum over option tokens | favours short options |
+| `mean_logprob` | per-token mean | removes most length bias, keeps frequency bias |
+| `pmi` | `sum_logprob` minus the option's logprob under a neutral context | removes the option's unconditional frequency |
+
+**Why PMI.** Without it, a model that simply assigns high probability to the token
+"Yes" is indistinguishable from a model that judges the answer to be yes — and
+option frequency varies across the option sets we use (`Yes`/`No` versus four
+triage levels), so the bias is not constant across vignettes.
+
+All three scores are written to every output row, so the sensitivity of each result
+to the choice can be reported rather than asserted. Any headline result must be
+shown to hold under at least `pmi` and `mean_logprob`.
