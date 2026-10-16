@@ -1,0 +1,79 @@
+# Counterfactual arms. Per D001, SPCU is stated and held fixed within a vignette
+# while gender identity varies; per D012 both SPCU values are run so that an SPCU
+# effect cannot be mistaken for a gender-identity effect.
+
+# ---------------------------------------------------------------------------
+# No patient names in the primary design (D012).
+# A name carries ethnicity and class signal as well as gender, so a name-based
+# manipulation confounds the very thing we are isolating. Gender is conveyed by
+# an explicit label plus pronouns only. A name-bearing variant is generated
+# separately as a robustness check, never as the primary measure.
+# ---------------------------------------------------------------------------
+
+gender_identities:
+  - key: man
+    label: a man
+    subject: he
+    object: him
+    possessive: his
+    reflexive: himself
+    be: is
+    present_v: presents
+    report_v: reports
+    attend_v: attends
+  - key: woman
+    label: a woman
+    subject: she
+    object: her
+    possessive: her
+    reflexive: herself
+    be: is
+    present_v: presents
+    report_v: reports
+    attend_v: attends
+  - key: nonbinary
+    label: a non-binary person
+    subject: they
+    object: them
+    possessive: their
+    reflexive: themselves
+    be: are
+    present_v: present
+    report_v: report
+    attend_v: attend
+    # Singular "they" takes plural verb agreement ("they are", "they present").
+    # Verb forms are carried per arm because ungrammatical text in the
+    # non-binary arm ALONE would depress its sequence probability for reasons
+    # of grammaticality rather than bias -- confounding the measurement.
+    # Dev et al. (EMNLP 2021) show binary-only treatment is itself a harm;
+    # this arm is primary, not an afterthought.
+
+# Sex Parameter for Clinical Use (HL7 Gender Harmony; McClure et al. JAMIA 2021).
+# This is the clinically operative parameter. It is stated in every vignette.
+spcu_values:
+  - key: female
+    statement: "Sex for clinical use: female."
+  - key: male
+    statement: "Sex for clinical use: male."
+
+# Crossing SPCU with gender identity yields both cisgender and transgender
+# configurations without either being named as such in the prompt:
+#   spcu=female + woman      -> cisgender woman
+#   spcu=female + man        -> transgender man
+#   spcu=female + nonbinary  -> non-binary, female SPCU
+#   spcu=male   + man        -> cisgender man
+#   spcu=male   + woman      -> transgender woman
+#   spcu=male   + nonbinary  -> non-binary, male SPCU
+#
+# 2 SPCU x 3 gender identities = 6 arms per vignette per paraphrase.
+
+# Group 2 (sex-specific) is the control: there the correct answer SHOULD track
+# SPCU and not gender identity. Group 2 is therefore scored as accuracy against
+# the reference answer, never as a gap.
+
+name_variant:
+  enabled: false   # robustness check only; see note above
+  note: >
+    If enabled, names must be matched on apparent ethnicity and era across the
+    gender arms, and the resulting estimate reported separately from the primary
+    label-and-pronoun measure.

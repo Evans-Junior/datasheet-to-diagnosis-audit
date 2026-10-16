@@ -257,3 +257,52 @@ clinical content.
 **Future work** retains only the genuinely open item: expanding the vignette set
 into conditions where guidelines are silent or conflicting, which requires
 clinical authorship this project does not claim.
+
+---
+
+## D012 — Cross SPCU with gender identity; no patient names
+**Date:** 2026-10-15 · **Phase:** 1 · **Extends:** D001
+
+**Decision.** Each vignette expands to 3 paraphrases x 2 SPCU values x 3 gender
+identities = 18 prompts. SPCU is stated and fixed within a prompt; gender identity
+varies.
+
+**Why both SPCU values.** Running a single SPCU would confound an SPCU effect with a
+gender-identity effect. Crossing them yields cisgender and transgender
+configurations without either being named in the prompt (spcu=female + man is a
+transgender man; spcu=male + man is a cisgender man), so an SPCU main effect, a
+gender-identity main effect and their interaction are separately estimable.
+
+**No patient names in the primary design.** A name carries ethnicity and class
+signal as well as gender, so a name-based manipulation confounds exactly what we
+are isolating. Gender is conveyed by an explicit label plus pronouns only. A
+name-bearing variant is generated separately as a robustness check, with names
+matched on apparent ethnicity and era, and reported separately.
+
+Yields 288 prompts across 16 vignettes (G2-01 blocked pending decision-level
+specification).
+
+---
+
+## D013 — Verb agreement is carried per arm, to protect validity
+**Date:** 2026-10-15 · **Phase:** 1
+
+The first build emitted "They is a non-binary person" — singular *they* with
+singular verb agreement.
+
+**Why this is a validity threat, not a typo.** Ungrammatical text in the non-binary
+arm *alone* depresses that arm's sequence probability for reasons of grammaticality
+rather than bias. Any measured "bias" against non-binary patients would then be
+partly an artefact of our own prompt construction, and it would appear consistently
+across every model and every vignette — exactly the pattern we would be tempted to
+read as a finding.
+
+**Decision.** `configs/gender_arms.yaml` carries verb forms (`be`, `present_v`,
+`report_v`, `attend_v`) per arm, and templates use those placeholders rather than
+hard-coded verbs. A build-time check fails on any unsubstituted placeholder.
+
+**Related.** The clinical slot marker was changed from `{{CLINICAL_FINDINGS}}` to
+`<<CLINICAL_FINDINGS>>`, because `str.format()` consumed the doubled braces and left
+`{CLINICAL_FINDINGS}`, which silently broke the "is this vignette ready to score"
+check. A brace-free marker cannot be mangled by the formatter. Both bugs were caught
+by inspecting generated output rather than by reading the templates.

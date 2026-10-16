@@ -1,28 +1,41 @@
 [
   {
-    "doi": "10.5489/cuaj.7851",
+    "doi": "10.1093/cid/cis629",
     "ok": true,
-    "title": "UPDATE \u2013 2022 Canadian Urological Association recommendations on prostate cancer screening and early diagnosis: Endorsement of the 2021 Cancer Care Ontario guidelines on prostate multiparametric magnetic resonance imaging",
-    "container": "Canadian Urological Association Journal",
-    "year": 2022,
-    "volume": "16",
-    "issue": "4",
-    "page": "E184-96",
+    "title": "Clinical Practice Guideline for the Diagnosis and Management of Group A Streptococcal Pharyngitis: 2012 Update by the Infectious Diseases Society of America",
+    "container": "Clinical Infectious Diseases",
+    "year": 2012,
+    "volume": "55",
+    "issue": "10",
+    "page": "e86-e102",
     "type": "journal-article",
-    "first_author": "Mason",
-    "label": "10.5489/cuaj.7851"
+    "first_author": "Shulman",
+    "label": "10.1093/cid/cis629"
   },
   {
-    "doi": "10.5489/cuaj.4888",
+    "doi": "10.1093/cid/cis847",
     "ok": true,
-    "title": "Canadian Urological Association recommendations on prostate cancer screening and early diagnosis",
-    "container": "Canadian Urological Association Journal",
-    "year": 2017,
-    "volume": "11",
+    "title": "Executive Summary: Clinical Practice Guideline for the Diagnosis and Management of Group A Streptococcal Pharyngitis: 2012 Update by the Infectious Diseases Society of America",
+    "container": "Clinical Infectious Diseases",
+    "year": 2012,
+    "volume": "55",
     "issue": "10",
-    "page": "298-309",
+    "page": "1279-1282",
     "type": "journal-article",
-    "first_author": "Rendon",
-    "label": "10.5489/cuaj.4888"
+    "first_author": "Shulman",
+    "label": "10.1093/cid/cis847"
+  },
+  {
+    "doi": "10.1093/cid/cir1043",
+    "ok": true,
+    "title": "Executive Summary: IDSA Clinical Practice Guideline for Acute Bacterial Rhinosinusitis in Children and Adults",
+    "container": "Clinical Infectious Diseases",
+    "year": 2012,
+    "volume": "54",
+    "issue": "8",
+    "page": "1041-1045",
+    "type": "journal-article",
+    "first_author": "Chow",
+    "label": "10.1093/cid/cir1043"
   }
 ]

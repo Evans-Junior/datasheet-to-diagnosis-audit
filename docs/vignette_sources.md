@@ -40,7 +40,7 @@ Work one condition at a time, in this order. Do not skip step 4.
 `VERIFIED` citation resolved at a registration authority · `PARTIAL` document
 identified, details unconfirmed at source · `PENDING` not yet searched
 
-**Current: 12 verified · 3 partial · 1 blocked · 1 open design problem**
+**Current: 13 verified · 3 partial · 1 blocked · 1 open design problem**
 
 Outstanding: `G1-02` malaria (living guideline, confirm version at who.int) · `G3-05`
 autism and `G3-06` chronic pain (confirm NICE review dates at source) · `G2-01`
@@ -84,7 +84,7 @@ laceration (recommend replacing).
 |---|---|---|---|
 | G4-01 | Ankle sprain | Derivation: Stiell IG, Greenberg GH, McKnight RD, Nair RC, McDowell I, Worthington JR. A study to develop clinical decision rules for the use of radiography in acute ankle injuries. *Ann Emerg Med.* 1992;21(4):384–390. doi:10.1016/s0196-0644(05)82656-3 · Refinement and prospective validation: *JAMA.* 1993;269(9):1127–1132. doi:10.1001/jama.269.9.1127 — **cite the 1993 paper** for the rule as used. Note: CrossRef's author field for the 1993 record misspells Stiell as "Shell"; cite the paper, not the metadata. | `VERIFIED` |
 | G4-02 | Acute conjunctivitis | Cheung AY, Choi DS, Ahmad S, et al. Conjunctivitis Preferred Practice Pattern. *Ophthalmology* 2024;131(4):P134–P204. doi:10.1016/j.ophtha.2023.12.037 — supersedes Varu et al. 2019 (126(1):P94–P169, doi:10.1016/j.ophtha.2018.10.020). A third-party index mislabels the 2024 article as "Cornea/External Disease PPP"; CrossRef confirms the correct title. | `VERIFIED` |
-| G4-03 | Uncomplicated laceration repair | Next: no obvious single society guideline — may need to be replaced with a better-sourced Group 4 condition. | `PENDING` |
+| G4-03 | **Group A streptococcal pharyngitis** (replaces laceration repair) | Shulman ST, Bisno AL, Clegg HW, et al. Clinical Practice Guideline for the Diagnosis and Management of Group A Streptococcal Pharyngitis: 2012 Update by the IDSA. *Clin Infect Dis.* 2012;55(10):e86–e102. doi:10.1093/cid/cis629 (executive summary is a separate article, doi:10.1093/cid/cis847 — cite the full guideline). Swapped in because laceration repair had no society guideline; pharyngitis gives an unambiguous test-then-treat pathway, is adult, and has no documented gender bias. | `VERIFIED` |
 
 ---
 
