@@ -423,3 +423,43 @@ was fixed in advance (PMI) and all three are retained for sensitivity reporting.
 - [ ] Confirm NICE review dates for CG142 and NG193 at source
 - [ ] Sensitivity check: pythia-6.9b at float32 vs float16
 - [ ] Confirm McGill's AI-use disclosure wording against `AI_USE.md`
+
+---
+
+## 4b. Pre-registration (D025)
+
+RQ2's hypotheses were fixed in `docs/preregistration.md` and committed before any
+analysis-ready score existed. For the write-up, three framing points matter more
+than the hypothesis list itself.
+
+**Word the claim precisely.** RQ1 was observed before the predictions were written
+— deliberately, since the predictions are derived from it. The claim is "committed
+before any analysis-ready output was generated," not "pre-registered blind." A
+reviewer who spots the difference and finds us overclaiming will discount the whole
+result; one who sees us state it ourselves will not. §1 of the pre-registration
+makes the concession explicitly, including declaring the pythia-70m placeholder
+smoke run.
+
+**The discriminant null is the interesting hypothesis.** H3 predicts *no* gap on
+the unskewed somatic conditions (G1-*, G4-*). An audit finding gaps everywhere
+shows much less than one finding them exactly where the corpus is skewed — the
+latter is a mechanism claim, the former just a sentiment. So H3 failing hurts the
+thesis more than H1 or H2 failing, and the paper should say that before showing
+results, not after.
+
+**G3-01 is the one place our mechanism contradicts the field.** The corpus predicts
+models give women *more* analgesia (pain is mildly female-skewed after centring;
+*severe pain* +0.63 in OLMo-mix); Hoffmann & Tarzian predict less. Both directions
+are pre-specified, G3-01 counts as confirmatory for neither, and whichever way it
+falls gets reported. Volunteering a case where our own mechanism makes the
+counter-intuitive prediction is worth more to the paper's credibility than a
+uniformly supportive result would be.
+
+**The gate to report first.** Group 2's answers genuinely differ by sex, so Δ must
+be large there. If it is not, the instrument is insensitive and every null is
+uninterpretable — H3 included, which means the mechanism claim cannot be made
+either way. Group 2 effect size therefore goes in the results before anything else.
+
+**Asymmetry to state, not bury.** RQ1 has no non-binary measure while RQ2 has a
+non-binary arm. The non-binary arm is part of the novelty claim, so the paper has
+to say the linkage analysis cannot cover it.

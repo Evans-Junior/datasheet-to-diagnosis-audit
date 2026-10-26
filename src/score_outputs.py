@@ -339,9 +339,25 @@ def main() -> None:
     RAW.mkdir(parents=True, exist_ok=True)
 
     for i, spec in enumerate(specs, start=1):
-        if spec.key in manifest["completed"] and not args.force:
-            print(f"[{i}/{len(specs)}] {spec.key}  SKIP (in manifest)")
-            continue
+        done = manifest["completed"].get(spec.key)
+        if done is not None and not args.force:
+            # "Completed" must mean completed FOR THIS PROMPT SET. Resuming on the
+            # model key alone would keep stale scores after any vignette edit --
+            # including the placeholder-text smoke run, whose numbers carry no
+            # information about any hypothesis. Same failure family as D022:
+            # treating an invalid cached artefact as data. See D025.
+            stale = [
+                f"{k}: {done.get(k)!r} -> {cur!r}"
+                for k, cur in (("prompt_hash", prompt_hash),
+                               ("score_key", args.score_key),
+                               ("placeholder_text", args.allow_unready))
+                if done.get(k) != cur
+            ]
+            if not stale:
+                print(f"[{i}/{len(specs)}] {spec.key}  SKIP (in manifest)")
+                continue
+            print(f"[{i}/{len(specs)}] {spec.key}  RESCORE -- stale: "
+                  + "; ".join(stale))
         print(f"[{i}/{len(specs)}] {spec.key}", flush=True)
         try:
             df = score_model(spec, prompts, device, args.score_key)

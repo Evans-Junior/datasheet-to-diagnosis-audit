@@ -844,3 +844,83 @@ and committed before Phase 2 scores anything.**
   non-binary output arm — an asymmetry that must be stated, since the non-binary
   arm is part of the novelty claim.
 - OLMo-mix covers stage-1 pretraining only (D008).
+
+---
+
+## D025 — RQ2 predictions pre-registered before scoring; manifest resume bug fixed
+
+**Date:** 2026-10-26. **Status:** done.
+
+### The decision
+
+RQ1 (D024) produced signed, family-level corpus skews that imply a direction for
+RQ2. Those directions are now fixed in `docs/preregistration.md` and committed
+*before* any analysis-ready output exists, so RQ2 tests stated predictions instead
+of reporting whichever gap turns up.
+
+Four confirmatory hypotheses: H1 neurodevelopmental referral (Δ < 0), H2 cardiac
+triage urgency (Δ < 0, conditional on G3-02 surviving as a Group 3 vignette), H3
+discriminant null on unskewed somatic conditions, H4 corpus-to-output linkage on
+target-diagnosis endorsement. Holm–Bonferroni across the four at family-wise
+α = .05. Pythia and OLMo 2 are the two independent replications; the model ladder
+is a moderator, never replication.
+
+### Three things the pre-registration deliberately concedes
+
+1. **These are informed predictions, not blind hypotheses.** RQ1 was observed
+   first — that is the point of it. The defensible claim is only that the
+   predictions were committed before any analysis-ready score existed, and the
+   paper must be worded to that and no further.
+2. **G3-01 acute pain is a pre-registered divergence.** The corpus predicts
+   Δ > 0 (pain is mildly female-skewed after centring; *severe pain* reaches +0.63
+   in OLMo-mix); Hoffmann & Tarzian and the undertreatment literature predict
+   Δ < 0. Both directions are specified in advance and G3-01 counts as confirmatory
+   for neither. It discriminates between "the model inherits corpus statistics" and
+   "the model reproduces clinical bias by some other route."
+3. **The strongest corpus signal has the weakest output test.** Psychologizing is
+   the largest effect in RQ1 (+0.80 / +0.65) but has no vignette (D020), so it is
+   reachable only through rationale coding — judge-dependent, κ-gated, exploratory.
+   The corpus finding must not be allowed to stand in for an output finding.
+
+### H3 matters more than H1 or H2
+
+If gaps appear on every vignette, the project has shown much less than if they
+appear only where the corpus is skewed. H3 failing therefore damages the thesis
+more than either directional hypothesis failing, and it is pre-registered for that
+reason rather than as a formality.
+
+### Group 2 is a sensitivity gate, not a result
+
+Group 2's correct answer genuinely differs by sex, so Δ must be large there. If it
+is not, the instrument cannot detect gender effects at all and every null —
+including H3 — is uninterpretable. Group 2 effect size is reported first, and an
+insensitive instrument is to be stated as such rather than written up as nulls.
+
+### The bug found while checking Phase 2's state
+
+`src/score_outputs.py` resumed on the model key alone:
+
+```python
+if spec.key in manifest["completed"] and not args.force:
+```
+
+So "completed" meant "completed once", not "completed for this prompt set". Once
+the real clinical findings land, a rerun would have **silently skipped pythia-70m
+and kept its placeholder-text scores** — numbers generated from vignettes with no
+clinical content and no reference answers — and the manifest would have reported
+the run as complete. Same failure family as D022: an invalid cached artefact read
+back as data.
+
+Fixed: resume only when the recorded `prompt_hash`, `score_key` and
+`placeholder_text` all match the current run; otherwise rescore and print which
+field went stale. Verified — the existing entry was caught on the next run:
+
+```
+[1/1] EleutherAI/pythia-70m@main:float32  RESCORE -- stale: prompt_hash: 'ce5964380abd217e' -> 'b6b4d5f06a0925bc'
+```
+
+The hash had in fact already drifted, because the vignette set changed after that
+smoke run (G3-03 removal, D020; blinded arm, D021). The old entry was stale and
+being honoured. Two of the project's four numerical faults have now been caches
+returning something that was never valid; any future cache needs a validity
+condition checked on read, not just on write.

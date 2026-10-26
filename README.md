@@ -68,6 +68,7 @@ resumable from a manifest. See `docs/decisions.md` D007.
 .venv/bin/python -m src.vignettes --build         # -> data/vignettes/
 
 # 3. Output audit (Phases 2; RQ2, RQ3, RQ5)
+#    Hypotheses are fixed in advance: see docs/preregistration.md
 .venv/bin/python -m src.score_outputs --config configs/models.yaml
 .venv/bin/python -m src.score_outputs --config configs/models.yaml --checkpoints
 
@@ -124,7 +125,8 @@ src/          analysis modules, one per RQ cluster
 notebooks/    exploration only; final results come from src/
 results/      tables and figures, each named by RQ
 docs/
-  decisions.md         every methodological choice, with its reason (D001-D015)
+  decisions.md         every methodological choice, with its reason (D001-D025)
+  preregistration.md   RQ2 directional predictions, frozen before any scoring
   paper_notes.md       difficulties, measured numbers and limitations, for the write-up
   vignette_sources.md  guideline citation and confidence tier per vignette
   codebook.md          RQ6 qualitative codebook
