@@ -130,49 +130,100 @@ def base_count(index: str, term: str) -> tuple[int, bool]:
     return int(j.get("count", 0)), bool(j.get("approx", False))
 
 
-def phrase_sweep(cfg: dict, pairs: list[tuple[str, str]], indexes: list[str]
-                 ) -> pd.DataFrame:
+GROUPS = ("female", "male", "nonbinary")
+
+# Which templates, subjects and concept blocks each measurement family uses.
+# `plural=None` means every group takes the singular templates, which is correct
+# for the explicit-subject family: "the non-binary patient has" is singular.
+FAMILIES: dict[str, dict] = {
+    "diagnosis": {
+        "concepts": ("health_concepts", "psychologizing_concepts"),
+        "singular": "phrase_templates",
+        "plural": "phrase_templates_plural",
+        "subjects": "phrase_pronouns",
+    },
+    "decision": {
+        "concepts": ("decision_concepts",),
+        "singular": "decision_templates",
+        "plural": "decision_templates_plural",
+        "subjects": "phrase_pronouns",
+    },
+    "explicit": {
+        "concepts": ("health_concepts", "psychologizing_concepts"),
+        "singular": "phrase_templates",
+        "plural": None,
+        "subjects": "explicit_subjects",
+    },
+}
+
+
+def templates_for(cfg: dict, family: str, group: str) -> list[str]:
+    """Plural inflection for the 'they' arm, singular for everyone else.
+
+    Mixing them would compare "he has X" against "they has X"; the second is
+    ungrammatical and would be rare for grammatical rather than referential
+    reasons -- the same confound as D013, but in the corpus measure instead of
+    the prompts.
+    """
+    spec = FAMILIES[family]
+    key = spec["plural"] if (group == "nonbinary" and spec["plural"]) else spec["singular"]
+    return cfg[key]
+
+
+def phrase_sweep(cfg: dict, pairs: list[tuple[str, str]], indexes: list[str],
+                 family: str = "diagnosis") -> pd.DataFrame:
     """PRIMARY method (D023): exact n-gram counts of templated phrases.
 
-    For each template T and pronoun p, measures
-        P(concept | "p T") = count("p T concept") / count("p T")
+    For each template T and subject s, measures
+        P(concept | "s T") = count("s T concept") / count("s T")
     Both terms are exact (`approx=False`), so unlike find_cnf the numbers are
     comparable across concepts and between gender groups. Counts per template are
-    small, so templates are summed per gender group before the ratio is taken.
+    small, so templates are summed per group before the ratio is taken.
+
+    All three gender groups are measured (D026). The female-vs-male skew stays in
+    `skew_log2` so earlier results remain comparable; the non-binary arm adds its
+    own columns and is never folded into that number.
     """
-    templates = cfg["phrase_templates"]
-    prons = cfg["phrase_pronouns"]
+    subjects = cfg[FAMILIES[family]["subjects"]]
     rows = []
 
     for index in indexes:
-        # Denominators: one prefix count per (template, pronoun).
+        # Denominators: one prefix count per (prefix, group). A group's rate must
+        # be normalised by exactly the prefixes used to measure it.
         prefix: dict[tuple[str, str], int] = {}
-        for grp in ("female", "male"):
-            for pron in prons[grp]:
-                for tpl in templates:
-                    pre = tpl.format(pron=pron)
+        n_tpl: dict[str, int] = {}
+        for grp in GROUPS:
+            tpls = templates_for(cfg, family, grp)
+            n_tpl[grp] = len(tpls) * len(subjects.get(grp, []))
+            for subj in subjects.get(grp, []):
+                for tpl in tpls:
+                    pre = tpl.format(pron=subj)
                     n, ap = base_count(index, pre)
                     prefix[(pre, grp)] = max(n, 0)
                     if ap:
                         print(f"    WARNING: prefix {pre!r} returned approx=True")
-        print(f"  {index}: {len(prefix)} template prefixes counted", flush=True)
+        print(f"  {index}: {len(prefix)} template prefixes counted "
+              f"(family={family})", flush=True)
 
         for grp_label, concept in pairs:
-            tot = {"female": 0, "male": 0}
-            den = {"female": 0, "male": 0}
+            tot = {g: 0 for g in GROUPS}
+            den = {g: 0 for g in GROUPS}
             fails = 0
-            for grp in ("female", "male"):
-                for pron in prons[grp]:
-                    for tpl in templates:
-                        pre = tpl.format(pron=pron)
+            for grp in GROUPS:
+                for subj in subjects.get(grp, []):
+                    for tpl in templates_for(cfg, family, grp):
+                        pre = tpl.format(pron=subj)
                         n, _ = base_count(index, f"{pre} {concept}")
                         if n < 0:
                             fails += 1
                         else:
                             tot[grp] += n
                             den[grp] += prefix.get((pre, grp), 0)
+
             s = skew(tot["female"], tot["male"], max(den["female"], 1),
                      max(den["male"], 1))
+            nb = nonbinary_fields(tot, den, s)
+
             # Exact phrase counts are small by construction, so a concept with
             # only a few dozen hits yields a ratio dominated by noise. Rows below
             # the threshold are scored but flagged UNDERPOWERED and excluded from
@@ -184,17 +235,19 @@ def phrase_sweep(cfg: dict, pairs: list[tuple[str, str]], indexes: list[str]
             if fails:
                 s["skew_log2"] = None
                 s["note"] = f"{fails} failed queries; row unusable"
-            rows.append({"index": index, "method": "exact_phrase",
+            rows.append({"index": index, "method": f"exact_phrase:{family}",
+                         "family": family,
                          "concept_group": grp_label, "concept": concept,
                          "cooccur_female": tot["female"], "cooccur_male": tot["male"],
                          "base_female": den["female"], "base_male": den["male"],
-                         "n_templates": len(templates), "approx": False,
-                         "failed_queries": fails, "powered": powered, **s})
+                         "n_templates": n_tpl["female"], "approx": False,
+                         "failed_queries": fails, "powered": powered,
+                         **s, **nb})
             sk = s["skew_log2"]
             shown = "n/a" if sk is None else f"{sk:+.3f}"
-            print(f"    {concept:28s} F={tot['female']:>7,} M={tot['male']:>7,}  "
-                  f"skew_log2={shown}" + (f"  [{fails} FAILED]" if fails else ""),
-                  flush=True)
+            print(f"    {concept:28s} F={tot['female']:>7,} M={tot['male']:>7,} "
+                  f"NB={tot['nonbinary']:>6,}  skew_log2={shown}"
+                  + (f"  [{fails} FAILED]" if fails else ""), flush=True)
     return pd.DataFrame(rows)
 
 
@@ -231,15 +284,51 @@ def skew(co_f: int, co_m: int, base_f: int, base_m: int) -> dict:
     return out
 
 
-def concept_pairs(cfg: dict) -> list[tuple[str, str]]:
-    """(group, term) pairs across every concept block in the config."""
+def nonbinary_fields(tot: dict, den: dict, fm: dict) -> dict:
+    """Non-binary arm, reported alongside the female-vs-male skew, never inside it.
+
+    Two skews are given, against each of the other arms, because there is no
+    single "other" to compare to and averaging them would hide a case where the
+    non-binary rate sits outside both. `nb_powered` is almost always False and
+    that is the point: near-absence of non-binary health narration in both
+    corpora is a result, not a missing measurement (D026).
+    """
+    out = {"cooccur_nonbinary": tot["nonbinary"], "base_nonbinary": den["nonbinary"],
+           "rate_nonbinary": None, "skew_nb_vs_female": None,
+           "skew_nb_vs_male": None, "nb_powered": False, "nb_note": ""}
+    if den["nonbinary"] <= 0:
+        out["nb_note"] = "no non-binary template prefixes found in this corpus"
+        return out
+    if tot["nonbinary"] == 0:
+        out["nb_note"] = "zero non-binary co-occurrence; skew undefined"
+        return out
+    rn = tot["nonbinary"] / den["nonbinary"]
+    out["rate_nonbinary"] = rn
+    for other, key in (("female", "skew_nb_vs_female"), ("male", "skew_nb_vs_male")):
+        r = fm.get(f"rate_{other}")
+        if r:
+            out[key] = math.log2(rn / r)
+    out["nb_powered"] = tot["nonbinary"] >= MIN_COUNT
+    if not out["nb_powered"]:
+        out["nb_note"] = (f"UNDERPOWERED: non-binary arm count "
+                          f"{tot['nonbinary']} < {MIN_COUNT}")
+    return out
+
+
+BLOCK_PREFIX = {"health_concepts": "", "psychologizing_concepts": "psych:",
+                "decision_concepts": "decision:"}
+
+
+def concept_pairs(cfg: dict, family: str = "diagnosis") -> list[tuple[str, str]]:
+    """(group, term) pairs for the concept blocks this family measures.
+
+    Family-scoped because the frames are not interchangeable: "he has an x-ray"
+    is not English, so decision concepts must never enter the diagnosis sweep.
+    """
     pairs: list[tuple[str, str]] = []
-    for vid, terms in (cfg.get("health_concepts") or {}).items():
-        pairs += [(vid, t) for t in terms]
-    for name, terms in (cfg.get("psychologizing_concepts") or {}).items():
-        pairs += [(f"psych:{name}", t) for t in terms]
-    for name, terms in (cfg.get("decision_concepts") or {}).items():
-        pairs += [(f"decision:{name}", t) for t in terms]
+    for block in FAMILIES[family]["concepts"]:
+        for key, terms in (cfg.get(block) or {}).items():
+            pairs += [(f"{BLOCK_PREFIX[block]}{key}", t) for t in terms]
     return pairs
 
 
@@ -313,6 +402,12 @@ def main() -> None:
     ap.add_argument("--max-terms", type=int, default=0,
                     help="use only the first N terms per gender group (keeps the "
                          "query count low enough to avoid rate limiting)")
+    ap.add_argument("--family", choices=sorted(FAMILIES), default="diagnosis",
+                    help="diagnosis = which conditions attach to which gender "
+                         "(default). decision = referral/treatment language, "
+                         "which is what H1 and H2 actually test. explicit = "
+                         "noun-subject frames, the only valid non-binary "
+                         "comparison. See D026.")
     args = ap.parse_args()
     if not (args.probe or args.run):
         ap.print_help()
@@ -323,7 +418,7 @@ def main() -> None:
         for grp in cfg["gender_terms"]:
             cfg["gender_terms"][grp] = cfg["gender_terms"][grp][:args.max_terms]
     indexes = args.index or cfg["index_targets"]
-    pairs = concept_pairs(cfg)
+    pairs = concept_pairs(cfg, args.family)
 
     if args.probe:
         # One concept per vignette group plus the psychologizing terms, on one
@@ -340,13 +435,15 @@ def main() -> None:
         print(f"PROBE: {len(pairs)} concepts on {indexes[0]}\n")
 
     if args.method == "exact":
-        df = phrase_sweep(cfg, pairs, indexes)
+        df = phrase_sweep(cfg, pairs, indexes, args.family)
     else:
         print("WARNING: find_cnf estimates are approximate and disagreed with exact\n"
               "         counts in SIGN (D023). Methods comparison only.\n")
         df = sweep(cfg, pairs, indexes)
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    tag = ("_probe" if args.probe else "") + ("" if args.method == "exact" else "_cnf")
+    tag = ("_probe" if args.probe else "") \
+        + ("" if args.family == "diagnosis" else f"_{args.family}") \
+        + ("" if args.method == "exact" else "_cnf")
     dest = OUT.with_name(OUT.stem + tag + OUT.suffix)
     df.to_csv(dest, index=False)
 
@@ -376,6 +473,16 @@ def main() -> None:
     if len(pw) < len(ok):
         print(f"  {len(ok) - len(pw)} rows UNDERPOWERED (<{MIN_COUNT} hits in an "
               f"arm) and excluded from headline results")
+    if "cooccur_nonbinary" in df:
+        nb_tot = int(df["cooccur_nonbinary"].sum())
+        nb_pw = int(df["nb_powered"].sum())
+        print(f"\nNON-BINARY arm       n={nb_pw:>3} powered of {len(df)} rows, "
+              f"{nb_tot:,} total hits")
+        if nb_pw == 0:
+            print("  Zero powered rows. This is a RESULT, not a gap: non-binary\n"
+                  "  health narration is near-absent from these corpora in these\n"
+                  "  frames. Report the absolute counts (D026).")
+
     if len(pw) and pw["skew_log2"].abs().max() < 0.1:
         print("\nWARNING: every concept has |skew| < 0.1, i.e. no measurable gender\n"
               "skew after normalisation. RQ4 correlates data skew against output\n"

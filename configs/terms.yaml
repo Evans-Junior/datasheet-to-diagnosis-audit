@@ -38,14 +38,40 @@ phrase_templates:
 phrase_pronouns:
   female: [she]
   male:   [he]
-  # "they" is overwhelmingly plural in corpus text, so this arm does not isolate
-  # non-binary reference. Reported as a measurement limitation only.
-  # NOT measured in the current sweep. "they has" is ungrammatical, so this arm
-  # needs its own template set ("they have", "they were diagnosed with"), and
-  # "they" is overwhelmingly plural in corpus text so it would not isolate
-  # non-binary reference anyway. Omitted deliberately and reported as a gap, not
-  # silently skipped. See D023.
+  # MEASURED, with a stated validity threat (D026). "they" takes the plural
+  # templates below because "they has" is ungrammatical. It remains
+  # overwhelmingly PLURAL in corpus text, so this arm does not isolate
+  # non-binary reference and its skew is never interpreted as a non-binary
+  # result. It is measured for two reasons: to quantify the contamination
+  # instead of asserting it, and because the explicit-subject family below
+  # gives the actually-valid (if sparse) non-binary comparison.
   nonbinary: [they]
+
+# Verb agreement for the "they" arm. Same eight frames, plural inflection, so
+# the denominators stay comparable in construction if not in referent.
+phrase_templates_plural:
+  - "{pron} have"
+  - "{pron} had"
+  - "{pron} were diagnosed with"
+  - "{pron} suffer from"
+  - "{pron} developed"
+  - "{pron} complained of"
+  - "{pron} presented with"
+  - "{pron} reported"
+
+# The valid three-way comparison: explicit noun subjects, singular templates, no
+# pronoun ambiguity at all. Counts are far smaller, and for the non-binary group
+# they may be near zero -- which is itself a finding about the corpora, not a
+# failure of the measurement (D026).
+# Two subjects per group, matched in construction. "the non-binary patient" and
+# "the nonbinary patient" are spelling variants of one term, so both are summed.
+# "the transgender patient" is deliberately NOT included: trans and non-binary are
+# different constructs and pooling them to inflate a thin count would misreport
+# both. If the trans arm is wanted it gets its own group, not a borrowed one.
+explicit_subjects:
+  female:    ["the woman", "the female patient"]
+  male:      ["the man", "the male patient"]
+  nonbinary: ["the non-binary patient", "the nonbinary patient"]
 
 gender_terms:
   female: [she, her, woman, women, girl, girls, mother, female, lady]
@@ -100,10 +126,32 @@ polysemy_excluded:
   emotional:    "adjective; replaced by the noun phrase 'emotional distress'."
 
 # Triage and treatment language, for concept-level links to RQ2 outcomes.
-# Decision language does not fit the "has/was diagnosed with" frame (nobody
-# "has an x-ray" in the diagnostic sense), so these are excluded from the exact
-# phrase sweep. Measuring them would need a separate template set
-# ("{pron} was referred for", "{pron} underwent"). Deferred, not dropped.
-decision_concepts_deferred:
-  investigation: [x-ray, radiograph, blood test, ECG, referral]
-  urgency:       [urgent, emergency, immediately, routine]
+#
+# These need their own frames: decision language does not fit "has / was
+# diagnosed with" (nobody "has an x-ray" in the diagnostic sense). Measured as a
+# separate family (D026) because the confirmatory hypotheses are about DECISIONS
+# -- H1 is referral for assessment, H2 is triage urgency -- while the diagnosis
+# family measures only which diagnoses attach to which gender. Without this the
+# corpus basis for H1 and H2 is one inferential step removed from what RQ2
+# actually scores.
+decision_templates:
+  - "{pron} was referred for"
+  - "{pron} was referred to"
+  - "{pron} underwent"
+  - "{pron} was prescribed"
+  - "{pron} was given"
+  - "{pron} was admitted"
+
+decision_templates_plural:
+  - "{pron} were referred for"
+  - "{pron} were referred to"
+  - "{pron} underwent"
+  - "{pron} were prescribed"
+  - "{pron} were given"
+  - "{pron} were admitted"
+
+decision_concepts:
+  investigation: [an x-ray, a CT scan, an ultrasound, blood tests, an ECG,
+                  a specialist, a psychiatrist, a cardiologist]
+  treatment:     [antibiotics, painkillers, morphine, an antidepressant,
+                  physiotherapy, surgery]

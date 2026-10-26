@@ -73,7 +73,9 @@ resumable from a manifest. See `docs/decisions.md` D007.
 .venv/bin/python -m src.score_outputs --config configs/models.yaml --checkpoints
 
 # 4. Data audit (Phase 3; RQ1) — cached, so queries never repeat
-.venv/bin/python -m src.corpus_counts --config configs/models.yaml
+.venv/bin/python -m src.corpus_counts --run --family diagnosis
+.venv/bin/python -m src.corpus_counts --run --family decision   # H1/H2 basis
+.venv/bin/python -m src.corpus_counts --run --family explicit   # non-binary arm
 
 # 5. Linking (Phase 4; RQ4)
 .venv/bin/python -m src.link_analysis
@@ -125,7 +127,8 @@ src/          analysis modules, one per RQ cluster
 notebooks/    exploration only; final results come from src/
 results/      tables and figures, each named by RQ
 docs/
-  decisions.md         every methodological choice, with its reason (D001-D025)
+  PROJECT_STATUS.md    full orientation: design, results, faults, what is left
+  decisions.md         every methodological choice, with its reason (D001-D026)
   preregistration.md   RQ2 directional predictions, frozen before any scoring
   paper_notes.md       difficulties, measured numbers and limitations, for the write-up
   vignette_sources.md  guideline citation and confidence tier per vignette

@@ -924,3 +924,76 @@ smoke run (G3-03 removal, D020; blinded arm, D021). The old entry was stale and
 being honoured. Two of the project's four numerical faults have now been caches
 returning something that was never valid; any future cache needs a validity
 condition checked on read, not just on write.
+
+---
+
+## D026 — Non-binary corpus arm measured; decision concepts promoted
+
+**Date:** 2026-10-26. **Status:** done.
+
+Two items previously written up as limitations were both fixable. A limitation you
+can measure instead of asserting is worth measuring, and both of these sat where
+the contribution is.
+
+### The non-binary arm (previously: "omitted deliberately and reported as a gap")
+
+RQ2 has a non-binary output arm; RQ1 had no non-binary corpus measure, so the
+asymmetry fell exactly on the novelty claim. The reason for skipping it was sound
+— `"they has"` is ungrammatical, which is the D013 grammaticality confound moved
+into the corpus measure, and `"they"` in corpus text is overwhelmingly plural, so
+it does not isolate non-binary reference.
+
+Two measures now, labelled differently because they are not equally valid:
+
+1. **`phrase_templates_plural`** — the same eight frames, plural inflection
+   (`"they have"`, `"they were diagnosed with"`). Measured and reported, but its
+   skew is **never interpreted as a non-binary result**. The purpose is to
+   quantify the plural contamination rather than assert it.
+2. **`explicit_subjects`** — the valid comparison. Noun subjects with singular
+   frames, no pronoun ambiguity: `"the woman has X"` / `"the man has X"` /
+   `"the non-binary patient has X"`.
+
+`"the transgender patient"` is deliberately excluded from the non-binary group.
+Trans and non-binary are different constructs; pooling them to inflate a thin
+count would misreport both. A trans arm, if wanted, gets its own group.
+
+**Near-zero counts are the expected outcome and they are a result.** Non-binary
+health narration being near-absent from both open corpora is a substantive finding
+about the corpora, bearing directly on the ethics argument, not a failed
+measurement. The run summary says so explicitly when `nb_powered` is zero
+everywhere, so it cannot be mistaken for a missing number.
+
+Reporting: the female-vs-male skew stays in `skew_log2` so the D024 numbers remain
+comparable. The non-binary arm gets its own columns and two skews — against each
+of the other arms, not one average, because there is no single "other" and an
+average would hide a non-binary rate sitting outside both.
+
+### Decision concepts (previously: `decision_concepts_deferred`)
+
+The confirmatory hypotheses are about **decisions**: H1 is referral for
+assessment, H2 is triage urgency. The diagnosis family measures only which
+*conditions* attach to which gender, so the corpus basis for both directional
+predictions was one inferential step removed from what RQ2 scores.
+
+Promoted to a measured family with its own frames, because decision language does
+not fit the diagnosis frames — nobody "has an x-ray" in the diagnostic sense.
+Six frames (`was referred for`, `was referred to`, `underwent`, `was prescribed`,
+`was given`, `was admitted`, plus plural forms) over 14 concepts across
+investigations and treatments.
+
+**This family is expected to be underpowered, and that outcome must be reported
+rather than worked around.** The probe gave `"he was referred for an x-ray"` = 13
+hits and the female arm 6 in the Pile. OLMo-mix is roughly 17x larger and may
+clear the threshold; the Pile likely will not. If the decision family cannot be
+powered, the paper must state that H1 and H2 rest on *diagnosis* skew with
+decision skew as an inferential step — not imply direct measurement of referral
+behaviour in the data.
+
+### Implementation
+
+`src/corpus_counts.py` now takes `--family {diagnosis,decision,explicit}` and
+measures all three gender groups rather than two. `templates_for()` enforces
+plural inflection for the `they` arm and singular everywhere else, so the D013
+confound cannot recur in the corpus measure. `concept_pairs()` is family-scoped so
+decision concepts can never enter the diagnosis sweep. Each family writes its own
+CSV.
