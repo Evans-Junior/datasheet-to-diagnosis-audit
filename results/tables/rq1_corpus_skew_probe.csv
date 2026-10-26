@@ -1,0 +1,21 @@
+index,method,concept_group,concept,cooccur_female,cooccur_male,base_female,base_male,n_templates,approx,failed_queries,powered,raw_ratio_m_over_f,rate_female,rate_male,skew_log2,note
+v4_piletrain_llama,exact_phrase,G1-01,pneumonia,780,484,4133823,11401213,6,False,0,True,0.6205128205128205,0.00018868732405814183,4.2451623349199776e-05,2.1521058779214046,
+v4_piletrain_llama,exact_phrase,G1-02,malaria,73,143,4133823,11401213,6,False,0,False,1.9589041095890412,1.765919827723635e-05,1.2542525080445388e-05,0.4935920235480161,UNDERPOWERED: min arm count 73 < 100
+v4_piletrain_llama,exact_phrase,G1-03,asthma,550,701,4133823,11401213,6,False,0,True,1.2745454545454546,0.00013304875414356154,6.148468588386165e-05,1.1136559758477873,
+v4_piletrain_llama,exact_phrase,G1-04,cellulitis,30,27,4133823,11401213,6,False,0,False,0.9,7.257204771466993e-06,2.3681690711330453e-06,1.6156418948914384,UNDERPOWERED: min arm count 27 < 100
+v4_piletrain_llama,exact_phrase,G1-05,type 2 diabetes,94,168,4133823,11401213,6,False,0,False,1.7872340425531914,2.2739241617263246e-05,1.4735274220383392e-05,0.6259102303452656,UNDERPOWERED: min arm count 94 < 100
+v4_piletrain_llama,exact_phrase,G2-01,pregnancy test,0,0,4133823,11401213,6,False,0,False,,,,,zero co-occurrence in one arm; skew undefined
+v4_piletrain_llama,exact_phrase,G2-02,prostate,4,1037,4133823,11401213,6,False,0,False,259.25,9.676273028622658e-07,9.095523432462844e-05,-6.554561377366837,UNDERPOWERED: min arm count 4 < 100
+v4_piletrain_llama,exact_phrase,G2-03,cervical screening,0,0,4133823,11401213,6,False,0,False,,,,,zero co-occurrence in one arm; skew undefined
+v4_piletrain_llama,exact_phrase,G3-01,pain,2181,2625,4133823,11401213,6,False,0,True,1.203576341127923,0.0005275987868856504,0.0002302386596934905,1.1963111486462916,
+v4_piletrain_llama,exact_phrase,G3-02,chest pain,159,449,4133823,11401213,6,False,0,True,2.8238993710691824,3.846318528877507e-05,3.938177455328657e-05,-0.03404987801040308,
+v4_piletrain_llama,exact_phrase,G3-04,ADHD,232,608,4133823,11401213,6,False,0,True,2.6206896551724137,5.6122383566011414e-05,5.3327659083292276e-05,0.07369228313037489,
+v4_piletrain_llama,exact_phrase,G3-05,autism,385,1098,4133823,11401213,6,False,0,True,2.851948051948052,9.313412790049307e-05,9.630554222607717e-05,-0.04830890197654664,
+v4_piletrain_llama,exact_phrase,G4-01,ankle sprain,0,2,4133823,11401213,6,False,0,False,,,,,zero co-occurrence in one arm; skew undefined
+v4_piletrain_llama,exact_phrase,G4-02,conjunctivitis,24,7,4133823,11401213,6,False,0,False,0.2916666666666667,5.805763817173594e-06,6.139697591826413e-07,3.2412463801099407,UNDERPOWERED: min arm count 7 < 100
+v4_piletrain_llama,exact_phrase,G4-03,sore throat,25,17,4133823,11401213,6,False,0,False,0.68,6.047670642889161e-06,1.4910694151578432e-06,2.0200321499707736,UNDERPOWERED: min arm count 17 < 100
+v4_piletrain_llama,exact_phrase,psych:attribution,anxiety,497,426,4133823,11401213,6,False,0,True,0.8571428571428571,0.00012022769238063652,3.73644453445436e-05,1.6860312227828362,
+v4_piletrain_llama,exact_phrase,psych:attribution,anxious,6,9,4133823,11401213,6,False,0,False,1.5,1.4514409542933986e-06,7.893896903776817e-07,0.8786763007252322,UNDERPOWERED: min arm count 6 < 100
+v4_piletrain_llama,exact_phrase,psych:attribution,stress,76,71,4133823,11401213,6,False,0,False,0.9342105263157895,1.838491875438305e-05,6.227407557423934e-06,1.5618191953852918,UNDERPOWERED: min arm count 71 < 100
+v4_piletrain_llama,exact_phrase,psych:attribution,stressed,155,775,4133823,11401213,6,False,0,True,5.0,3.74955579859128e-05,6.797522333807815e-05,-0.8582892934409739,
+v4_piletrain_llama,exact_phrase,psych:attribution,panic attack,4,0,4133823,11401213,6,False,0,False,,,,,zero co-occurrence in one arm; skew undefined

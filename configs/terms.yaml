@@ -16,6 +16,30 @@ index_targets:
 window_tokens: 20
 max_clause_freq: 500000
 
+# PRIMARY measurement method (D023): exact n-gram counts of templated phrases.
+# find_cnf windowed co-occurrence was abandoned -- it returns approx=True on every
+# call and, with clauses far above max_clause_freq ("he" has 506M occurrences
+# against a 500k cap), its estimates are not comparable. It disagreed with exact
+# counts in SIGN: pneumonia -7.07 vs +2.01, ADHD +2.81 vs -0.09.
+#
+# Each template's denominator is its own prefix count, so the measure is
+#   P(concept | "<pronoun> <predicate>")
+# which normalises out both pronoun frequency and construction frequency.
+phrase_templates:
+  - "{pron} has"
+  - "{pron} was diagnosed with"
+  - "{pron} suffers from"
+  - "{pron} complained of"
+  - "{pron} presented with"
+  - "{pron} reported"
+
+phrase_pronouns:
+  female: [she]
+  male:   [he]
+  # "they" is overwhelmingly plural in corpus text, so this arm does not isolate
+  # non-binary reference. Reported as a measurement limitation only.
+  nonbinary: [they]
+
 gender_terms:
   female: [she, her, woman, women, girl, girls, mother, female, lady]
   male:   [he, him, man, men, boy, boys, father, male, gentleman]

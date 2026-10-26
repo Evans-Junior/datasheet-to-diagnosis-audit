@@ -683,3 +683,84 @@ and all three found by inspecting output rather than reading code:
 zero gets a numerical and provenance check before it gets an interpretation.** This
 belongs in the paper's reproducibility section — bias audits report small effects, so
 the infrastructure that produces them needs stating.
+
+---
+
+## D023 — RQ1 uses exact templated n-gram counts, not windowed co-occurrence
+**Date:** 2026-10-26 · **Phase:** 3 · **Supersedes** the find_cnf approach in D022
+
+### Why find_cnf was abandoned
+
+Every `find_cnf` response returns `approx: true` (125/125 observed), while every
+`count` response is exact (0/18 approximate). The approximation is governed by
+`max_clause_freq`, capped at 500,000 — but `he` occurs 506,515,052 times and `she`
+209,229,612, three orders of magnitude above the cap. The estimates are therefore not
+comparable across concepts or between gender groups.
+
+This is not a theoretical worry. The two methods **disagree in sign**:
+
+| Concept | find_cnf | exact n-gram |
+|---|---|---|
+| pneumonia | −7.069 | **+2.012** |
+| ADHD | +2.808 | **−0.092** |
+| sprained ankle | −6.712 | **−0.046** |
+| asthma | +3.028 | +0.898 |
+| anxiety | +1.585 | +1.045 |
+
+find_cnf also produced frankly implausible values — a 140:1 male skew for ankle
+sprain and 179:1 for pneumonia — which is how the problem was noticed.
+
+### The method adopted
+
+Exact counts of templated phrases, with each template's own prefix as denominator:
+
+    P(concept | "<pronoun> <predicate>") = count("p T concept") / count("p T")
+
+over six templates (`has`, `was diagnosed with`, `suffers from`, `complained of`,
+`presented with`, `reported`). This normalises out **both** pronoun frequency and
+construction frequency, and every term is exact.
+
+**Validation.** `prostate` returns F=4 vs M=1,037 (skew −6.55) and `pregnancy test`
+and `cervical screening` return zero counts. The method recovers known sex-specific
+concepts, which find_cnf did not.
+
+**Trade-off, to state in the paper.** Exact phrasing misses paraphrase, so coverage is
+narrower and counts are small. Mitigated by summing over templates; a `MIN_COUNT`
+threshold of 100 hits in both arms marks rows `UNDERPOWERED` and excludes them from
+headline results.
+
+### Feasibility probe result (the Pile, 20 concepts, 6 templates)
+
+Eight concepts cleared the power threshold. **sd = 1.029, range −0.858 to +2.152.**
+
+| Concept | F | M | skew log2(F/M) |
+|---|---|---|---|
+| stressed | 155 | 775 | −0.858 |
+| autism | 385 | 1,098 | −0.048 |
+| chest pain | 159 | 449 | −0.034 |
+| ADHD | 232 | 608 | +0.074 |
+| asthma | 550 | 701 | +1.114 |
+| pain | 2,181 | 2,625 | +1.196 |
+| **anxiety** | **497** | **426** | **+1.686** |
+| pneumonia | 780 | 484 | +2.152 |
+
+**This answers the RQ4 feasibility question raised in D022: there is real variance in
+normalised skew, so RQ4 has something to correlate against.** Had everything come out
+near zero, RQ4 would have been dead.
+
+**Preliminary observations, not findings.**
+- `anxiety` is the most female-skewed well-powered concept (≈3.2x after
+  normalisation), which is the direction the psychologizing hypothesis predicts
+  (D020, `docs/g303_psychologizing_theme.md`).
+- `chest pain`, `ADHD` and `autism` sit at essentially zero — notable, because these
+  are where skew was most expected.
+- `stressed` is **contaminated by polysemy** ("he stressed that…" is a speech verb).
+  Ambiguous terms must be filtered before the full run.
+- `prostate` is excluded by the power threshold (F=4) but is *informative* rather than
+  noisy: a near-absent female arm is the expected signature of a sex-specific concept.
+  Underpowered-by-threshold and uninformative are not the same thing, and the full run
+  should report such rows separately rather than dropping them.
+
+**Scope of this probe.** One index (the Pile), one pronoun pair, six templates, 20
+concepts. Not RQ1 results — a feasibility check. The full run adds
+`v4_olmo-mix-1124_llama`, more templates, and polysemy filtering.

@@ -56,6 +56,7 @@ MANIFEST = ROOT / "data/cache/manifest.json"
 OUT = ROOT / "results/tables/rq1_corpus_skew.csv"
 
 API = "https://api.infini-gram.io/"
+MIN_COUNT = 100       # minimum hits in BOTH arms for a row to count as powered
 PAUSE = 1.0           # politeness between uncached calls; the API rate-limits
 RETRIES = 5
 BACKOFF = 8.0         # seconds, multiplied by attempt, on a 403/429
@@ -127,6 +128,74 @@ def base_count(index: str, term: str) -> tuple[int, bool]:
     if "error" in j:
         return -1, False
     return int(j.get("count", 0)), bool(j.get("approx", False))
+
+
+def phrase_sweep(cfg: dict, pairs: list[tuple[str, str]], indexes: list[str]
+                 ) -> pd.DataFrame:
+    """PRIMARY method (D023): exact n-gram counts of templated phrases.
+
+    For each template T and pronoun p, measures
+        P(concept | "p T") = count("p T concept") / count("p T")
+    Both terms are exact (`approx=False`), so unlike find_cnf the numbers are
+    comparable across concepts and between gender groups. Counts per template are
+    small, so templates are summed per gender group before the ratio is taken.
+    """
+    templates = cfg["phrase_templates"]
+    prons = cfg["phrase_pronouns"]
+    rows = []
+
+    for index in indexes:
+        # Denominators: one prefix count per (template, pronoun).
+        prefix: dict[tuple[str, str], int] = {}
+        for grp in ("female", "male"):
+            for pron in prons[grp]:
+                for tpl in templates:
+                    pre = tpl.format(pron=pron)
+                    n, ap = base_count(index, pre)
+                    prefix[(pre, grp)] = max(n, 0)
+                    if ap:
+                        print(f"    WARNING: prefix {pre!r} returned approx=True")
+        print(f"  {index}: {len(prefix)} template prefixes counted", flush=True)
+
+        for grp_label, concept in pairs:
+            tot = {"female": 0, "male": 0}
+            den = {"female": 0, "male": 0}
+            fails = 0
+            for grp in ("female", "male"):
+                for pron in prons[grp]:
+                    for tpl in templates:
+                        pre = tpl.format(pron=pron)
+                        n, _ = base_count(index, f"{pre} {concept}")
+                        if n < 0:
+                            fails += 1
+                        else:
+                            tot[grp] += n
+                            den[grp] += prefix.get((pre, grp), 0)
+            s = skew(tot["female"], tot["male"], max(den["female"], 1),
+                     max(den["male"], 1))
+            # Exact phrase counts are small by construction, so a concept with
+            # only a few dozen hits yields a ratio dominated by noise. Rows below
+            # the threshold are scored but flagged UNDERPOWERED and excluded from
+            # headline results (D023).
+            powered = min(tot["female"], tot["male"]) >= MIN_COUNT
+            if not powered and s["note"] == "":
+                s["note"] = (f"UNDERPOWERED: min arm count "
+                             f"{min(tot['female'], tot['male'])} < {MIN_COUNT}")
+            if fails:
+                s["skew_log2"] = None
+                s["note"] = f"{fails} failed queries; row unusable"
+            rows.append({"index": index, "method": "exact_phrase",
+                         "concept_group": grp_label, "concept": concept,
+                         "cooccur_female": tot["female"], "cooccur_male": tot["male"],
+                         "base_female": den["female"], "base_male": den["male"],
+                         "n_templates": len(templates), "approx": False,
+                         "failed_queries": fails, "powered": powered, **s})
+            sk = s["skew_log2"]
+            shown = "n/a" if sk is None else f"{sk:+.3f}"
+            print(f"    {concept:28s} F={tot['female']:>7,} M={tot['male']:>7,}  "
+                  f"skew_log2={shown}" + (f"  [{fails} FAILED]" if fails else ""),
+                  flush=True)
+    return pd.DataFrame(rows)
 
 
 def cooccur(index: str, a: str, b: str, window: int, max_clause_freq: int
@@ -232,6 +301,11 @@ def sweep(cfg: dict, pairs: list[tuple[str, str]], indexes: list[str]) -> pd.Dat
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--method", choices=["exact", "cnf"], default="exact",
+                    help="exact = templated n-gram counts (D023, default). "
+                         "cnf = find_cnf windowed co-occurrence, retained only "
+                         "for the methods comparison; its estimates are "
+                         "approximate and NOT comparable across concepts.")
     ap.add_argument("--probe", action="store_true",
                     help="small sweep to check whether ANY concept shows skew")
     ap.add_argument("--run", action="store_true", help="full sweep")
@@ -265,9 +339,14 @@ def main() -> None:
         indexes = indexes[:1]
         print(f"PROBE: {len(pairs)} concepts on {indexes[0]}\n")
 
-    df = sweep(cfg, pairs, indexes)
+    if args.method == "exact":
+        df = phrase_sweep(cfg, pairs, indexes)
+    else:
+        print("WARNING: find_cnf estimates are approximate and disagreed with exact\n"
+              "         counts in SIGN (D023). Methods comparison only.\n")
+        df = sweep(cfg, pairs, indexes)
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    tag = "_probe" if args.probe else ""
+    tag = ("_probe" if args.probe else "") + ("" if args.method == "exact" else "_cnf")
     dest = OUT.with_name(OUT.stem + tag + OUT.suffix)
     df.to_csv(dest, index=False)
 
@@ -287,9 +366,17 @@ def main() -> None:
             "ABORT: no concept produced a skew score. Check that max_diff_tokens "
             "is being sent — find_cnf returns 0 silently without it (D022)."
         )
-    print(f"skew_log2  min={ok['skew_log2'].min():+.3f}  "
-          f"max={ok['skew_log2'].max():+.3f}  sd={ok['skew_log2'].std():.3f}")
-    if ok["skew_log2"].abs().max() < 0.1:
+    pw = ok[ok["powered"]] if "powered" in ok else ok
+    print(f"\nALL scored rows      n={len(ok):>3}  "
+          f"min={ok['skew_log2'].min():+.3f} max={ok['skew_log2'].max():+.3f} "
+          f"sd={ok['skew_log2'].std():.3f}")
+    print(f"POWERED rows only    n={len(pw):>3}  "
+          + (f"min={pw['skew_log2'].min():+.3f} max={pw['skew_log2'].max():+.3f} "
+             f"sd={pw['skew_log2'].std():.3f}" if len(pw) else "(none)"))
+    if len(pw) < len(ok):
+        print(f"  {len(ok) - len(pw)} rows UNDERPOWERED (<{MIN_COUNT} hits in an "
+              f"arm) and excluded from headline results")
+    if len(pw) and pw["skew_log2"].abs().max() < 0.1:
         print("\nWARNING: every concept has |skew| < 0.1, i.e. no measurable gender\n"
               "skew after normalisation. RQ4 correlates data skew against output\n"
               "gaps — with no variance in the predictor there is nothing to\n"
