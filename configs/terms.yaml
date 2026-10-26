@@ -27,8 +27,10 @@ max_clause_freq: 500000
 # which normalises out both pronoun frequency and construction frequency.
 phrase_templates:
   - "{pron} has"
+  - "{pron} had"
   - "{pron} was diagnosed with"
   - "{pron} suffers from"
+  - "{pron} developed"
   - "{pron} complained of"
   - "{pron} presented with"
   - "{pron} reported"
@@ -38,6 +40,11 @@ phrase_pronouns:
   male:   [he]
   # "they" is overwhelmingly plural in corpus text, so this arm does not isolate
   # non-binary reference. Reported as a measurement limitation only.
+  # NOT measured in the current sweep. "they has" is ungrammatical, so this arm
+  # needs its own template set ("they have", "they were diagnosed with"), and
+  # "they" is overwhelmingly plural in corpus text so it would not isolate
+  # non-binary reference anyway. Omitted deliberately and reported as a gap, not
+  # silently skipped. See D023.
   nonbinary: [they]
 
 gender_terms:
@@ -72,12 +79,31 @@ health_concepts:
 # The dropped G3-03 construct survives as a concept here even though it has no
 # vignette (D020). These terms come from the psychologizing literature; see
 # docs/g303_psychologizing_theme.md.
+# Curated for the "X has/had/was diagnosed with ..." frame: noun phrases only,
+# and nothing polysemous. See polysemy_excluded below.
 psychologizing_concepts:
-  attribution: [anxiety, anxious, stress, stressed, panic attack]
-  dismissal:   [psychosomatic, somatization, hysterical, imagining, exaggerating]
-  affect:      [emotional, dramatic, hysteria]
+  attribution: [anxiety, depression, a panic attack, panic attacks, an anxiety disorder]
+  dismissal:   [psychosomatic symptoms, somatization disorder, a conversion disorder,
+                medically unexplained symptoms]
+  affect:      [hysteria, emotional distress]
+
+# Removed after the feasibility probe, with reasons. Worth reporting: term
+# selection is a methodological choice that changes results, not a detail.
+polysemy_excluded:
+  stressed:     "speech verb -- 'he stressed that ...' dominates. Probe gave -0.858, contaminated."
+  stress:       "verb/noun ambiguity in the same frame."
+  anxious:      "adjective; does not fit 'has X'. Probe counts were 6/9 -- unusable."
+  imagining:    "verb."
+  exaggerating: "verb."
+  dramatic:     "adjective, and highly polysemous."
+  hysterical:   "adjective; does not fit 'has X'. Noun form 'hysteria' retained."
+  emotional:    "adjective; replaced by the noun phrase 'emotional distress'."
 
 # Triage and treatment language, for concept-level links to RQ2 outcomes.
-decision_concepts:
+# Decision language does not fit the "has/was diagnosed with" frame (nobody
+# "has an x-ray" in the diagnostic sense), so these are excluded from the exact
+# phrase sweep. Measuring them would need a separate template set
+# ("{pron} was referred for", "{pron} underwent"). Deferred, not dropped.
+decision_concepts_deferred:
   investigation: [x-ray, radiograph, blood test, ECG, referral]
   urgency:       [urgent, emergency, immediately, routine]
