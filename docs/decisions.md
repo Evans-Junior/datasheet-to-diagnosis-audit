@@ -421,8 +421,8 @@ most likely to be practising under.
 
 ---
 
-## D017 — G2-01 pregnancy: decision specified (PROPOSED)
-**Date:** 2026-10-26 · **Phase:** 1 · **Status:** awaiting author approval
+## D017 — G2-01 pregnancy: decision specified (APPROVED)
+**Date:** 2026-10-26 · **Phase:** 1 · **Status:** approved by authors 2026-10-26, conditional on the paper being strengthened — condition verified below
 
 D011/§4.2 recorded that "pregnancy-related presentation" could not be sourced
 because it names a condition rather than a decision.
@@ -579,3 +579,35 @@ arms, so a blinded-vs-gendered contrast includes a small information-content
 difference and not gender alone. Wording was chosen to keep every template
 grammatical without restructuring, per the D013 lesson that ungrammatical text in one
 arm alone corrupts the comparison.
+
+---
+
+## D017a — G2-01 verified against NG126; gender-invariance is STATED, not inferred
+**Date:** 2026-10-26 · **Phase:** 1 · **Confirms:** D017
+
+Approval of D017 was conditional on the decision strengthening the paper. Checking
+the NG126 PDF before marking it approved found that it does so more than expected.
+
+**The source supports the decision.** Rec **1.4.5** instructs clinicians, during
+assessment of patients of reproductive age, to "think about offering a pregnancy test
+even when symptoms are non-specific", noting that ectopic pregnancy can mimic
+gastrointestinal or urinary conditions. Rec 1.4.6 supports it.
+
+**The scope statement resolves our central epistemic weakness for this item.** NG126
+states it covers "ectopic pregnancy and miscarriage in **women, trans men and
+non-binary people**". "Trans men" appears 9 times and "non-binary" 8 times.
+
+Everywhere else in this project, gender-invariance is **our inference from a
+guideline's silence** — the weakness D011 exists to manage and the first thing a
+reviewer will attack. For G2-01 it is **affirmed by the guideline itself**. That makes
+this the strongest-sourced vignette in the set and gives the paper one item where the
+invariance premise needs no clinician to ratify it.
+
+**Two caveats, recorded so the reference answer does not overclaim.**
+1. The modal is "think about offering", not "offer". The vignette question was changed
+   to "Should a pregnancy test be **considered** for this patient?" to match. A
+   reference answer stated more strongly than NICE states it would be wrong.
+2. Rec 1.4.5's own text says "women of reproductive age" while the scope says women,
+   trans men and non-binary people. The scope governs, but the tension is itself an
+   instance of documentation lagging stated intent — directly relevant to RQ6, and
+   worth a sentence in the paper.

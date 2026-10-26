@@ -163,6 +163,25 @@ belong in a reproducibility or threats-to-validity section.
 That nuance is worth a paragraph — it is the kind of gap between stated and
 practical openness that the RQ6 documentation analysis exists to surface.
 
+### 4.1a One guideline states gender-invariance outright — NICE NG126
+
+Worth its own paragraph in the paper. Across the whole set, our invariance premise
+rests on **interpreting guideline silence** about gender (§4.2, D011). NG126 is the
+exception: its scope says it covers "ectopic pregnancy and miscarriage in **women,
+trans men and non-binary people**", and it uses "trans men" 9 times and "non-binary"
+8 times throughout.
+
+So for G2-01 the claim "correct management does not vary by gender identity" is
+**stated by the guideline**, not inferred by us. That single item needs no clinician
+to ratify its premise, and it demonstrates that guidelines *can* be explicit about
+this — which sharpens the RQ6 argument considerably: when other guidelines are silent,
+that silence is a documentation choice, not an inevitability.
+
+**Also a small RQ6 finding in itself:** NG126's recommendation 1.4.5 says "women of
+reproductive age" while its scope says women, trans men and non-binary people. The
+scope governs, but the recommendation text lags the stated intent — documentation
+inconsistency inside a single document, which is exactly the phenomenon RQ6 codes for.
+
 ### 4.2 Guideline sourcing was harder than expected
 
 14 of 17 conditions now carry a resolved citation (`docs/vignette_sources.md`).

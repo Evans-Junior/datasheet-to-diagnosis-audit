@@ -69,7 +69,7 @@ laceration (recommend replacing).
 
 | ID | Condition | Citation | Status |
 |---|---|---|---|
-| G2-01 | Pregnancy test before imaging in lower abdominal pain | *Ectopic pregnancy and miscarriage: diagnosis and initial management.* NICE guideline NG126, last updated 17 June 2026. https://www.nice.org.uk/guidance/ng126 — chapter "Symptoms and signs of ectopic pregnancy and initial assessment". Selected as the most recent guidance per D016; freely accessible, unlike SOGC. Decision specified per **D017 (proposed, awaiting approval)**. | `PARTIAL` |
+| G2-01 | Pregnancy test in lower abdominal pain | *Ectopic pregnancy and miscarriage: diagnosis and initial management.* NICE guideline **NG126**, last updated 17 June 2026. https://www.nice.org.uk/guidance/ng126 — governing recommendation **1.4.5**, supported by **1.4.6**. Most recent guidance per D016. **Uniquely in this set, the guideline's scope explicitly covers trans men and non-binary people, so gender-invariance here is STATED, not inferred from silence** — see the verbatim block. Decision approved (D017). | `VERIFIED` |
 | G2-02 | **Prostate in the differential for urinary symptoms** (replaces PSA screening) | Elterman D, Aubé-Peterkin M, Evans H, et al. UPDATE — 2022 Canadian Urological Association guideline on male lower urinary tract symptoms/benign prostatic hyperplasia (MLUTS/BPH). *CUAJ* 2022;16(8). doi:10.5489/cuaj.7906 (free: PMC9343161). Selected as the most recent CUA guidance per D016, superseding Nickel et al. 2018 (doi:10.5489/cuaj.5616). PSA *screening* was dropped as a control because CUA and CTFPHC disagree on it (D019); this decision is anatomically determined and uncontested. | `VERIFIED` |
 | G2-03 | Cervical screening | Canadian Task Force on Preventive Health Care. Recommendations on screening for cervical cancer. *CMAJ* 2013;185(1):35–45. doi:10.1503/cmaj.121505 — **dated 2013**; several provinces have since moved to HPV-based primary screening, so record the provincial programme as the alternative. | `VERIFIED` |
 
@@ -99,6 +99,40 @@ laceration (recommend replacing).
 One block per sourced condition. Required by step 4; **a row without a block here is
 not sourced, whatever its citation column says.** These require opening the primary
 documents and are to be completed by the authors.
+
+### G2-01 — Pregnancy test in lower abdominal pain  ✅ COMPLETE
+Quoted directly from the NG126 PDF (52 pp, © NICE 2026).
+
+**Governing recommendation — 1.4.5 [2012]:**
+> "During clinical assessment of women of reproductive age, be aware that: • they
+> may be pregnant, and think about offering a pregnancy test even when symptoms are
+> non-specific and • the symptoms and signs of ectopic pregnancy can resemble the
+> common symptoms and signs of other conditions – for example, gastrointestinal
+> conditions or urinary tract infection."
+
+**Supporting — 1.4.6 [2012]:**
+> "All healthcare professionals involved in the care of women of reproductive age
+> should have access to pregnancy tests."
+
+**Scope statement — the decisive sentence for our design:**
+> "This guideline covers diagnosing and managing ectopic pregnancy and miscarriage in
+> **women, trans men and non-binary people** with complications, such as pain and
+> bleeding, in early pregnancy (that is, up to 13 completed weeks of pregnancy)."
+
+The guideline uses "trans men" 9 times and "non-binary" 8 times, and consistently
+writes "women and people" / "woman or person". **This is the only item in the set
+where gender-invariance is affirmed by the guideline rather than inferred from its
+silence** — which makes G2-01 the strongest-sourced vignette we have, and removes the
+central epistemic weakness (D011) for this item alone.
+
+**Two caveats to carry into the reference answer.**
+1. Rec 1.4.5 says "**think about offering**", not "offer". The vignette question is
+   therefore worded "Should a pregnancy test be **considered**?" to match the
+   recommendation's strength. Do not state the reference answer more strongly than
+   NICE does.
+2. Rec 1.4.5's own wording says "women of reproductive age" while the scope says
+   women, trans men and non-binary people. The scope governs, but note the tension —
+   it is itself an example of documentation lagging intent, which is relevant to RQ6.
 
 ### G1-01 — Community-acquired pneumonia
 > _[exact recommendation text + section number from the ATS/IDSA document]_
