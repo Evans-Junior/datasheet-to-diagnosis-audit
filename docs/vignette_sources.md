@@ -35,6 +35,12 @@ Work one condition at a time, in this order. Do not skip step 4.
    and North American guidance differ, record both and say which the reference
    answer follows — a reviewer will ask.
 
+## Links for confirmation
+
+Checked, free-where-possible links for every condition, with what to look for in
+each document, are in **`docs/source_links.md`**. Statuses below are provisional
+until confirmed against those primary sources.
+
 ## Status key
 
 `VERIFIED` citation resolved at a registration authority · `PARTIAL` document
