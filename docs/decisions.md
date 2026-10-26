@@ -453,3 +453,34 @@ interpretable error *direction*.
 It also strengthens Group 2's role: the group stops being only a sanity check that
 we have not mislabelled a legitimate sex difference, and becomes a positive test
 that the model reads SPCU correctly.
+
+---
+
+## D018 — Pregnancy excluded explicitly, in identical wording across all arms
+**Date:** 2026-10-26 · **Phase:** 1
+
+Confirming the WHO malaria guideline exposed a problem that generalises across the
+set. WHO gives a uniform treatment recommendation (§5.2.1.1, ACT) and then names
+pregnancy as an exception (§5.2.1.4.1), with IPTp separate at §4.2.1. The same shape
+holds for most Group 1 and Group 3 items, because their decisions are drug choices
+and pregnancy changes drug choice.
+
+This matters because our patients are of reproductive age and **pregnancy is
+SPCU-linked** — only the SPCU-female arms could be pregnant. With pregnancy status
+unstated, the correct answer is *not* identical across arms, and a model answering
+differently for SPCU female may be right. The Group 1 premise would be false.
+
+**Decision.** Every pregnancy-sensitive Group 1 and Group 3 vignette states that
+pregnancy is excluded, in **wording identical across all six arms** — including the
+SPCU-male arms, where it is trivially true.
+
+**Why identical rather than arm-conditional.** Mentioning pregnancy could cue
+gendered reasoning. But a cue present in identical form in every arm shifts the
+baseline uniformly and cannot produce a *differential* gender effect, which is the
+quantity we estimate. Arm-conditional wording would introduce precisely the
+differential cue we must avoid. The redundancy in the male arms is the price of that
+guarantee and belongs in the methods.
+
+**Consequence.** Group 1's claim becomes narrower and more honest: the correct answer
+is invariant *given that pregnancy is excluded*. That is what the guidelines actually
+support.

@@ -1,6 +1,6 @@
 id,group,condition,scenario_spcu_fixed,proposed_reference_answer,guideline_cited,guideline_url_or_doi,A_answer_correct,B_varies_by,C_comment
 G1-01,1,Community-acquired pneumonia,[AUTHORS TO COMPLETE],[AUTHORS TO COMPLETE],"ATS/IDSA 2019 community-acquired pneumonia guideline (Metlay et al.), Am J Respir Crit Care Med 2019;200(7):e45-e67",doi:10.1164/rccm.201908-1581ST,,,
-G1-02,1,"Malaria, non-pregnant adult",[AUTHORS TO COMPLETE],[AUTHORS TO COMPLETE],[AUTHORS TO COMPLETE],[AUTHORS TO COMPLETE],,,
+G1-02,1,"Malaria, non-pregnant adult",[AUTHORS TO COMPLETE],[AUTHORS TO COMPLETE],"WHO guidelines for malaria, 10 September 2026 (MAGICapp LwRMXj), sec 5.2.1.1 Artemisinin-based combination therapy",doi:10.2471/B09879,,,
 G1-03,1,"Asthma exacerbation, acute",[AUTHORS TO COMPLETE],[AUTHORS TO COMPLETE],"Global Initiative for Asthma. Global Strategy for Asthma Management and Prevention, 2026 (updated May 2026)",https://ginasthma.org/2026-gina-strategy-report/,,,
 G1-04,1,"Cellulitis, uncomplicated",[AUTHORS TO COMPLETE],[AUTHORS TO COMPLETE],"IDSA 2014 skin and soft tissue infections guideline (Stevens et al.), Clin Infect Dis 2014;59(2):e10-e52",doi:10.1093/cid/ciu296,,,
 G1-05,1,"Type 2 diabetes, initial management",[AUTHORS TO COMPLETE],[AUTHORS TO COMPLETE],"Diabetes Canada, Pharmacologic Glycemic Management of Type 2 Diabetes in Adults - 2024 Update (Shah et al.), Can J Diabetes 2024;48(7):415-424",doi:10.1016/j.jcjd.2024.08.002,,,
