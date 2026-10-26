@@ -307,6 +307,37 @@ hold either way, the missing clinician provably does not change them.
 
 ---
 
+## 4a. RQ1 headline result (D024)
+
+Full sweep: 1,504 queries, 0 failures, 42 powered rows across two corpora.
+
+**Validation.** cervical cancer +9.25 (Pile) / +7.74 (OLMo-mix); prostate -6.47 /
+-6.07. **Cross-corpus agreement r = 0.931, rho = 0.936** on 15 shared concepts.
+
+**Centre before interpreting.** Mean sex-neutral skew is +0.778 (Pile) / +0.560
+(OLMo-mix) -- a baseline female skew in illness-narration frames. Zero is not a
+reference point.
+
+**Centred skew by family, identical ordering in both corpora:**
+
+| Family | OLMo-mix | Pile |
+|---|---|---|
+| neurodevelopmental | -0.974 | -0.812 |
+| cardiac | -0.929 | -0.671 |
+| other somatic | +0.180 | +0.058 |
+| pain | +0.287 | +0.107 |
+| psychological | +0.804 | +0.651 |
+
+Each limb matches a documented human bias: psychologizing of women (Hoffmann &
+Tarzian), cardiac under-recognition in women (Pilote), ADHD/autism under-diagnosis
+in women and girls.
+
+**The strategic consequence.** RQ1 now generates signed, *a priori* predictions for
+RQ2 -- psychologize women more, triage women's chest pain lower, refer women less
+for ADHD/autism. Pre-registering these before Phase 2 runs converts a post-hoc
+correlation into a confirmed prediction, which is a far stronger claim. **Write them
+down before scoring anything.**
+
 ## 5. Measured numbers to cite
 
 Environment: Python 3.12.15 (arm64), torch 2.14.1 (MPS), transformers 5.19.0,

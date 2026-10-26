@@ -764,3 +764,83 @@ near zero, RQ4 would have been dead.
 **Scope of this probe.** One index (the Pile), one pronoun pair, six templates, 20
 concepts. Not RQ1 results — a feasibility check. The full run adds
 `v4_olmo-mix-1124_llama`, more templates, and polysemy filtering.
+
+---
+
+## D024 — RQ1 full sweep: result, and skew must be centred within corpus
+**Date:** 2026-10-26 · **Phase:** 3
+
+Full sweep: 47 concepts x 8 templates x 2 pronouns x 2 indexes = 1,504 queries,
+**0 failed**. 76 of 94 rows scored; 42 cleared the 100-hit power threshold.
+
+### Validation
+
+| Concept | Pile | OLMo-mix | Expected |
+|---|---|---|---|
+| cervical cancer | **+9.25** | **+7.74** | strongly female |
+| prostate | **−6.47** | **−6.07** | strongly male |
+| ectopic pregnancy | (underpowered) | +4.80 | strongly female |
+
+**Cross-corpus agreement on the 15 concepts powered in both: Pearson r = 0.931,
+Spearman rho = 0.936.** The measure replicates across two independently constructed
+corpora, so it is not an artefact of either.
+
+### Skew must be centred within corpus
+
+Mean skew across sex-neutral concepts is **+0.778** (Pile) and **+0.560**
+(OLMo-mix) — a baseline *female* skew in illness-narration frames, presumably
+because health narration is itself female-associated in text. **Zero is therefore
+not a meaningful reference point.** All interpretation uses skew centred on the
+corpus's own sex-neutral mean; absolute sign is reported but never interpreted.
+
+### The result
+
+Centred skew by concept family (negative = relatively male-associated):
+
+| Family | OLMo-mix | Pile |
+|---|---|---|
+| neurodevelopmental | **−0.974** | **−0.812** |
+| cardiac | **−0.929** | **−0.671** |
+| other somatic | +0.180 | +0.058 |
+| pain | +0.287 | +0.107 |
+| **psychological** | **+0.804** | **+0.651** |
+
+**The ordering is identical in both corpora.** Extremes in OLMo-mix: most
+male-associated are *heart attack* (−1.39), *attention deficit* (−1.16), *autism*
+(−1.04), *angina* (−0.95), *ADHD* (−0.80); most female-associated are *an anxiety
+disorder* (+1.07), *panic attacks* (+1.03), *anxiety* (+0.74).
+
+This is the pattern the project hypothesised, and each limb matches a documented
+human clinical bias: psychologizing of women's symptoms (Hoffmann & Tarzian 2001),
+under-recognition of cardiac disease in women (Pilote's GENESIS work), and
+under-diagnosis of ADHD and autism in women and girls.
+
+### Consequence: RQ1 now yields *a priori* directional predictions for RQ2
+
+This is the methodologically important part. Rather than correlating corpus skew
+against output gaps *post hoc*, RQ1 gives signed predictions to pre-register before
+the output audit runs:
+
+1. Models should attribute symptoms to psychological causes more readily for women
+   (psychological family strongly female-skewed).
+2. Models should triage women's chest pain less urgently (cardiac family
+   male-skewed) — directly testable on G3-02.
+3. Models should refer women less readily for ADHD and autism assessment
+   (neurodevelopmental male-skewed) — testable on G3-04 and G3-05.
+
+A pre-registered directional prediction that then holds is far stronger evidence
+than a correlation discovered afterwards. **These predictions must be written down
+and committed before Phase 2 scores anything.**
+
+### Limitations
+
+- Co-occurrence in text is not semantics; these are phrase frequencies.
+- Exact-phrase templates miss paraphrase; 34 of 76 rows are underpowered.
+- Underpowered is not uninformative: *prostate* (Pile, F=8 vs M=1,718) and *cervical
+  cancer* (F=506 vs M=2) are excluded by the threshold yet are the clearest
+  validation signals. Reported separately.
+- **No non-binary arm.** "they has" is ungrammatical, and "they" is overwhelmingly
+  plural in corpus text. RQ1 therefore has no non-binary measure while RQ2 has a
+  non-binary output arm — an asymmetry that must be stated, since the non-binary
+  arm is part of the novelty claim.
+- OLMo-mix covers stage-1 pretraining only (D008).
