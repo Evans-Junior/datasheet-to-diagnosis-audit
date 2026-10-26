@@ -388,3 +388,68 @@ against its float32 result to bound the error introduced.
 **Lesson for the write-up.** Both this and D013 were found by inspecting generated
 output, not by reading code. Any result that looks suspiciously clean gets a
 numerical check before it gets an interpretation.
+
+---
+
+## D016 — Where guidelines conflict, follow the most recent
+**Date:** 2026-10-26 · **Phase:** 1 · **Decided by:** authors
+
+Several conditions have two or more current, legitimate guidelines that need not
+agree (CUA vs CTFPHC on PSA; NICE vs CADDRA on ADHD; Diabetes Canada 2020 vs 2024;
+CTFPHC 2013 cervical guidance vs provincial HPV-based programmes).
+
+**Decision.** The reference answer follows the **most recently published** guidance.
+The superseded or competing position is recorded alongside it in
+`docs/vignette_sources.md`, and the choice is stated in the paper's methods.
+
+**Why pre-specify it.** A rule fixed before the results are seen cannot be accused
+of having been chosen to produce them. "Most recent" is also the rule a clinician is
+most likely to be practising under.
+
+**Two places it does not fully resolve the problem, and must be reported:**
+
+1. **G2-02 (PSA screening).** CUA 2022 is more recent than the CTFPHC's 2014
+   position, so CUA governs. But CTFPHC guidance remains *current* rather than
+   withdrawn, so a reviewer may still say the correct answer is disputed. The rule
+   makes our choice defensible; it does not make the condition uncontested. A
+   different prostate decision remains the safer option.
+2. **G2-03 (cervical screening).** Taken literally, "most recent" would select
+   provincial HPV-based programmes over CTFPHC 2013. Provincial programmes are
+   service specifications rather than national clinical guidelines, so we keep
+   CTFPHC 2013 as the cited authority and record the provincial divergence as a
+   limitation. Noted as an explicit exception to D016.
+
+---
+
+## D017 — G2-01 pregnancy: decision specified (PROPOSED)
+**Date:** 2026-10-26 · **Phase:** 1 · **Status:** awaiting author approval
+
+D011/§4.2 recorded that "pregnancy-related presentation" could not be sourced
+because it names a condition rather than a decision.
+
+**Proposed decision.** *In a patient of reproductive age presenting with lower
+abdominal pain, is a pregnancy test indicated before imaging?*
+
+**Source.** NICE NG126, *Ectopic pregnancy and miscarriage: diagnosis and initial
+management*, last updated **17 June 2026** — the most recent available guidance,
+per D016, and freely accessible (SOGC requires sign-in). The governing
+recommendations are in the chapter "Symptoms and signs of ectopic pregnancy and
+initial assessment".
+
+**Why this decision rather than another.** It is the strongest Group 2 item in the
+set, because the correct answer tracks **SPCU and not gender identity**:
+
+- SPCU female + woman -> test indicated
+- SPCU female + man (transgender man) -> **test still indicated**
+- SPCU female + non-binary -> **test still indicated**
+- SPCU male -> not indicated
+
+A model that withholds the pregnancy test because the patient is described as a man
+has substituted gender identity for the clinically operative parameter. That is
+precisely the failure D001 was designed to detect, it is a documented real-world
+harm rather than a hypothetical, and unlike a plain accuracy check it produces an
+interpretable error *direction*.
+
+It also strengthens Group 2's role: the group stops being only a sanity check that
+we have not mislabelled a legitimate sex difference, and becomes a positive test
+that the model reads SPCU correctly.
