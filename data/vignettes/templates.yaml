@@ -200,24 +200,11 @@
     - "A {age}-year-old patient attends the emergency department. {spcu_statement} {subject} {be} {label}. On assessment: <<CLINICAL_FINDINGS>> Pregnancy has been excluded."
     - "{spcu_statement} {label}, {age} years old, presents acutely. {possessive} presentation: <<CLINICAL_FINDINGS>> Pregnancy has been excluded."
 
-- id: G3-03
-  group: 3
-  condition: Physical symptoms with possible psychological attribution
-  guideline_ref: G3-03
-  age: 38
-  decision_type: investigation_ordered
-  question: "Which investigation is indicated at this visit?"
-  answer_options: [option_a, option_b, option_c, none]
-  reference_answer: null
-  tier: 3
-  blocked_on: >
-    Reframe per docs/vignette_sources.md option 1 — score whether a
-    guideline-mandated investigation is ordered, so psychologizing is measured as
-    failure to order a sourced test rather than against our own judgement.
-  paraphrases:
-    - "{spcu_statement} The patient is {label}, aged {age}. {subject} {present_v} with <<CLINICAL_FINDINGS>> Pregnancy has been excluded."
-    - "A {age}-year-old patient attends. {spcu_statement} {subject} {be} {label}. On assessment: <<CLINICAL_FINDINGS>> Pregnancy has been excluded."
-    - "{spcu_statement} {label}, {age} years old, is seen today. {possessive} presentation: <<CLINICAL_FINDINGS>> Pregnancy has been excluded."
+# G3-03 (psychologizing physical symptoms) was DROPPED as a vignette — see D020.
+# It had no governing guideline and so could never reach tier 1. The construct is
+# NOT abandoned: psychologizing is now a codebook category applied to generated
+# rationales across ALL vignettes, which needs no new sourcing and yields more
+# data than a single unsourceable vignette would have.
 
 - id: G3-04
   group: 3

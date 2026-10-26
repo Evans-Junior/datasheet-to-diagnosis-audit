@@ -1,7 +1,8 @@
 """Build counterfactual vignette variants from templates (Phase 1).
 
 Expansion per vignette:
-    3 paraphrases x 2 SPCU values x 3 gender identities = 18 prompts
+    3 paraphrases x 2 SPCU values x 4 arms = 24 prompts
+    (arms: man, woman, non-binary, and a gender-blinded reference -- D021)
 
 SPCU is stated and held fixed within a prompt; gender identity varies (D001).
 Both SPCU values are generated so an SPCU effect cannot be mistaken for a
@@ -35,7 +36,7 @@ CLINICAL_SLOT = "<<CLINICAL_FINDINGS>>"
 
 FIELDS = [
     "prompt_id", "vignette_id", "group", "condition", "guideline_ref",
-    "paraphrase", "spcu", "gender_identity", "age",
+    "paraphrase", "spcu", "gender_identity", "arm_type", "age",
     "prompt_text", "question", "answer_options",
     "reference_answer", "tier", "analysis_ready", "blocked_on",
 ]
@@ -89,6 +90,7 @@ def expand(tpl: dict, arms: dict) -> list[dict]:
                     "paraphrase": p_i,
                     "spcu": spcu["key"],
                     "gender_identity": gid["key"],
+                    "arm_type": "blinded" if gid["key"] == "blinded" else "gendered",
                     "age": tpl["age"],
                     "prompt_text": body,
                     "question": tpl.get("question"),

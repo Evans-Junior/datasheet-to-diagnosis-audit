@@ -521,4 +521,61 @@ except two: G2-01, where pregnancy *is* the question, and G2-02, where pregnancy
 irrelevant to a prostate differential and would act as a strange distractor.
 Everywhere else the clause appears in wording identical across all six arms.
 
-Set is now 16 vignettes → 288 prompts (90 / 54 / 90 / 54).
+Set was 16 vignettes → 288 prompts; after D020 and D021 it is **15 vignettes → 360 prompts** (120 / 72 / 96 / 72).
+
+---
+
+## D020 — G3-03 dropped as a vignette; psychologizing retained as a rationale code
+**Date:** 2026-10-26 · **Phase:** 1 · **Supersedes** the open problem in D003 notes
+
+G3-03 had no governing guideline — no guideline states "do not attribute this
+patient's symptoms to anxiety" — so it could never reach tier 1, and the proposed
+reframe required clinical judgement not yet available.
+
+**Decision.** Drop G3-03 as a vignette. **Do not drop the construct.** Psychologizing
+becomes a category in the RQ6-style codebook, applied by the judge to generated
+rationales across *all* vignettes: if the rationale for the woman cites stress while
+the rationale for the man cites a physiological cause on an identical, already-sourced
+vignette, that is psychologizing measured on sourced material.
+
+**Why this is better than the vignette it replaces.** It needs no new sourcing and no
+clinician; it runs across 16 vignettes rather than one, so it yields more data; and it
+sits in the judge-coded secondary analysis where an unsourceable construct belongs
+(D005, D014). It also keeps the paper's most distinctive claim intact — psychologizing
+of women's physical symptoms is the paradigm case of bias transference from human text
+(Hoffmann & Tarzian, *J Law Med Ethics* 2001) and the concept where corpus signal
+should be strongest for RQ4.
+
+**Risk to watch.** Group 3 now holds four items (G3-01, G3-02, G3-04, G3-05). If
+G3-02 moves to Group 2 once the AHA/ACC guideline is read, Group 3 falls to three, of
+which only two are original to us. Group 3 carries the headline claim, so read G3-02
+early; if it moves, add one Group 3 item.
+
+---
+
+## D021 — Gender-blinded reference arm
+**Date:** 2026-10-26 · **Phase:** 1 · **Extends:** D012
+
+**Decision.** A fourth arm per SPCU value with gender identity and pronouns removed
+and SPCU retained. Expansion becomes 3 paraphrases x 2 SPCU x 4 arms = 24 prompts
+per vignette.
+
+**What it buys.**
+1. **An intervention result.** EQUITRIAGE (arXiv:2605.03998) found demographic
+   blinding cut one model's flip rate from 1.34:1 to 0.5%. Replicating that on *open*
+   models turns "we measured a gap" into "and here is what removes it", which is a
+   materially stronger paper.
+2. **A within-design null reference** stronger than Group 4, because it holds the
+   clinical content fixed and removes only the manipulated variable.
+3. **A clean decomposition:** blinded (no gender) vs SPCU-only vs SPCU + gender
+   identity.
+
+**Guards.** Rows carry `arm_type` (`gendered` / `blinded`) so statistics never pool
+the blinded arm into the three-way gender comparison.
+
+**Limitation to report.** The identity clause is semantically near-vacuous in the
+blinded arm ("The patient is an adult") while it carries information in the gendered
+arms, so a blinded-vs-gendered contrast includes a small information-content
+difference and not gender alone. Wording was chosen to keep every template
+grammatical without restructuring, per the D013 lesson that ungrammatical text in one
+arm alone corrupts the comparison.

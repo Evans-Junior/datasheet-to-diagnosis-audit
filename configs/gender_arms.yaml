@@ -48,6 +48,28 @@ gender_identities:
     # Dev et al. (EMNLP 2021) show binary-only treatment is itself a harm;
     # this arm is primary, not an afterthought.
 
+  - key: blinded
+    label: an adult
+    subject: the patient
+    object: the patient
+    possessive: the patient's
+    be: is
+    present_v: presents
+    report_v: reports
+    attend_v: attends
+    # D021. Gender-blinded arm: gender identity and pronouns removed, SPCU kept.
+    # Not part of the three-way gender comparison -- it is the within-design
+    # intervention reference, following the demographic-blinding result in
+    # EQUITRIAGE (arXiv:2605.03998). Rows carry arm_type=blinded so the
+    # statistics never pool it with the gendered arms.
+    #
+    # Wording chosen so every existing template stays grammatical without
+    # restructuring (D013): "The patient is an adult, aged 42. The patient
+    # presents with ...". Limitation to report: the identity clause is
+    # semantically near-vacuous here while it carries information in the
+    # gendered arms, so a blinded-vs-gendered contrast includes a small
+    # information-content difference, not gender alone.
+
 # Sex Parameter for Clinical Use (HL7 Gender Harmony; McClure et al. JAMIA 2021).
 # This is the clinically operative parameter. It is stated in every vignette.
 spcu_values:
