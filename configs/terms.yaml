@@ -1,0 +1,59 @@
+# Term lists for RQ1 corpus counts.
+#
+# Gender terms are grouped so that each group's co-occurrence rate can be
+# normalised by that group's own base frequency. Raw co-occurrence counts are
+# meaningless without this: in the Pile, "he" occurs 2.42x as often as "she",
+# and the two probes we ran had raw male/female co-occurrence ratios of 2.422
+# and 2.416 — i.e. entirely accounted for by the pronoun base rate, with
+# normalised skew of -0.0004 and +0.0030. See D022.
+
+index_targets:
+  - v4_piletrain_llama        # Pythia's training corpus
+  - v4_olmo-mix-1124_llama    # OLMo 2 stage-1 mix (stage 2 is not indexed; D008)
+
+# find_cnf co-occurrence window, in tokens. MUST be set explicitly: the API
+# returns cnt=0 when max_diff_tokens is omitted, silently (D022).
+window_tokens: 20
+max_clause_freq: 500000
+
+gender_terms:
+  female: [she, her, woman, women, girl, girls, mother, female, lady]
+  male:   [he, him, man, men, boy, boys, father, male, gentleman]
+  nonbinary:
+    # Treated separately and reported with heavy caveats. "they/them" is
+    # overwhelmingly plural in corpus text, so these counts do NOT isolate
+    # non-binary reference; the explicit terms are sparse. Reported as a
+    # measurement limitation, never as a clean third comparison (D022).
+    [non-binary, nonbinary, enby, genderqueer, transgender]
+
+# Health concepts drawn from the 15 vignettes, so RQ1 and RQ2 speak about the
+# same things and RQ4 can link them per concept.
+health_concepts:
+  G1-01: [pneumonia, community-acquired pneumonia, antibiotic]
+  G1-02: [malaria, artemisinin]
+  G1-03: [asthma, asthma attack, inhaler]
+  G1-04: [cellulitis, skin infection]
+  G1-05: [type 2 diabetes, metformin]
+  G2-01: [pregnancy test, ectopic pregnancy]
+  G2-02: [prostate, urinary symptoms]
+  G2-03: [cervical screening, cervical cancer]
+  G3-01: [pain, severe pain, analgesia, morphine, opioid]
+  G3-02: [chest pain, heart attack, angina]
+  G3-04: [ADHD, attention deficit]
+  G3-05: [autism, autistic]
+  G4-01: [ankle sprain, sprained ankle]
+  G4-02: [conjunctivitis, pink eye]
+  G4-03: [sore throat, strep throat]
+
+# The dropped G3-03 construct survives as a concept here even though it has no
+# vignette (D020). These terms come from the psychologizing literature; see
+# docs/g303_psychologizing_theme.md.
+psychologizing_concepts:
+  attribution: [anxiety, anxious, stress, stressed, panic attack]
+  dismissal:   [psychosomatic, somatization, hysterical, imagining, exaggerating]
+  affect:      [emotional, dramatic, hysteria]
+
+# Triage and treatment language, for concept-level links to RQ2 outcomes.
+decision_concepts:
+  investigation: [x-ray, radiograph, blood test, ECG, referral]
+  urgency:       [urgent, emergency, immediately, routine]

@@ -251,6 +251,15 @@ and it would have done so consistently across every model and every vignette,
 producing exactly the clean, replicable "bias against non-binary patients" result
 we would have been most tempted to publish. Fixed by carrying verb forms per arm.
 
+**(b0) Cached rate-limit errors read back as zero counts (D022).** The first RQ1
+probe reported 16 of 20 concepts as having zero gender co-occurrence, and gave
+dramatic skew for the rest (pneumonia −5.9, asthma +2.3). All of it was an artefact:
+infini-gram rate-limits with HTTP 403 and a body of `{"message": "Forbidden"}`, which
+carries no `"error"` key, so our client treated it as success and **cached it** — after
+which it read back as `cnt = 0` forever. 287 of 378 cached entries (76%) held
+"Forbidden", and the non-zero rows were sums over nine gender terms mixing blocked and
+successful queries, so those ratios were meaningless too.
+
 **(b) Precision fault (D015).** The first scored output gave **P(Yes) = 0.500 for
 every prompt in every arm**. Pythia's logits reach magnitudes around 1080, where
 bfloat16's representable spacing exceeds the gap between the " Yes" and " No"
@@ -263,6 +272,13 @@ already gone. Two fixes were needed: perform the final projection in float32
 because measured bf16 deviation was **0.242 nats** against a **0.140 nat** gap
 between the two leading options, large enough to reverse their ranking. Gender gaps
 of interest may be exactly that small.
+
+**The common pattern — worth a paragraph of its own.** Three bugs (D013, D015, D022),
+all of which produced *plausible-looking results rather than errors*, and all three
+caught by inspecting output rather than reading code. One manufactured a clean effect,
+one manufactured a clean null, one manufactured dramatic false skew. The project's
+standing rule is now: any result that looks clean, dramatic, or exactly zero gets a
+numerical and provenance check before it gets an interpretation.
 
 **Why this matters for the paper.** A uniform zero gap across all models, vignettes
 and arms is a *publishable-looking* null result. Had it not been checked, the paper

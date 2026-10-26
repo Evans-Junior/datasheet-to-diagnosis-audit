@@ -611,3 +611,75 @@ invariance premise needs no clinician to ratify it.
    trans men and non-binary people. The scope governs, but the tension is itself an
    instance of documentation lagging stated intent — directly relevant to RQ6, and
    worth a sentence in the paper.
+
+---
+
+## D022 — RQ1 skew must be base-rate normalised; and two infini-gram traps
+**Date:** 2026-10-26 · **Phase:** 3
+
+### Normalisation is the method, not a refinement
+
+In the Pile, `he` occurs 506,515,052 times and `she` 209,229,612 — a ratio of
+**2.42**. Two probe concepts:
+
+| Concept | she | he | raw ratio | normalised skew log2(F/M) |
+|---|---|---|---|---|
+| chest pain (window 20) | 2,510 | 6,078 | 2.422 | **−0.0004** |
+| "was anxious" (exact trigram) | 8,723 | 21,073 | 2.416 | **+0.0030** |
+
+Both raw ratios reproduce the pronoun base rate almost exactly, so the normalised
+skew is **zero**. Reporting raw counts would have produced the confident, false
+claim that chest pain is 2.4x more male-associated in the Pile.
+
+**Decision.** Skew is always
+`log2( [cooccur(F,c)/base(F)] / [cooccur(M,c)/base(M)] )`, and raw counts are never
+reported as evidence of association.
+
+**Consequence to watch for RQ4.** If normalised skew turns out to be near zero for
+most concepts, RQ4 has no variance in its predictor and nothing to correlate. A
+variance check (`--probe`) therefore runs *before* any investment in RQ4.
+
+### Trap 1 — `find_cnf` returns 0 without `max_diff_tokens`
+
+Omitting the window yields `cnt: 0` with **no error**. The window is now always sent
+explicitly, and a run aborts if nothing scores. `count` does not support CNF at all
+("she AND chest pain" returns 0), so co-occurrence must use `find_cnf` and `count` is
+only for single-term base rates.
+
+### Trap 2 — rate-limit responses were cached as data (our bug)
+
+The first probe reported 16 of 20 concepts as zero co-occurrence. The cause was ours,
+and it compounded three mistakes:
+
+1. The API rate-limits with **HTTP 403** and a body of `{"message": "Forbidden"}`.
+2. Our error check looked only for an `"error"` key. `{"message": "Forbidden"}` has
+   none, so the response was treated as success.
+3. It was therefore **written to the cache**, where `j.get("cnt", 0)` read it back as
+   `0` — permanently, and without network access to reveal it.
+
+**287 of 378 cached entries (76%) held "Forbidden".** Worse, the non-zero rows were
+equally worthless: each is a sum over nine gender terms, so a mixture of blocked and
+successful queries produced *partial* sums and meaningless ratios. The run looked
+like a finding (pneumonia skew −5.9, asthma +2.3) and was entirely an artefact.
+
+**Fixes.** Check `status_code` before parsing; exponential backoff on 403/429/503;
+refuse to cache any response lacking a count field; count failed queries per concept
+and mark affected rows unusable rather than summing them as zero; abort the run if
+any query failed; `--max-terms` to keep query volume under the limit. Poisoned cache
+entries purged.
+
+### The pattern across D013, D015 and D022
+
+Three bugs, all of which produced **plausible-looking results rather than errors**,
+and all three found by inspecting output rather than reading code:
+
+- D013 — ungrammatical text in one arm only, which would have manufactured a clean
+  "bias against non-binary patients".
+- D015 — bfloat16 rounding, which gave P(Yes) = 0.500 everywhere, a tidy null.
+- D022 — cached rate-limit errors read back as zero counts, which gave dramatic
+  false skew.
+
+**Standing rule for this project: any result that looks clean, dramatic, or exactly
+zero gets a numerical and provenance check before it gets an interpretation.** This
+belongs in the paper's reproducibility section — bias audits report small effects, so
+the infrastructure that produces them needs stating.
