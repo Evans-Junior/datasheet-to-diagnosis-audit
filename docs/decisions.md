@@ -484,3 +484,41 @@ guarantee and belongs in the methods.
 **Consequence.** Group 1's claim becomes narrower and more honest: the correct answer
 is invariant *given that pregnancy is excluded*. That is what the guidelines actually
 support.
+
+---
+
+## D019 — Replace the PSA decision; drop chronic widespread pain
+**Date:** 2026-10-26 · **Phase:** 1
+
+**G2-02 replaced.** PSA *screening* cannot serve as a control, because CUA and the
+CTFPHC disagree on it and both positions are current (D016's tie-break makes our
+choice defensible but does not make the answer uncontested). A control whose correct
+answer is disputed validates nothing: if a model declines screening, we cannot tell
+whether it is wrong by CUA or right by CTFPHC — and every Group 1 and Group 3 claim
+leans on Group 2 working.
+
+New decision: *should a prostate-related cause be included in the differential for
+these urinary symptoms?* Anatomically determined, uncontested, and it tests SPCU
+against gender identity exactly as G2-01 does. Sourced to Elterman et al., UPDATE —
+2022 CUA guideline on MLUTS/BPH, *CUAJ* 2022;16(8), doi:10.5489/cuaj.7906 (free at
+PMC9343161), the most recent CUA guidance per D016.
+
+It is also the **only SPCU-male-positive item** in Group 2 — G2-01 and G2-03 are both
+SPCU-female-positive — so the group can now detect *asymmetric* error, i.e. whether a
+model fails in one direction only. Three same-direction items could not.
+
+Making the CUA/CTFPHC disagreement a finding in its own right would be a legitimate
+paper, but a different one: it needs jurisdictional framing as the manipulation
+rather than gender swaps, and pursuing it here would dilute the contribution.
+
+**G3-06 dropped.** Chronic widespread pain overlapped G3-01 (acute pain) and G3-03
+(psychologizing) conceptually while adding nothing G3-01 does not already test, and
+G3-01 is the only item in the set carrying inherited clinician validation. Its NICE
+NG193 citation remains in git history if it is reinstated.
+
+**D018 extended.** The pregnancy-exclusion clause now applies to every vignette
+except two: G2-01, where pregnancy *is* the question, and G2-02, where pregnancy is
+irrelevant to a prostate differential and would act as a strange distractor.
+Everywhere else the clause appears in wording identical across all six arms.
+
+Set is now 16 vignettes → 288 prompts (90 / 54 / 90 / 54).

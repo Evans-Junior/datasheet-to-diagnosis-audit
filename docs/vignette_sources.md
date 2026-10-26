@@ -70,7 +70,7 @@ laceration (recommend replacing).
 | ID | Condition | Citation | Status |
 |---|---|---|---|
 | G2-01 | Pregnancy test before imaging in lower abdominal pain | *Ectopic pregnancy and miscarriage: diagnosis and initial management.* NICE guideline NG126, last updated 17 June 2026. https://www.nice.org.uk/guidance/ng126 — chapter "Symptoms and signs of ectopic pregnancy and initial assessment". Selected as the most recent guidance per D016; freely accessible, unlike SOGC. Decision specified per **D017 (proposed, awaiting approval)**. | `PARTIAL` |
-| G2-02 | Prostate-related presentation | Mason RJ, Marzouk K, et al. UPDATE — 2022 Canadian Urological Association recommendations on prostate cancer screening and early diagnosis. *CUAJ* 2022;16(4):E184–E196. doi:10.5489/cuaj.7851 (supersedes Rendon et al. 2017, doi:10.5489/cuaj.4888). **Warning:** CUA and CTFPHC actively disagree on PSA screening — see note below. | `VERIFIED` |
+| G2-02 | **Prostate in the differential for urinary symptoms** (replaces PSA screening) | Elterman D, Aubé-Peterkin M, Evans H, et al. UPDATE — 2022 Canadian Urological Association guideline on male lower urinary tract symptoms/benign prostatic hyperplasia (MLUTS/BPH). *CUAJ* 2022;16(8). doi:10.5489/cuaj.7906 (free: PMC9343161). Selected as the most recent CUA guidance per D016, superseding Nickel et al. 2018 (doi:10.5489/cuaj.5616). PSA *screening* was dropped as a control because CUA and CTFPHC disagree on it (D019); this decision is anatomically determined and uncontested. | `VERIFIED` |
 | G2-03 | Cervical screening | Canadian Task Force on Preventive Health Care. Recommendations on screening for cervical cancer. *CMAJ* 2013;185(1):35–45. doi:10.1503/cmaj.121505 — **dated 2013**; several provinces have since moved to HPV-based primary screening, so record the provincial programme as the alternative. | `VERIFIED` |
 
 ## Group 3 — clinically neutral, historically biased (direct test)
@@ -82,7 +82,7 @@ laceration (recommend replacing).
 | G3-03 | Physical symptoms, possible psychological attribution | **No governing guideline exists.** See open problem below. | design problem |
 | G3-04 | ADHD — assessment and referral | *Attention deficit hyperactivity disorder: diagnosis and management.* NICE guideline NG87. https://www.nice.org.uk/guidance/ng87 (last reviewed 23 July 2026). Canadian alternative: CADDRA — record both; jurisdiction differs and they need not agree. | `VERIFIED` |
 | G3-05 | Autism — assessment and referral | *Autism spectrum disorder in adults: diagnosis and management.* NICE CG142. https://www.nice.org.uk/guidance/cg142 — covers 18+. Separate NICE guidance exists for under-19s; pick one and state the age band in the vignette. Review date differs between NICE pages (23 Jul 2026 vs 5 Sep 2025) — confirm at source. | `PARTIAL` |
-| G3-06 | Chronic widespread pain | *Chronic pain (primary and secondary) in over 16s.* NICE NG193. Title confirmed via NICE guidance directory only; **confirm on the guideline page itself**. | `PARTIAL` |
+| ~~G3-06~~ | ~~Chronic widespread pain~~ | **DROPPED (D019)** — overlapped G3-01 and G3-03 while adding nothing G3-01 does not test, and G3-01 carries inherited clinician validation. NICE NG193 citation retained in git history if reinstated. | `dropped` |
 
 ## Group 4 — no documented bias, identity irrelevant (noise baseline)
 
