@@ -585,7 +585,109 @@ female-vs-male skew stays in `skew_log2` for comparability with the published
 rather than one average, because there is no single "other" to compare against and
 averaging would hide a non-binary rate that sits outside both.
 
-<!-- D026_RESULTS -->
+## 8.4 Results of the three sweeps
+
+Run 2026-10-26. **2,436 further queries, 0 failures.**
+
+### The non-binary finding: zero, and verified as a real zero
+
+The explicit noun-subject family returned **0 non-binary hits across all 94
+concept-corpus rows in both corpora** — and the reason is upstream of the
+concepts. The *frames themselves* never occur:
+
+| Probe | OLMo-mix | Pile |
+|---|---|---|
+| `the non-binary patient` | **0** | **0** |
+| `the nonbinary patient` | 1 | 0 |
+| `the non-binary patient has` | **0** | **0** |
+| `the transgender patient has` | 53 | 2 |
+| `the woman has` | 646,440 | 20,142 |
+| `the man has` | 1,139,475 | 37,323 |
+| `the female patient has` | 679 | 33 |
+| `non-binary` (bare term) | **1,350,944** | **66,269** |
+
+The last row is what makes this a finding rather than a vocabulary gap. Non-binary
+people are **not absent from these corpora** — the term appears over 1.35 million
+times in OLMo-mix. They are absent from the **clinical subject position**. In two
+corpora totalling trillions of tokens, the phrase "the non-binary patient" occurs
+zero times, against 646,440 occurrences of "the woman has".
+
+**This zero was verified by direct probe before being reported.** A zero from this
+API is exactly what D022 was: a rate-limit error cached as data. The probe above
+was run against the live endpoint with a bare-term control that returns large
+non-zero counts, so the pipeline was working when it returned the zeros.
+
+For the write-up, this belongs in the ethics argument, not the limitations. A model
+cannot have learned how to narrate a non-binary patient's illness from training
+data that never does so. The downstream prediction — that non-binary arm outputs
+will be less stable and less guideline-concordant than either gendered arm — now
+has a stated basis, though it is **not** pre-registered as confirmatory, because
+the measure arrived after D025 was frozen.
+
+### The plural contamination, now quantified rather than asserted
+
+The `they` arm in the diagnosis family is powered (40 of 94 rows, 298,440 hits),
+and it is just as plural-dominated as predicted:
+
+| | OLMo-mix | Pile |
+|---|---|---|
+| `they have anxiety` | 24,307 | 317 |
+| `she has anxiety` | 9,474 | 202 |
+| frame base, `they` arm | 747,228,476 | 28,109,594 |
+| frame base, `she` arm | 266,261,215 | 16,790,889 |
+
+The `they` frames are **more** frequent than the `she` frames, which no account of
+non-binary reference can explain. So the arm is measured, reported, and explicitly
+not interpreted as a non-binary result — which is the whole reason for building the
+explicit family alongside it.
+
+### The decision family: powered in OLMo-mix, and it supports H1 and H2
+
+13 of 14 concepts powered in OLMo-mix. Centred on the decision-frame mean
+(+1.038), negative = relatively male-associated:
+
+| Concept | Centred | Concept | Centred |
+|---|---|---|---|
+| surgery | **−0.881** | a psychiatrist | +0.127 |
+| **a cardiologist** | **−0.811** | a CT scan | +0.163 |
+| an x-ray | −0.496 | **an antidepressant** | **+0.306** |
+| morphine | −0.323 | a specialist | +0.353 |
+| painkillers | −0.279 | blood tests | +0.690 |
+| physiotherapy | −0.148 | an ultrasound | +1.412 |
+| antibiotics | −0.115 | | |
+
+Underpowered but same direction: `an ECG` raw −0.695 (F=48, M=199).
+
+**The informative contrast is cardiologist vs psychiatrist**: −0.811 against
++0.127, a gap of 0.94 log2 units — roughly **1.9×**. Referral to cardiology is
+male-associated; referral to psychiatry and prescription of antidepressants are
+female-associated, *in the referral language itself*, not merely in which
+diagnoses attach to which gender.
+
+This is the corpus basis H1 and H2 were missing. It is also the psychologizing
+pattern appearing at the decision level, which matters because psychologizing has
+no vignette (D020) and was otherwise only measurable through rationale coding.
+
+**Two constraints on how far this can be pushed:**
+
+1. **No cross-corpus replication.** The Pile powered only 2 of 14 decision
+   concepts (`surgery` −0.540, `antibiotics` +0.540 centred). The decision family
+   is effectively an **OLMo-mix-only** result, so it cannot carry the r = 0.931
+   replication claim that §5.1 can. The paper must report it as single-corpus.
+2. **The centring base is weaker here.** §5.1 centres on sex-neutral concepts
+   within a large pool; this centres on the family mean of 13 concepts that are
+   themselves the measured set. Directional contrasts *within* the family (the
+   cardiologist/psychiatrist gap) are the defensible reading; absolute centred
+   values are not.
+
+### Summary of all three sweeps
+
+| Family | Queries | Powered (F/M) | NB powered | Usable? |
+|---|---|---|---|---|
+| `diagnosis` | 1,504 | 42 / 94 | 40 (plural-contaminated) | **Yes** — the headline result, replicated across corpora |
+| `decision` | ~560 | 15 / 28 | 8 | **Yes, OLMo-mix only** — direct basis for H1, H2 |
+| `explicit` | ~1,880 | 2 / 94 | **0** | As a *presence* measure, yes — the zero is the finding. As a skew comparison, no: too sparse. |
+
 
 ---
 

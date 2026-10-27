@@ -463,3 +463,57 @@ either way. Group 2 effect size therefore goes in the results before anything el
 **Asymmetry to state, not bury.** RQ1 has no non-binary measure while RQ2 has a
 non-binary arm. The non-binary arm is part of the novelty claim, so the paper has
 to say the linkage analysis cannot cover it.
+
+---
+
+## 4c. Non-binary patients are absent from the clinical subject position (D026)
+
+This is the finding to lead the ethics section with, because it is a single clean
+number rather than an inference.
+
+`"the non-binary patient"` occurs **zero times** in the Pile and zero times in
+OLMo-mix-1124. `"the non-binary patient has"` likewise zero. Against that:
+`"the woman has"` 646,440 occurrences in OLMo-mix, `"the man has"` 1,139,475.
+
+The move that makes this a result rather than a vocabulary gap is the control:
+the bare term `"non-binary"` returns **1,350,944** occurrences in OLMo-mix and
+66,269 in the Pile. Non-binary people are in these corpora. They are not in them
+*as patients*.
+
+**Why this is stronger than a representation-count argument.** The usual framing
+is that a group is underrepresented and therefore served worse. Here the relevant
+distribution is not thin, it is empty, and empty in a specific grammatical
+position that the audit then probes directly. The model is asked to reason about a
+non-binary patient; the training data contains no instance of that construction.
+Whatever the model does in that arm, it is not drawing on narration of non-binary
+illness, because none exists in its data.
+
+**Use it carefully in two respects.** It postdates the D025 freeze, so the
+downstream prediction (less stable, less concordant non-binary outputs) is
+exploratory, not confirmatory — say so. And the measure is phrase presence, so the
+claim is about this construction, not about all possible ways a non-binary patient
+might be described; `"the transgender patient has"` returns 53 and 2, which is
+near-absence of a different construct rather than the same one.
+
+## 4d. Referral language carries the gender skew too (D026)
+
+The confirmatory hypotheses are about decisions — H1 referral, H2 triage — but
+until now the corpus measured only which *diagnoses* attach to which gender,
+leaving a gap between the predictor and what RQ2 scores. Measuring referral and
+treatment frames directly closes it:
+
+**Cardiology referral is male-associated (−0.811 centred); psychiatry referral
+(+0.127) and antidepressant prescription (+0.306) are female-associated.** The
+cardiologist/psychiatrist gap is 0.94 log2 units, roughly 1.9x.
+
+So the psychologizing pattern is present in *decision* language, not only in
+diagnosis attachment. That matters because G3-03 was dropped (D020) and
+psychologizing was otherwise reachable only through judge-coded rationales — the
+weakest instrument in the project. It now has corpus evidence at the level the
+hypotheses operate on.
+
+Report it as **single-corpus**: the Pile powered only 2 of 14 decision concepts,
+so this cannot claim the r = 0.931 cross-corpus replication that the diagnosis
+family can. And prefer within-family contrasts over absolute centred values, since
+the centring base here is the 13 measured concepts rather than a broad sex-neutral
+pool.

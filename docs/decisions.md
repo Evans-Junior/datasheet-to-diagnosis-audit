@@ -997,3 +997,47 @@ plural inflection for the `they` arm and singular everywhere else, so the D013
 confound cannot recur in the corpus measure. `concept_pairs()` is family-scoped so
 decision concepts can never enter the diagnosis sweep. Each family writes its own
 CSV.
+
+### D026 results (run 2026-10-26, 2,436 queries, 0 failures)
+
+**The non-binary result is a verified zero.** The explicit family returned 0
+non-binary hits on all 94 rows in both corpora, because the frames themselves do
+not exist: `"the non-binary patient"` = **0** in OLMo-mix and 0 in the Pile,
+against `"the woman has"` = 646,440 / 20,142. The bare term `"non-binary"` returns
+1,350,944 / 66,269, so the vocabulary is present and the absence is specifically
+of the **clinical subject position**.
+
+Verified by direct live probe with a non-zero control before being reported,
+because a zero from this API is precisely what D022 was.
+
+This belongs in the ethics argument, not the limitations: a model cannot have
+learned to narrate a non-binary patient's illness from data that never does so.
+The implied prediction — less stable, less concordant non-binary arm outputs — is
+**not** confirmatory, because this measure postdates the D025 freeze. It goes in
+the exploratory section with that stated.
+
+**Plural contamination quantified.** `"they have anxiety"` = 24,307 vs
+`"she has anxiety"` = 9,474 in OLMo-mix; the `they` frame base (747M) exceeds the
+`she` frame base (266M). No account of non-binary reference explains that, so the
+arm is reported and explicitly not interpreted — which is what the explicit family
+exists to cover.
+
+**The decision family is powered in OLMo-mix and supports H1 and H2.** 13 of 14
+concepts powered. Centred on the decision-frame mean (+1.038): `a cardiologist`
+**−0.811**, `an x-ray` −0.496, `surgery` −0.881, `morphine` −0.323 on the male
+side; `a psychiatrist` +0.127, `an antidepressant` +0.306, `blood tests` +0.690,
+`an ultrasound` +1.412 on the female side. Underpowered but concordant: `an ECG`
+raw −0.695.
+
+The cardiologist/psychiatrist gap of 0.94 log2 units (~1.9x) is the informative
+contrast: cardiology referral is male-associated and psychiatry referral is
+female-associated **in the referral language itself**, not only in which diagnoses
+attach to which gender. That is the corpus basis H1 and H2 previously lacked, and
+it puts the psychologizing pattern at the decision level, where D020 had left it
+measurable only through rationale coding.
+
+**Two limits that must be stated with it.** The Pile powered only 2 of 14 decision
+concepts, so this is an **OLMo-mix-only** result and cannot carry D024's
+cross-corpus replication claim. And the centring base is the family mean of the 13
+measured concepts rather than a larger sex-neutral pool, so within-family
+contrasts are defensible while absolute centred values are not.
