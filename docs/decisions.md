@@ -1138,3 +1138,82 @@ rather than the gender label and pairs with the NG126 scope finding in G2-01.
 Separate proposal, not a G3-03 fix. The NG73 wording came from a search result and
 is **not** confirmed at source; NICE blocks scripted access, so it needs a human
 read before it can be marked VERIFIED.
+
+---
+
+## D028 — G3-02: the chest pain guideline is sex-invariant on the PATHWAY and explicit on PRESENTATION (PROVISIONAL)
+
+**Date:** 2026-10-27. **Status:** **PROVISIONAL — from secondary sources.** The
+primary text returns HTTP 403 to every scripted route tried (`/doi/pdf/`,
+`/doi/reader/`, the AHA slide-set PDF on professional.heart.org, plain curl).
+Evans must confirm at source before this is marked VERIFIED.
+
+### The answer is not "sex-differentiated or silent" — it is both, in different places
+
+Two independent secondary sources agree (AAFP practice-guideline summary 2023;
+Interventionalist's review, PMC11308083; plus the ACC Perspectives page):
+
+**The initial evaluation PATHWAY is sex-invariant.** ECG within 10 minutes of
+arrival, serial high-sensitivity troponin at 1-3 hours, structured risk
+stratification into low / intermediate / high, disposition by that risk. No
+sex-specific variant of any of these. AAFP's summary, asked directly, states:
+"No. The only sex-related statement about the initial evaluation describes a
+difference in symptom presentation, not a different recommendation."
+
+**The guideline is explicit about sex in two other places:**
+1. *Descriptive:* "Chest pain is the most common symptom among both men and women
+   diagnosed with acute coronary syndrome" but "women more commonly have
+   accompanying symptoms including nausea, palpitations, and shortness of breath."
+2. *Prescriptive, about history-taking:* the guideline "recommends obtaining a
+   history that emphasizes accompanying symptoms" in women.
+
+### Consequence 1: G3-02 stays in Group 3, and H2 survives
+
+Conditional on the vignette's decision being the **evaluation/triage step** — what
+is the appropriate next step, at what urgency — which is what `decision_type:
+triage_level` already specifies. For that decision the guideline gives one answer
+regardless of sex, so a gender difference in model output is unwarranted and G3-02
+is a valid Group 3 item. H2 is not withdrawn.
+
+### Consequence 2: a confound the clinical findings MUST close
+
+Because the guideline prescribes a sex-differentiated **history**, the vignette's
+clinical text has to state the full symptom set explicitly in every arm. If the
+findings omit nausea or palpitations, a model that volunteers them for the woman
+arm is **following the guideline**, not exhibiting bias — and we would score it as
+bias. Same structure as D013: a legitimate asymmetry in the prompt manufacturing
+a false finding.
+
+Requirement for G3-02's clinical findings: list every accompanying symptom
+present or explicitly absent, identically across arms, so no sex-dependent
+inference about what to ask is available.
+
+### Consequence 3: the guideline names the bias we are testing
+
+Two further statements make this the best-anchored Group 3 item in the set:
+
+- "Women presenting with chest pain are also more frequently labeled as having
+  'noncardiac' pain."
+- The guideline recommends describing chest pain as **cardiac / possibly cardiac /
+  noncardiac** and abandoning **typical / atypical**.
+
+The first is a guideline acknowledging the dismissal effect this project measures.
+It is not a recommendation not to dismiss, so it does not fully answer D020's
+objection, but it is far closer to a normative anchor for psychologizing than
+anything found before, and it strengthens D027.
+
+The second is a terminology instruction the vignettes and answer options should
+adopt, so that concordance is scored against the guideline's own categories.
+
+### What Evans must confirm at source
+
+Narrowed from a 100-page guideline to four items:
+1. The initial-evaluation recommendation for acute chest pain, with its COR and
+   LOE. (Secondary sources give ECG within 10 min as **Class 1, LOE C-LD**; one
+   search result warned that a Class 1 **B-NR** item is a *different*
+   recommendation about stable chest pain in the office, so do not mix them up.)
+2. That no sex-specific variant of the evaluation pathway exists.
+3. The verbatim wording of the history-taking recommendation for women, since it
+   sets the confound in Consequence 2.
+4. The verbatim "more frequently labeled as having 'noncardiac' pain" sentence and
+   its location, since it is quotable in the paper's framing.
