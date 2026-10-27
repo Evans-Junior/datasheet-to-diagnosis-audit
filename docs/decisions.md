@@ -1041,3 +1041,100 @@ concepts, so this is an **OLMo-mix-only** result and cannot carry D024's
 cross-corpus replication claim. And the centring base is the family mean of the 13
 measured concepts rather than a larger sex-neutral pool, so within-family
 contrasts are defensible while absolute centred values are not.
+
+---
+
+## D027 — Psychologizing as a crossed cue factor (PROPOSED, not adopted)
+
+**Date:** 2026-10-26. **Status:** **PROPOSED — awaiting Evans's approval.**
+Nothing has been changed in `templates.yaml` or `preregistration.md`.
+
+### What the literature search found
+
+D020 dropped G3-03 because no guideline mandates "do not attribute these symptoms
+to anxiety," so it could not reach a sourced reference answer. That was correct
+about the guideline. It was wrong about the design, and two clinician vignette
+studies show why:
+
+- **Chiaramonte & Friend (2006)**, *Health Psychology* 25(3), 255–266,
+  doi:10.1037/0278-6133.25.3.255. 87 internists + 143 family physicians. Matched
+  CHD vignette, man vs woman, identical symptoms and risk factors. Sole
+  manipulation: half the vignettes add a recent life stressor and the patient
+  appearing anxious. With the cue — women 15% CHD diagnosis vs men 56%, referral
+  30% vs 62%, cardiac medication 13% vs 47%. **Without the cue, no bias.**
+- **Biddle, Fallavollita, Homish & Orom (2019)**, *Heart & Lung* 48(4), 331–338,
+  doi:10.1016/j.hrtlng.2018.11.005. Independent replication; the title states the
+  conditional structure outright.
+
+Both CrossRef-verified.
+
+### Why this is a design finding, not just a citation
+
+**The bias is conditional on a psychological-symptom cue.** A standalone
+psychologizing vignette with no cue would most likely have measured nothing, and
+that null would have been uninterpretable — indistinguishable from "we left out
+the trigger." D020 dropped a vignette that, as specified, probably could not have
+worked.
+
+### The proposal
+
+Add **cue presence** as a crossed binary factor on the Group 3 vignettes rather
+than reinstating G3-03 as a 16th condition. Cue-present arms append one fixed
+sentence (recent life stressor; patient appears anxious), worded identically
+across every gender arm, exactly as the pregnancy-exclusion sentence is (D018).
+
+This removes the blocker. We never ask the model *not* to psychologize — which is
+what no guideline mandates. We ask for the guideline-mandated action and
+manipulate the cue. **The guideline's answer does not change when a patient is
+stressed**, so the reference answer stays sourced and stays constant across arms,
+which is the project's central design rule (D002).
+
+Psychologizing becomes the drop in guideline concordance caused by the cue, and
+the bias is the interaction:
+
+```
+[concordance(man, cue) - concordance(man, no cue)]
+  - [concordance(woman, cue) - concordance(woman, no cue)]
+```
+
+That is the exact quantity both human studies measured, so the result is
+comparable to a published human baseline. "We replicate a documented clinician
+bias in language models" is a stronger claim than "we found a gender gap."
+
+Cost: all four Group 3 vignettes takes 96 prompts to 192, total 360 to 456 —
+minutes of compute. G3-02 alone is 24 extra prompts.
+
+### What it costs, stated plainly
+
+It adds a hypothesis **after** the D025 freeze. If adopted it goes in the
+deviations table (§9) with its date and the fact that it was decided before any
+score existed. H1–H4 derive from our own corpus data; this one derives from
+published human findings — different provenance, arguably better, but still an
+addition and it must be labelled as one rather than folded in.
+
+### Interaction with the existing open question on G3-02
+
+G3-02's status is already unresolved: if the AHA/ACC guideline recommends anything
+sex-differentiated for acute chest pain, G3-02 becomes a Group 2 control and H2 is
+withdrawn (D025). **That reading now governs this proposal too**, since the cue
+factor is most directly motivated for G3-02. Read the guideline first; decide this
+after.
+
+### Rejected: endometriosis as a replacement G3-03
+
+NICE NG73 recommendation 1.5.4 reportedly mandates not excluding endometriosis on
+a normal examination and scan — a guideline-mandated action in a famously
+dismissed presentation, with delay documented by Nnoaham et al. (2011),
+doi:10.1016/j.fertnstert.2011.05.090.
+
+**Unusable for Group 3.** Endometriosis requires a uterus, so the gender arms are
+not exchangeable and it belongs in Group 2, where the answer is *supposed* to
+differ. Using it for a man-vs-woman contrast would be precisely the error Group 2
+exists to detect.
+
+Retained instead as a candidate **trans-specific** vignette — gender identity
+*man*, SPCU *female* — which tests whether the model follows the stated SPCU
+rather than the gender label and pairs with the NG126 scope finding in G2-01.
+Separate proposal, not a G3-03 fix. The NG73 wording came from a search result and
+is **not** confirmed at source; NICE blocks scripted access, so it needs a human
+read before it can be marked VERIFIED.
