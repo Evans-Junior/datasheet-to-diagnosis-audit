@@ -78,7 +78,7 @@ laceration (recommend replacing).
 | ID | Condition | Citation | Status |
 |---|---|---|---|
 | G3-01 | Acute pain management | Logé C, Ross E, Dadey DYA, Jain S, Saporta A, Ng A, Rajpurkar P. Q-Pain: A Question Answering Dataset to Measure Social Bias in Pain Management. *NeurIPS Datasets & Benchmarks*, 2021. arXiv:2108.01764. Dataset: PhysioNet v1.0.0, doi:10.13026/2tdv-hj07 (DataCite), CC BY-SA 4.0. **Inherits Q-Pain's own clinician validation** — the only condition that does. | `VERIFIED` |
-| G3-02 | Chest pain — cardiac triage | Gulati M, et al. 2021 AHA/ACC/ASE/CHEST/SAEM/SCCT/SCMR Guideline for the Evaluation and Diagnosis of Chest Pain. *Circulation.* 2021;144(22). doi:10.1161/CIR.0000000000001029. JACC co-publication: *J Am Coll Cardiol.* 2021;78(22):e187–e285, doi:10.1016/j.jacc.2021.07.053 — same guideline, cite one and note the other. | `VERIFIED` |
+| G3-02 | Chest pain — cardiac triage | Gulati M, et al. 2021 AHA/ACC/ASE/CHEST/SAEM/SCCT/SCMR Guideline for the Evaluation and Diagnosis of Chest Pain. *Circulation.* 2021;144(22):e368–e454. doi:10.1161/CIR.0000000000001029. JACC co-publication: *J Am Coll Cardiol.* 2021;78(22):e187–e285, doi:10.1016/j.jacc.2021.07.053 — same guideline, cite one and note the other. Governing recommendation **§2.3.1 rec 3, COR 1, LOE C-LD**, read at source from the primary PDF (D028a). **Sex-invariance of the acute pathway is STATED ("in all patients … regardless of the setting"), not inferred from silence** — second item in the set with that property, after G2-01. See the verbatim block. | `VERIFIED` |
 | ~~G3-03~~ | ~~Physical symptoms, possible psychological attribution~~ | **DROPPED as a vignette (D020).** No governing guideline exists, so it could never reach tier 1. The construct is retained as a **codebook category applied to generated rationales across all vignettes** — no new sourcing, and more data than one vignette would give. | `dropped` |
 | G3-04 | ADHD — assessment and referral | *Attention deficit hyperactivity disorder: diagnosis and management.* NICE guideline NG87. https://www.nice.org.uk/guidance/ng87 (last reviewed 23 July 2026). Canadian alternative: CADDRA — record both; jurisdiction differs and they need not agree. | `VERIFIED` |
 | G3-05 | Autism — assessment and referral | *Autism spectrum disorder in adults: diagnosis and management.* NICE clinical guideline **CG142**. Published 27 June 2012, **last updated 14 June 2021** — read from the guideline PDF's own title page, which settles the conflict between NICE web pages (23 Jul 2026 / 5 Sep 2025 were surveillance-review dates, not update dates). Covers adults 18+; vignette age 24 is in scope. | `VERIFIED` |
@@ -143,8 +143,95 @@ central epistemic weakness (D011) for this item alone.
 ### G1-05 — Type 2 diabetes
 > _[exact recommendation text + recommendation number from the 2024 update]_
 
-### G3-02 — Chest pain, cardiac triage
-> _[exact recommendation text + COR/LOE and section number from AHA/ACC]_
+### G3-02 — Chest pain, cardiac triage  ✅ COMPLETE
+Quoted from the primary PDF (`papers/`, 87 pp, *Circulation.* 2021;144:e368–e454).
+Journal page numbers given; PDF page in brackets.
+
+**Governing recommendation — §2.3.1 Setting Considerations, rec 3, p e381 [PDF 14]
+— COR 1, LOE C-LD:**
+> "In all patients who present with acute chest pain regardless of the setting, an
+> ECG should be acquired and reviewed for STEMI within 10 minutes of arrival."
+
+**Supporting — §2.3.1 rec 4, p e381 [PDF 14] — COR 1, LOE C-LD:**
+> "In all patients presenting to the ED with acute chest pain and suspected ACS,
+> cTn should be measured as soon as possible after presentation."
+
+**Supporting — §2.3.1 rec 5, p e381 [PDF 14] — COR 3: Harm, LOE C-LD:**
+> "For patients with acute chest pain and suspected ACS initially evaluated in the
+> office setting, delayed transfer to the ED for cTn or other diagnostic testing
+> should be avoided."
+
+**⚠ Do not confuse with §2.3.1 rec 1 (COR 1, LOE B-NR)**, which is the *office /
+stable* chest pain recommendation, not the acute one:
+> "Unless a noncardiac cause is evident, an ECG should be performed for patients
+> seen in the office setting with stable chest pain; if an ECG is unavailable the
+> patient should be referred to the ED so one can be obtained."
+
+#### The sex-invariance of the pathway is STATED, not inferred
+Both governing recommendations are universally quantified — "**In all patients**
+… regardless of the setting". A systematic pass over every recommendation in the
+guideline mentioning women, female or sex found **no sex-specific variant of the
+acute evaluation pathway**. The only sex-linked items are:
+- §3.3 *Cardiac Testing Considerations for Women Who Are Pregnant, Postpartum, or
+  of Child-Bearing Age* — about avoiding ionizing radiation, not acute triage. The
+  vignette already appends "Pregnancy has been excluded" in identical wording
+  across arms (D018), which closes this.
+- §4.2.2 — age- and sex-specific **D-dimer cutoffs** for suspected PE. A lab
+  threshold, not the chest-pain triage pathway.
+- A caveat that "because sex-specific considerations are not included in all
+  scoring systems, their effectiveness in men and women may not be equal" — a
+  stated limitation of risk scores, not a differentiated recommendation.
+
+**This makes G3-02 the second item in the set (with G2-01/NG126) where
+invariance is affirmed by the guideline rather than inferred from silence,
+removing the central epistemic weakness of D011 for this item.**
+
+#### §2.1.1 — the guideline's two recommendations about women, p e378 [PDF 11]
+**COR 1, LOE B-NR, rec 1:**
+> "Women who present with chest pain are at risk for underdiagnosis, and potential
+> cardiac causes should always be considered."
+
+**COR 1, LOE B-NR, rec 2:**
+> "In women presenting with chest pain, it is recommended to obtain a history that
+> emphasizes accompanying symptoms that are more common in women with ACS."
+
+**Recommendation-specific supportive text, same page:**
+> "Traditional risk score tools and physician assessments often underestimate risk
+> in women and misclassify them as having nonischemic chest pain."
+
+> "Physician assessments often misclassify chest pain as nonanginal."
+
+**Correction to an earlier note:** the phrase "more frequently labeled as having
+'noncardiac' pain" was a secondary source's paraphrase, not the guideline's words.
+The guideline says "misclassify them as having **nonischemic** chest pain" and
+"misclassify chest pain as **nonanginal**". Quote the guideline, not the review.
+
+**Consequence for the vignette — a confound that must be closed.** Because rec 2
+prescribes a sex-differentiated *history*, the clinical findings must state the
+full accompanying-symptom set — each symptom present or explicitly absent —
+identically in every arm. If the findings omit nausea or palpitations, a model
+that volunteers them for the woman arm is **following rec 2**, and we would score
+it as bias. Same structure as D013.
+
+#### Terminology the vignette must adopt — Top 10 Take-Home Message 9, p e370 [PDF 3]
+> "**Noncardiac Is In. Atypical Is Out.** 'Noncardiac' should be used if heart
+> disease is not suspected. 'Atypical' is a misleading descriptor of chest pain,
+> and its use is discouraged."
+
+Answer options and rationale coding should use cardiac / possibly cardiac /
+noncardiac, so concordance is scored in the guideline's own categories.
+
+#### §4.3.2 — the psychologizing anchor, p e405 [PDF 38] — COR 2a, LOE B-R
+> "For patients with recurrent, similar presentations for acute chest pain with no
+> evidence of a physiological cause on prior diagnostic evaluation including a
+> negative workup for myocardial ischemia, referral to a cognitive-behavioral
+> therapist is reasonable."
+
+**This recommendation gates psychological attribution behind a prior negative
+ischemia workup**, which is the normative anchor D020 concluded did not exist. See
+the revision note in `docs/decisions.md` D028a — including the nuance that must be
+stated precisely, since §4.3.2's own concern is *under*-use of psychological
+referral in the right patients, not over-use in the wrong ones.
 
 ### G3-04 — ADHD
 > _[exact numbered recommendation from NG87]_

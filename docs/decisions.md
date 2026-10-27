@@ -1217,3 +1217,96 @@ Narrowed from a 100-page guideline to four items:
    sets the confound in Consequence 2.
 4. The verbatim "more frequently labeled as having 'noncardiac' pain" sentence and
    its location, since it is quotable in the paper's framing.
+
+---
+
+## D028a — G3-02 confirmed at source; §4.3.2 overturns D020's premise
+
+**Date:** 2026-10-27. **Status:** done. Supersedes the provisional parts of D028.
+Read from the primary PDF (`papers/`, 87 pp, *Circulation.* 2021;144:e368–e454).
+
+The full verbatim block is in `docs/vignette_sources.md` under G3-02. Recorded
+here are the four things that change the design.
+
+### 1. The pathway is sex-invariant, and the guideline says so explicitly
+
+§2.3.1 rec 3 (COR 1, LOE C-LD): "**In all patients** who present with acute chest
+pain **regardless of the setting**, an ECG should be acquired and reviewed for
+STEMI within 10 minutes of arrival." Rec 4 (COR 1, LOE C-LD) is likewise "**In all
+patients** presenting to the ED…".
+
+A systematic pass over every recommendation mentioning women, female or sex found
+no sex-specific variant of the acute pathway. The sex-linked items are §3.3
+(radiation avoidance in pregnancy — closed by D018's identical pregnancy-exclusion
+sentence), §4.2.2 (age- and sex-specific D-dimer cutoffs for PE — a lab threshold,
+not the triage pathway), and a caveat that risk scores lack sex-specific
+considerations.
+
+**G3-02 stays in Group 3. H2 is not withdrawn.** And because the invariance is
+*universally quantified* rather than merely unstated, G3-02 joins G2-01 as the
+second item where invariance is affirmed rather than inferred — D011's epistemic
+weakness does not apply to it.
+
+**One correction to D028:** the earlier secondary-source reading said the guideline
+was "silent" on the pathway. It is not silent; it is explicitly universal. That is
+a stronger position for the paper, and the distinction matters.
+
+### 2. A confound the clinical findings must close
+
+§2.1.1 rec 2 (COR 1, LOE B-NR) prescribes a sex-differentiated **history**: "In
+women presenting with chest pain, it is recommended to obtain a history that
+emphasizes accompanying symptoms that are more common in women with ACS."
+
+So the findings must state the full accompanying-symptom set — each present or
+explicitly absent — identically in every arm. A model volunteering nausea for the
+woman arm when the vignette omitted it is **following rec 2**, and we would score
+it as bias. Same structure as D013.
+
+### 3. §4.3.2 is the psychologizing anchor D020 concluded did not exist
+
+D020 dropped G3-03 on the premise that "no guideline says do not attribute this
+patient's symptoms to anxiety." **For chest pain that premise is false.**
+
+§4.3.2 (COR 2a, LOE B-R): "For patients with **recurrent, similar presentations**
+for acute chest pain with no evidence of a physiological cause **on prior
+diagnostic evaluation including a negative workup for myocardial ischemia**,
+referral to a cognitive-behavioral therapist is reasonable."
+
+The recommendation is **gated**. Psychological referral is reasonable *after* a
+negative ischemia workup, in a *recurrent* presentation. A first presentation of
+acute chest pain with no prior workup falls under §2.3.1 — ECG within 10 minutes,
+cTn as soon as possible — not under §4.3.2. **Psychologizing a first presentation
+is therefore non-concordant with the guideline's own ordering**, and that is a
+sourced, quotable normative anchor, not an inference.
+
+Combined with §2.1.1 rec 1 (COR 1, LOE B-NR) — "Women who present with chest pain
+are at risk for underdiagnosis, and potential cardiac causes should always be
+considered" — the guideline both forbids premature psychological attribution *and*
+names women as the group at risk of exactly that error.
+
+### 4. The nuance that must be stated, or a reviewer will say we misread it
+
+§4.3.2's own concern runs the **opposite** way to ours. Its supportive text notes
+"a low rate (<10%) of clinician inquiry, documentation, or referral … for
+psychological factors, even in chest pain patients with self-reported anxiety," and
+calls this "a lost opportunity." The guideline is complaining that psychological
+referral is **under**-used in the right patients, not over-used in the wrong ones.
+
+Our claim must therefore be stated precisely: **the error we test is premature
+psychologizing — attribution before the mandated workup — not psychological
+attribution as such.** Written loosely, this looks like we recruited a
+recommendation that argues against us. Written precisely, the guideline supports
+us on ordering while disagreeing with a claim we are not making.
+
+### Consequences
+
+- G3-02: `VERIFIED`, verbatim block complete, reference answer anchorable on
+  §2.3.1 rec 3 with COR 1, LOE C-LD.
+- Answer options and rationale codes should adopt **cardiac / possibly cardiac /
+  noncardiac** per Take-Home Message 9, which explicitly discourages "atypical".
+- **D027 is materially strengthened** and the standalone-G3-03 option is live
+  again, anchored on §4.3.2 plus §2.1.1 rather than on no guideline at all. Still
+  Evans's decision; D027 remains PROPOSED.
+- D020's reasoning stands for the *general* case — most conditions have no such
+  recommendation — but is **wrong for chest pain specifically**. Noted rather than
+  edited, since the log is append-only.
