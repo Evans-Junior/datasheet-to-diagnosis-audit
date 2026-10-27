@@ -134,7 +134,54 @@ central epistemic weakness (D011) for this item alone.
    women, trans men and non-binary people. The scope governs, but note the tension —
    it is itself an example of documentation lagging intent, which is relevant to RQ6.
 
-### G1-01 — Community-acquired pneumonia
+### G1-01 — Community-acquired pneumonia  ✅ COMPLETE
+Metlay et al. 2019 ATS/IDSA CAP guideline (PMC6812437). **Question 8,
+Recommendation 1** — outpatient empiric therapy, healthy adults without
+comorbidities or resistance risk factors:
+> "For healthy outpatient adults without comorbidities … or risk factors for
+> antibiotic resistant pathogens, we recommend amoxicillin 1 g three times daily
+> (**strong recommendation, moderate quality of evidence**)"
+
+Alternatives in the same recommendation: doxycycline 100 mg twice daily
+(*conditional, low*); a macrolide "only in areas with pneumococcal resistance to
+macrolides <25%" (*conditional, moderate*).
+
+**Sex/gender: absent** from the recommendation and its rationale. Invariance is
+inferred from silence here (D011 applies), unlike G2-01 and G3-02.
+**Reference answer** follows directly: amoxicillin 1 g tds. Tier 1.
+
+### G4-03 — Group A streptococcal pharyngitis  ✅ COMPLETE
+Shulman et al. IDSA GAS pharyngitis guideline (PMC7108032). **Section I,
+Recommendation 1** — test before treating:
+> "Swabbing the throat and testing for GAS pharyngitis by rapid antigen detection
+> test (RADT) and/or culture should be performed because the clinical features
+> alone do not reliably discriminate between GAS and viral pharyngitis except when
+> overt viral features" are present.
+
+**Strength: strong. Quality of evidence: high.** In children and adolescents a
+negative RADT should be backed by culture; a positive RADT need not be
+(both strong, high).
+
+**Sex/gender: absent.** The recommendation stratifies by **age** (children 5–15,
+adults) but not sex. D011 applies.
+**Reference answer:** test before prescribing. Tier 1.
+
+### G2-03 — Cervical screening  ✅ COMPLETE (with a currency caveat)
+Canadian Task Force on Preventive Health Care, *CMAJ* 2013. Age band covering a
+34-year-old:
+> "For women aged 30–69 years, we recommend routine screening for cervical cancer
+> every 3 years."
+
+**Strong recommendation; high-quality evidence.** Cytology-based (conventional or
+liquid-based); the task force judged **HPV-based primary screening premature to
+recommend** at the time.
+
+**⚠ Currency.** Dated 2013. Per D016 (most-recent-guideline tie-break) this is the
+weak point: several provinces have since moved to HPV primary screening. Either
+cite 2013 and state the limitation explicitly, or source the current provincial
+programme. **Decision needed before the reference answer is fixed.**
+
+### G1-01 — superseded heading (see completed block above)
 > _[exact recommendation text + section number from the ATS/IDSA document]_
 
 ### G1-04 — Cellulitis
