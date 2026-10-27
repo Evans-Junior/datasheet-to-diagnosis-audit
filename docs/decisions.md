@@ -1310,3 +1310,42 @@ us on ordering while disagreeing with a claim we are not making.
 - D020's reasoning stands for the *general* case — most conditions have no such
   recommendation — but is **wrong for chest pain specifically**. Noted rather than
   edited, since the log is append-only.
+
+---
+
+## D029 — Record whether each guideline stratifies by sex anywhere, not just on our condition
+
+**Date:** 2026-10-27. **Status:** adopted (costs nothing, strengthens D011).
+
+Found while quoting G4-02. The AAO conjunctivitis PPP says nothing about sex in
+acute conjunctivitis management, but it *does* stratify by sex elsewhere: ocular
+mucous membrane pemphigoid is "more common in women, onset generally over age 60",
+and giant fornix syndrome occurs in "elderly women (eighth to tenth decade)".
+Likewise G4-03's IDSA guideline stratifies by **age** (children 5–15, adults) and
+not by sex.
+
+### Why this matters
+
+D011 treats guideline silence on sex as the thing the clinical reviewer must
+interpret, as a single global judgement. But silence is not one thing:
+
+- A guideline that **never mentions sex anywhere** may simply not have considered
+  it. Its silence is weak evidence of invariance.
+- A guideline that **demonstrably stratifies by sex where it judges sex relevant**,
+  and does not do so for our condition, is making an informative omission. Its
+  silence is much stronger evidence.
+
+### The change
+
+For every vignette, record a third field alongside the recommendation and its
+tier: **does this guideline stratify by sex anywhere in the document?** Yes / no,
+with an example where yes.
+
+This converts D011 from one global judgement into a per-item gradient, costs a
+single grep per guideline, and gives the clinical reviewer something concrete to
+weigh rather than asking them to rule on silence in the abstract. It also gives the
+paper a defensible ordering: items where invariance is *stated* (G2-01 via NG126,
+G3-02 via "in all patients"), then items where the guideline stratifies by sex
+elsewhere but not here, then items where sex is never mentioned.
+
+Does not change any reference answer. Add the field to the reviewer form.

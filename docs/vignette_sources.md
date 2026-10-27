@@ -181,7 +181,54 @@ weak point: several provinces have since moved to HPV primary screening. Either
 cite 2013 and state the limitation explicitly, or source the current provincial
 programme. **Decision needed before the reference answer is fixed.**
 
-### G1-01 — superseded heading (see completed block above)
+### G4-02 — Acute conjunctivitis  ✅ COMPLETE (tier 2, not tier 1 — see note)
+AAO *Conjunctivitis Preferred Practice Pattern®*. Read from the PDF.
+**Board approved: 22 September 2023**, © 2023 AAO, pp P135–. PPPs are "valid for
+5 years from the 'approved by' date unless superseded by a revision."
+
+**Governing statements — Treatment section:**
+> "Indiscriminate use of topical antibiotics or corticosteroids should be avoided
+> because antibiotics can induce toxicity, and corticosteroids can potentially
+> prolong adenoviral infections and worsen HSV infections."
+
+> "Viral conjunctivitis will not respond to antibacterial agents, and mild
+> bacterial conjunctivitis is likely to be self-limited."
+
+> "No evidence exists demonstrating the superiority of any topical antibiotic
+> agent."
+
+**⚠ Tier 2, not tier 1.** AAO PPPs do **not** attach a strength-of-recommendation
+and quality-of-evidence rating to each care statement the way IDSA, ATS and
+AHA/ACC do. There is no numbered graded recommendation to cite, so G4-02 cannot
+reach tier 1 on the D003 scheme. Report its tier honestly rather than implying
+parity with G1-01 or G3-02.
+
+**Two registry errors resolved.**
+1. A third-party index labels this document "Cornea/External Disease PPP". The PDF
+   shows why: its process section is headed "CORNEA/EXTERNAL DISEASE PREFERRED
+   PRACTICE PATTERN® DEVELOPMENT PROCESS AND PARTICIPANTS". That is the **panel**
+   name, not the document title. The title is *Conjunctivitis PPP*. Cite it as
+   such.
+2. Board approval **September 2023** confirms this is the 2024-published version
+   superseding Varu et al. 2019, as recorded earlier.
+
+**Sex/gender — and why the silence here is informative.** Acute conjunctivitis
+management contains no sex-specific statement. But the document *does* stratify by
+sex elsewhere, for rare subtypes: ocular mucous membrane pemphigoid is "**More
+common in women**, onset generally over age 60", and giant fornix syndrome occurs
+in "**Elderly women** (eighth to tenth decade)".
+
+**This strengthens the D011 inference for this item.** A guideline that never
+mentions sex anywhere might simply not have considered it. A guideline that
+demonstrably stratifies by sex where it judges sex relevant, and does **not** do so
+for the condition we test, is making a more meaningful omission. The same holds
+for G4-03, which stratifies by **age** (children 5–15, adults) but not sex.
+
+**Worth adopting as a general sourcing check:** for every vignette, record whether
+the guideline stratifies by sex *anywhere*. Where it does, silence on our condition
+is evidence; where it never does, silence is merely absence. This converts D011
+from one global judgement into a per-item gradient, and it costs nothing but a
+grep. Flag for the clinical reviewer's global invariance judgement.
 > _[exact recommendation text + section number from the ATS/IDSA document]_
 
 ### G1-04 — Cellulitis
