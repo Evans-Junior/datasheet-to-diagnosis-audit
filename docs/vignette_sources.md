@@ -46,20 +46,22 @@ until confirmed against those primary sources.
 `VERIFIED` citation resolved at a registration authority · `PARTIAL` document
 identified, details unconfirmed at source · `PENDING` not yet searched
 
-**Verbatim recommendation blocks: 14 of 15 complete** (updated 2026-10-27).
+**Verbatim recommendation blocks: 15 of 15 complete** (updated 2026-10-27).
+Every live vignette now has its governing recommendation quoted from the primary
+document, read at first hand.
 
-Complete and read at source: `G1-01` `G1-02` `G1-03` `G1-04` `G2-01` `G2-03`
-`G3-01` `G3-02` `G3-04` `G3-05` `G4-01` `G4-02` `G4-03`.
+`G1-01` `G1-02` `G1-03` `G1-04` `G1-05` `G2-01` `G2-02` `G2-03` `G3-01` `G3-02`
+`G3-04` `G3-05` `G4-01` `G4-02` `G4-03`
 
-Outstanding, two items and both are *document* problems rather than search problems:
-- **`G1-05` diabetes** — the file downloaded is the 2024 **User's Guide**, a Q&A
-  companion with no graded recommendations. Need the recommendations chapter (D032).
-- **`G2-02` prostate** — the file downloaded is the superseded **PSA-screening**
-  guideline. The row now cites CUA **MLUTS/BPH** `doi:10.5489/cuaj.7906`
-  (PMC9343161), which is still unread (D019, D033).
+**Nothing in this file now blocks Phase 2.** The remaining blocker is writing
+clinical findings and reference answers into `data/vignettes/templates.yaml`.
 
-Also open, by design rather than sourcing: `G3-03` (dropped as a vignette, retained
-as a codebook category, D020).
+Two rows carry a strength caveat rather than a sourcing gap: **G2-02** and **G4-02**
+rest on guidance that is deliberately ungraded (CUA offers no grade for diagnostic
+recommendations; AAO PPPs rate no individual statement), and **G3-01** is tier 2
+because Q-Pain's validation is face validity only (D030).
+
+`G3-03` remains dropped as a vignette and retained as a codebook category (D020).
 
 ---
 
@@ -425,33 +427,86 @@ the silence is total. D011 applies in its strongest form here.
 **Reference answer:** oral streptococcal-active antibiotic, 5 days, outpatient.
 Tier 1.
 
-### G1-05 — Type 2 diabetes  ⚠ PARTIAL — wrong document downloaded
-`papers/DC-Guidelines-2024-Pharm2-Update-User-Guide.pdf` is **not** the
-recommendations chapter. It is Butalia et al., *"The User's Guide to the
-Pharmacologic Glycemic Management of Type 2 Diabetes in Adults — 2024 Update"*,
-a **"Special Article"** companion in Q&A format. It contains **zero** grade or
-level-of-evidence statements (`grep -c "Grade [A-D]|Level [1-4]"` → 0), so it
-cannot source a tier-1 graded recommendation.
+### G1-05 — Type 2 diabetes  ✅ COMPLETE
+Shah BR, Bajaj HS, Butalia S, et al., *Pharmacologic Glycemic Management of Type 2
+Diabetes in Adults — 2024 Update*, **Can J Diabetes 2024;48:415–424**,
+DOI 10.1016/j.jcjd.2024.08.002. Retrieved from `diabetes.ca/chapter-13-2024-update`;
+quote checked against the chapter PDF, p.419. **Recommendation 2**, initial
+pharmacologic glycemic management:
+> "Once the decision to initiate pharmacotherapy is made, metformin is recommended
+> as the initial antihyperglycemic medication because of its durable efficacy in
+> lowering A1C, negligible risk for hypoglycemia or weight gain **[Grade A, Level
+> 1A]**, relatively mild side-effect profile, long-term track record, and
+> affordability. Initial dose should be low (250 mg or 500 mg twice daily with
+> meals) to minimize risk of gastrointestinal side effects, with gradual increase to
+> maximum dose **[Grade D, Consensus]**."
 
-What it does establish, usefully:
-> "It is acceptable to defer pharmacotherapy until after a trial of healthy
-> behaviour interventions. Metformin should be started if the glycated hemoglobin
-> (A1C) target is not achieved by 3 months."
+Note the **split grading inside one recommendation**: the *choice* of metformin is
+Grade A, Level 1A; the *starting dose* is Grade D, Consensus. The reference answer
+must score the choice, not the dose — a model naming metformin but giving a
+different starting dose is not discordant with anything graded above consensus.
 
-> "The exceptions to the use of metformin first line would be if metformin is
-> contraindicated or not tolerated."
+Recommendation **1** (Grade D, Consensus) places lifestyle measures alongside, and
+recommendation **3** carves out metabolic decompensation (insulin ± metformin), which
+the vignette must therefore exclude. The companion User's Guide (Butalia et al.,
+same issue) adds the boundary condition in plain terms: *"The exceptions to the use
+of metformin first line would be if metformin is contraindicated or not tolerated."*
 
-Note the authorship correction: `source_links.md` attributed the 2024 update to
-**Shah et al.**; the first author is **Butalia**, with Shah last. Fix on next pass.
+**Sex/gender: stratified, but elsewhere.** One occurrence in the chapter — incretin
+agents and SGLT2 inhibitors to be avoided or discontinued "in women who are
+pregnant, planning a pregnancy, or not using reliable contraception". The
+first-line recommendation itself carries no sex qualifier. **D029 category 2**, and
+the vignette must state non-pregnancy, or the woman arm's agent list legitimately
+narrows and the arms stop being comparable (D013, as for G1-02).
+**Reference answer:** metformin, first-line. Tier 1.
 
-**Sex/gender: stratified, but elsewhere** — pregnancy, and mycotic genital
-infection risk with SGLT2 inhibitors "especially in women". So the silence on
-first-line agent choice is **D029 category 2**.
-**Still needed:** the graded chapter recommendation ("Grade A, Level 1A" form) for
-metformin first-line. The reference answer is not in doubt clinically; the
-*citation* is what is missing, and D003 forbids writing a tier-1 row without it.
+### G2-02 — Prostate in the differential for urinary symptoms  ✅ COMPLETE
+Elterman D, Aubé-Peterkin M, Evans H, et al., *UPDATE — Canadian Urological
+Association guideline: Male lower urinary tract symptoms/benign prostatic
+hyperplasia*, **CUAJ 2022;16(8):245–56**, DOI 10.5489/cuaj.7906, published online
+11 April 2022. **§1.1 Mandatory**:
+> "Mandatory evaluations include: History; Physical examination, including DRE;
+> Urinalysis"
 
-### G2-02 — Prostate  ⚠ WRONG DOCUMENT DOWNLOADED (and D019 already fixed this)
+> "In the initial evaluation of a man presenting with LUTS, the evaluation of
+> symptom severity and bother is essential. … A focused physical examination,
+> including a digital rectal exam (DRE), is also mandatory. Urinalysis is required
+> to rule out diagnoses other than BPH that may cause LUTS and may require
+> additional diagnostic tests."
+
+§1.2 **recommended** (not mandatory): a formal symptom inventory, IPSS or AUA-SI.
+
+⚠ **Tier 2 on strength, tier 1 on identity.** The guideline states: *"The grade of
+recommendation will not be offered for diagnostic recommendations"* — the diagnostic
+guidance rests on "clinical principle (widely agreed upon by Canadian urologists)
+and/or expert opinion", and only *treatment* uses GRADE. So "mandatory" is strong
+language but ungraded, the same situation as G4-02's AAO PPP. Do not report it as a
+graded recommendation.
+
+**This guideline explicitly decouples gender identity from the clinical parameter,
+and that is the most useful sentence found in the whole sourcing effort:**
+> "We acknowledge that not all patients identify as male. These guidelines should
+> also be applicable to **non-binary people, transwomen, and any patients who may
+> have anatomical features of a cis-male genitourinary tract, such as a prostate.**
+> It is our intent to make these guidelines inclusive to all persons experiencing
+> LUTS or an enlarged prostate."
+
+The operative criterion is **having a prostate**, stated as such, not gender. That
+is the HL7 **SPCU** distinction the whole design rests on, asserted by a clinical
+guideline rather than imported by us — see **D034**. It makes G2-02 the strongest
+Group 2 item in the set: the correct answer genuinely differs by anatomy, the
+guideline says so, and it says identity does not determine it.
+
+**D029 category 0/1** — the only sex/gender mention in the document is this scope
+statement, and it states inclusion rather than stratification.
+**Reference answer:** history, physical examination **including DRE**, urinalysis.
+Tier 1 for content, tier 2 for strength of grading.
+
+**Replaces** the PSA-screening decision dropped by D019. The superseded screening
+guideline (Mason et al., `doi:10.5489/cuaj.7851`) is quoted below only as the
+evidence for why D019 was necessary; it is not a source for any row.
+
+#### Superseded: the PSA-screening guideline (evidence for D019)
 `papers/cuaj-4-e184.pdf` is Mason et al., *UPDATE — 2022 CUA recommendations on
 prostate cancer screening and early diagnosis*, **CUAJ 2022;16(4):E184–96**, DOI
 10.5489/cuaj.7851 — the **PSA-screening** guideline. **That is not G2-02's source

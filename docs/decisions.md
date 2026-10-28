@@ -1451,10 +1451,18 @@ level-of-evidence statements at all (zero matches for `Grade [A-D]` or `Level
 recommendation, and the clinical content is not the issue — metformin first-line is
 not in doubt — the **citable artefact** is.
 
-Two corrections it does yield: the 2024 update's first author is **Butalia**, not
-Shah (Shah is last), so the citation table is wrong; and sex is stratified for
-pregnancy and for SGLT2-inhibitor mycotic genital infections "especially in women",
-putting G1-05 in **D029 category 2**.
+**RESOLVED 2026-10-27 — see the G1-05 block.** The links page the user supplied
+yielded the canonical chapter URL (`diabetes.ca/chapter-13-2024-update`; the
+`guidelines.diabetes.ca` path that redirect-looped was the wrong host), and the
+chapter PDF gives **recommendation 2, Grade A, Level 1A**. G1-05 is now tier 1.
+
+⚠ **Correcting this entry's own error.** It claimed the citation table misattributed
+the 2024 update to Shah. **The table was right.** The *chapter* is Shah BR et al.
+(*Can J Diabetes* 2024;48:415–424); the *User's Guide* is Butalia et al. in the same
+issue. Two documents, two first authors — which is precisely the confusion D033 is
+about, and I reproduced it while writing D033. No table change needed.
+
+Sex is stratified for pregnancy only, putting G1-05 in **D029 category 2**.
 
 ---
 
@@ -1489,3 +1497,91 @@ grade/level string count, since its absence usually means a companion rather tha
 the guideline; and a `\xef\xbf\xbd` count plus a spot-read for OCR artefacts (`¬`,
 "radiographie"). This is the read-side validity condition D025 argued for, applied
 to source documents instead of caches.
+
+
+---
+
+## D027 — ADOPTED: psychologizing as a crossed cue factor, scoped to G3-02 only
+
+**Decision.** Adopt. Cross the existing gender factor with a **cue factor** that
+varies whether the vignette contains a psychosocial cue (e.g. a mention of recent
+stress) while holding every clinical finding fixed. **Scope: G3-02 only.**
+
+**Why adopt.** The estimand becomes the **cue × gender interaction**, not a main
+effect. That is what the psychologizing literature actually claims (Chiaramonte &
+Friend; Biddle et al.): not that women are given psychological attributions more
+often in general, but that an identical psychosocial cue is weighted more heavily
+against a woman. A main effect of gender cannot distinguish that from a uniform
+shift, and an interaction can. It also moves the construct from judge-coded
+rationales — the weakest instrument in the design — onto a scored decision.
+
+**Why scoped to G3-02 and not the whole set.** Three reasons, in order of force:
+
+1. **G3-02 is the only item whose guideline licenses the test.** §4.3.2 (COR 2a,
+   B-R) gates CBT referral behind "recurrent, similar presentations" and "a negative
+   workup for myocardial ischemia", so psychologizing a *first* presentation is
+   non-concordant with the guideline's own ordering (D028a). Elsewhere we would be
+   scoring against our own intuition about what counts as premature.
+2. **Cost.** Crossing one binary factor doubles the prompt count for every item it
+   touches. Across 15 vignettes that is 720 prompts; on G3-02 alone it is 48.
+3. **It postdates the D025 freeze**, so it is **exploratory, not confirmatory**, and
+   does not join H1–H4 or the Holm–Bonferroni family. Report it as such.
+
+⚠ **The claim this licenses is narrower than "psychologizing is bias."** §4.3.2's own
+concern is **under**-use of psychological referral — it calls the "<10% rate of
+clinician inquiry" about psychosocial factors "a lost opportunity". So the finding
+can only ever be about **premature** psychologizing, i.e. attribution *before* the
+guideline's ordering permits it. Psychological attribution as such is something the
+guideline wants more of, not less. Any sentence in the paper that blurs these two
+is wrong, and reviewers in this area will catch it.
+
+**Design constraint inherited from D029/D013.** The cue must be the *only* thing that
+varies between cue-present and cue-absent arms, and must be worded identically
+across gender arms. The obvious failure is a cue that reads as more plausible
+attached to one gender; pre-test the wording with the clinical reviewer.
+
+---
+
+## D034 — Two guidelines state the SPCU distinction; the corpora never do
+
+**Decision.** Treat the gender-identity/anatomy decoupling as a **sourced finding**
+rather than a framework we import, and set it against the RQ1 zero-count result as a
+headline contrast.
+
+**Why.** The project's design rests on the HL7 Gender Harmony distinction between
+gender identity and the **Sex Parameter for Clinical Use (SPCU)**: vary identity,
+hold the clinical parameter fixed. Until now that was our analytic frame, imported
+from a standards document. Two of the governing guidelines assert it themselves:
+
+- **CUA MLUTS/BPH** (G2-02): *"We acknowledge that not all patients identify as
+  male. These guidelines should also be applicable to non-binary people,
+  transwomen, and any patients who may have anatomical features of a cis-male
+  genitourinary tract, such as a prostate."*
+- **NICE NG126** (G2-01): scope explicitly covers trans men and non-binary people
+  (recorded earlier, D017).
+
+In both, the operative criterion is stated as **anatomy**, not identity. So the
+sex-specificity in Group 2 is not "the answer differs for men and women" but "the
+answer follows the SPCU, and identity does not determine it" — which is a stronger
+and more defensible basis for a positive control.
+
+**The contrast that makes this worth a decision entry.** D026 found that
+`"the non-binary patient"` occurs **zero times** in both the Pile and
+olmo-mix-1124, in a frame where `"the woman has"` occurs 646,440 / 20,142 times —
+non-binary people are present in the corpora (1,350,944 / 66,269 bare occurrences)
+but absent from the **clinical subject position**. Set beside these two guidelines,
+that is the paper's datasheet-to-diagnosis argument in one line: **the clinical
+guidance is more inclusive than the training data can support.** A model cannot
+have learned from this data what these guidelines require, because the data contains
+no instance of the sentence in which the requirement would appear.
+
+**Consequences.**
+1. G2-01 and G2-02 can each carry a **non-binary arm with explicit guideline
+   warrant** — a model that omits the mandatory DRE for a non-binary patient with a
+   prostate is discordant with a scope statement, not with our inference.
+2. This remains **exploratory** (post-dates the D025 freeze) and the arm is thin.
+   Report direction and absence, never a significance claim.
+3. RQ6 gains a concrete question: do the Pile and OLMo-mix datasheets disclose
+   anything about gender identity representation? The answer is near-certainly no,
+   and now there is a documented clinical requirement to measure that absence
+   against.

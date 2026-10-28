@@ -33,11 +33,11 @@ kept only for the rows still open.
 | G3-04 | Recommendation found | **NG87 rec 1.2.10** (adult referral). PDF says published 2018, **last updated 13 Sept 2019** — not the "23 July 2026" recorded here. And **rec 1.2.2 names the disparity H1 predicts** (D031) |
 | G3-05 | Both questions closed | CG142 PDF title page: published 27 June 2012, **last updated 14 June 2021**; title is "*in adults*", scope 18+, so age 24 is in band. Rec **1.2.3**: AQ-10 **≥ 6** → offer comprehensive assessment, no sex qualifier |
 | G4-01 | Rule quoted, **with a warning** | 1993 JAMA PDF is a **scan with faulty OCR** ("Ian G. Shell" in the byline, "Dr Stiell" in the body). CrossRef's "Shell" is *inherited from this OCR*, not a CrossRef error. The **refined** rule is Figure 1 only — an image, no text layer |
-| G1-05 | ❌ **wrong document** | Downloaded the 2024 **User's Guide** (Butalia et al.) — a Q&A companion with **zero** grade/level statements. Still need the recommendations chapter. Also: first author is **Butalia**, not Shah as recorded below (D032) |
-| G2-02 | ❌ **superseded document** | Downloaded `cuaj.7851`, the **PSA-screening** guideline that **D019 already dropped**. It does usefully prove D019 right — CUA's own words: "one of the most controversial issues in urology and preventative medicine … no consensus is established". The row now needs CUA **MLUTS/BPH** `doi:10.5489/cuaj.7906` (PMC9343161) |
+| G1-05 | ✅ **RESOLVED** | The chapter is Shah BR et al., *Can J Diabetes* 2024;48:415–424 — **rec 2, Grade A, Level 1A** for metformin first-line, with the *dose* at Grade D, Consensus. The index page the user supplied gave the working URL (`diabetes.ca/chapter-13-2024-update`); the earlier redirect loop was the wrong host. The table's "Shah" was correct all along — the User's Guide is the Butalia document (D032 corrected) |
+| G2-02 | ✅ **RESOLVED** | CUA **MLUTS/BPH** (Elterman et al., `cuaj.7906`) read at source. §1.1: history, physical exam **including DRE**, urinalysis are *mandatory* — but **ungraded** ("The grade of recommendation will not be offered for diagnostic recommendations"). And it states the SPCU distinction outright: applicable to "non-binary people, transwomen, and any patients who may have anatomical features of a cis-male genitourinary tract, such as a prostate" (**D034**) |
 
-**Two documents still to fetch:** the Diabetes Canada 2024 recommendations chapter,
-and the CUA MLUTS/BPH guideline (free at PMC9343161).
+**Nothing left to fetch.** All 15 live vignettes are sourced from the primary
+document. The two rows that were outstanding closed on 2026-10-27.
 
 ---
 
@@ -111,3 +111,40 @@ Tell me, per condition: `approve`, or `change to <status>` with the reason. I wi
 update `vignette_sources.md` and the reviewer form to match. Anything you cannot
 confirm stays unsourced rather than being written up — no reference answer gets
 invented to fill a row (D003).
+
+---
+
+## `papers/` cleanup, 2026-10-27
+
+`papers/` is git-ignored (copyright; see `.gitignore`), so this is the only record
+of what was downloaded and what was removed. Everything removed is re-downloadable
+from the DOI in its row above, and every quotation taken from it is already in
+`vignette_sources.md`.
+
+**Removed — 21.7 MB:**
+
+| File | Size | Why |
+|---|---|---|
+| `screencapture-acc-org-...gl-chestpain...pdf` | 6.32 MB | Browser screenshot of ACC's "Ten Points to Remember" — a *secondary* summary of G3-02. **Image-only, no text layer.** Superseded by reading the primary guideline (D028a) |
+| `screencapture-pmc-...PMC11308083...pdf` | 9.86 MB | Browser screenshot of a PMC review, the other provisional G3-02 source. **Image-only, no text layer.** Superseded by D028a — and it was this review's *paraphrase* ("noncardiac") that the primary corrected to "nonischemic"/"nonanginal" |
+| `cuaj-4-e184.pdf` | 5.37 MB | CUA **PSA-screening** guideline (`cuaj.7851`), dropped as a source by D019. Its quotes survive in G2-02's "Superseded" sub-section as the evidence for D019 |
+| `Full Guidelines - Diabetes Canada.pdf` | 0.18 MB | The index page of chapter links. Purpose served: its embedded `/chapter-13-2024-update` URL is what defeated the earlier redirect loop. Recorded here instead |
+| `.DS_Store` | 6 KB | macOS cruft |
+
+**Kept, and why each is distinct rather than duplicated:**
+
+- `...Chest Pain...pdf` (5.37 MB) — the primary AHA/ACC guideline, 87 pp, G3-02.
+- `DC-Guidelines-2024-Pharm2-Update-CHAPTER.pdf` (1.24 MB) — the graded chapter,
+  G1-05's source.
+- `DC-Guidelines-2024-Pharm2-Update-User-Guide.pdf` (0.30 MB) — a *different*
+  document (Butalia et al. vs Shah et al.), quoted for the metformin exception
+  wording. Small, and D032 shows how easily the two are confused.
+- `cuaj-8-245-main.pdf` (0.63 MB) — CUA **MLUTS/BPH**, G2-02's actual source.
+- `B09879-eng.pdf`, `GINA-2026-...pdf`, `ciu296.pdf`, `2108.01764v1.pdf`,
+  `jama_269_9_034.pdf`, the two NICE PDFs — one primary source each.
+
+**The useful lesson for the write-up.** Both deleted screenshots were image-only, so
+nothing could have been quoted from them without OCR — and the one claim taken from
+that pair *was* wrong (the PMC paraphrase). Browser screenshots of secondary sources
+are not evidence; they were scaffolding while the publisher returned 403, and they
+should not have outlived it.

@@ -128,7 +128,7 @@ notebooks/    exploration only; final results come from src/
 results/      tables and figures, each named by RQ
 docs/
   PROJECT_STATUS.md    full orientation: design, results, faults, what is left
-  decisions.md         every methodological choice, with its reason (D001-D033)
+  decisions.md         every methodological choice, with its reason (D001-D034)
   preregistration.md   RQ2 directional predictions, frozen before any scoring
   paper_notes.md       difficulties, measured numbers and limitations, for the write-up
   vignette_sources.md  guideline citation and confidence tier per vignette

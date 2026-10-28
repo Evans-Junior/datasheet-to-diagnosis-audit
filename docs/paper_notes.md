@@ -517,3 +517,38 @@ so this cannot claim the r = 0.931 cross-corpus replication that the diagnosis
 family can. And prefer within-family contrasts over absolute centred values, since
 the centring base here is the 13 measured concepts rather than a broad sex-neutral
 pool.
+
+## §4e — The guidelines are more inclusive than the data (D034)
+
+The sharpest version of the datasheet-to-diagnosis argument came out of sourcing,
+not modelling, and it is one sentence long: **the clinical guidance is more
+inclusive than the training data can support.**
+
+Two of the governing guidelines state the gender-identity/anatomy decoupling
+themselves, rather than leaving us to impose it. CUA MLUTS/BPH: *"We acknowledge
+that not all patients identify as male. These guidelines should also be applicable
+to non-binary people, transwomen, and any patients who may have anatomical features
+of a cis-male genitourinary tract, such as a prostate."* NICE NG126's scope covers
+trans men and non-binary people. In both, the operative criterion is anatomy — the
+HL7 **SPCU** — and identity is explicitly *not* determinative.
+
+Against that, the RQ1 corpus result: `"the non-binary patient"` occurs **zero
+times** in both the Pile and olmo-mix-1124, in a frame where `"the woman has"`
+occurs 646,440 and 20,142 times respectively. Non-binary people are *present* in
+the corpora — 1,350,944 and 66,269 bare occurrences of "non-binary" — but absent
+from the **clinical subject position**.
+
+So a model trained on these corpora cannot have learned what these guidelines
+require, because the data contains no instance of the sentence in which the
+requirement would appear. This is not a performance claim and must not be written
+as one; it is a claim about what the training distribution makes learnable. It is
+also the cleanest available answer to "why audit the data rather than just the
+outputs" — an output-only audit would record a failure here, and could not say that
+the failure was structurally guaranteed.
+
+**Framing discipline.** Report this as *absence of the clinical subject position*,
+not as "the models are transphobic" or as a measured disparity. The non-binary arm
+is thin and exploratory (post-dates the D025 freeze); report direction and absence,
+never significance. The zero itself was verified by a live probe with a non-zero
+control before being reported, because an unverified zero from this API is exactly
+what D022 was.
