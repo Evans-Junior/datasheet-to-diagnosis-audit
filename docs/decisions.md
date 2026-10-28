@@ -1349,3 +1349,143 @@ G3-02 via "in all patients"), then items where the guideline stratifies by sex
 elsewhere but not here, then items where sex is never mentioned.
 
 Does not change any reference answer. Add the field to the reviewer form.
+
+---
+
+## D030 — G3-01 drops to tier 2: Q-Pain's validation is face validity, not answer validation
+
+**Decision.** Stop describing G3-01 as inheriting Q-Pain's clinician validation of
+reference answers. Reclassify the row **tier 2**, and disclose what Q-Pain's
+validation actually consisted of.
+
+**Why.** Read at source (`arXiv:2108.01764v1`, §3.1). The vignettes were designed by
+"a clinical expert with four years of medical experience" — one person. Validation
+was then:
+
+> "a **random selection** of vignettes spanning each clinical context were provided
+> to two internal medicine physicians … asked to assess for (1) credibility of the
+> described scenario, (2) coherence of clinical information provided, and (3)
+> sufficiency of information provided toward making a clinical decision. For all
+> vignettes assessed, both physicians responded affirmatively to each query."
+
+Four things follow. The reviewers assessed **credibility, coherence and
+sufficiency** — not whether the expected answer was correct, so no reference answer
+was independently re-derived. Only a **subset** was reviewed. The designer had four
+years' experience. And **no reliability statistic** is reported, there being nothing
+to compute from unanimous yes/no affirmatives.
+
+This is the same error family as D022 and D025: treating an artefact as carrying a
+guarantee it never carried. Here the artefact is a published benchmark's reputation
+rather than a cache, but the fix is the same — state the validity condition and
+check it, instead of inheriting a label.
+
+**What survives, and it is the valuable part.** Q-Pain's *invariance* statement is
+explicit and author-stated, twice: the expected answer is "Yes" and both dose levels
+are "objectively acceptable … **regardless of gender or race**." That makes G3-01 the
+cleanest **D029 category 1** item in the set. We inherit the *design rule*, not the
+answer validation.
+
+**Consequence for the write-up, stated positively.** Our own procedure — two
+independent coders at κ ≥ 0.70, a clinician ruling on every reference answer and on
+sex-invariance per item (D003, D011, D029) — is **more rigorous than the published
+benchmark we borrow from**. That belongs in the methods as a contribution, not
+buried in limitations. But G3-01's own row must carry tier 2 honestly.
+
+---
+
+## D031 — D029 gains a category 0: guidelines that name the disparity
+
+**Decision.** Add **category 0** to the D029 gradient, above "invariance stated":
+*the guideline explicitly names the sex disparity in the outcome we measure and
+directs clinicians to counteract it.* Assign G3-04 to it.
+
+**Why.** NICE NG87 recommendation **1.2.2**:
+
+> "Be aware that ADHD is thought to be under-recognised in girls and women and
+> that: **they are less likely to be referred for assessment for ADHD**; they may be
+> more likely to have undiagnosed ADHD; they may be more likely to receive an
+> incorrect diagnosis of another mental health or neurodevelopmental condition."
+
+D029's categories grade how informative a guideline's *silence* is. NG87 is not
+silent. It names the exact disparity H1 predicts, in the exact outcome variable H1
+scores — referral for specialist assessment — and instructs clinicians against it.
+So for G3-04 no inference from silence is required and **D011 does not apply at
+all**. A model that refers the woman arm less is simultaneously reproducing the
+documented pattern and failing concordance with the governing recommendation.
+
+The full gradient is now:
+
+| Cat. | Meaning | Items |
+|---|---|---|
+| 0 | Guideline names the disparity and directs vigilance against it | G3-04 (NG87 1.2.2); G3-05 partially (CG142 1.8.3) |
+| 1 | Invariance explicitly stated | G2-01 (NG126 scope), G3-02 ("in all patients … regardless of the setting"), G3-01 ("regardless of gender or race") |
+| 2 | Stratifies by sex elsewhere, not here | G1-02 (pregnancy carve-out), G1-03 (FeNO/eosinophil ranges vary by sex), G1-05 (SGLT2i mycotic infections "especially in women"), G4-01 (age ≥55 is a rule variable; sex is not), G4-02 (OMMP, giant fornix), G4-03 (stratifies by age) |
+| 3 | Sex never mentioned as a modifier | G1-01, G1-04 (three "female" occurrences in 43 pages, all anatomical) |
+
+**This is now reportable as a result, not just a sourcing check.** Of 13 live
+vignettes, only two rest on silence alone. That is a direct answer to the obvious
+reviewer objection to D011 — "you are inferring invariance from absence" — and the
+answer is: mostly we are not.
+
+⚠ **One honesty constraint on category 0.** NG87's rationale section says *"No
+evidence was found on the increased risk of missing a diagnosis of ADHD in girls.
+But the committee discussed the different symptoms often found in this group, and
+agreed to make a recommendation to raise awareness."* So 1.2.2 is committee
+consensus — note its hedge, "is thought to be". It carries full **normative** force,
+which is what concordance is scored against, but it is **not evidence** that the
+disparity exists. The empirical claim must cite the primary literature. Do not let
+category 0 blur that line.
+
+---
+
+## D032 — G1-05 is not sourced: the downloaded file is the User's Guide
+
+**Decision.** G1-05 stays **PARTIAL**. Do not write its reference answer.
+
+**Why.** `papers/DC-Guidelines-2024-Pharm2-Update-User-Guide.pdf` is Butalia et al.,
+*"The User's Guide to the Pharmacologic Glycemic Management of Type 2 Diabetes in
+Adults — 2024 Update"* — a **"Special Article"** companion in question-and-answer
+format, not the recommendations chapter. It contains **no** grade or
+level-of-evidence statements at all (zero matches for `Grade [A-D]` or `Level
+[1-4]` across six pages). D003 forbids a tier-1 row without the graded
+recommendation, and the clinical content is not the issue — metformin first-line is
+not in doubt — the **citable artefact** is.
+
+Two corrections it does yield: the 2024 update's first author is **Butalia**, not
+Shah (Shah is last), so the citation table is wrong; and sex is stratified for
+pregnancy and for SGLT2-inhibitor mycotic genital infections "especially in women",
+putting G1-05 in **D029 category 2**.
+
+---
+
+## D033 — Read the downloaded artefact's identity before trusting it
+
+**Decision.** Before extracting any recommendation, confirm the file is the document
+the citation table names — not merely about the right condition. Record the check.
+
+**Why.** Three of nine downloads in this round were not the intended document, and
+each failure was silent:
+
+| File | Looked like | Actually was |
+|---|---|---|
+| `DC-...-User-Guide.pdf` | Diabetes Canada ch. 13, 2024 | companion Q&A, no graded recommendations (D032) |
+| `cuaj-4-e184.pdf` | G2-02's source | the PSA-**screening** guideline D019 already dropped; G2-02 now cites MLUTS/BPH `cuaj.7906` |
+| `jama_269_9_034.pdf` | clean text of the 1993 rule | a **scan with faulty OCR** — byline reads "Ian G. Shell", body reads "Dr Stiell" |
+
+Plus one encoding failure, GINA, which needed `cryptography` for AES; installed to
+read, then removed to keep the venv matching `requirements.txt`, as with pypdf's
+diagnostics earlier.
+
+The ankle case is the dangerous one, because the file *is* the right paper and
+opens cleanly: only the characters are wrong. It also resolves a standing note
+backwards — CrossRef's "Shell" is **inherited from this OCR**, not a CrossRef error,
+so the previous instruction to "cite the paper, not the metadata" was right for the
+wrong reason. Any verbatim quote from a scanned source must be character-checked
+against the page image, and quotes whose only source is a figure (the refined ankle
+rule, Figure 1) cannot be taken from a text layer at all.
+
+**Practical check, three greps:** title/first author against the citation; a
+grade/level string count, since its absence usually means a companion rather than
+the guideline; and a `\xef\xbf\xbd` count plus a spot-read for OCR artefacts (`¬`,
+"radiographie"). This is the read-side validity condition D025 argued for, applied
+to source documents instead of caches.

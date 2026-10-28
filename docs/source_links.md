@@ -18,6 +18,29 @@ claim, and note whether sex/gender appears at all.
 
 ---
 
+## RESOLVED AT SOURCE (2026-10-27)
+
+Nine PDFs were downloaded to `papers/` and read. **Do not re-read these**; the
+verbatim blocks in `vignette_sources.md` are now authoritative and this file is
+kept only for the rows still open.
+
+| ID | Resolved | Outcome |
+|---|---|---|
+| G1-02 | Version pinned | *WHO guidelines for malaria*, **10 Sept 2026**, doi **10.2471/B09879** from WHO's own suggested citation. The circulating `B09514` is a prior version — the warning below was justified. ACT rec: strong, low certainty. Pregnancy is an explicit carve-out |
+| G1-03 | Current step confirmed | GINA 2026, **updated May 2026**. Four new exacerbation flowcharts; O₂ threshold revised down to **<92%**; epinephrine first if anaphylaxis. PDF not committed (it is stamped "DO NOT COPY OR DISTRIBUTE") |
+| G1-04 | Full guideline confirmed | `ciu296` running footer reads "CID 2014:59 (15 July) • e23", article range e10 — so **not** the `ciu444` summary. Rec **14** (strong, moderate), with 15 and 18 |
+| G3-01 | Methods read — **and the claim downgraded** | Validation is credibility/coherence/sufficiency on a **random subset** by two physicians, with **no reliability statistic** and **no reference-answer check**. G3-01 is **tier 2** (D030). Dataset DOI conflict to settle: paper says `10.13026/61xq-mj56`, this file said `10.13026/2tdv-hj07` |
+| G3-04 | Recommendation found | **NG87 rec 1.2.10** (adult referral). PDF says published 2018, **last updated 13 Sept 2019** — not the "23 July 2026" recorded here. And **rec 1.2.2 names the disparity H1 predicts** (D031) |
+| G3-05 | Both questions closed | CG142 PDF title page: published 27 June 2012, **last updated 14 June 2021**; title is "*in adults*", scope 18+, so age 24 is in band. Rec **1.2.3**: AQ-10 **≥ 6** → offer comprehensive assessment, no sex qualifier |
+| G4-01 | Rule quoted, **with a warning** | 1993 JAMA PDF is a **scan with faulty OCR** ("Ian G. Shell" in the byline, "Dr Stiell" in the body). CrossRef's "Shell" is *inherited from this OCR*, not a CrossRef error. The **refined** rule is Figure 1 only — an image, no text layer |
+| G1-05 | ❌ **wrong document** | Downloaded the 2024 **User's Guide** (Butalia et al.) — a Q&A companion with **zero** grade/level statements. Still need the recommendations chapter. Also: first author is **Butalia**, not Shah as recorded below (D032) |
+| G2-02 | ❌ **superseded document** | Downloaded `cuaj.7851`, the **PSA-screening** guideline that **D019 already dropped**. It does usefully prove D019 right — CUA's own words: "one of the most controversial issues in urology and preventative medicine … no consensus is established". The row now needs CUA **MLUTS/BPH** `doi:10.5489/cuaj.7906` (PMC9343161) |
+
+**Two documents still to fetch:** the Diabetes Canada 2024 recommendations chapter,
+and the CUA MLUTS/BPH guideline (free at PMC9343161).
+
+---
+
 ## Status: VERIFIED (12) — confirm, then approve
 
 | ID | Condition | Link | What to check |

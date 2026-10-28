@@ -61,3 +61,10 @@ tmp/
 CLAUDE.md
 claude_code_research_prompt.md
 *.local.md
+
+# Source guideline PDFs. Read locally, quoted with attribution in
+# docs/vignette_sources.md, never redistributed: GINA's report is stamped
+# "COPYRIGHTED MATERIAL - DO NOT COPY OR DISTRIBUTE", and the IDSA, JAMA, NICE,
+# AHA/ACC and CUA documents are copyrighted too. The verbatim blocks plus a DOI
+# are what the repo carries; they are reproducible from the citations.
+papers/
