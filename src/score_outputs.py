@@ -19,6 +19,16 @@ matters:
                 model that simply likes the token "Yes" does not look like a
                 model that thinks the answer is yes.
 
+                It is NOT length-neutral, and the default is "least bad on
+                average", not "safe". Measured share of probability mass on short
+                options (0.5 = neutral): pmi 0.545 / 0.037 / 0.306 at 70m / 160m /
+                410m, against sum_logprob at 1.000 everywhere and mean_logprob at
+                0.165 / 0.402 / 0.756. pmi and mean_logprob are unstable across
+                models in OPPOSITE directions. Length bias cancels in a matched
+                gender pair, so this costs SENSITIVITY, not validity -- but it
+                means answer options must be token-length matched within an option
+                set. See docs/instrument_validation.md and D035.
+
 `norm_prob` is the softmax over the option set, computed from whichever score
 `--score-key` names (default: pmi), and is the quantity the statistics operate on.
 

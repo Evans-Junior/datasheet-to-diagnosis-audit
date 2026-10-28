@@ -58,7 +58,13 @@ Execution is strictly sequential with one model resident at a time; runs are
 resumable from a manifest. See `docs/decisions.md` D007.
 
 ```bash
-# 0. Confirm the pipeline end-to-end on the smallest model (~1 min)
+# 0a. Validate the instrument before trusting any Delta (RQ0; ~1 min/model)
+#     Determinism, signal recovery, nuisance floor, score-key robustness.
+#     Re-run per model and checkpoint: the floor is NOT constant (D035).
+.venv/bin/python -m scripts.validate_instrument
+.venv/bin/python -m scripts.validate_instrument --model EleutherAI/pythia-160m
+
+# 0b. Confirm the pipeline end-to-end on the smallest model (~1 min)
 .venv/bin/python -m src.score_outputs --smoke
 
 # 1. Benchmark forward-pass latency for scheduling
@@ -128,8 +134,9 @@ notebooks/    exploration only; final results come from src/
 results/      tables and figures, each named by RQ
 docs/
   PROJECT_STATUS.md    full orientation: design, results, faults, what is left
-  decisions.md         every methodological choice, with its reason (D001-D034)
+  decisions.md         every methodological choice, with its reason (D001-D035)
   preregistration.md   RQ2 directional predictions, frozen before any scoring
+  instrument_validation.md  RQ0: determinism, positive control, nuisance floor
   paper_notes.md       difficulties, measured numbers and limitations, for the write-up
   vignette_sources.md  guideline citation and confidence tier per vignette
   codebook.md          RQ6 qualitative codebook

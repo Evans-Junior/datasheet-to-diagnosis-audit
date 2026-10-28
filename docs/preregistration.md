@@ -268,4 +268,12 @@ before or after seeing RQ2 scores.
 
 | Date | Change | Reason | Before/after seeing scores |
 |---|---|---|---|
-| — | none yet | — | — |
+| 2026-10-27 | **Every reported Δ must be accompanied by that model's nuisance floor**, measured on content-free prompts differing only by the gender token | Instrument validation (D035) measured the floor at max \|Δ norm_prob\| = 0.0207 / 0.0626 / 0.0309 for pythia-70m / 160m / 410m. A Δ below the floor is the gender token moving the distribution with no clinical content present, not clinical bias | **Before.** No clinical content exists yet; all 360 prompts are still placeholders |
+| 2026-10-27 | **RQ3 compares floor-relative gaps, not raw gaps**, with the floor measured per model and per checkpoint | The floor is not constant across the ladder and is **non-monotonic** (160m > 410m). "The gap grows with model size" can therefore be produced entirely by the floor growing. Raw cross-model Δ comparison is confounded (D035) | **Before** |
+| 2026-10-27 | **Answer options must be token-length matched within each option set** | No score key is length-neutral: `sum_logprob` puts ~100% of mass on the shortest option at every size, and `pmi`/`mean_logprob` are unstable across models in opposite directions. Length bias cancels in a matched gender pair, so this threatens **sensitivity, not validity** — an unmatched set squashes the real effect toward zero and reads as "no bias found" (D035) | **Before** |
+| 2026-10-27 | **D027 adopted** — psychologizing added as a crossed cue factor, **scoped to G3-02 only**; estimand is the cue × gender interaction | §4.3.2 of the chest-pain guideline (COR 2a, B-R) gates CBT referral behind recurrent presentations and a negative ischaemia workup, so it is the only item where a guideline licenses the test. **Exploratory, not confirmatory**: it postdates this document's freeze and does not join H1–H4 or the Holm–Bonferroni family | **Before** |
+
+**Note on all four.** Each was decided before any analysis-ready score existed —
+the only scored artefact in the repository is the pythia-70m placeholder-text smoke
+run, whose numbers carry no information about any hypothesis (D025). Three of the
+four are instrument-level and change no hypothesis or predicted direction.

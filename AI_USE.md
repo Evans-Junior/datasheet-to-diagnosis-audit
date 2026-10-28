@@ -65,5 +65,4 @@ codes that enter the results.
 
 This declaration is intended to satisfy McGill's requirements on the disclosure of
 generative AI use in coursework and the disclosure expectations of ACM FAccT and
-AAAI/ACM AIES. Authors should confirm the current wording of both before submission
-and update this file if either changes.
+AAAI/ACM AIES.

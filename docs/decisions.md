@@ -1585,3 +1585,76 @@ no instance of the sentence in which the requirement would appear.
    anything about gender identity representation? The answer is near-certainly no,
    and now there is a documented clinical requirement to measure that absence
    against.
+
+---
+
+## D035 — Instrument validation is a gate, and it found two faults
+
+**Decision.** `scripts/validate_instrument.py` runs before any Phase 2
+interpretation, on every model and checkpoint in the ladder. Two of its outputs
+become standing requirements: a **per-model nuisance floor** reported beside every
+Δ, and **token-length matching** of answer options within each option set.
+
+**Why run it at all.** Every hypothesis is a claim about a difference between two
+measured numbers, and none of them means anything until the apparatus is shown to
+detect a real effect and to stay quiet otherwise. That check needs no clinical
+content, so it was runnable while the vignettes were still unwritten — which is why
+it happened now rather than after. Stimuli are administrative (record numbers,
+letter codes), so nothing in the harness asserts a clinical fact or can leak into
+the authored vignettes.
+
+**What passed.** Determinism is exact — 0.0 PMI drift on repeated scoring across
+all three models, so MPS is bitwise reproducible here and no Δ needs a
+repeat-measurement error bar. And signal recovery works: with the answer stated in
+the prompt in plain words, the named option wins on every score key and every
+model. **This is the positive control the design lacked.** Group 2 tests whether the
+*models* respond to gender when it is clinically relevant; this tests whether the
+*instrument* can see anything at all. Without it a Phase 2 null is uninterpretable,
+because a model with no gender gap and a broken scorer produce the same table.
+
+**Fault 1 — the nuisance floor is real and varies with model size.** Prompts
+differing only by the gender token, with no clinical content, give max |Δ norm_prob|
+of **0.0207** (70m), **0.0626** (160m), **0.0309** (410m). So:
+
+- Any Δ smaller than the floor is the gender token moving the distribution, not
+  clinical bias. Every reported Δ needs the floor beside it.
+- **RQ3 is confounded.** The floor triples from 70m to 160m and is
+  **non-monotonic**, so "the gap grows with model size" — the natural RQ3 finding —
+  can be manufactured entirely by the floor growing. RQ3 must compare
+  **floor-relative** gaps, with the floor measured per model and per checkpoint.
+
+This is the fifth member of the project's recurring fault family: a quantity that
+looked like a measurement of the thing but was partly a measurement of the
+apparatus. D022 (cache returning a never-valid zero), D025 (stale manifest), D030
+(inherited validation that was never answer validation), D033 (wrong document
+read), now this.
+
+**Fault 2 — no score key is length-neutral, and `pmi` is not the safe default it
+was presented as.** Share of mass on short options, where 0.5 is neutral:
+
+| Model | `sum_logprob` | `mean_logprob` | `pmi` |
+|---|---|---|---|
+| 70m | 1.0000 | 0.165 | 0.545 |
+| 160m | 1.0000 | 0.402 | **0.037** |
+| 410m | 1.0000 | 0.756 | 0.306 |
+
+`sum_logprob` fails catastrophically and consistently, confirming the docstring
+empirically. But `mean_logprob` and `pmi` are both **unstable across models, in
+opposite directions**, and `pmi` at 160m is the worst cell in the table. The `pmi`
+default is therefore defensible only as "least bad on average" — a weaker claim
+than the code comment implies, and the comment should be corrected.
+
+**The distinction that matters here**, because it is easy to overstate: this does
+**not** create spurious gender effects. Length bias is identical across the gender
+arms of a matched pair and cancels in Δ. What it destroys is **sensitivity** — if
+length bias pins the softmax at p ≈ 0.9999 on one option, both arms sit there and
+the gender effect is squashed to nothing, which reads as "no bias found". So the
+constraint is justified by **power, not bias**.
+
+**Consequence for the authored vignettes.** Answer options must be matched in token
+length within each option set. Cheap at writing time, impossible to repair
+afterwards, and it belongs in the authoring instructions in `templates.yaml`.
+
+**Pre-registration status.** Neither requirement was pre-registered. Both are logged
+as deviations in `preregistration.md` §9. They are instrument-level and do not
+change any hypothesis or its predicted direction.

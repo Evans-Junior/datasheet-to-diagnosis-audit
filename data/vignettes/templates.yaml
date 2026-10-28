@@ -13,6 +13,16 @@
 # placeholders, the question stem, and the answer option set (which follows from
 # the type of decision, not from its correct resolution).
 #
+# IMPORTANT when writing answer_options: MATCH THEIR TOKEN LENGTH within each
+# option set. Measured, not theoretical -- no score key is length-neutral, and
+# sum_logprob puts ~100% of probability mass on the shortest option at every model
+# size tested. Length bias cancels between the gender arms of a matched pair, so it
+# does not create a false effect; it SQUASHES the real one, because a softmax pinned
+# at p~0.9999 by length leaves no room for the gender difference to show. That reads
+# as "no bias found". Keep the options within a token or two of each other; check
+# with tok(" " + option, add_special_tokens=False). See D035 and
+# docs/instrument_validation.md.
+#
 # IMPORTANT when filling <<CLINICAL_FINDINGS>>: end your text with a full stop.
 # Most templates append " Pregnancy has been excluded." immediately after the slot
 # (D018), so text without a terminator produces a run-on sentence. Identical
