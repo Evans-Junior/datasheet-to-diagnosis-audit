@@ -36,10 +36,16 @@ CLINICAL_SLOT = "<<CLINICAL_FINDINGS>>"
 
 FIELDS = [
     "prompt_id", "vignette_id", "group", "condition", "guideline_ref",
-    "paraphrase", "spcu", "gender_identity", "arm_type", "age",
+    "paraphrase", "spcu", "gender_identity", "arm_type", "cue", "age",
     "prompt_text", "question", "answer_options",
-    "reference_answer", "tier", "analysis_ready", "blocked_on",
+    "reference_answer", "target_option", "tier", "verification",
+    "analysis_ready", "blocked_on",
 ]
+
+# Vignettes with no cue factor run a single arm with no appended sentence, so
+# the column exists for every row and D027's crossing is visible in the data
+# rather than implied by which file a row came from.
+NO_CUE = {"cue_absent": ""}
 
 
 def load() -> tuple[list[dict], dict]:
@@ -57,49 +63,68 @@ def expand(tpl: dict, arms: dict) -> list[dict]:
     if not paraphrases:
         return rows
 
+    # D027, scoped to G3-02 only: a crossed psychologizing cue. The arms differ
+    # in ONE appended sentence and nothing else, so the estimand is the cue x
+    # gender interaction rather than a main effect of either.
+    cue_arms = tpl.get("cue_arms") or NO_CUE
+
     for p_i, text in enumerate(paraphrases, start=1):
         for spcu in arms["spcu_values"]:
             for gid in arms["gender_identities"]:
-                body = text.format(
-                    label=gid["label"],
-                    subject=gid["subject"],
-                    object=gid["object"],
-                    possessive=gid["possessive"],
-                    spcu_statement=spcu["statement"],
-                    age=tpl["age"],
-                    be=gid["be"],
-                    present_v=gid["present_v"],
-                    report_v=gid["report_v"],
-                    attend_v=gid["attend_v"],
-                )
-                # Sentence-initial pronoun capitalisation, done after
-                # substitution so templates stay readable.
-                body = _fix_caps(body)
+              for cue_key, cue_text in cue_arms.items():
+                  body = text.format(
+                      label=gid["label"],
+                      subject=gid["subject"],
+                      object=gid["object"],
+                      possessive=gid["possessive"],
+                      spcu_statement=spcu["statement"],
+                      age=tpl["age"],
+                      be=gid["be"],
+                      present_v=gid["present_v"],
+                      report_v=gid["report_v"],
+                      attend_v=gid["attend_v"],
+                  )
+                  # Sentence-initial pronoun capitalisation, done after
+                  # substitution so templates stay readable.
+                  body = _fix_caps(body)
 
-                # The slot is still present => clinical findings not yet written.
-                clinical_filled = CLINICAL_SLOT not in body
-                has_answer = tpl.get("reference_answer") is not None
-                ready = clinical_filled and has_answer
+                  if cue_text:
+                      body = body.rstrip() + " " + cue_text
 
-                rows.append({
-                    "prompt_id": f"{tpl['id']}_p{p_i}_{spcu['key']}_{gid['key']}",
-                    "vignette_id": tpl["id"],
-                    "group": tpl["group"],
-                    "condition": tpl["condition"],
-                    "guideline_ref": tpl.get("guideline_ref"),
-                    "paraphrase": p_i,
-                    "spcu": spcu["key"],
-                    "gender_identity": gid["key"],
-                    "arm_type": "blinded" if gid["key"] == "blinded" else "gendered",
-                    "age": tpl["age"],
-                    "prompt_text": body,
-                    "question": tpl.get("question"),
-                    "answer_options": "|".join(tpl.get("answer_options") or []),
-                    "reference_answer": tpl.get("reference_answer"),
-                    "tier": tpl.get("tier"),
-                    "analysis_ready": ready,
-                    "blocked_on": (tpl.get("blocked_on") or "").strip(),
-                })
+                  # Group 2's answer tracks the SPCU, not the gender label, so
+                  # it is resolved per arm. Everywhere else one scalar serves
+                  # all six arms -- which is what makes those items bias tests.
+                  by_spcu = tpl.get("reference_answer_by_spcu")
+                  ref = (by_spcu or {}).get(spcu["key"]) if by_spcu \
+                      else tpl.get("reference_answer")
+
+                  # The slot is still present => clinical findings not yet written.
+                  clinical_filled = CLINICAL_SLOT not in body
+                  ready = clinical_filled and ref is not None
+
+                  rows.append({
+                      "prompt_id": (f"{tpl['id']}_p{p_i}_{spcu['key']}_{gid['key']}"
+                                    + (f"_{cue_key}" if len(cue_arms) > 1 else "")),
+                      "vignette_id": tpl["id"],
+                      "group": tpl["group"],
+                      "condition": tpl["condition"],
+                      "guideline_ref": tpl.get("guideline_ref"),
+                      "paraphrase": p_i,
+                      "spcu": spcu["key"],
+                      "gender_identity": gid["key"],
+                      "arm_type": "blinded" if gid["key"] == "blinded" else "gendered",
+                      "cue": cue_key,
+                      "age": tpl["age"],
+                      "prompt_text": body,
+                      "question": tpl.get("question"),
+                      "answer_options": "|".join(tpl.get("answer_options") or []),
+                      "reference_answer": ref,
+                      "target_option": tpl.get("target_option"),
+                      "verification": tpl.get("verification", "unverified"),
+                      "tier": tpl.get("tier"),
+                      "analysis_ready": ready,
+                      "blocked_on": (tpl.get("blocked_on") or "").strip(),
+                  })
     return rows
 
 

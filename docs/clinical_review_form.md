@@ -5,21 +5,42 @@
 **Reviewer time:** 45–60 minutes
 **Return to:** kwakukumi14@gmail.com
 
-> **Authors' note — do not send this form until Section 2 is complete.**
-> Cells marked _[authors to complete]_ are filled by **us**, from primary guideline
-> sources, before the form is sent. A reviewer cannot answer Column A against a blank
-> reference answer, and sending an unfilled form wastes the one ask we get. Condition
-> placement in Section 2 is **provisional** — Column B is precisely what tests it.
+> **Status, 2026-10-28: the author cells are now filled and this form is ready to
+> send.** `docs/clinical_review_form.csv` carries, for every vignette, the full
+> scenario text, the answer option set, our proposed reference answer and the
+> guideline citation. Condition placement in Section 2 remains **provisional** —
+> Column B is precisely what tests it.
+
+> **The scenarios and proposed answers were drafted by an AI assistant** from
+> guideline passages we had quoted at first hand, and every row says so. See
+> [AI_USE.md](../AI_USE.md). This matters for how you read them: please treat each
+> row as a **claim to be checked, not a colleague's draft to be tidied**. If a
+> scenario does not force our proposed answer, mark it wrong rather than repairing
+> it — we would rather rewrite an item than carry one that looks plausible and
+> is not. Nothing in this project is reported as a finding on a row you have not
+> passed.
 
 ## Who fills what
 
 | Column | Filled by | Contents |
 |---|---|---|
-| ID, Grp, Condition | **Authors** | already done |
-| Scenario | **Authors** | one line; patient age and SPCU stated and held fixed |
-| Proposed reference answer | **Authors** | the management decision we believe is correct |
-| Guideline cited | **Authors** | society, document, year, section, plus URL or DOI |
-| **A**, **B**, **C** | **Reviewer** | left deliberately blank — the only cells they fill |
+| ID, Grp, Condition | **Authors** | done |
+| Scenario | **Authors** | done — the full prompt text, gender label removed, age and SPCU stated and held fixed |
+| Answer options | **Authors** | done — the exact option set the model chooses from |
+| Proposed reference answer | **Authors** | done — the management decision we believe is correct. For group 2 it is given per sex parameter, because there the answer *should* differ |
+| Target option (O2) | **Authors** | done — the option naming the target action, which for G4-01 and G4-03 is deliberately **not** the correct answer |
+| Sex stratification (D029) | **Authors** | done — whether the guideline stratifies by sex *anywhere*, which is the evidence Column B is weighed against |
+| Guideline cited | **Authors** | done — society, document, year, section, plus URL or DOI |
+| **A**, **A2**, **B**, **C** | **Reviewer** | left deliberately blank — the only cells you fill |
+
+**The four reviewer columns.**
+
+| Column | Question |
+|---|---|
+| **A** | Is our proposed reference answer correct for this scenario under the cited guideline? |
+| **A2** | Do the stated findings **force** that answer and exclude the other options — or could a competent clinician defensibly choose differently? This is the column that catches a drafting error, and it is the one we most need. |
+| **B** | Does the correct answer vary by patient sex or gender here, and if so by which of the two? |
+| **C** | Anything else — including "this item should be dropped". |
 
 So a completed row reaching the reviewer looks like this in shape (contents
 illustrative, not clinical guidance):

@@ -54,9 +54,33 @@ in separating gender identity from Sex Parameter for Clinical Use, and hold SPCU
 fixed in every vignette, so sex-specific conditions are handled separately as a
 control.
 
+## How the vignettes were produced — please read this before Column A
+
+We sourced every reference answer ourselves: for each of the 15 conditions we
+retrieved the governing clinical guideline, read it at first hand, and quoted the
+recommendation verbatim together with its strength-of-recommendation and
+quality-of-evidence grading. Those quotations are in `docs/vignette_sources.md` and
+we will send them with the form.
+
+**The scenario text and the proposed reference answers were then drafted by an AI
+coding assistant** from those quotations — not from the assistant's own medical
+knowledge, and not by a clinician. We disclose this in the project's
+[AI_USE.md](../AI_USE.md) and we are disclosing it to you because it changes what
+your review is for.
+
+Concretely: a drafted scenario can read fluently, name every finding a rule
+requires, and still fail to exclude one alternative — in which case our "correct"
+answer is simply wrong and every number computed from that item is meaningless. We
+cannot detect that ourselves. So the form carries an extra column, **A2**, asking
+whether the stated findings *force* our proposed answer. If they do not, please mark
+the row wrong rather than fixing it for us.
+
+No result is reported as a finding on any vignette that has not passed this review.
+That is enforced in our code, not merely intended.
+
 ## What we are **not** asking
 
-- Not writing or editing vignettes
+- Not writing or editing vignettes — mark a bad one wrong and we rewrite it
 - Not reviewing model outputs or results
 - Not reading or co-writing the paper
 - No patient data is involved; nothing is deployed clinically
@@ -65,8 +89,8 @@ control.
 
 Conditions you confirm enter our primary analysis. Conditions you flag as uncertain
 move to a sensitivity analysis, and we report both. Anything you cannot confirm is
-excluded rather than guessed at — we have written no clinical guidance that is not
-sourced to a guideline, and will not.
+excluded rather than guessed at — no clinical guidance in this project originates
+from anywhere but a cited guideline, and none ever will.
 
 ## Credit
 

@@ -1,0 +1,2 @@
+model_id,revision,status,intercept,se,ci_lo,ci_hi,converged
+EleutherAI/pythia-70m,main,ok,0.002333486317882726,0.0025847578429958914,-0.002732545963146657,0.007399518598912108,True

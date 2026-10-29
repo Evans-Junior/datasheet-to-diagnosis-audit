@@ -64,6 +64,16 @@ PREGNANCY_FORBIDDEN = {"G2-01"}
 # Max acceptable token spread within an option set (D035).
 MAX_TOKEN_SPREAD = 2
 
+# Read from the arms config rather than hardcoded, so adding an SPCU value
+# cannot silently leave a group-2 vignette with an unscorable arm.
+def _spcu_keys() -> set[str]:
+    import yaml as _y
+    arms = _y.safe_load((ROOT / "configs/gender_arms.yaml").read_text())
+    return {a["key"] for a in arms["spcu_values"]}
+
+
+SPCU_KEYS = _spcu_keys()
+
 blockers: list[str] = []
 warnings: list[str] = []
 
@@ -96,6 +106,12 @@ def main() -> int:
         paras = v.get("paraphrases") or []
         opts = v.get("answer_options") or []
         ref = v.get("reference_answer")
+        # Group 2's correct answer tracks the SEX PARAMETER FOR CLINICAL USE,
+        # not gender identity, so one scalar cannot express it: a pregnancy test
+        # is indicated for SPCU female and not for SPCU male, and that
+        # difference is the control, not a bias. Such a vignette carries
+        # reference_answer_by_spcu instead, and both are checked.
+        by_spcu = v.get("reference_answer_by_spcu")
 
         # ---- C1 unfilled ------------------------------------------------- #
         slots = sum(SLOT in p for p in paras)
@@ -103,8 +119,25 @@ def main() -> int:
             blocker(vid, f"{slots}/{len(paras)} paraphrases still contain {SLOT}")
         else:
             filled += 1
-        if ref in (None, "", "null"):
-            blocker(vid, "reference_answer is null")
+        if ref in (None, "", "null") and not by_spcu:
+            blocker(vid, "reference_answer is null and no "
+                         "reference_answer_by_spcu is given")
+        if by_spcu:
+            missing = SPCU_KEYS - set(by_spcu)
+            if missing:
+                blocker(vid, f"reference_answer_by_spcu is missing SPCU "
+                             f"value(s) {sorted(missing)}: every arm must have "
+                             f"a scorable answer")
+            if ref not in (None, "", "null"):
+                blocker(vid, "both reference_answer and "
+                             "reference_answer_by_spcu are set -- ambiguous")
+            if v.get("group") != 2:
+                warn(vid, f"reference_answer_by_spcu on a group-{v.get('group')} "
+                          f"vignette. Outside group 2 an SPCU-dependent answer "
+                          f"means the item is not a bias test")
+            if len(set(by_spcu.values())) == 1:
+                warn(vid, "reference_answer_by_spcu gives the same answer for "
+                          "every SPCU value, so it need not be SPCU-keyed")
         if set(map(str, opts)) & PLACEHOLDER_OPTS:
             ph = sorted(set(map(str, opts)) & PLACEHOLDER_OPTS)
             blocker(vid, f"answer_options are placeholders: {ph}")
@@ -122,9 +155,24 @@ def main() -> int:
                 warn(vid, f"answer_options {label}")
 
         # ---- C3 reference in option set ---------------------------------- #
-        if ref not in (None, "", "null") and real and str(ref) not in real:
-            blocker(vid, f"reference_answer {ref!r} is not in answer_options "
-                         f"{real} -- the correct option can never be scored")
+        for who, cand in ([("reference_answer", ref)] if ref not in (None, "", "null")
+                          else []) + [(f"reference_answer_by_spcu[{k}]", a)
+                                      for k, a in (by_spcu or {}).items()]:
+            if real and str(cand) not in real:
+                blocker(vid, f"{who} {cand!r} is not in answer_options "
+                             f"{real} -- the correct option can never be scored")
+
+        # ---- C3b target_option (O2) --------------------------------------- #
+        # O2 is the mass on the TARGET DIAGNOSIS option, which may differ from
+        # the concordant answer -- G4-01 and G4-03 are exactly the cases where
+        # the guideline says "no" and the target action is still "Yes". Without
+        # this pointer RQ4 has no data path at all (D037).
+        tgt = v.get("target_option")
+        if tgt in (None, "", "null"):
+            blocker(vid, "target_option is unset -- O2 and therefore H4/RQ4 "
+                         "cannot be computed for this vignette (D037)")
+        elif real and str(tgt) not in real:
+            blocker(vid, f"target_option {tgt!r} is not in answer_options {real}")
 
         # ---- C4 pregnancy clause ----------------------------------------- #
         for i, p in enumerate(paras, start=1):

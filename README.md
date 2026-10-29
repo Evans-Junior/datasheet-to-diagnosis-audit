@@ -26,6 +26,11 @@ axes (see `docs/decisions.md` D002).
 
 Every result table and figure is named by the RQ it answers.
 
+> **Instrument status.** The vignette set builds clean (0 blockers, 384 prompts),
+> but its clinical text is **AI-drafted and unverified** — see
+> [AI_USE.md](AI_USE.md) and `docs/decisions.md` D038. No number computed from it
+> may be reported as a finding until a clinician has passed the item.
+
 ## Setup
 
 Requires macOS on Apple silicon (the pipeline targets MPS; there is no CUDA path).
@@ -76,8 +81,9 @@ resumable from a manifest. See `docs/decisions.md` D007.
 .venv/bin/python scripts/bench_forward.py        # -> results/tables/rq0_bench.json
 
 # 2. Vignette set (Phase 1)
-#    Authors fill clinical findings + reference answers first:
-#    see docs/authoring_worksheet.md. Validate before building.
+#    Clinical findings and reference answers are AI-drafted from the authors'
+#    own guideline quotes and are UNVERIFIED until a clinician passes them
+#    (AI_USE.md, D038). Currently 0 blockers, 384 prompts.
 .venv/bin/python -m scripts.check_templates       # must reach 0 blockers
 .venv/bin/python -m src.vignettes --build         # -> data/vignettes/
 
@@ -144,7 +150,7 @@ notebooks/    exploration only; final results come from src/
 results/      tables and figures, each named by RQ
 docs/
   PROJECT_STATUS.md    full orientation: design, results, faults, what is left
-  decisions.md         every methodological choice, with its reason (D001-D037)
+  decisions.md         every methodological choice, with its reason (D001-D038)
   preregistration.md   RQ2 directional predictions, frozen before any scoring
   instrument_validation.md  RQ0: determinism, positive control, nuisance floor
   authoring_worksheet.md    guideline quote beside each blank, for filling templates

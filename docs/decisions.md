@@ -1749,3 +1749,90 @@ of that vignette's option set denotes the target diagnosis — a pointer into an
 existing list, not a new clinical judgement, and for several vignettes it is the
 same string as the reference answer (which is fine; what matters is that the two
 are recorded separately so the cases where they differ are visible).
+
+---
+
+## D038 — The vignette clinical text is AI-drafted from our own guideline quotes, behind a clinician gate
+
+**Decision.** The clinical findings, answer option sets and candidate reference
+answers for all 15 vignettes were drafted by the AI assistant from guideline
+passages the authors had already retrieved and quoted verbatim in
+`docs/vignette_sources.md`. `AI_USE.md` was rewritten to say so **before** the
+drafting was done. Every vignette carries `verification: unverified_ai_drafted` and
+stays unreportable until a clinician passes it.
+
+**Why the declaration changed rather than the practice being hidden.** The previous
+`AI_USE.md` said all clinical content was the authors' own and "not filled in by a
+model". Continuing to draft under that sentence would have made the disclosure
+false on a graded project with FAccT/AIES disclosure expectations. The honest
+options were to not draft, or to draft and disclose. The authors chose the second
+for reasons of time, which is a legitimate reason, and the mitigation is a gate
+rather than a caveat.
+
+**What the drafting task actually was, and why that bounds the risk.** In every case
+the authors had already quoted the governing recommendation *and its grading*. The
+drafting task was to write findings that explicitly satisfy or negate each limb of a
+criterion already on the page — for G4-01, to negate all three limbs of the Ottawa
+ankle rule; for G3-04, to assert all three limbs of NG87 1.2.10. That is closer to
+transcription than to clinical judgement. It is **not** zero risk: see the fault
+found below.
+
+**A fault the method caught in its own output.** The first G1-05 draft read
+"Metformin has not been tried, is not contraindicated and is tolerated" — naming the
+correct answer inside the stimulus and turning a clinical-reasoning item into a
+reading test. Rewritten to "No oral antihyperglycaemic agent has previously been
+tried, none is contraindicated, none has been poorly tolerated". The boundary
+condition from Diabetes Canada's User's Guide (metformin first-line "unless
+contraindicated or not tolerated") still has to be negated; it just must not be
+negated by name. This is exactly the class of error the clinician gate exists for,
+and it is recorded rather than quietly fixed because it bounds how much the gate is
+load-bearing.
+
+**Validity threat, stated and partly answered.** A language model writing the
+stimuli for an audit of language models is a real threat. The part that is answered:
+the clinical text is **identical across all arms of a vignette**, and every measured
+quantity is a difference between arms of that same text, so any stylistic affinity
+between the drafting model and a scored model is common to both sides of every
+contrast and cancels in Δ. The part that is not answered: between-vignette
+comparisons, and RQ4's concept-level linkage, do not benefit from that
+cancellation. Carried into the limitations section.
+
+**The clinician's task changed shape, and improved.** The outreach ask was
+"help us establish invariance" against mostly blank author columns. It is now
+"check 15 completed rows", with the guideline quote, the scenario, the option set
+and our proposed answer supplied, and a new column **A2** asking whether the
+findings *force* that answer. Reviewing a draft is a bounded task; authoring 15
+vignettes is not. `docs/clinical_review_form.csv` is generated from
+`templates.yaml`, so the form cannot drift from the instrument, and every row is
+labelled AI-drafted with an instruction to reject rather than repair — a reviewer
+who believes a clinician wrote the text anchors on it and reviews less sharply.
+
+**Four of the five open decisions are closed by this work.**
+
+| Item | Was blocked on | Resolution |
+|---|---|---|
+| G1-02 | reference answer as drug class or named agent; six ACTs all concordant | **Class.** Option set is `An artemisinin-based combination` against three monotherapies the guideline rules out, so no arbitrary choice among the six is needed |
+| G2-03 | 2013 CTFPHC vs current provincial HPV programmes | **Moot for this item.** Findings set the last screen at six years ago in a 34-year-old, who is due under 3-yearly cytology *and* under 5-yearly HPV primary screening. The currency problem affects interval and modality, not whether to screen, so the reference answer is robust to the unresolved question. The limitation is still reported |
+| G3-01 | stem asked two things ("offer analgesia, and at what strength?") against binary options | **Narrowed** to "Should analgesia be offered?". A model answering the dose half would have scored as non-concordant on the offer half. The dose question needs its own item and its own option set |
+| G1-01 | whether to add the pregnancy clause, since doxycycline is among the guideline's own alternatives | **Both.** The clause stays (the template appends it in identical wording), and doxycycline was removed from the option set — it is a *conditional, low-certainty* alternative, so including it would have given a second defensible answer and destroyed the item's uniqueness. Option set is amoxicillin against two macrolides and a fluoroquinolone, each excluded by a stated finding |
+| G3-02 | cue wording for D027, to be pre-tested with the clinical reviewer | **Drafted, not closed.** `cue_present` is "The patient mentions having felt under considerable stress at work in recent weeks." Still requires the reviewer's pre-test |
+
+**Two schema changes this forced.**
+
+1. **`reference_answer_by_spcu`.** Group 2's correct answer tracks the Sex Parameter
+   for Clinical Use, not the gender label — a pregnancy test is indicated for SPCU
+   female and not for SPCU male — so a single scalar `reference_answer` cannot
+   express it. G2-01, G2-02 and G2-03 now carry a per-SPCU mapping, resolved per arm
+   in `src/vignettes.py` and checked in `scripts/check_templates.py`, which also
+   warns if such a field appears outside group 2 (where an SPCU-dependent answer
+   would mean the item is not a bias test at all).
+2. **`target_option`.** Added per D037 so O2 and therefore H4/RQ4 have a data path.
+   G4-01 and G4-03 are the items that justify the separate field: the guideline
+   answer is "No" while the target action is "Yes", so collapsing O2 into the
+   reference answer would have inverted them.
+
+**Instrument state.** `scripts/check_templates.py` reports **0 blockers**, down from
+36. `src/vignettes.py --build` emits **384 prompts** (14 vignettes x 24 arms, plus
+G3-02 x 48 for its two cue arms), all analysis-ready. Five warnings remain, all
+"option token spread = 2", which is at the permitted limit and reported for the
+record.

@@ -205,6 +205,11 @@ def score_model(spec: ModelSpec, prompts: pd.DataFrame, device: str,
                 "prompt_id": r.prompt_id, "vignette_id": r.vignette_id,
                 "group": r.group, "condition": r.condition,
                 "paraphrase": r.paraphrase, "spcu": r.spcu,
+                # D027's cue arm. Carried through so src.stats can match pairs
+                # within cue level rather than across it.
+                "cue": getattr(r, "cue", "cue_absent"),
+                "target_option": getattr(r, "target_option", None),
+                "verification": getattr(r, "verification", "unverified"),
                 "gender_identity": r.gender_identity,
                 "reference_answer": r.reference_answer, "tier": r.tier,
                 "model_id": spec.model_id, "revision": spec.revision,

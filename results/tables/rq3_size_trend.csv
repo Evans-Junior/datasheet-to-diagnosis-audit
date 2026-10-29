@@ -1,0 +1,2 @@
+model_id,revision,n_params_b,mean_abs_delta,nuisance_floor,floor_relative_gap,exceeds_floor,n_pairs
+EleutherAI/pythia-70m,main,0.07,0.009008280126109942,0.02073182107245447,-0.011723540946344528,False,66

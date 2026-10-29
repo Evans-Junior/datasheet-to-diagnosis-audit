@@ -62,8 +62,11 @@ PRIMARY_SCORE_KEY = "pmi"
 
 # The pair key. Everything not in here must be identical within a pair by
 # construction; if it is not, the pair is not a counterfactual.
+# `cue` is in the key because D027 crosses a psychologizing cue with gender on
+# G3-02. Pairs must match WITHIN cue level, or the cue's main effect leaks into
+# the gender contrast and a cue difference is reported as a gender gap.
 PAIR_KEYS = ["model_id", "revision", "score_key", "vignette_id", "paraphrase",
-             "spcu"]
+             "spcu", "cue"]
 
 # §4. Vignette membership and direction, transcribed. "less" means the
 # prediction is Delta < 0 and the test is one-sided in that direction.
@@ -103,6 +106,8 @@ def load_raw() -> pd.DataFrame:
     if not files:
         sys.exit(f"no scored results in {RAW}. Run src.score_outputs first.")
     df = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
+    if "cue" not in df.columns:
+        df["cue"] = "cue_absent"
     print(f"loaded {len(df):,} option rows from {len(files)} model run(s)")
     return df
 
