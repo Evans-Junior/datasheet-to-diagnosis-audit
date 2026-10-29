@@ -98,6 +98,49 @@ The following is binding and is enforced in code, not left to intention:
   Where unverified items are scored during development, their numbers are labelled
   as such and carry no inferential weight.
 
+## Provenance after review — what the label can and cannot become
+
+Review changes a vignette's **verification status**. It does not erase its
+**origin**. Those are two different fields and this project keeps them separate,
+because a reader asking "was this written by a model?" and a reader asking "has a
+clinician confirmed it?" are asking different questions and both deserve a true
+answer.
+
+So a reviewed item does **not** become "clinician-authored, not AI-generated". A
+sentence an assistant drafted was drafted by an assistant, and no later approval
+changes that fact. What a review does change is whether the item may support a
+reported result — which is the thing that actually matters for the paper.
+
+The `verification` field in `data/vignettes/templates.yaml` takes exactly these
+values:
+
+| Value | Meaning | Reportable? |
+|---|---|---|
+| `unverified_ai_drafted` | Drafted by the assistant; no clinician has seen it. The state of all 15 items as of 2026-10-28 | **No** |
+| `ai_drafted_clinician_verified` | Clinician confirmed the findings force the stated answer, text unchanged | Yes |
+| `ai_drafted_clinician_corrected` | Clinician found a fault, we applied the fix they described, they confirmed the corrected row | Yes |
+| `clinician_authored` | The clinician supplied the replacement wording themselves; that sentence is theirs | Yes |
+| `rejected` | Failed review and is excluded from the instrument | **No** — and the item is dropped, not softened |
+
+Only the last three may enter a reported result, and `scripts/check_templates.py`
+rejects any other value, so the distinction cannot be lost by a typo.
+
+**Two consequences worth stating.**
+
+1. **The validity threat does not expire.** The stimulus–instrument affinity
+   concern in the section above attaches to *who wrote the words*, not to who
+   approved them, so it remains in the limitations section for every item whose
+   origin is `ai_drafted_*` however thoroughly reviewed. Items reaching
+   `clinician_authored` are genuinely free of it, and the paper should report the
+   count in each category rather than a single blanket statement.
+2. **How many drafts failed is itself a result.** The proportion of AI-drafted
+   items a clinician rejected is evidence about how reliable this drafting method
+   is, and it is cheap to report because the review generates it anyway. It is
+   therefore recorded and published, not used privately and discarded. An item
+   quietly corrected in place would be lost from that count, which is why the
+   review form asks the reviewer to mark a row failed *and* suggest the fix,
+   rather than editing the row.
+
 ## What the authors remain responsible for
 
 - **Research design.** The research questions, the four-group vignette taxonomy, and

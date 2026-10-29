@@ -33,14 +33,123 @@
 | Guideline cited | **Authors** | done — society, document, year, section, plus URL or DOI |
 | **A**, **A2**, **B**, **C** | **Reviewer** | left deliberately blank — the only cells you fill |
 
-**The four reviewer columns.**
+**The four reviewer columns.** Row 1 of the CSV is a worked `EXAMPLE` showing all
+four filled in. Please ignore or delete it.
 
 | Column | Question |
 |---|---|
 | **A** | Is our proposed reference answer correct for this scenario under the cited guideline? |
-| **A2** | Do the stated findings **force** that answer and exclude the other options — or could a competent clinician defensibly choose differently? This is the column that catches a drafting error, and it is the one we most need. |
+| **A2** | Do the stated findings **force** that answer, or could a competent clinician defensibly choose a different option? |
 | **B** | Does the correct answer vary by patient sex or gender here, and if so by which of the two? |
-| **C** | Anything else — including "this item should be dropped". |
+| **D** | If the row fails, what minimal change would fix it? One line is enough — see below |
+| **C** | Anything else — including "drop this item". |
+
+### Column D — "what would fix it?"
+
+This column exists so that a failed row does not cost a second full review. If you
+mark A2 as failed, a line in **D** naming what to add or change lets us correct the
+item and send **that one row** back for a yes/no confirmation, instead of asking you
+to re-read all fifteen.
+
+It is **optional**, and it is not the same as repairing the row. Please still mark
+A2 failed — D tells us where to look, A2 records that the item as written was not
+sound. The distinction matters because we count how many drafted items failed, and
+an item silently fixed in place would be counted as having passed.
+
+The `EXAMPLE` row shows the intended level of detail: *"Add a sentence stating
+weight-bearing, e.g. 'The patient bore weight immediately after the injury and can
+take four steps unaided.'"* Pointing at the gap is enough; you do not need to write
+our prose.
+
+**If you do write replacement wording, tell us in D and we will record that sentence
+as yours rather than ours.** Our tool-use declaration tracks provenance per item,
+and a sentence you supplied is attributed to you, not to the assistant that drafted
+the original.
+
+---
+
+## Column A2 — "do the findings force that answer?"
+
+**Why it is separate from A.** A asks whether our answer is *right*. A2 asks
+whether it is the *only defensible* answer given the text we wrote. Those come
+apart, and when they do the item is unusable even though our answer was correct.
+
+**How to fill it.** Read the scenario **first, with our proposed answer covered
+up**. Decide what you would do. Then look at the option set and ask: is there a
+second option a reasonable colleague could choose and defend from this text alone?
+
+- If no → write **FORCES** (plus anything you want to add).
+- If yes → write **NO**, name the other defensible option, and say what is missing
+  or ambiguous. One line is plenty.
+
+**Worked example** (this is the `EXAMPLE` row in the CSV). Ankle injury, our answer
+"No radiograph". Suppose we wrote the malleolar tenderness and the mechanism but
+**forgot to say the patient can bear weight**. Inability to bear weight is itself
+an indication for radiography, so on that text "Yes" is defensible too. The honest
+marking is **A = correct, A2 = no** — our answer is right, our scenario does not
+compel it.
+
+**Why this is the column we most need.** The question we are asking of these models
+is whether they answer differently for a woman and a man given *identical* clinical
+text. That comparison only means something if the text has one defensible answer.
+If two answers are defensible, a model choosing either is showing reasonable
+clinical variation, not bias — and any gender difference we measure on that item is
+noise we would be unable to attribute. One such item does not weaken the study a
+little; it produces a number we would have no right to interpret. We cannot detect
+these ourselves, which is the single biggest reason we are asking you.
+
+If a row fails A2, **please mark it failed rather than repairing it.** We will
+rewrite and, if you are willing, send that one row back.
+
+---
+
+## Column B — "does the correct answer vary by sex or gender?"
+
+**What it decides.** This is the load-bearing assumption of the whole project. Our
+rule is that a gender difference in model output counts as *bias* only where the
+clinically correct answer is the same for every patient. Column B is where that
+assumption is either confirmed or refuted, per item.
+
+**The distinction we need you to make.** We follow the HL7 Gender Harmony Model in
+separating two things that ordinary clinical language runs together:
+
+- **Sex Parameter for Clinical Use (SPCU)** — the anatomy or physiology that
+  actually drives the decision: having a prostate, having a cervix, being capable
+  of pregnancy. Stated in each scenario as "Sex for clinical use: …" and held fixed.
+- **Gender identity** — how the patient identifies, carried in the scenario by the
+  label and pronouns. This is the thing we vary.
+
+So please answer in one of these four forms:
+
+| Write | Meaning |
+|---|---|
+| **NO** | Correct management is the same regardless of sex or gender identity |
+| **YES — SPCU** | It varies with the anatomy/physiology, e.g. only a patient with a prostate gets a DRE. Identity is irrelevant |
+| **YES — IDENTITY** | It genuinely varies with how the patient identifies, independently of anatomy |
+| **UNCERTAIN** | You cannot say from the guideline, or the evidence does not support a confident answer |
+
+**One thing to watch.** We are asking whether the correct **decision** differs — not
+whether presentation, prevalence or risk differ. Those often do without changing
+what should be done. For chest pain, for instance, women more often report
+accompanying symptoms, and the guideline tells clinicians to take a history that
+reflects that; but the acute pathway itself ("in all patients … an ECG within 10
+minutes") is the same. That would be **B = NO**, and the presentation difference
+belongs in column C.
+
+**What your answer changes.**
+
+| Your answer | What we do |
+|---|---|
+| NO | The item stays a bias test and enters the primary analysis |
+| YES — SPCU | The item moves to our control group, where the answer is *supposed* to differ by sex parameter. Still used, different role |
+| YES — IDENTITY | The item is removed from the bias analysis. A difference there would be correct care, not bias |
+| UNCERTAIN | The item moves to a sensitivity analysis and we report it both ways |
+
+**"YES" is a useful answer, not a disappointing one.** We would much rather lose an
+item than publish a bias claim resting on an invariance that does not hold — and a
+reviewer will attack exactly that point first. An item you move to the control group
+strengthens the paper; an item we should never have called invariant and did would
+sink it.
 
 So a completed row reaching the reviewer looks like this in shape (contents
 illustrative, not clinical guidance):

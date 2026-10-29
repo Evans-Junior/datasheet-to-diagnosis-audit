@@ -1903,3 +1903,58 @@ matched-crossed ordering with their n stated, and let a small number of concepts
 with large skew and large Δ be shown individually in the concept-level figure. The
 paper should present RQ4 as the mechanism *check* it can support, not the mechanism
 *proof* the design originally promised.
+
+---
+
+## D040 — Provenance and verification are separate fields, and review changes only one
+
+**Decision.** A vignette carries one controlled `verification` value, enumerated in
+`AI_USE.md` and enforced by `scripts/check_templates.py`:
+`unverified_ai_drafted` · `ai_drafted_clinician_verified` ·
+`ai_drafted_clinician_corrected` · `clinician_authored` · `rejected`. Only the
+middle three may support a reported result. The review form gains a fourth
+reviewer column, **D — suggested fix**.
+
+**The question this answers.** Once a clinician has reviewed and we have applied
+their corrections, can the text be relabelled as validated and no longer
+AI-generated? **No — not the second half.** Provenance is cumulative. A sentence an
+assistant drafted was drafted by an assistant, and a later approval does not
+reach back and change who wrote it. What review changes is whether the item may
+carry a reported number, which is the thing the paper actually needs.
+
+The distinction is not pedantry, for two concrete reasons:
+
+1. **The validity threat tracks authorship, not approval.** The
+   stimulus–instrument affinity concern in `AI_USE.md` is about *whose prose* the
+   models are scoring. Clinician approval establishes that the item is clinically
+   sound; it does nothing about whether the wording is representative of clinical
+   text. So `ai_drafted_clinician_verified` items stay in that limitation and
+   `clinician_authored` items do not — which is exactly why they are different
+   values rather than one "validated" flag.
+2. **A reader asking the two questions deserves two answers.** "Was this written by
+   a model?" and "has a clinician confirmed it?" are different questions. A single
+   `validated` label answers the second while silently overwriting the first, and
+   that is the specific move the 2026-10-28 rewrite of `AI_USE.md` exists to avoid
+   repeating.
+
+**What the authors do get.** `clinician_authored` is genuinely available, for any
+item where the reviewer supplies the replacement wording — that sentence is theirs
+and is attributed to them. The route to "not AI-generated" is real; it runs through
+the clinician writing the sentence, not through the clinician approving ours. The
+form says so, so a reviewer can choose to take it.
+
+**Column D, and why it does not undo "reject, do not repair".** A failed row
+previously cost a second full review. D lets the reviewer name the minimal fix in
+one line, so we correct that row and send it back alone for a yes/no. The
+instruction to mark A2 **failed** stands, because the **proportion of drafted items
+a clinician rejected is itself a result** — it is direct evidence about how reliable
+this drafting method is, it costs nothing to collect since the review produces it
+anyway, and an item quietly corrected in place would vanish from that count. So the
+reviewer marks the failure *and* points at the gap; they do not edit the row.
+
+**Made visible rather than documented.** `check_templates` now prints
+`clinician-verified: N/15 reportable` on every run, directly under the blocker
+count, with an explicit note when any item is unverified. "0 blockers" means the
+instrument **builds**; it has never meant that results from it may be reported, and
+a clean validator run is precisely the moment that difference is easiest to forget.
+Current state: **0 of 15 reportable.**

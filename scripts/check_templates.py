@@ -74,6 +74,22 @@ def _spcu_keys() -> set[str]:
 
 SPCU_KEYS = _spcu_keys()
 
+# Provenance and review state, per AI_USE.md. Origin and verification are kept in
+# one controlled vocabulary so that "a clinician approved it" can never be
+# recorded in a way that also erases "an assistant drafted it" -- those are
+# different facts and a reader is owed both. Only REPORTABLE values may support a
+# reported result.
+VERIFICATION_VALUES = {
+    "unverified_ai_drafted",
+    "ai_drafted_clinician_verified",
+    "ai_drafted_clinician_corrected",
+    "clinician_authored",
+    "rejected",
+}
+REPORTABLE = {"ai_drafted_clinician_verified",
+              "ai_drafted_clinician_corrected",
+              "clinician_authored"}
+
 blockers: list[str] = []
 warnings: list[str] = []
 
@@ -167,6 +183,12 @@ def main() -> int:
         # the concordant answer -- G4-01 and G4-03 are exactly the cases where
         # the guideline says "no" and the target action is still "Yes". Without
         # this pointer RQ4 has no data path at all (D037).
+        # ---- C3c verification vocabulary ---------------------------------- #
+        ver = v.get("verification")
+        if ver not in VERIFICATION_VALUES:
+            blocker(vid, f"verification {ver!r} is not one of "
+                         f"{sorted(VERIFICATION_VALUES)} (see AI_USE.md)")
+
         tgt = v.get("target_option")
         if tgt in (None, "", "null"):
             blocker(vid, "target_option is unset -- O2 and therefore H4/RQ4 "
@@ -234,6 +256,20 @@ def main() -> int:
     print()
     n_block = len(blockers) + (len(warnings) if args.strict else 0)
     print(f"{len(blockers)} blocker(s), {len(warnings)} warning(s)")
+
+    # The clinician gate, printed every run. "0 blockers" means the instrument
+    # BUILDS; it does not mean anything built from it may be reported. Keeping
+    # the two counts side by side is the whole point -- a clean validator run is
+    # exactly the moment someone is most likely to forget the difference.
+    vers = [v.get("verification") for v in vignettes]
+    ok = sum(1 for x in vers if x in REPORTABLE)
+    rej = sum(1 for x in vers if x == "rejected")
+    print(f"clinician-verified: {ok}/{len(vers)} reportable"
+          + (f", {rej} rejected" if rej else ""))
+    if ok < len(vers) - rej:
+        print(f"  {len(vers) - rej - ok} vignette(s) are AI-drafted and "
+              f"UNVERIFIED. They build and score, but no number computed from "
+              f"them may be reported as a finding (AI_USE.md, D038).")
     return 1 if n_block else 0
 
 
