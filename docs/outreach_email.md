@@ -1,8 +1,14 @@
 # Outreach email — clinical reviewer
 
-Replace `[NAME]` and the one bracketed sentence tailored to each recipient. Attach
-`clinical_review_request.md` (export to PDF). Send individually, never as a group
-email or BCC list.
+Replace `[NAME]` and the one bracketed sentence tailored to each recipient.
+
+**Attach two files:** `clinical_review_request.md` (export to PDF) and
+`clinical_review_form.csv`. Send individually, never as a group email or BCC list.
+
+**Do not remove the AI-drafting paragraph.** It belongs in the email body, not only
+in the attachment. A reviewer who learns it after agreeing has been asked under a
+false impression, and a reviewer who believes a clinician wrote the scenarios reads
+them less sharply — which is the opposite of what we need from them.
 
 ---
 
@@ -21,17 +27,35 @@ pain and cardiac triage scenarios."]
 
 We have a problem we cannot solve ourselves. Our design only counts a gender
 difference as bias where the clinically correct answer is identical for every
-patient, and we have sourced each reference answer to a named clinical guideline.
-But guidelines state correct management without usually saying whether it varies by
-gender, and we are not clinicians, so we cannot responsibly decide whether that
-silence means management genuinely does not vary or that the question was never
-considered.
+patient. We have sourced each reference answer to a named clinical guideline, read
+at first hand, and quoted the governing recommendation with its
+strength-of-recommendation and quality-of-evidence grading. But guidelines state
+correct management without usually saying whether it varies by gender, and we are
+not clinicians, so we cannot responsibly decide whether that silence means
+management genuinely does not vary or that the question was never considered.
 
-**The ask is one review of about 45 minutes.** We would send you a table of roughly
-15–20 conditions with our proposed reference answer and the guideline we took it
-from. You would mark whether each answer is correct, and whether correct management
-differs by patient sex or gender identity. Nothing else — no vignette writing, no
-reviewing model outputs, no reading the paper. A one-page summary is attached.
+**One thing I should tell you up front.** The 15 clinical scenarios, the answer
+options and our proposed answers were **drafted by an AI assistant** from those
+guideline quotations — not from the assistant's own medical knowledge, and not by a
+clinician. We disclose this in the project's tool-use declaration, and I am telling
+you because it changes what the review is for. A drafted scenario can read fluently,
+mention every finding a decision rule requires, and still fail to rule out one
+alternative — in which case our "correct" answer is wrong and every number we
+compute from that item is meaningless. We cannot see that ourselves. So the form has
+a column asking whether the stated findings *force* our proposed answer. **If they
+do not, please mark the row wrong rather than fixing it** — we would much rather
+rewrite an item than carry one that looks plausible and is not.
+
+**The ask is one review of about 45 minutes.** The attached table has 15 conditions,
+already filled in: the full scenario text, the answer options, our proposed
+reference answer, and the guideline and section we took it from. You would fill four
+columns — whether our answer is correct, whether the findings force it, whether
+correct management differs by patient sex or gender identity, and any comment.
+Nothing else: no vignette writing, no reviewing model outputs, no reading the paper.
+
+No result in this project is reported on any scenario you have not passed. We have
+not yet run the audit, so your review comes before the numbers rather than after
+them, and nothing you say will be awkward for a result we have already written up.
 
 We would be glad to offer co-authorship on anything that results, or an
 acknowledgement if you would prefer that.
@@ -56,8 +80,8 @@ kwakukumi14@gmail.com
 Dear Dr. [NAME],
 
 I am following up briefly on the note below, in case it arrived at a busy time. The
-request is a single ~45-minute review of guideline-based reference answers for a
-student project on gender bias in AI health advice.
+request is a single ~45-minute review of a completed table of guideline-based
+reference answers for a student project on gender bias in AI health advice.
 
 If it is not a fit, a pointer to someone better placed would help us a great deal,
 and I will not write again.

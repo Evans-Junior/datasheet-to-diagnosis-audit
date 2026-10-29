@@ -1,0 +1,9 @@
+model_id,revision,model_corpus,skew_index,pairing,support,skew_variant,n_vignettes,spearman_rho,p_one_sided,n_signed,n_concordant,prop_concordant,p_binom_one_sided
+EleutherAI/pythia-70m,main,(none declared),v4_olmo-mix-1124_llama,unknown,all_powered,centred,9,-0.13333333333333333,0.6338162473818514,9,3,0.3333333333333333,0.91015625
+EleutherAI/pythia-70m,main,(none declared),v4_olmo-mix-1124_llama,unknown,all_powered,raw,9,-0.13333333333333333,0.6338162473818514,9,4,0.4444444444444444,0.74609375
+EleutherAI/pythia-70m,main,(none declared),v4_olmo-mix-1124_llama,unknown,common,centred,6,0.08571428571428573,0.43587172011661807,6,2,0.3333333333333333,0.890625
+EleutherAI/pythia-70m,main,(none declared),v4_olmo-mix-1124_llama,unknown,common,raw,6,0.08571428571428573,0.43587172011661807,6,4,0.6666666666666666,0.34375
+EleutherAI/pythia-70m,main,(none declared),v4_piletrain_llama,unknown,all_powered,centred,6,0.028571428571428574,0.4785772594752187,6,4,0.6666666666666666,0.34375
+EleutherAI/pythia-70m,main,(none declared),v4_piletrain_llama,unknown,all_powered,raw,6,0.028571428571428574,0.4785772594752187,6,4,0.6666666666666666,0.34375
+EleutherAI/pythia-70m,main,(none declared),v4_piletrain_llama,unknown,common,centred,6,0.028571428571428574,0.4785772594752187,6,4,0.6666666666666666,0.34375
+EleutherAI/pythia-70m,main,(none declared),v4_piletrain_llama,unknown,common,raw,6,0.028571428571428574,0.4785772594752187,6,4,0.6666666666666666,0.34375

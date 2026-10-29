@@ -97,7 +97,10 @@ resumable from a manifest. See `docs/decisions.md` D007.
 .venv/bin/python -m src.corpus_counts --run --family decision   # H1/H2 basis
 .venv/bin/python -m src.corpus_counts --run --family explicit   # non-binary arm
 
-# 5. Linking (Phase 4; RQ4)
+# 5. Linking (Phase 4; RQ4) -- needs steps 3 and 4 both done
+#    Tested on O2, matched corpus vs crossed as a negative control. Only
+#    adequately powered concepts enter, which leaves single-digit n: report
+#    rho WITH its n, never bare (D039).
 .venv/bin/python -m src.link_analysis
 
 # 6. Statistics and figures
@@ -150,7 +153,7 @@ notebooks/    exploration only; final results come from src/
 results/      tables and figures, each named by RQ
 docs/
   PROJECT_STATUS.md    full orientation: design, results, faults, what is left
-  decisions.md         every methodological choice, with its reason (D001-D038)
+  decisions.md         every methodological choice, with its reason (D001-D039)
   preregistration.md   RQ2 directional predictions, frozen before any scoring
   instrument_validation.md  RQ0: determinism, positive control, nuisance floor
   authoring_worksheet.md    guideline quote beside each blank, for filling templates

@@ -1836,3 +1836,70 @@ who believes a clinician wrote the text anchors on it and reviews less sharply.
 G3-02 x 48 for its two cue arms), all analysis-ready. Five warnings remain, all
 "option token spread = 2", which is at the permitted limit and reported for the
 record.
+
+---
+
+## D039 — RQ4 is built, and it is the most power-starved test in the project
+
+**Decision.** `src/link_analysis.py` implements H4. Four choices are fixed in it,
+and one measured constraint has to be reported rather than designed away.
+
+**The four choices.**
+
+1. **O2, not O1.** Concordance flips sign with how a question is posed. For G4-01
+   and G4-03 the guideline-correct answer is "No", so a model that endorses the
+   target action *more* scores *lower* on O1. Endorsement does not flip. Running
+   H4 on O1 would invert the sign on exactly those two items.
+2. **Matched corpus, with the cross-pairing as a negative control.** Pile skew is
+   tested against Pythia and OLMo-mix skew against OLMo 2, because the claim is
+   that a model inherits *its own* corpus's skew. The cross-pairings are run too:
+   if Pile skew predicts OLMo 2's gaps equally well, the mechanism is not
+   inheritance but something both corpora share, and H4's interpretation collapses
+   even where its correlation holds.
+3. **Underpowered concepts are dropped, not downweighted.** RQ1 flags concepts
+   whose smaller arm has fewer than 100 occurrences. At counts of 4 against 10 the
+   skew estimate is noise carrying a sign, and Spearman sees only the ranking, so
+   it cannot distinguish noise from signal. Including them would let sampling error
+   manufacture or destroy the linkage.
+4. **Skew is centred before use, and reported both ways.** Health text is globally
+   female-skewed in both corpora, so raw per-concept skew carries a constant that
+   is a property of the corpus rather than the concept. H4 is a claim about
+   *relative* skew between concepts, so the offset is removed per (corpus, method)
+   family. The constant itself is a finding and is reported.
+
+**The measured constraint, which is the important part.** Of the 30 corpus x
+vignette cells in the diagnosis family, **8 have no adequately powered concept at
+all**, and the two corpora do not lose the same ones. On the smoke join the Pile
+side had 6 usable vignettes and the OLMo-mix side 9.
+
+Two consequences, both unavoidable:
+
+- **H4 is tested on single digits.** A Spearman correlation on 6 to 9 points has
+  very wide uncertainty; it can reach ρ ≈ 0.7 by chance and can miss a real
+  relationship entirely. H4 must therefore be reported with its n in the sentence,
+  not as a bare ρ, and a null on H4 is close to uninformative rather than evidence
+  against the mechanism. This is a limitation of the *corpora's* coverage of
+  specific clinical phrases, not of the design.
+- **Matched and crossed must be compared on common support.** Because the two
+  corpora have different usable vignettes, a matched-vs-crossed difference computed
+  across all available rows would differ because the *items* differ, not because
+  inheritance does or does not hold — which would make the negative control
+  worthless while looking rigorous. The module therefore reports both an
+  `all_powered` join (the better estimate of each individual correlation) and a
+  `common` join restricted to the intersection (the only valid comparison between
+  them), and warns when the intersection falls below 4 vignettes.
+
+**A null-group trap found while testing.** `corpus_index` is a property of the
+model, not of a matched pair, so the pair pivot drops it; reattaching it by merge
+produced nulls for the smoke config and the RQ5 contrast model, which has no
+corpus by design. Pandas drops null groups silently, which emptied the entire
+analysis while every intermediate step reported success. Missing values are now
+filled with `(none declared)` and their pairing reads `unknown`. Worth recording
+because the failure mode was a clean run producing an empty table, not an error.
+
+**Honest statement of what RQ4 can deliver.** With 6 to 9 points, RQ4 cannot carry
+a strong quantitative claim. What it can do is report the sign concordance and the
+matched-crossed ordering with their n stated, and let a small number of concepts
+with large skew and large Δ be shown individually in the concept-level figure. The
+paper should present RQ4 as the mechanism *check* it can support, not the mechanism
+*proof* the design originally promised.

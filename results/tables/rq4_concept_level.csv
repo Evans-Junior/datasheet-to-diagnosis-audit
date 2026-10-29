@@ -1,0 +1,21 @@
+model_id,revision,vignette_id,delta_o2,delta_sd,n_pairs,corpus_index,concept,skew_log2,skew_centred,skew_index,pairing
+EleutherAI/pythia-70m,main,G1-01,0.0025086399450857367,0.004009198438919891,6,(none declared),pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G1-02,0.03538906347156595,0.018479619039214724,6,(none declared),malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G1-03,-0.018891625039210363,0.005329754344076114,6,(none declared),asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G1-04,-0.00239194753586372,0.0033164447581263278,6,(none declared),cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G1-05,-0.0018513779370364543,0.004987094063207498,6,(none declared),type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G2-01,-0.005914851122312187,0.006184253898945288,6,(none declared),,,,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G2-02,0.001088017435105416,0.0024035339494861163,6,(none declared),prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G2-03,-0.010111859874667414,0.015139726870481672,6,(none declared),cervical cancer,7.74453277046297,6.774680396833222,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G3-01,0.003901573836886857,0.003013662598790949,6,(none declared),pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G3-02,0.0019942425323708837,0.0046177240568475225,12,(none declared),chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,unknown
+EleutherAI/pythia-70m,main,G1-01,0.0025086399450857367,0.004009198438919891,6,(none declared),pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G1-02,0.03538906347156595,0.018479619039214724,6,(none declared),malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G1-03,-0.018891625039210363,0.005329754344076114,6,(none declared),asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G1-04,-0.00239194753586372,0.0033164447581263278,6,(none declared),,,,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G1-05,-0.0018513779370364543,0.004987094063207498,6,(none declared),type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G2-01,-0.005914851122312187,0.006184253898945288,6,(none declared),,,,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G2-02,0.001088017435105416,0.0024035339494861163,6,(none declared),,,,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G2-03,-0.010111859874667414,0.015139726870481672,6,(none declared),,,,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G3-01,0.003901573836886857,0.003013662598790949,6,(none declared),pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,unknown
+EleutherAI/pythia-70m,main,G3-02,0.0019942425323708837,0.0046177240568475225,12,(none declared),chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,unknown
