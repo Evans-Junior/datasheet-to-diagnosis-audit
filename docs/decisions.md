@@ -1958,3 +1958,74 @@ count, with an explicit note when any item is unverified. "0 blockers" means the
 instrument **builds**; it has never meant that results from it may be reported, and
 a clean validator run is precisely the moment that difference is easiest to forget.
 Current state: **0 of 15 reportable.**
+
+---
+
+## D041 — The RQ6 corpus is 10 documents, not 8, and the finding is sharper than "silence"
+
+**Decision.** The codebook's 8-document inventory expands to **10 coding units**:
+the OLMo 2 and Qwen3 entries each split into a technical report and a model card,
+which are separate documents reaching separate audiences. Retrieval is
+`scripts/rq6_fetch.py`, which identity-checks every file against an expected title
+fragment and refuses a mismatch; term counting is `scripts/rq6_search.py`. All 10
+retrieved and verified 2026-10-28.
+
+**What the search found, and why it changes the argument.** The expected RQ6
+finding was documentary silence on gender. That is **wrong for the Pile**, and
+saying it would have been a factual error a reviewer would catch in one minute.
+Gao et al. §6.4.1 reports a gender-bias analysis — pronoun co-occurrence weighted
+by frequency, top-15 biased adjectives, and per-component sentiment in Figure 13
+covering PubMed Central and PubMed Abstracts — with the explicit aim of letting
+users choose components. It also carries its own caveat: *"This, of course, does
+not mean that the dataset is free of gender bias (as our co-occurrence tests
+show)."*
+
+**So the claim must be reformulated, and the stronger version is this.** The Pile
+authors ran a gender analysis of the same *family* as RQ1 — pronoun co-occurrence,
+broken down per component — and it could not have found what RQ1 finds, for two
+reasons intrinsic to how they scoped it:
+
+1. **Unit.** They measured *adjectives and sentiment*; RQ1 measures *diagnoses and
+   decisions*. A component can be sentiment-neutral and concept-skewed, and
+   Figure 13 cannot distinguish them.
+2. **Binary by construction.** Their words: *"co-occurrences for **binary
+   pronouns**"*. `non-binary` and `transgender` return 0 hits in both Pile
+   documents, so the measurement could not detect the absence D026/D034 identified
+   — and that absence is measured against guidelines that explicitly require the
+   population covered.
+
+This is a better paper than "they never looked". It is a concrete, bounded claim
+about where a reasonable analysis stopped, made against authors who did more than
+most, and it positions RQ1 as the next step in *their* method rather than a
+reproach.
+
+**The strongest single quotation found.** The Pile datasheet answers the
+*Datasheets for Datasets* sensitive-data question — which names health data — with:
+*"We do not know the extent to which this is the case, although we expect that it
+does."* Set beside Gao et al.'s stated intent, *"We included PMC in the hopes that
+it will benefit potential downstream applications to the medical domain"*, the two
+sentences are the datasheet-to-diagnosis argument in the documentation's own words:
+medical use was a design goal, and the sensitive-content question about it was
+answered with an acknowledged unknown.
+
+**The OLMo 2 result is an absence, and a clean one.** `olmo-mix-1124`'s dataset
+card contains zero occurrences of every gender term, every demographic term, and
+the word "bias". The Dolma paper mentions `gender` once in 64 pages against
+`harm` twelve times. Since this is the corpus RQ1 queries for OLMo 2, the
+comparison is internal to the project rather than rhetorical.
+
+**Qwen3 must not be read as the control it appears to be.** Its zeros sit beside an
+undisclosed corpus, so there is nothing for its documentation to characterise and
+its silence is uninformative about disclosure practice. The load-bearing contrast
+is **Pile against OLMo 2**: two projects that both released their training data,
+one of which measured gender composition and one of which did not. That establishes
+disclosure as a choice rather than a consequence of openness — which is the claim
+RQ6 needs and the one Qwen3 cannot support.
+
+**What is explicitly not done.** No code has been assigned. Only §4 step 2 (term
+counts) is complete; the full read and the structural check are outstanding, and
+per the codebook a level-0 code is not a finding until all three are recorded. Two
+specific unexamined areas are flagged in `paper_notes.md` §5: the Pythia paper's 32
+`gender` and 60 `bias` hits, which may concern *studying* bias rather than corpus
+composition, and the OLMo 2 report's 4 `bias` and 3 `health` hits. Coding remains
+the authors' work (`AI_USE.md`).

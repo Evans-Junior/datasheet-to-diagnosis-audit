@@ -552,3 +552,117 @@ is thin and exploratory (post-dates the D025 freeze); report direction and absen
 never significance. The zero itself was verified by a live probe with a non-zero
 control before being reported, because an unverified zero from this API is exactly
 what D022 was.
+
+---
+
+## §5 — RQ6 search results: what the documentation does and does not say
+
+Ten documents retrieved 2026-10-28 (`scripts/rq6_fetch.py`, identity-checked),
+term counts in `results/tables/rq6_search_counts.csv`. **These are §4 step-2
+counts and verbatim passages, not codes.** Coding is the authors' own work and has
+not been done; nothing below assigns a D1–D8 level.
+
+### The headline is not "they never mention gender". It is narrower and stronger.
+
+**The Pile measures gender bias, per component, and says so.** §6.4.1 of Gao et
+al.:
+
+> "We computed gender associations by computing co-occurrences for binary
+> pronouns. For each word, we computed the difference in the rate it co-occurs
+> with 'he' and 'she' and weighed it by the square root of its frequency. We
+> report the top 15 most biased adjectives or adverbs … for each"
+
+with a stated purpose:
+
+> "Our goal is to provide users of this dataset with preliminary guidance on how
+> the different components are biased so that they can make decisions on which
+> components to train on."
+
+Figure 13 gives average sentiment by gender **across all components**, and the
+component list includes PubMed Central and PubMed Abstracts. So the biomedical
+components *were* examined for gender. Their conclusion:
+
+> "Generally, we find no significant sentiment bias towards men or women. This, of
+> course, does not mean that the dataset is free of gender bias (as our
+> co-occurrence tests show)."
+
+That last sentence is an honest caveat and should be quoted as one. The Pile
+authors did not overclaim.
+
+### The gap is three specific things, not an absence of effort
+
+1. **They measured adjectives and sentiment; we measure clinical concepts.** Their
+   unit is "which adjectives co-occur with he/she". Ours is "which *diagnoses and
+   decisions* co-occur with he/she", which is where the skew we find lives:
+   *heart attack* at −1.39, *attention deficit* at −1.16, *autism* at −1.04. A
+   sentiment-neutral component can be concept-skewed, and Figure 13 would not
+   show it.
+2. **Their gender measurement is binary by construction** — "co-occurrences for
+   **binary pronouns**", their words. `non-binary` and `transgender` return **0
+   hits in both Pile documents**. So the only gender analysis in the entire
+   documentation corpus could not have detected the thing D026/D034 identifies:
+   `"the non-binary patient"` at zero occurrences, against clinical guidelines
+   (CUA MLUTS/BPH, NICE NG126) that explicitly require that population to be
+   covered.
+3. **Medical use is an intended application, stated twice.** Gao et al.: *"We
+   included PMC in the hopes that it will benefit potential downstream
+   applications to the medical domain."* The datasheet: *"The PubMed Abstracts
+   dataset gives researchers, especially in the medical field, a strong basis for
+   building models…"* So this is not a general-purpose corpus being used off-label
+   for health. Health was a design goal.
+
+### The two topics never meet
+
+Across all 10 documents, a sentence-level search for any demographic term
+co-occurring with any health term returns **three hits, and all three are
+artefacts**: two are table/figure label runs in the Pile paper's appendix (the
+component list adjacent to Table 10's gender adjectives), and the third is the
+*Datasheets for Datasets* question template itself in the Pile datasheet, which
+lists "health data" among sensitive categories.
+
+The datasheet's **answer** to that question is worth quoting in full, because it is
+the closest any document comes to the intersection:
+
+> "Does the dataset contain data that might be considered sensitive in any way
+> (e.g., data that reveals racial or ethnic origins, sexual orientations,
+> religious beliefs, political opinions or union memberships, or locations;
+> financial or health data; biometric or genetic data …)?
+> **The Pile: We do not know the extent to which this is the case, although we
+> expect that it does.**"
+
+### The OLMo 2 side is the stark one
+
+| Document | `gender` | `sex` | `female` | `demographic` | `bias` | `health` |
+|---|---|---|---|---|---|---|
+| Pile paper | 7 | 1 | 3 | 4 | 24 | 9 |
+| Pile datasheet | 16 | 1 | 0 | 0 | 5 | 9 |
+| Pythia paper | 32 | 0 | 0 | 0 | 60 | 0 |
+| Pythia model card | 1 | 0 | 0 | 0 | 3 | 0 |
+| Dolma paper | 1 | 0 | 0 | 3 | 13 | 0 |
+| **olmo-mix-1124 dataset card** | **0** | 0 | 0 | 0 | **0** | 0 |
+| **OLMo 2 report** | **0** | 0 | 0 | 0 | 4 | 3 |
+| **OLMo 2 model card** | **0** | 0 | 0 | 0 | 2 | 0 |
+| Qwen3 report | 0 | 0 | 0 | 0 | 1 | 0 |
+| Qwen3 model card | 0 | 0 | 0 | 0 | 0 | 0 |
+
+The corpus this project queries for OLMo 2 — `olmo-mix-1124` — has a dataset card
+containing **zero** occurrences of every gender term, every demographic term, and
+the word "bias". The Dolma paper, which documents the corpus family, mentions
+`gender` **once** in 64 pages while discussing `harm` twelve times.
+
+### Two cautions before any of this is written up
+
+**The Qwen3 comparison does not say what it looks like it says.** Qwen3's zeros sit
+beside an undisclosed training corpus, so there is nothing for its documentation to
+characterise. The contrast that matters is Pile-vs-OLMo — two projects that both
+released their data, one of which documented gender composition and one of which
+did not. That shows the disclosure is a *choice*, not a property of being open.
+
+**Counts are not codes, and a zero is not yet a finding.** Codebook §4 requires a
+full read and a structural check before any level-0 code; only step 2 is done. In
+particular the OLMo 2 report has 4 `bias` and 3 `health` hits that have not been
+read in context, and the Pythia paper's 32 `gender` and 60 `bias` hits are
+substantial and unexamined — Pythia is a model suite whose stated purpose is bias
+research, so those hits may be about *studying* bias rather than about the corpus's
+composition. That distinction is exactly what D7 (measurement vs assertion) exists
+to record, and it cannot be settled from a hit count.
