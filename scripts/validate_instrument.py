@@ -48,8 +48,24 @@ from src.score_outputs import (NEUTRAL_CONTEXT, PROMPT_FMT, fp32_head,
                                option_logprob, set_seeds)
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT_JSON = ROOT / "results/tables/rq0_instrument_validation.json"
-OUT_CSV = ROOT / "results/tables/rq0_instrument_validation.csv"
+OUT_DIR = ROOT / "results/tables"
+
+
+def out_paths(model_id: str, revision: str) -> tuple[Path, Path]:
+    """Per-model output paths.
+
+    One fixed filename would overwrite the previous model's floor, which is the
+    one thing D035 says must be kept per model: the nuisance floor is NOT
+    constant across sizes and is not even monotonic in them (0.0207 / 0.0626 /
+    0.0309 at 70m / 160m / 410m). RQ3 compares floor-relative gaps, so a missing
+    floor for one model silently turns that model's gap into an absolute one and
+    the size trend becomes a mix of two different quantities.
+    """
+    slug = model_id.replace("/", "__")
+    if revision and revision != "main":
+        slug = f"{slug}@{revision}"
+    stem = f"rq0_instrument_validation__{slug}"
+    return OUT_DIR / f"{stem}.json", OUT_DIR / f"{stem}.csv"
 
 # Administrative, not clinical. "Record" framing keeps the stimuli recognisably
 # synthetic so they cannot be confused with a vignette.
@@ -85,19 +101,23 @@ def score_prompt(model, tok, text: str, question: str, options: list[str],
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="EleutherAI/pythia-70m")
+    # The checkpoint sweep needs its own floor per step, not the final model's
+    # (D035): a floor measured at step143000 says nothing about step1000.
+    ap.add_argument("--revision", default="main")
     ap.add_argument("--dtype", default="float32")
     ap.add_argument("--seed", type=int, default=20251027)
     args = ap.parse_args()
 
     set_seeds(args.seed)
     device = "mps" if torch.backends.mps.is_available() else "cpu"
-    tok = AutoTokenizer.from_pretrained(args.model)
+    tok = AutoTokenizer.from_pretrained(args.model, revision=args.revision)
     model = AutoModelForCausalLM.from_pretrained(
-        args.model, dtype=getattr(torch, args.dtype))
+        args.model, revision=args.revision, dtype=getattr(torch, args.dtype))
     model.to(device).eval()
     head = fp32_head(model)
     baseline: dict = {}
-    report: dict = {"model": args.model, "dtype": args.dtype,
+    report: dict = {"model": args.model, "revision": args.revision,
+                    "dtype": args.dtype,
                     "device": device, "seed": args.seed,
                     "question": QUESTION, "options": OPTIONS, "tests": {}}
     records = []
@@ -200,14 +220,15 @@ def main() -> None:
             "justification for the pmi default rather than an assertion."),
     }
 
-    OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-    OUT_JSON.write_text(json.dumps(report, indent=2))
-    pd.concat(records, ignore_index=True).to_csv(OUT_CSV, index=False)
+    out_json, out_csv = out_paths(report["model"], report.get("revision", "main"))
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_json.write_text(json.dumps(report, indent=2))
+    pd.concat(records, ignore_index=True).to_csv(out_csv, index=False)
 
     print(json.dumps({k: {kk: vv for kk, vv in v.items()
                           if kk != "interpretation"}
                       for k, v in report["tests"].items()}, indent=2))
-    print(f"\nwrote {OUT_JSON}\nwrote {OUT_CSV}")
+    print(f"\nwrote {out_json}\nwrote {out_csv}")
 
 
 if __name__ == "__main__":

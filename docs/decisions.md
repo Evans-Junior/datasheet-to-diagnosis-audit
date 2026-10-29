@@ -1658,3 +1658,94 @@ afterwards, and it belongs in the authoring instructions in `templates.yaml`.
 **Pre-registration status.** Neither requirement was pre-registered. Both are logged
 as deviations in `preregistration.md` §9. They are instrument-level and do not
 change any hypothesis or its predicted direction.
+
+---
+
+## D036 — The inference unit is the vignette, not the prompt pair
+
+**Decision.** Family-level confirmatory p-values come from a **cluster bootstrap
+over vignettes** (10,000 resamples), not from a Wilcoxon signed-rank over pooled
+prompt pairs. Where a hypothesis rests on a single vignette the pooled Wilcoxon is
+used instead and the claim is explicitly scoped to that vignette. H3 additionally
+gets an **equivalence test against the measured nuisance floor**. Implemented in
+`src/stats.py`; logged in `docs/preregistration.md` §9.
+
+**Why.** §7 said "Wilcoxon signed-rank on paired differences within each
+hypothesis family", which reads naturally as one observation per prompt pair. That
+is the wrong unit. Each vignette contributes 3 paraphrases × 2 SPCU values = 6
+pairs of the *same clinical text*, so pooling them treats paraphrase count as
+sample size. H3's family has 8 vignettes and 96 pairs; the pooled test behaves as
+if it had 96 independent observations.
+
+**Found by simulation, not by argument.** A noise-only synthetic run — true effect
+exactly zero — was pushed through the pooled test and **rejected at p = .025** on
+one draw. The claim is not that the pooled test always over-rejects at this n; it
+is that its unit is wrong in principle, and the simulation shows the consequence is
+reachable rather than hypothetical.
+
+**Why this matters asymmetrically.** For H1 and H2 an anti-conservative test only
+overstates evidence *for* an effect, which is bad but visible. For H3 it is fatal.
+H3 asserts an **absence** of gaps where the corpus is unskewed, and §4 states that
+H3 failing damages the thesis more than H1 or H2 failing, because it would mean the
+gaps are not corpus-traceable. A test that over-rejects nulls would refute H3
+nearly automatically — the project's central mechanistic claim destroyed by an
+artefact of how many paraphrases were written. Across five noise-only seeds the
+clustered test gave p = .51, .70, .40, .68, .42 and the equivalence test supported
+H3 every time.
+
+**Why H3 needs an equivalence test at all.** A null cannot be supported by failing
+to reject it; that conflates "no effect" with "not enough data", and with 8
+vignettes there genuinely is not much data. An equivalence test needs a margin, and
+this project has a principled one rather than a conventional guess: the **nuisance
+floor** from D035. A gap smaller than what the same model produces on content-free
+prompts is, by construction, not clinical. Two one-sided tests at α = .05, so the
+90% interval must sit entirely within ±floor, and the margin used is the **largest**
+floor across the models present — equivalence must hold for the noisiest
+instrument in the set.
+
+**Cluster count is reported, because it decides what a p can mean.**
+
+| Hypothesis | Vignettes | Unit | Caveat carried in the output |
+|---|---|---|---|
+| H1 | 2 (G3-04, G3-05) | vignette bootstrap | Tail not resolvable from 2 clusters — read the interval, not the p-value |
+| H2 | 1 (G3-02) | prompt pairs within that vignette | Claim is about **this scenario**, not cardiac triage in general |
+| H3 | 8 | vignette bootstrap | — |
+
+H2's narrowing is a real loss and is recorded as one: a single-vignette hypothesis
+cannot generalise over vignettes, and no statistical choice can repair that. The
+pooled Wilcoxon's p-value entering Holm for H2 is defensible only because its claim
+is scoped to match.
+
+**Cost.** Intervals are much wider than a row-level bootstrap would give. That
+width is the honest one, because every confirmatory claim here generalises over
+vignettes and there are only a few of them.
+
+**Alternative rejected.** Wilcoxon on vignette-level means, one observation per
+vignette. Correct in unit, but H1 would then have n = 2 and H2 n = 1, and the test
+is undefined below n ≈ 6. The bootstrap keeps the right unit without requiring a
+cluster count the design does not have.
+
+---
+
+## D037 — O2 has no data path, so H4 is blocked on an authoring field
+
+**Decision.** O2 — `norm_prob` of the option naming the vignette's **target
+diagnosis** — is not computable. No template carries a `target_option` field, and
+`src/vignettes.py` does not propagate one. `src/stats.py` reports O2 and H4 as
+blocked rather than approximating them.
+
+**Why not approximate it from the reference answer.** §3 defines O2 as the mass on
+the target diagnosis **whether or not it is the concordant answer**. That
+"whether or not" is the entire point: O1 flips sign with how the question is posed
+and O2 does not, which is why H4 is stated on O2. Substituting the reference answer
+would collapse O2 into O1, and H4 would silently become a restatement of H1–H3 —
+the linkage result would be guaranteed by construction rather than measured.
+
+**What it costs.** H4 is confirmatory and carries RQ4, the project's whole claim
+that corpus skew *predicts* output gaps. Without O2 there is no RQ4.
+
+**What unblocks it.** One field per vignette, `target_option`, naming which member
+of that vignette's option set denotes the target diagnosis — a pointer into an
+existing list, not a new clinical judgement, and for several vignettes it is the
+same string as the reference answer (which is fine; what matters is that the two
+are recorded separately so the cases where they differ are visible).

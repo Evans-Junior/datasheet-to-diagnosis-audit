@@ -60,9 +60,14 @@ resumable from a manifest. See `docs/decisions.md` D007.
 ```bash
 # 0a. Validate the instrument before trusting any Delta (RQ0; ~1 min/model)
 #     Determinism, signal recovery, nuisance floor, score-key robustness.
-#     Re-run per model and checkpoint: the floor is NOT constant (D035).
-.venv/bin/python -m scripts.validate_instrument
+#     REQUIRED per model and per checkpoint: the floor is not constant and is
+#     not monotonic in size (D035). Output is slugged per model, so a model with
+#     no floor file is DROPPED from the RQ3 trend rather than silently
+#     contributing a raw gap to a floor-relative series.
+.venv/bin/python -m scripts.validate_instrument --model EleutherAI/pythia-70m
 .venv/bin/python -m scripts.validate_instrument --model EleutherAI/pythia-160m
+.venv/bin/python -m scripts.validate_instrument --model EleutherAI/pythia-410m
+# ... one per entry in configs/models.yaml; --revision for checkpoints
 
 # 0b. Confirm the pipeline end-to-end on the smallest model (~1 min)
 .venv/bin/python -m src.score_outputs --smoke
@@ -90,6 +95,8 @@ resumable from a manifest. See `docs/decisions.md` D007.
 .venv/bin/python -m src.link_analysis
 
 # 6. Statistics and figures
+#    H1-H4 with Holm-Bonferroni; family-level p from a cluster bootstrap over
+#    VIGNETTES, not pooled prompt pairs (D036). Needs the floor files from 0a.
 .venv/bin/python -m src.stats
 .venv/bin/python -m src.plots
 ```
@@ -137,7 +144,7 @@ notebooks/    exploration only; final results come from src/
 results/      tables and figures, each named by RQ
 docs/
   PROJECT_STATUS.md    full orientation: design, results, faults, what is left
-  decisions.md         every methodological choice, with its reason (D001-D035)
+  decisions.md         every methodological choice, with its reason (D001-D037)
   preregistration.md   RQ2 directional predictions, frozen before any scoring
   instrument_validation.md  RQ0: determinism, positive control, nuisance floor
   authoring_worksheet.md    guideline quote beside each blank, for filling templates
