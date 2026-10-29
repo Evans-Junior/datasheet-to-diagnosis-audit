@@ -56,8 +56,19 @@ dataset card reaches a different audience.
 | 4 | Biderman et al., *Pythia: A Suite for Analyzing Large Language Models Across Training and Scaling*, arXiv:2304.01373 | Pythia | ☐ |
 | 5 | Soldaini et al., *Dolma: an Open Corpus of Three Trillion Tokens…*, arXiv:2402.00159 | OLMo 2 | ☐ |
 | 6 | `allenai/olmo-mix-1124` dataset card | OLMo 2 | ☐ |
-| 7 | OLMo 2 report / `allenai/OLMo-2-1124-7B` model card | OLMo 2 | ☐ |
-| 8 | Qwen3 technical report and model card | Contrast (RQ5) | ☐ |
+| 7a | *2 OLMo 2 Furious* (OLMo 2 report), arXiv:2501.00656 | OLMo 2 | ☑ 2026-10-28 |
+| 7b | `allenai/OLMo-2-1124-7B` model card | OLMo 2 | ☑ 2026-10-28 |
+| 8a | *Qwen3 Technical Report*, arXiv:2505.09388 | Contrast (RQ5) | ☑ 2026-10-28 |
+| 8b | `Qwen/Qwen3-8B` model card | Contrast (RQ5) | ☑ 2026-10-28 |
+
+**Ten coding units, not eight.** Entries 7 and 8 each split into a report and a
+card. They are coded separately for the reason given above: a risk stated in a
+58-page report and absent from the model card a practitioner actually reads are
+different facts, and collapsing them would hide the more important one. Documents
+1–6 were retrieved on the same date; see `data/raw/rq6/manifest.json`.
+
+Retrieval is `scripts/rq6_fetch.py`, which checks each file against an expected
+title fragment and refuses a mismatch rather than coding the wrong document.
 
 **Document 8 is coded for a specific reason.** Qwen3 is the weights-only contrast
 model: its training data is not released. Coding its documentation makes the RQ5
@@ -317,3 +328,108 @@ from three projects is a case study. The finding's force comes from the pairing
 with RQ1 and RQ2 — that a measurable skew and a measurable output gap exist *in the
 same corpus and models* whose documentation did not flag them — not from the
 breadth of the documentation sample.
+
+
+---
+
+## 9. How to code from a passage — the procedure
+
+`docs/rq6_passages.csv` holds 136 candidate passages extracted by
+`scripts/rq6_worksheet.py`, each tagged with the dimensions it *may* bear on.
+`docs/rq6_coding_sheet.csv` is the blank sheet: 10 documents × 8 dimensions = 80
+rows, with separate columns per coder.
+
+**The candidate tags are not codes and the extraction is over-inclusive on
+purpose.** A tag means "a human must look at this", nothing more. Reading a false
+candidate costs thirty seconds; missing a real one produces a published absence
+claim that is false.
+
+### The five steps, per document × dimension
+
+1. **Filter** `rq6_passages.csv` to that document and that dimension tag.
+2. **Read each candidate** and ask the dimension's own question, using the
+   boundary rules in §3. Most candidates will support nothing.
+3. **Choose the level** the strongest passage supports — the *highest* level the
+   document genuinely reaches, not the average of its passages.
+4. **Record the evidence.** Paste the `passage_id` and the verbatim quote into
+   your column. A code with no quote is not a code; it is an impression.
+5. **Record which search steps you completed** (§4) in the last column. A level 0
+   without all three is an unfinished coding, not a finding.
+
+Then add D7 (measurement / assertion / reported) and D8 (traceability) for any
+D1 or D2 code above 0.
+
+### What this looks like in practice
+
+Three worked examples follow. They are chosen because the judgement in each is
+**hard**, and they are written as a *reasoning pattern, not as this project's
+codes*. You assign the codes, independently, and you may disagree with every one
+of these.
+
+> ⚠ **Anchoring risk, stated plainly.** Reading someone else's reasoning before
+> coding biases you toward it, and κ computed over anchored coding overstates
+> agreement. If you find yourself agreeing with any example below *without having
+> checked the document yourself*, recode that document from the passages alone
+> and ignore what is written here. The §3 `ANCHOR:` lines are still empty for
+> exactly this reason: they are filled from what the two of you agree on at
+> calibration, not from this section.
+
+**Example 1 — the referral, and why D7 exists.**
+The Pythia model card says:
+
+> "This model was trained on the Pile, a dataset known to contain profanity and
+> texts that are lewd or otherwise offensive. See Section 6 of the Pile paper for
+> a discussion of documented biases with regards to gender, religion, and race."
+
+The reasoning to run: gender is named, so D1 is not obviously 0. But does the card
+make a claim about the Pile's gender distribution? No — it points somewhere else
+that does. So the question becomes whether a pointer is a disclosure. Both answers
+are arguable, and **the D7 qualifier is what makes the choice recordable rather
+than hidden**: `R` means "a measurement exists and is cited, not reproduced here".
+Whatever level you give D1, mark D7 = R, and the distinction between a card that
+discloses and a card that refers survives into the results table.
+
+**Example 2 — the false positive the term search cannot filter.**
+The OLMo 2 report returns three `health` hits. All three are:
+
+> "embedding norms settle in a **healthy** region as training progresses"
+> "GPU **health** checks: Beaker executes a simple program prior to running
+> workloads"
+> "Cordoning: Beaker supports cordoning nodes as an override for the automatic
+> **health** checks"
+
+None is medical. Its five `bias` hits are likewise all architectural — *"No
+biases: we exclude all bias terms from our architecture"*. So on D3 the correct
+code is 0 **despite three hits**, and on D2 it is 0 despite five.
+
+This is the single most important thing to internalise: **a hit count is a place to
+look, never a code.** Had the hit counts been written up directly, this project
+would have reported that the OLMo 2 report discusses health and bias. It does not
+discuss either. The opposite error is just as live — the Pythia paper's 60 `bias`
+hits are real discussions of bias, but of *model behaviour and mitigation*, not of
+corpus composition, and whether any of them says what the Pile's gender
+distribution **is** has to be read, not counted.
+
+**Example 3 — a dimension where the honest code is uncomfortable.**
+The Pythia card's out-of-scope section is unusually strong:
+
+> "The Pythia Suite is **not** intended for deployment. It is not a in itself a
+> product and cannot be used for human-facing interactions."
+
+It then names specific out-of-scope uses — translation, non-English generation,
+genre prose, commercial chatbots — and **medical or health use is not among
+them**, though "not for human-facing interactions" arguably covers it. Under §3 D6
+that is the 2-versus-3 boundary, and it has to be argued rather than felt.
+
+Note what the code does *not* do: a high D6 is a point in the documentation's
+favour and must be reported as one, even though it complicates the paper's
+argument. It still does not answer RQ6, because a scope statement is a disclaimer
+about **use** while D1–D4 are disclosures about **content**. Do not let a strong
+D6 pull your D4 upward, and do not let a weak D4 pull your D6 down.
+
+### When you disagree
+
+Record both codes, resolve by discussion, and **write the resolving rule into §3**
+so the next disagreement of that shape resolves itself. Reliability is computed on
+the **pre-adjudication** codes (§6.5) — so do not quietly align before recording,
+or the κ you report will measure your conversation rather than the codebook.

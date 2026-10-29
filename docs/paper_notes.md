@@ -666,3 +666,82 @@ substantial and unexamined — Pythia is a model suite whose stated purpose is b
 research, so those hits may be about *studying* bias rather than about the corpus's
 composition. That distinction is exactly what D7 (measurement vs assertion) exists
 to record, and it cannot be settled from a hit count.
+
+
+---
+
+## §5b — Two things the full read changed, one of them about the project's novelty
+
+### The OLMo 2 absence is cleaner than the counts suggested
+
+Read in context, the OLMo 2 report's hits evaporate:
+
+- All **five** `bias` hits are architectural. *"No biases: we exclude all bias
+  terms from our architecture"*; *"RMSNorm … without a bias term"*; a table row
+  reading `Biases None None None`; and one reference title (*"…a simple way to
+  debias automatic evaluators"*).
+- All **three** `health` hits are infrastructure. *"embedding norms settle in a
+  healthy region"*, *"GPU health checks"*, *"automatic health checks"*.
+
+So a 58-page report on a fully open model family contains **no discussion of
+social bias at all**, and no medical content discussion. The model card carries one
+generic sentence — *"Such content may also be produced unintentionally, especially
+in cases involving bias, so we recommend that users consider the risks"* — with
+gender unspecified. Had the hit counts gone into the write-up unread, the paper
+would have claimed this report discusses health and bias. It discusses neither.
+
+### The Pythia paper already did a causal version of H4, and this must be cited
+
+This is the find that matters most, and it is a threat to the novelty claim if
+discovered by a reviewer rather than by us. Pythia's §"Mitigating Gender Bias"
+reports a **counterfactual retraining intervention**:
+
+> "we analyze whether deliberately modifying the frequency of gendered terms in
+> the pretraining data of a language model can have an impact on its downstream
+> behavior and biases"
+
+> "we … counterfactually retrain models such that the last 7% and 21% of model
+> training has a majority of pronouns modified such that their grammatical gender
+> is feminine rather than masculine"
+
+> "To test the effects of corpus statistics on the biases learned by language
+> models, we repeat segments of pretraining on specific models, with altered
+> corpus statistics."
+
+Measured on WinoBias and CrowS-Pairs, with a clear effect across scale. So the
+claim "corpus gender statistics affect downstream gender bias" is **already
+established for Pythia specifically, causally, by intervention** — a stronger
+design than H4's observational correlation.
+
+**What this does and does not cost us.** H4 cannot be presented as establishing
+that link for the first time; written that way, the paper would be visibly unaware
+of the suite's own flagship result. Rewritten, three things remain genuinely new:
+
+1. **Domain and outcome.** They measured occupation–pronoun stereotyping
+   (WinoBias) and stereotype preference (CrowS-Pairs). We measure
+   **guideline-concordance of clinical decisions**, where there is an externally
+   defined correct answer and a patient-facing consequence. "Does it associate
+   nurses with women" and "does it withhold an ADHD referral from a woman given
+   identical findings" are different claims about different harms.
+2. **Concept-level rather than pronoun-level corpus measurement.** Their
+   intervention manipulated *pronoun grammatical gender* wholesale. RQ1 measures
+   the gender skew of **specific clinical concepts** — heart attack −1.39,
+   attention deficit −1.16 — which is what lets RQ4 ask whether the gap appears
+   *where the skew is*, rather than whether gender signal matters in general.
+   H3's discriminant null is only meaningful at concept level.
+3. **The documentation arm.** RQ6 has no counterpart in their work.
+
+**And it hands us an opportunity we should state even if we do not take it.**
+Pythia exists to support exactly this: 154 checkpoints and a public retraining
+codebase. The strongest possible version of this project would intervene on the
+*clinical concept* frequencies and retrain, converting RQ4 from correlation to
+causation using the mechanism its own authors built. That is out of scope for a
+course project on a 48 GB laptop, and saying so explicitly — naming the design we
+would run with more compute — is better than leaving a reviewer to propose it.
+
+**Positioning, in one sentence.** The Pile authors measured gender bias in their
+corpus but not in clinical concepts; the Pythia authors showed corpus gender
+statistics causally affect stereotype benchmarks but not clinical advice; and
+neither connected either finding to the health applications the Pile was
+explicitly assembled to support. That is the gap, and it is narrower and more
+defensible than "nobody has looked at this".
