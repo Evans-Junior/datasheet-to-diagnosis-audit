@@ -26,6 +26,21 @@ prompt:
 # ---------------------------------------------------------------------------
 audit:
   pythia_ladder:              # RQ3: gender gap vs model scale
+    # ALL SEVEN ARE KEPT (decided 2026-11-07). D059 originally proposed dropping
+    # pythia-410m and pythia-1b to hold the set at ten when DCLM was added. That
+    # is reversed: all seven stay. The DCLM arms were then withdrawn entirely
+    # (D070), so the set is TEN -- 7 Pythia + 2 OLMo-2 + 1 Qwen contrast -- and
+    # not the twelve an earlier version of this comment described.
+    # Reasons for keeping all seven, in order:
+    #   1. 70m and 160m carry the evidence for D042 -- the documented point at
+    #      which the instrument stops recovering a planted answer. Deleting them
+    #      deletes the support for reading every Pythia null as
+    #      instrument-limited rather than as fairness.
+    #   2. All seven fail the §6 gate (0.40x, -0.12x, -0.05x, -0.75x, -0.30x,
+    #      -0.71x, -0.52x), so "weakest" never discriminated between them.
+    #   3. The Pile is now the ONLY corpus not nested inside another (D065), so
+    #      the Pythia family carries the whole independent-corpus arm alone.
+    #      Thinning it is exactly the wrong move.
     corpus_index: v4_piletrain_llama
     revision: main
     sizes:
@@ -60,6 +75,43 @@ audit:
     models:
       - {id: allenai/OLMo-2-1124-7B,          weights_gb: 14.2, role: base}
       - {id: allenai/OLMo-2-1124-7B-Instruct, weights_gb: 14.2, role: instruct}
+
+# ---------------------------------------------------------------------------
+# WITHDRAWN 2026-11-07 — the `dclm:` family was added (D059), its rationale was
+# withdrawn (D065), and the family itself is now withdrawn (D070). It is kept
+# here as a commented block, not deleted, because reinstating it is a plausible
+# post-submission robustness check and the licence note must not be lost.
+#
+# Why it is not scored:
+#   1. It is NOT an independent third corpus. olmo-mix-1124 is ~95%
+#      DCLM-baseline by tokens (3.70T of 3.90T on the dataset card, "with no
+#      additional filtering"); exact counts confirm it -- "she has" returns
+#      94,109,792 in olmo-mix against 93,884,699 in DCLM, ratio 1.0024 (D065).
+#   2. The fallback rationale -- that DCLM-7B vs OLMo-2-7B is a near-controlled
+#      comparison of TRAINING RECIPE with data held almost constant, and that
+#      the ~5% difference (pes2o, arXiv) would diverge on biomedical concepts --
+#      DID NOT SURVIVE MEASUREMENT. Median co-occurrence count ratio
+#      olmo / DCLM = 1.0071; median |delta skew_log2| = 0.0028. See
+#      docs/model_selection.md section 6. The claimed divergence was not there.
+#   3. Licence UNRESOLVED: tag `apple-ascl`, card body "Apple Sample Code
+#      License", no LICENSE file in either repository (404), and the family is
+#      not uniformly licensed (TRI-ML/DCLM-1B-IT is Apache-2.0). Do NOT
+#      redistribute weights or publish a derived model without resolving this.
+#
+# If time allows after the primary results, reinstate `dclm-7b-it` ALONE as a
+# one-model robustness check against OLMo-2-7B-Instruct. Adding the base model
+# too doubles the cost for a comparison the instruct pair already makes.
+#
+# The CORPUS sweep stays live: `v4_dclm-baseline_llama` remains in
+# configs/terms.yaml and its cached counts are the evidence for D069 and for the
+# sharpened D054. Removing the model arms does not remove the corpus result.
+#
+#  dclm:
+#    corpus_index: v4_dclm-baseline_llama
+#    corpus_nested_in: v4_olmo-mix-1124_llama
+#    models:
+#      - {id: apple/DCLM-7B,            weights_gb: 13.8, role: base}
+#      - {id: mlfoundations/dclm-7b-it, weights_gb: 13.8, role: instruct}
 
 # ---------------------------------------------------------------------------
 # CONTRAST — closed training data. RQ5 only. Full precision: a quantized

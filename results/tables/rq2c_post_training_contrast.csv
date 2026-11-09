@@ -1,0 +1,2 @@
+base_model,tuned_model,revision,merging_base,merging_tuned,rq2c_delta,floor_base,floor_tuned,floor_combined,times_combined_floor,exceeds_combined_floor,base_inside_own_floor,tuned_exceeds_own_floor,n_vignettes,p_resolution_limit,verification_status,prompt_hash
+allenai/OLMo-2-1124-7B,allenai/OLMo-2-1124-7B-Instruct,main,0.053171662903555655,0.16408263703860632,0.11091097413505066,0.0097173643385863,0.0099267884380526,0.013891302976419584,7.9842023691601485,True,False,True,4,0.0625,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9

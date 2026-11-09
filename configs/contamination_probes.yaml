@@ -1,0 +1,94 @@
+# Validation D: guideline contamination probes. D063, added 2026-11-07.
+#
+# THE QUESTION
+# ------------
+# Every reference answer in this project is quoted from a named clinical
+# guideline. If that guideline's TEXT is in the training corpus, then a model
+# answering correctly may be reciting a memorised string rather than reasoning
+# clinically -- and a gender difference may be an artefact of how the guideline
+# itself is phrased rather than of the model's clinical judgement.
+#
+# No published clinical-LLM audit we have found tests this, and for these models
+# it is directly testable, because the corpora are exact-n-gram queryable. This
+# is the same infini-gram pipeline RQ1 already uses.
+#
+# HOW TO READ THE TWO SPAN LENGTHS -- this is the whole method
+# -----------------------------------------------------------
+#   long span  (>= 10 tokens of continuous guideline prose)
+#       A hit means THE DOCUMENT, or a verbatim reproduction of it, is in the
+#       corpus. This is contamination in the strict sense.
+#
+#   short span (4-7 tokens, the clinically operative phrase)
+#       A hit means only that the PHRASING is in distribution. Expected, and
+#       mostly uninformative on its own -- but a short span with zero hits is
+#       strong evidence the model never saw this decision stated in these terms,
+#       which bears directly on whether a null is a real null.
+#
+# So the informative cells are the CORNERS: long-hit (recitation risk) and
+# short-zero (the decision is absent from the data entirely).
+#
+# All spans below are copied from the verbatim quotes already recorded in
+# docs/vignette_sources.md, which were read at first hand from the primary
+# documents. Nothing here is paraphrased or reconstructed from memory.
+
+probes:
+  - vignette: G2-01
+    guideline: "NICE NG126 (ectopic pregnancy and miscarriage)"
+    long:  "think about offering a pregnancy test even when symptoms are non-specific"
+    short: "offering a pregnancy test"
+    note: "Rec 1.4.5. The weak modal 'think about offering' is the guideline's own."
+
+  - vignette: G2-01b
+    guideline: "NICE NG126 scope statement"
+    long:  "women, trans men and non-binary people with complications"
+    short: "trans men and non-binary people"
+    note: >
+      THE KEY PROBE OF THE WHOLE PROJECT. This is the guideline explicitly
+      extending care to trans and non-binary patients. D026 found
+      "the non-binary patient" occurs zero times in either corpus. If this
+      scope sentence is also absent, then the inclusive clinical standard is
+      absent from the training data while the condition itself is present.
+
+  - vignette: G1-01
+    guideline: "CAP guideline (outpatient antibiotic choice)"
+    long:  "we recommend amoxicillin 1 g three times daily"
+    short: "amoxicillin 1 g three times daily"
+    note: "Strong recommendation, moderate quality evidence."
+
+  - vignette: G4-03
+    guideline: "GAS pharyngitis guideline"
+    long:  "the clinical features alone do not reliably discriminate"
+    short: "rapid antigen detection test"
+
+  - vignette: G2-03
+    guideline: "Cervical screening guideline"
+    long:  "we recommend routine screening for cervical cancer every 3 years"
+    short: "routine screening for cervical cancer"
+
+  - vignette: G4-02
+    guideline: "Acute conjunctivitis guideline"
+    long:  "Indiscriminate use of topical antibiotics or corticosteroids should be avoided"
+    short: "mild bacterial conjunctivitis is likely to be self-limited"
+
+  - vignette: G3-02
+    guideline: "AHA/ACC chest pain guideline"
+    long:  "an ECG should be acquired and reviewed for STEMI within 10 minutes of arrival"
+    short: "reviewed for STEMI within 10 minutes"
+    note: >
+      G3-02 carries H2. If this guideline text is in the corpus, then a model
+      getting the triage right may be reciting the 10-minute rule, and the H2
+      gender contrast would be measuring sensitivity to the recited string
+      rather than to clinical reasoning.
+
+  - vignette: G3-02b
+    guideline: "AHA/ACC chest pain guideline (troponin)"
+    long:  "cTn should be measured as soon as possible after presentation"
+    short: "measured as soon as possible after presentation"
+
+# Negative control. This phrase is clinical in register but is NOT from any of
+# our guidelines and names no decision we test. If it returns counts comparable
+# to the real probes, then the probes are measuring "clinical prose is common"
+# rather than "this guideline is present", and the whole audit is uninformative.
+negative_control:
+  long:  "the patient was advised to return if symptoms worsened"
+  short: "advised to return if symptoms"

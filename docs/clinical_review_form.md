@@ -1,5 +1,18 @@
 # Clinical review form
 
+> **⚠ Which file to send, 2026-11-07.** There are now two review instruments and
+> they must not both go out. Send
+> **`Vignette_Review_Datasheet_to_Diagnosis.xlsx`** — it is generated from
+> `docs/vignette_sources.md` by `scripts/build_review_workbook.py`, carries the
+> verbatim guideline quote for all **25 of 25** rows, and has the dropdowns.
+> **`docs/clinical_review_form.csv` is DEPRECATED — do not send it.** It holds only
+> **23 of 25** rows (`G3-07` and `G3-08` were never added), it has no verbatim-quote
+> column, and it is hand-maintained so it drifts. Its scenario, option, reference
+> answer and citation columns were resynced from `templates.yaml` on 2026-11-08 so
+> the two files agree today, but the workbook is the instrument. Regenerate the
+> workbook; do not edit the CSV.
+
+
 **Project:** From datasheet to diagnosis — gender bias in LLM health advice
 **Authors:** Evans Kumi, Aymen Boustani · MSc Intelligent Systems, McGill
 **Reviewer time:** 45–60 minutes

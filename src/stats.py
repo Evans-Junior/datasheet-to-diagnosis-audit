@@ -51,6 +51,8 @@ import pandas as pd
 import yaml
 from scipy import stats as sps
 from statsmodels.stats.multitest import multipletests
+from src.provenance import write_table   # D090: stamps prompt_hash
+
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "results/raw"
@@ -71,7 +73,18 @@ PAIR_KEYS = ["model_id", "revision", "score_key", "vignette_id", "paraphrase",
 # §4. Vignette membership and direction, transcribed. "less" means the
 # prediction is Delta < 0 and the test is one-sided in that direction.
 HYPOTHESES = {
-    "H1": {"vignettes": ["G3-04", "G3-05"], "outcome": "o1",
+    # H1's membership was extended on 2026-11-08 (D084) to the FOUR referral
+    # items Group 3 now holds. D066 was adopted as a preregistration amendment
+    # specifically to "bring k to 6" for the Group 3 confirmatory test, and
+    # added G3-07 and G3-08 for that purpose -- but the change was never carried
+    # into this dict, so the test kept running on two clusters and the amendment
+    # bought nothing. Extending it here is implementing D066, not a new decision.
+    # Only referral items are included, because H1's claim is about referral:
+    # G3-01 (analgesia) would take k to 5 and bring the one-sided resolution
+    # limit under alpha, but only by broadening what is claimed in order to gain
+    # power, which is exactly what D066 forbade itself. The honest route to .05
+    # is a FIFTH REFERRAL vignette. See D084.
+    "H1": {"vignettes": ["G3-04", "G3-05", "G3-07", "G3-08"], "outcome": "o1",
            "alternative": "less",
            "claim": "referral endorsed less readily for the woman arm"},
     "H2": {"vignettes": ["G3-02"], "outcome": "o1",
@@ -82,8 +95,12 @@ HYPOTHESES = {
                           "the AHA/ACC chest pain guideline recommends anything "
                           "sex-differentiated for this scenario. Not retained "
                           "as a weaker claim."},
+    # G4-03 -> G4-03b: a like-for-like swap, not a membership change. The
+    # clinical review rejected G4-03 for having two defensible answers; G4-03b
+    # is the same construct with an unambiguous one. Leaving G4-03 here would
+    # silently drop H3 from 8 clusters to 7, since the row is now blocked.
     "H3": {"vignettes": ["G1-01", "G1-02", "G1-03", "G1-04", "G1-05",
-                         "G4-01", "G4-02", "G4-03"], "outcome": "o1",
+                         "G4-01", "G4-02", "G4-03b"], "outcome": "o1",
            "alternative": "two-sided",
            "claim": "no systematic gap where the corpus is unskewed; supported "
                     "when the 95% interval on the family estimate contains 0"},
@@ -124,13 +141,151 @@ def load_floors() -> dict[tuple[str, str], float]:
     for f in sorted(TABLES.glob("rq0_instrument_validation__*.json")):
         d = json.loads(f.read_text())
         t3 = d.get("tests", {}).get("T3_nuisance_floor", {})
-        if "pmi_floor_max" not in t3:
+        # The floor must be measured on the SAME score key as the effect it is
+        # compared against. The convenience field `pmi_floor_max` is only right
+        # while pmi is primary; a sensitivity run under another key that reused
+        # it would judge that key's margins against pmi's noise and reach a
+        # verdict about neither.
+        by_key = t3.get("max_abs_delta_norm_prob_by_key", {})
+        if PRIMARY_SCORE_KEY in by_key:
+            val = max(float(x) for x in by_key[PRIMARY_SCORE_KEY])
+        elif PRIMARY_SCORE_KEY == "pmi" and "pmi_floor_max" in t3:
+            val = float(t3["pmi_floor_max"])
+        else:
             continue
-        floors[(d["model"], d.get("revision", "main"))] = float(t3["pmi_floor_max"])
+        floors[(d["model"], d.get("revision", "main"))] = val
     if not floors:
         print("WARNING: no per-model floor files found. RQ3 will be skipped; "
               "run scripts.validate_instrument per model (D035).")
     return floors
+
+
+def load_matched_floors() -> dict[tuple[str, str, int], float]:
+    """Matched-geometry nuisance floor per (model, revision, option count).
+
+    D052. The legacy floor in `load_floors` is measured on a content-free
+    bureaucratic frame scored over four arbitrary codes, then used to gate
+    binary clinical items: four mismatches at once (option count, option
+    tokenisation, prompt length, and a max over 12 draws against one targeted
+    delta), which inflated it by roughly 8.5x. This one is the SAME statistic as
+    the effect -- the sex-parameter flip on the target option -- measured on
+    Group 4, which carries no sex-specific content, and stratified by option
+    count so a binary contrast is gated by a binary floor.
+
+    Built by `scripts/matched_floor.py` from the already-scored Group 4 rows.
+    """
+    f = TABLES / "i1_matched_floor.csv"
+    if not f.exists():
+        print("WARNING: no matched floor table; run scripts/matched_floor.py "
+              "(D052). Falling back to the legacy floor.")
+        return {}
+    d_all = pd.read_csv(f)
+    d = d_all[d_all["score_key"] == PRIMARY_SCORE_KEY]
+
+    # STALENESS GUARD, 2026-11-08 (D087). This table is a BUILD ARTEFACT of a
+    # previous scoring run: scripts/matched_floor.py writes it from scored
+    # Group 4 rows, and nothing re-runs it when the vignette set changes. It was
+    # found five days stale, built from 2 binary vignettes -- one of which was
+    # G4-03, REJECTED on clinical review and excluded from scoring. The floor
+    # gates every "is this real?" judgement in the study, so a floor built from
+    # a vignette that is no longer in the study is the most consequential kind
+    # of stale file here, and it was completely silent. Compare the vignette ids
+    # the floor was built from against Group 4 as it stands now, and say so.
+    floor_vigs = set()
+    for s in d["per_vignette"].dropna().astype(str):
+        for part in s.split(";"):
+            if "=" in part:
+                floor_vigs.add(part.split("=")[0].strip())
+    try:
+        v = pd.read_csv(ROOT / "data/vignettes/vignettes.csv")
+        v = v[(v["group"].astype(str) == "4") & (v["analysis_ready"] == True)]  # noqa: E712
+        v = v[v.get("blocked_on", pd.Series(dtype=str))
+              .fillna("").astype(str).str.strip() == ""] if "blocked_on" in v else v
+        now = set(v["vignette_id"].unique())
+    except Exception:  # noqa: BLE001 - a missing/odd CSV must not kill stats
+        now = set()
+    if now and floor_vigs != now:
+        missing, extra = sorted(now - floor_vigs), sorted(floor_vigs - now)
+        print("!! MATCHED FLOOR IS STALE -- it does not describe current Group 4.")
+        if extra:
+            print(f"   floor was built from vignettes NO LONGER in the study: "
+                  f"{', '.join(extra)}")
+        if missing:
+            print(f"   Group 4 vignettes NOT in the floor: {', '.join(missing)}")
+        print("   The floor gates every exceeds_floor / margin_over_floor / "
+              "times_floor value below. Run: "
+              ".venv/bin/python scripts/matched_floor.py  (D087)")
+    else:
+        print(f"floor built from {len(floor_vigs)} Group 4 vignette(s), "
+              f"matching the current set")
+
+    # D090 (finding 3b). The guard above checks only PRIMARY_SCORE_KEY. The
+    # other score keys in this same file are sensitivity analyses
+    # (results/tables__mean_logprob/, results/tables__sum_logprob/) and they
+    # were left holding floors built from 2 vignettes, one of them the REJECTED
+    # G4-03 -- exactly the condition D087 was written to catch, surviving in the
+    # keys the guard did not look at. Checking the active key only is how a
+    # guard becomes decoration, so every key present is now reported.
+    for key, grp in d_all.groupby("score_key"):
+        if key == PRIMARY_SCORE_KEY:
+            continue
+        kv = set()
+        for sv in grp["per_vignette"].dropna().astype(str):
+            for part in sv.split(";"):
+                if "=" in part:
+                    kv.add(part.split("=")[0].strip())
+        if now and kv != now:
+            print(f"!! floor stratum '{key}' is STALE (not used by this run, "
+                  f"which scores '{PRIMARY_SCORE_KEY}').")
+            if kv - now:
+                print(f"   built from vignettes no longer in the study: "
+                      f"{', '.join(sorted(kv - now))}")
+            if now - kv:
+                print(f"   missing Group 4 vignettes: "
+                      f"{', '.join(sorted(now - kv))}")
+            print(f"   Do NOT read results/tables__{key}/ until "
+                  f"scripts/matched_floor.py is re-run under --score-key {key}.")
+
+    return {(r.model_id, r.revision, int(r.n_options)):
+            float(r.floor_max_abs_vignette) for r in d.itertuples()}
+
+
+def floor_for(matched: dict[tuple[str, str, int], float], mid: str, rev: str,
+              n_options: set[int]) -> float | None:
+    """The floor for a contrast spanning these option counts.
+
+    Takes the MAXIMUM over the strata present. A test that pools binary and
+    four-option vignettes must clear the noisier of the two geometries, not the
+    quieter one.
+    """
+    vals = [matched[(mid, rev, n)] for n in n_options
+            if (mid, rev, n) in matched]
+    return max(vals) if vals else None
+
+
+def option_counts(raw: pd.DataFrame) -> dict[str, int]:
+    """Options per vignette: the stratifier for `floor_for`."""
+    return raw.groupby("vignette_id")["option"].nunique().astype(int).to_dict()
+
+
+def load_t2_pmi() -> dict[tuple[str, str], bool]:
+    """Per model, did PMI recover an answer planted in the prompt? (D042)
+
+    Read from the same RQ0 validator files as the floor. A model that fails T2
+    cannot distinguish "no gender gap" from "cannot see the gap", so its nulls
+    are instrument-limited rather than negative findings. pythia-1.4b fails this
+    at probe 1 while passing under every other score key.
+    """
+    ok: dict[tuple[str, str], bool] = {}
+    for f in sorted(TABLES.glob("rq0_instrument_validation__*.json")):
+        d = json.loads(f.read_text())
+        probes = (d.get("tests", {}).get("T2_signal_recovery", {})
+                   .get("by_score_key", {}).get(PRIMARY_SCORE_KEY))
+        if not probes:
+            continue
+        ok[(d["model"], d.get("revision", "main"))] = all(
+            bool(pr.get("recovered")) for pr in probes)
+    return ok
 
 
 def load_target_options() -> dict[str, str]:
@@ -181,11 +336,20 @@ def outcome_rows(df: pd.DataFrame, outcome: str,
     # duplicate string, or a reference answer that does not appear verbatim in
     # the option set, both land here -- and both are authoring faults that would
     # otherwise produce a quietly wrong outcome.
-    dup = d["prompt_id"].duplicated().sum()
+    # The unique key is the prompt WITHIN a model run, not the prompt alone:
+    # the same prompt_id legitimately appears once per (model, revision,
+    # score_key). Checking prompt_id by itself flags every model after the
+    # first, which is why this passed on the single-model smoke run and failed
+    # the moment the ladder had four.
+    run_keys = [c for c in ("model_id", "revision", "score_key") if c in d.columns]
+    dup = int(d.duplicated(subset=run_keys + ["prompt_id"]).sum())
     if dup:
+        bad = (d[d.duplicated(subset=run_keys + ["prompt_id"], keep=False)]
+               .groupby("vignette_id")["option"].unique())
         raise RuntimeError(
-            f"{outcome}: {dup} prompts match more than one option. The "
-            f"reference/target string is not unique within its option set.")
+            f"{outcome}: {dup} prompts match more than one option within a "
+            f"single model run. The reference/target string is not unique "
+            f"within its option set:\n{bad.to_string()}")
     return d
 
 
@@ -288,6 +452,40 @@ def cluster_boot_p(deltas: pd.DataFrame, alternative: str,
     return float(min(1.0, max(share, 1.0 / n_boot)))
 
 
+def cluster_signflip_p(deltas: pd.DataFrame, alternative: str) -> tuple[float, float]:
+    """Exact randomisation p over cluster means, and the best p that k clusters allow.
+
+    The cluster bootstrap resamples k vignettes with replacement, so when every
+    cluster falls on the same side of zero NO resample can cross it, the share on
+    the null side is exactly 0, and the implementation floors it at 1/n_boot.
+    At k = 2 that turns "both items agree in sign" -- one bit of evidence -- into
+    p = .0001. The number is arithmetically right and evidentially absurd.
+
+    This is the standard remedy for few clusters: flip the signs of the k cluster
+    means over all 2**k assignments and count how many are at least as extreme as
+    the observed mean. Exact, no resampling, and its smallest attainable value is
+    2**-k -- 0.25 at two clusters, 0.0039 at eight. Returned alongside that bound
+    so a reported p can never claim more resolution than the design supports.
+    """
+    m = deltas.groupby("vignette_id")["delta"].mean().to_numpy(dtype=float)
+    k = m.size
+    if k == 0:
+        return float("nan"), float("nan")
+    resolution = 2.0 ** (-k)
+    if k > 20:                      # 2**20 sign vectors is the practical ceiling
+        return float("nan"), resolution
+    signs = (((np.arange(2 ** k)[:, None] >> np.arange(k)) & 1) * 2 - 1)
+    means = (signs * m).mean(axis=1)
+    obs = float(m.mean())
+    if alternative == "less":
+        p = float(np.mean(means <= obs))
+    elif alternative == "greater":
+        p = float(np.mean(means >= obs))
+    else:
+        p = float(np.mean(np.abs(means) >= abs(obs)))
+    return p, resolution
+
+
 def equivalence_within_floor(deltas: pd.DataFrame, floor: float) -> dict:
     """Is the gap bounded inside the instrument's own noise? (H3)
 
@@ -340,7 +538,13 @@ def test_family(deltas: pd.DataFrame, spec: dict,
         return {"n_pairs": 0, "n_vignettes": 0, "p": float("nan")}
     stat, p_wil = wilcoxon(sub["delta"].to_numpy(), spec["alternative"])
     est, lo, hi = cluster_boot_ci(sub)
-    p_boot = cluster_boot_p(sub, spec["alternative"])
+    p_boot_raw = cluster_boot_p(sub, spec["alternative"])
+    p_flip, p_resolution = cluster_signflip_p(sub, spec["alternative"])
+    # A p-value may not be reported below the resolution the cluster count
+    # supports. Clamping rather than discarding keeps the preregistered test as
+    # the test while refusing it precision it has not earned.
+    p_boot = max(p_boot_raw, p_resolution) if np.isfinite(p_resolution) \
+        else p_boot_raw
     n_vig = int(sub["vignette_id"].nunique())
     # How many vignettes a hypothesis rests on decides what the p-value can
     # legitimately mean, so it is resolved here rather than left to the reader.
@@ -360,9 +564,10 @@ def test_family(deltas: pd.DataFrame, spec: dict,
                  "not generalise to the condition or the family")
     elif n_vig < 4:
         unit, p_primary = "vignette_cluster_bootstrap", p_boot
-        scope = (f"only {n_vig} clusters: the bootstrap tail is not resolvable, "
-                 f"treat a small p as directional evidence and read the CI, not "
-                 f"the p-value")
+        scope = (f"only {n_vig} clusters: the finest p this design can resolve "
+                 f"is 2^-{n_vig} = {p_resolution:.3g}, and the unclamped "
+                 f"bootstrap returned {p_boot_raw:.2e}. Read the CI and the "
+                 f"effect size against the nuisance floor, not the p-value")
     else:
         unit, p_primary = "vignette_cluster_bootstrap", p_boot
         scope = ""
@@ -376,6 +581,9 @@ def test_family(deltas: pd.DataFrame, spec: dict,
            # cluster_boot_p shows it is anti-conservative at this pair count.
            "wilcoxon_W": stat, "p_wilcoxon_pooled": p_wil,
            "p_cluster_bootstrap": p_boot,
+           "p_cluster_bootstrap_unclamped": p_boot_raw,
+           "p_cluster_signflip_exact": p_flip,
+           "p_resolution_limit_2^-k": p_resolution,
            # The p that enters Holm, chosen by cluster count above.
            "p": p_primary,
            "ci_contains_zero": bool(lo <= 0 <= hi) if np.isfinite(lo) else None}
@@ -426,8 +634,227 @@ def n_params(model_id: str) -> float:
     return v / 1000.0 if m.group(2) == "m" else v
 
 
+def identity_spcu_merging(deltas: pd.DataFrame,
+                             floors: dict[tuple[str, str], float]) -> pd.DataFrame:
+    """Does the model read gender IDENTITY as the sex parameter? (exploratory)
+
+    NOT preregistered. It surfaced from the §6 positive control and is reported
+    as exploratory, outside the Holm-Bonferroni family (cf. D027).
+
+    Group 2 items are the ones where the guideline answer genuinely depends on
+    the Sex Parameter for Clinical Use. Every contrast here holds SPCU FIXED and
+    varies only the identity label, so the clinically correct answer is identical
+    across the pair and any Delta is unwarranted by construction.
+
+    The statistic is the interaction:
+
+        merging = mean Delta(woman - man | SPCU female)
+                   - mean Delta(woman - man | SPCU male)
+
+    Positive means the identity label is pulling the answer the way the *sex
+    parameter* would: accuracy rises when identity agrees with SPCU and falls
+    when they conflict. That is the configuration of a transgender patient, and
+    the HL7 Gender Harmony Model separates the two fields precisely so that a
+    system cannot substitute one for the other.
+
+    With three Group 2 vignettes the finest p a cluster test can resolve is
+    2**-3 = 0.125 (D044), so significance is unavailable by construction and is
+    not claimed. What is reported is the effect size against the model's own
+    nuisance floor, plus whether all three vignettes agree in sign.
+    """
+    d = deltas[(deltas["outcome"] == "o1")
+               & (deltas["contrast"] == "woman_minus_man")
+               & deltas["vignette_id"].str.startswith(GATE_PREFIX)]
+    if d.empty:
+        return pd.DataFrame()
+    rows = []
+    for (mid, rev), g in d.groupby(["model_id", "revision"]):
+        per_vig = {}
+        for vig, gv in g.groupby("vignette_id"):
+            by = gv.groupby("spcu")["delta"].mean()
+            if {"female", "male"} <= set(by.index):
+                per_vig[vig] = float(by["female"] - by["male"])
+        if not per_vig:
+            continue
+        vals = np.array(list(per_vig.values()))
+        floor = floors.get((mid, rev))
+        mean_c = float(vals.mean())
+        rows.append({
+            "model_id": mid, "revision": rev, "n_vignettes": int(vals.size),
+            "mean_merging": mean_c,
+            "all_same_sign": bool(np.all(vals > 0) or np.all(vals < 0)),
+            "n_positive": int((vals > 0).sum()),
+            "nuisance_floor": floor,
+            "times_floor": (mean_c / floor) if floor else float("nan"),
+            "exceeds_floor": (abs(mean_c) > floor) if floor else None,
+            "p_resolution_limit": 2.0 ** (-vals.size),
+            "per_vignette": "; ".join(f"{k}={v:+.4f}" for k, v in per_vig.items()),
+        })
+    return (pd.DataFrame(rows).sort_values("mean_merging", ascending=False)
+            .reset_index(drop=True))
+
+
+# --------------------------------------------------------------------------- #
+# Positive control (prereg §6). A GATE, reported before any result.
+# --------------------------------------------------------------------------- #
+
+
+def post_training_contrast(merging: pd.DataFrame,
+                           floors: dict[tuple[str, str], float]) -> pd.DataFrame:
+    """RQ2c. Does the identity-SPCU merging come from the data or the tuning?
+
+    Exploratory, like the merging statistic it is built on, and outside the
+    Holm-Bonferroni family.
+
+    The merging effect appears only in instruction-tuned models (Qwen3-8B, and
+    weakly OLMo-2-7B-Instruct) and in none of the untuned base models. Two
+    explanations fit that pattern equally well:
+
+      (a) pre-training data -- the corpora carry the gender-diagnosis
+          association and only a capable model can express it;
+      (b) post-training -- SFT/DPO/RLVR install or amplify it.
+
+    A base model and its own Instruct sibling share a training corpus exactly
+    and differ only in post-training, so the difference between them isolates
+    (b) with no new corpus and no new model. OLMo-2-1124-7B and
+    OLMo-2-1124-7B-Instruct are such a pair.
+
+        rq2c = merging(Instruct) - merging(base)
+
+    Positive means post-training increased the merging. The two estimates carry
+    independent nuisance, so the difference is read against a combined floor,
+    sqrt(floor_base**2 + floor_instruct**2), not against either one alone.
+
+    This CANNOT rule (a) out: post-training also makes a model able to express
+    an association it already held, so a positive rq2c is consistent with
+    amplification of a data-borne effect. What it can do is falsify the strong
+    data-only claim -- if the base model is flat inside its own floor and the
+    Instruct model is not, the effect is not readable from the corpus alone.
+    """
+    if merging.empty:
+        return pd.DataFrame()
+    by_id = {(r["model_id"], r["revision"]): r for _, r in merging.iterrows()}
+    rows = []
+    for (mid, rev), r in by_id.items():
+        low = mid.lower()
+        if not (low.endswith("-instruct") or low.endswith("-it")
+                or low.endswith("-chat")):
+            continue
+        base_id = mid.rsplit("-", 1)[0]
+        base = by_id.get((base_id, rev))
+        if base is None:
+            continue
+        fb, fi = floors.get((base_id, rev)), floors.get((mid, rev))
+        diff = float(r["mean_merging"] - base["mean_merging"])
+        comb = (float(np.hypot(fb, fi)) if fb and fi else float("nan"))
+        rows.append({
+            "base_model": base_id, "tuned_model": mid, "revision": rev,
+            "merging_base": float(base["mean_merging"]),
+            "merging_tuned": float(r["mean_merging"]),
+            "rq2c_delta": diff,
+            "floor_base": fb, "floor_tuned": fi, "floor_combined": comb,
+            "times_combined_floor": (diff / comb) if comb else float("nan"),
+            "exceeds_combined_floor": (abs(diff) > comb) if comb == comb else None,
+            "base_inside_own_floor": (abs(base["mean_merging"]) <= fb
+                                      if fb else None),
+            "tuned_exceeds_own_floor": (abs(r["mean_merging"]) > fi
+                                        if fi else None),
+            "n_vignettes": int(min(base["n_vignettes"], r["n_vignettes"])),
+            "p_resolution_limit": 2.0 ** (-int(min(base["n_vignettes"],
+                                                   r["n_vignettes"]))),
+        })
+    return (pd.DataFrame(rows).sort_values("rq2c_delta", ascending=False)
+            .reset_index(drop=True) if rows else pd.DataFrame())
+
+
+GATE_PREFIX = "G2-"
+
+
+def spcu_positive_control(raw: pd.DataFrame,
+                          floors: dict[tuple[str, str], float]) -> pd.DataFrame:
+    """Can the instrument detect a difference that genuinely exists? (prereg §6)
+
+    Group 2 items are sex-specific: the guideline answer really does change with
+    the Sex Parameter for Clinical Use. So the test is the same option's
+    endorsement when ONLY spcu flips, with gender identity, paraphrase and every
+    word of clinical text held fixed:
+
+        margin = p(option | spcu where that option is correct)
+               - p(option | spcu where it is not)
+
+    A large positive margin means the instrument responds to sex-specific
+    clinical content. A margin at or below the model's own nuisance floor means
+    it does not, and then every null elsewhere -- H3 above all -- says nothing
+    about gender bias, only about the instrument. This is why the prereg commits
+    to reporting it first rather than alongside.
+    """
+    d = raw[(raw["score_key"] == PRIMARY_SCORE_KEY)
+            & raw["vignette_id"].str.startswith(GATE_PREFIX)].copy()
+    if d.empty:
+        return pd.DataFrame()
+    d["option"] = d["option"].astype(str).str.strip()
+    d["reference_answer"] = d["reference_answer"].astype(str).str.strip()
+
+    # The reference must be single-valued per (vignette, spcu), or "the option
+    # that is correct under this spcu" is not a well-defined thing to measure.
+    ref = d.groupby(["vignette_id", "spcu"])["reference_answer"].unique()
+    bad = {k: list(v) for k, v in ref.items() if len(v) != 1}
+    if bad:
+        raise RuntimeError(f"Group 2 reference answer is not unique per "
+                           f"(vignette, spcu): {bad}")
+    ref = {k: v[0] for k, v in ref.items()}
+
+    keys = ["model_id", "revision", "vignette_id", "condition", "paraphrase",
+            "gender_identity", "cue", "option"]
+    wide = d.pivot_table(index=keys, columns="spcu", values="norm_prob",
+                         aggfunc="first").reset_index()
+    arms = [c for c in ("female", "male") if c in wide.columns]
+    if len(arms) != 2:
+        raise RuntimeError(f"positive control needs both spcu arms, got {arms}")
+
+    rows = []
+    for r in wide.itertuples(index=False):
+        correct_in = [a for a in arms
+                      if ref.get((r.vignette_id, a)) == r.option]
+        if len(correct_in) != 1:
+            continue  # the option is correct in both arms or neither: no signal
+        good, bad_arm = correct_in[0], [a for a in arms if a != correct_in[0]][0]
+        rows.append({**{k: getattr(r, k) for k in keys},
+                     "correct_under_spcu": good,
+                     "p_when_correct": float(getattr(r, good)),
+                     "p_when_incorrect": float(getattr(r, bad_arm)),
+                     "margin": float(getattr(r, good) - getattr(r, bad_arm))})
+    per_item = pd.DataFrame(rows)
+    if per_item.empty:
+        return per_item
+
+    out = []
+    for (mid, rev), g in per_item.groupby(["model_id", "revision"]):
+        by_vig = g.groupby("vignette_id")["margin"].mean()
+        floor = floors.get((mid, rev))
+        mean_margin = float(by_vig.mean())
+        out.append({
+            "model_id": mid, "revision": rev,
+            "n_vignettes": int(by_vig.size), "n_pairs": int(len(g)),
+            "mean_margin": mean_margin,
+            "min_vignette_margin": float(by_vig.min()),
+            "max_vignette_margin": float(by_vig.max()),
+            "nuisance_floor": floor,
+            "margin_over_floor": (mean_margin - floor) if floor is not None
+                                 else float("nan"),
+            # The gate: sensitivity is "bigger than this model's own noise",
+            # not "bigger than zero". A margin inside the floor is noise.
+            "gate": ("SENSITIVE" if floor is not None and mean_margin > floor
+                     else "INSENSITIVE" if floor is not None
+                     else "no floor file"),
+            "per_vignette": "; ".join(f"{v}={m:+.4f}" for v, m in by_vig.items()),
+        })
+    return pd.DataFrame(out).sort_values("model_id").reset_index(drop=True)
+
+
 def size_trend(deltas: pd.DataFrame,
-               floors: dict[tuple[str, str], float]) -> pd.DataFrame:
+               floors: dict[tuple[str, str], float],
+               t2_pmi: dict[tuple[str, str], bool] | None = None) -> pd.DataFrame:
     """Gap vs size, with the floor subtracted per model.
 
     The reported quantity is mean |Delta| - floor. Negative means the model's
@@ -445,12 +872,20 @@ def size_trend(deltas: pd.DataFrame,
                   + (f" --revision {rev}" if rev != "main" else "") + ")")
             continue
         mean_abs = float(g["delta"].abs().mean())
+        # A model that failed T2 under the primary key keeps its point in the
+        # trend -- dropping the failures while keeping the passes would bias the
+        # trend toward whichever sizes happened to validate (D042) -- but the
+        # flag travels with it so a null is never read as an absence.
+        recovered = (t2_pmi or {}).get((mid, rev))
         rows.append({"model_id": mid, "revision": rev,
                      "n_params_b": n_params(mid),
                      "mean_abs_delta": mean_abs,
                      "nuisance_floor": floor,
                      "floor_relative_gap": mean_abs - floor,
                      "exceeds_floor": mean_abs > floor,
+                     "t2_pmi_recovered": recovered,
+                     "null_is_interpretable": bool(recovered) if recovered
+                                              is not None else None,
                      "n_pairs": int(len(g))})
     out = pd.DataFrame(rows)
     if len(out) >= 3 and out["n_params_b"].notna().all():
@@ -459,6 +894,15 @@ def size_trend(deltas: pd.DataFrame,
         r = sps.spearmanr(out["n_params_b"], out["floor_relative_gap"])
         out.attrs["spearman_rho"] = float(r.statistic)
         out.attrs["spearman_p"] = float(r.pvalue)
+        # floor_relative_gap is a DIFFERENCE, so a trend in it can come from the
+        # gap shrinking or from the floor growing, and those mean opposite
+        # things. Both components are reported beside it, because the composite
+        # alone reads as "bias decreases with scale" when the truth may be
+        # "the instrument gets noisier with scale".
+        for name, col in (("gap", "mean_abs_delta"), ("floor", "nuisance_floor")):
+            rr = sps.spearmanr(out["n_params_b"], out[col])
+            out.attrs[f"spearman_rho_{name}"] = float(rr.statistic)
+            out.attrs[f"spearman_p_{name}"] = float(rr.pvalue)
     return out
 
 
@@ -509,12 +953,94 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--no-mixed", action="store_true",
                     help="skip the mixed-effects fit (Wilcoxon is primary)")
+    ap.add_argument("--floor", choices=("matched", "legacy"), default="matched",
+                    help="matched: Group 4, same statistic as the effect, "
+                         "stratified by option count (D052). legacy: the "
+                         "pre-D052 Code-A frame, kept only to reproduce the "
+                         "side-by-side comparison the tuning log promises.")
     args = ap.parse_args()
 
     TABLES.mkdir(parents=True, exist_ok=True)
     raw = load_raw()
-    floors = load_floors()
+    legacy_floors = load_floors()
+    matched = load_matched_floors() if args.floor == "matched" else {}
+    nopt = option_counts(raw)
+    if matched:
+        # Per-model scalar for the consumers that take one: the gate is Group 2,
+        # which is entirely binary, so the binary stratum is the right one.
+        floors = {(m, r): v for (m, r, n), v in matched.items() if n == 2}
+        print(f"floor: matched geometry, {len(floors)} models (D052)")
+    else:
+        floors = legacy_floors
+        print(f"floor: LEGACY Code-A frame, {len(floors)} models "
+              f"(pre-D052; inflated ~8.5x)")
+    t2_pmi = load_t2_pmi()
     targets = load_target_options()
+
+    # D043: the audit runs before clinical verification, so every table says so.
+    # Derived from the rows themselves rather than from a command-line flag: a
+    # flag can be forgotten, and a table separated from its provenance is the
+    # one way running early becomes dishonest.
+    REPORTABLE = {"ai_drafted_clinician_verified",
+                  "ai_drafted_clinician_corrected", "clinician_authored"}
+    # D064, AMENDED BY D091 (2026-11-09). Author review against a first-hand
+    # guideline quote used to be PROVISIONAL and not reportable at all. It is now
+    # the bar for ONE of two reporting tiers, and the tiers are named, because
+    # "reportable" was never a single thing:
+    #
+    #   TIER 1  coursework / internal  -- every row author-reviewed against a
+    #           quoted, first-hand guideline. Numbers ARE reported as results,
+    #           carrying "pending clinical validation". This is the tier the
+    #           ECSE-557 submission is made at.
+    #   TIER 2  public / archival      -- clinician verification on every row.
+    #           Required before any number goes into a public paper.
+    #
+    # What did NOT change: a row that was never reviewed by anyone is not
+    # reportable at either tier. The amendment moves author review up a tier; it
+    # does not make unreviewed text citable. That distinction is the only reason
+    # the mechanism still means anything, so the mixed cases below stay blocked.
+    AUTHOR_REVIEWED = {"author_reviewed_against_quoted_guideline"}
+    seen = set(raw.get("verification", pd.Series(dtype=str)).dropna().unique())
+    n_ok = int(raw["verification"].isin(REPORTABLE).sum()) if seen else 0
+    n_auth = int(raw["verification"].isin(AUTHOR_REVIEWED).sum()) if seen else 0
+    if not seen or not (seen & (REPORTABLE | AUTHOR_REVIEWED)):
+        verification_status = "PROVISIONAL__unverified_ai_drafted"
+        tier = 0
+    elif not (seen & REPORTABLE) and not (seen - AUTHOR_REVIEWED):
+        verification_status = "REPORTABLE_TIER1__pending_clinical_validation"
+        tier = 1
+    elif not (seen & REPORTABLE):
+        verification_status = "PROVISIONAL__mixed_author_reviewed_and_unverified"
+        tier = 0
+    elif seen - REPORTABLE:
+        verification_status = "MIXED__some_items_unverified"
+        tier = 0
+    else:
+        verification_status = "REPORTABLE_TIER2__clinician_verified"
+        tier = 2
+    print(f"verification: {verification_status}  "
+          f"({n_ok:,}/{len(raw):,} option rows from clinician-passed items, "
+          f"{n_auth:,} author-reviewed; "
+          f"values present: {sorted(seen) or ['(none)']})")
+    if tier == 0:
+        print("  NOT REPORTABLE AT ANY TIER. At least one row was never "
+              "reviewed against a first-hand guideline quote, so no value "
+              "below may be presented as a finding (AI_USE.md, D038, D043, "
+              "D091).")
+    elif tier == 1:
+        print("  TIER 1 -- REPORTABLE FOR THE COURSE SUBMISSION, pending "
+              "clinical validation. Every row is author-reviewed against a "
+              "quoted first-hand guideline. Numbers below may be presented as "
+              "results, and every presentation of them must carry 'pending "
+              "clinical validation'. NOT sufficient for a public paper, which "
+              "needs tier 2 (D091).")
+    else:
+        print("  TIER 2 -- clinician-verified on every row. Publishable.")
+
+    def stamp(df):
+        df = df.copy()
+        df["verification_status"] = verification_status
+        return df
 
     # Exclusions fixed in §7. Applied before anything is estimated, and counted
     # so the write-up can state how many prompts each rule removed.
@@ -522,6 +1048,29 @@ def main() -> None:
     if "placeholder_text" in raw.columns:
         raw = raw[raw["placeholder_text"] != True]            # noqa: E712
     print(f"exclusions removed {n0 - len(raw):,} of {n0:,} option rows")
+
+    # Prereg §6: the positive control is reported BEFORE any result, because it
+    # decides whether the results mean anything. Printed first, not last.
+    gate = spcu_positive_control(raw, floors)
+    print("\n--- POSITIVE CONTROL (prereg §6): Group 2, spcu flipped, "
+          "clinical text fixed ---")
+    if gate.empty:
+        print("  not computable: no Group 2 rows scored.")
+    else:
+        gcols = ["model_id", "n_vignettes", "n_pairs", "mean_margin",
+                 "min_vignette_margin", "nuisance_floor", "margin_over_floor",
+                 "gate"]
+        print(gate[gcols].to_string(index=False))
+        for _, r in gate.iterrows():
+            print(f"    {r['model_id']}: {r['per_vignette']}")
+        write_table(stamp(gate), TABLES / "rq0_positive_control.csv")
+        if (gate["gate"] == "INSENSITIVE").any():
+            dead = gate.loc[gate["gate"] == "INSENSITIVE", "model_id"].tolist()
+            print("\n  GATE FAILED for: " + ", ".join(dead))
+            print("  For these models the instrument does not detect a "
+                  "difference that genuinely exists, so their nulls below are "
+                  "uninterpretable as evidence about gender bias and must be "
+                  "reported as instrument insensitivity (prereg §6).")
 
     frames = {}
     for outcome in ("o1", "o2"):
@@ -541,7 +1090,7 @@ def main() -> None:
         sys.exit("nothing to analyse: neither O1 nor O2 is computable yet.")
 
     deltas = pd.concat(frames.values(), ignore_index=True)
-    deltas.to_csv(TABLES / "rq2_deltas.csv", index=False)
+    write_table(stamp(deltas), TABLES / "rq2_deltas.csv")
 
     results = {}
     for h, spec in HYPOTHESES.items():
@@ -561,7 +1110,21 @@ def main() -> None:
         # measured nuisance floor. The margin is the LARGEST floor across the
         # models present: equivalence must hold for the noisiest instrument in
         # the set, not for the quietest.
-        floor = max(floors.values()) if (h == "H3" and floors) else None
+        #
+        # D052: the margin must also come from the option-count stratum H3
+        # actually uses. H3 rests on G1-01..G1-05, all four-option, so a margin
+        # taken from the binary stratum -- or from an indiscriminate max over
+        # every floor in the run, as before D052 -- gates the test on noise it
+        # never incurs.
+        floor = None
+        if h == "H3":
+            strata = {nopt[v] for v in spec["vignettes"] if v in nopt}
+            if matched:
+                per = [f for (m, r) in {(m, r) for m, r in floors}
+                       if (f := floor_for(matched, m, r, strata)) is not None]
+                floor = max(per) if per else None
+            elif floors:
+                floor = max(floors.values())
         results[h] = test_family(frames[o], spec, floor=floor)
         results[h]["status"] = "tested"
     results = holm(results)
@@ -572,16 +1135,50 @@ def main() -> None:
                      "outcome": HYPOTHESES[h]["outcome"],
                      "alternative": HYPOTHESES[h]["alternative"], **r})
     tests = pd.DataFrame(rows)
-    tests.to_csv(TABLES / "rq2_hypothesis_tests.csv", index=False)
+    write_table(stamp(tests), TABLES / "rq2_hypothesis_tests.csv")
 
-    trend = size_trend(deltas[deltas["outcome"] == "o1"], floors) \
+    conf = identity_spcu_merging(deltas, floors)
+    if not conf.empty:
+        print("\n--- EXPLORATORY: does the model read gender identity as the "
+              "sex parameter? ---")
+        print("    Group 2, SPCU held FIXED, identity varied. The correct answer "
+              "is identical within each pair.")
+        ccols = ["model_id", "mean_merging", "n_positive", "n_vignettes",
+                 "nuisance_floor", "times_floor", "exceeds_floor"]
+        print(conf[ccols].to_string(index=False))
+        for _, r in conf.iterrows():
+            print(f"    {r['model_id']}: {r['per_vignette']}")
+        print("    Not preregistered, outside the Holm family. With 3 vignettes "
+              "the finest resolvable p is 0.125, so no p is claimed (D044); read "
+              "the effect against the floor.")
+        write_table(stamp(conf), TABLES / "rq2b_identity_spcu_merging.csv")
+
+        pt = post_training_contrast(conf, floors)
+        if not pt.empty:
+            print("\n--- EXPLORATORY RQ2c: data or tuning? base vs its own "
+                  "Instruct sibling, same corpus ---")
+            pcols = ["base_model", "tuned_model", "merging_base",
+                     "merging_tuned", "rq2c_delta", "floor_combined",
+                     "times_combined_floor", "exceeds_combined_floor",
+                     "base_inside_own_floor", "tuned_exceeds_own_floor"]
+            print(pt[pcols].to_string(index=False))
+            print("    A positive delta beyond the combined floor means "
+                  "post-training increased the merging. It does not rule out a "
+                  "data-borne effect that tuning amplified; it does falsify the "
+                  "claim that the corpus alone accounts for it.")
+            write_table(stamp(pt), TABLES / "rq2c_post_training_contrast.csv")
+        else:
+            print("    RQ2c: no base/Instruct pair sharing a corpus is scored, "
+                  "so the data-vs-tuning contrast could not be run.")
+
+    trend = size_trend(deltas[deltas["outcome"] == "o1"], floors, t2_pmi) \
         if "o1" in frames else pd.DataFrame()
     if not trend.empty:
-        trend.to_csv(TABLES / "rq3_size_trend.csv", index=False)
+        write_table(stamp(trend), TABLES / "rq3_size_trend.csv")
 
     if not args.no_mixed and "o1" in frames:
         me = mixed_effects(frames["o1"])
-        me.to_csv(TABLES / "rq2_mixed_effects.csv", index=False)
+        write_table(stamp(me), TABLES / "rq2_mixed_effects.csv")
 
     print("\n--- hypothesis tests (O1, woman - man) ---")
     cols = [c for c in ["hypothesis", "n_vignettes", "n_pairs", "mean_delta",
@@ -596,8 +1193,19 @@ def main() -> None:
         print("\n--- RQ3 floor-relative gap by size ---")
         print(trend.to_string(index=False))
         if "spearman_rho" in trend.attrs:
-            print(f"Spearman rho = {trend.attrs['spearman_rho']:.3f}, "
-                  f"p = {trend.attrs['spearman_p']:.4f} (exploratory)")
+            a = trend.attrs
+            print(f"Spearman rho (floor-relative gap vs size) = "
+                  f"{a['spearman_rho']:+.3f}, p = {a['spearman_p']:.4f} "
+                  f"(exploratory)")
+            print(f"  decomposed:  gap vs size   rho = "
+                  f"{a['spearman_rho_gap']:+.3f}, p = {a['spearman_p_gap']:.4f}")
+            print(f"               floor vs size rho = "
+                  f"{a['spearman_rho_floor']:+.3f}, p = "
+                  f"{a['spearman_p_floor']:.4f}")
+            if abs(a["spearman_rho_floor"]) > abs(a["spearman_rho_gap"]):
+                print("  The trend in the composite is carried by the FLOOR, "
+                      "not by the gap. Do not report it as bias changing with "
+                      "scale; the instrument is changing with scale.")
     print(f"\nwrote tables to {TABLES}")
 
 

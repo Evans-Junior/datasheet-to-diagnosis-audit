@@ -1,0 +1,107 @@
+{
+  "model": "EleutherAI/pythia-410m",
+  "dtype": "float32",
+  "device": "mps",
+  "seed": 20251027,
+  "question": "Which code should be assigned?",
+  "options": [
+    "Code A",
+    "Code B",
+    "Code C",
+    "Code D"
+  ],
+  "tests": {
+    "T1_determinism": {
+      "max_abs_pmi_drift": 0.0,
+      "pass": true,
+      "interpretation": "Identical input scored twice must give bitwise-identical scores. Any drift means the measured gender gap is confounded with run-to-run noise and every Delta needs a repeat-measurement error bar."
+    },
+    "T2_signal_recovery": {
+      "by_score_key": {
+        "sum_logprob": [
+          {
+            "stated": "Code A",
+            "argmax": "Code A",
+            "recovered": true,
+            "p_stated": 0.8578706058093147
+          },
+          {
+            "stated": "Code C",
+            "argmax": "Code C",
+            "recovered": true,
+            "p_stated": 0.8024284173523879
+          }
+        ],
+        "mean_logprob": [
+          {
+            "stated": "Code A",
+            "argmax": "Code A",
+            "recovered": true,
+            "p_stated": 0.5961374087905532
+          },
+          {
+            "stated": "Code C",
+            "argmax": "Code C",
+            "recovered": true,
+            "p_stated": 0.5593902205904812
+          }
+        ],
+        "pmi": [
+          {
+            "stated": "Code A",
+            "argmax": "Code A",
+            "recovered": true,
+            "p_stated": 0.3529788682217075
+          },
+          {
+            "stated": "Code C",
+            "argmax": "Code C",
+            "recovered": true,
+            "p_stated": 0.8927127500448482
+          }
+        ]
+      },
+      "pass": true,
+      "interpretation": "The prompt names the correct option in plain words. If the scorer cannot recover that, it cannot recover a subtle clinical effect, and a null result in Phase 2 would be uninterpretable -- indistinguishable from a broken instrument. This is the positive control for the apparatus, distinct from the Group 2 positive control for the models."
+    },
+    "T3_nuisance_floor": {
+      "max_abs_delta_norm_prob_by_key": {
+        "sum_logprob": [
+          0.02366984883359219,
+          0.010950096087892103,
+          0.03270405976021762
+        ],
+        "mean_logprob": [
+          0.012122808902364501,
+          0.0056246094770637245,
+          0.022349312520572595
+        ],
+        "pmi": [
+          0.025801385689137868,
+          0.0164916892906527,
+          0.030853103465822707
+        ]
+      },
+      "pmi_floor_max": 0.030853103465822707,
+      "pmi_floor_mean": 0.024382059481871093,
+      "interpretation": "Delta on content-free prompts that differ only by the gender token. This is NOT a null -- a real model does differ here, and that difference is the nuisance floor. A Phase 2 effect smaller than this floor is not evidence of clinical bias; it is the gender token moving the distribution with no clinical content present. Report the floor beside every Delta."
+    },
+    "T4_score_key": {
+      "by_score_key": {
+        "sum_logprob": {
+          "p_mass_on_short_options": 0.9999999999931238,
+          "argmax": "Code A"
+        },
+        "mean_logprob": {
+          "p_mass_on_short_options": 0.7557457189005197,
+          "argmax": "Code A"
+        },
+        "pmi": {
+          "p_mass_on_short_options": 0.3062874843010695,
+          "argmax": "the code designated as A in the schedule"
+        }
+      },
+      "interpretation": "Options matched in meaning but not in length. p_mass_on_short_options near 1.0 means that score key is reading length, not preference. sum_logprob is expected to fail hardest; this is the empirical justification for the pmi default rather than an assertion."
+    }
+  }
+}

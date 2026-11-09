@@ -59,7 +59,10 @@ PREGNANCY_CARVEOUT_DOCUMENTED = {
 
 # Vignettes where the clause would DESTROY the item, because the decision under
 # test is the pregnancy test itself. This one is structural, not clinical.
-PREGNANCY_FORBIDDEN = {"G2-01"}
+# D092: moved from G2-01, now retired as superseded. The carve-out belongs
+# to whichever row is live, or the clause gets injected into the one item
+# whose decision IS the pregnancy test.
+PREGNANCY_FORBIDDEN = {"G2-01b"}
 
 # Max acceptable token spread within an option set (D035).
 MAX_TOKEN_SPREAD = 2
@@ -81,10 +84,24 @@ SPCU_KEYS = _spcu_keys()
 # reported result.
 VERIFICATION_VALUES = {
     "unverified_ai_drafted",
+    # AUTHOR review, which is NOT clinician review and is NOT reportable.
+    # src/stats.py has recognised this value since D040 -- it maps to
+    # PROVISIONAL__author_reviewed_not_clinician_validated -- but this
+    # vocabulary was never updated, so the two modules disagreed: stats.py
+    # accepted the label while this checker called every row carrying it a
+    # blocker. Admitting it here closes that split. It stays out of REPORTABLE,
+    # which is the whole point: an author checking a vignette against the
+    # guideline they themselves quoted is a real step and still not a clinician.
+    "author_reviewed_against_quoted_guideline",
     "ai_drafted_clinician_verified",
     "ai_drafted_clinician_corrected",
     "clinician_authored",
     "rejected",
+    # D092: withdrawn for a DESIGN reason, not a clinical one. G2-01 passed
+    # author review and was retired because G2-01b tests the same construct
+    # from a better source; calling that "rejected" would misreport the review's
+    # hit rate, which is evidence we rely on elsewhere (prereg S10).
+    "retired_superseded",
 }
 REPORTABLE = {"ai_drafted_clinician_verified",
               "ai_drafted_clinician_corrected",
@@ -102,19 +119,97 @@ def warn(vid: str, msg: str) -> None:
     warnings.append(f"  [WARN ] {vid}: {msg}")
 
 
+# Sections of configs/models.yaml whose models SCORE answer options. Only these
+# tokenizers can gate option length. `judge` is excluded on purpose: the judge
+# never scores an option set (D006 keeps it disjoint), so its tokenization is
+# irrelevant to D035 -- and including it raised a false blocker on G1-02, whose
+# options are within the limit on every tokenizer that actually scores. `smoke`
+# is excluded because it only re-lists an audited model.
+SCORING_SECTIONS = ("audit", "contrast")
+
+
+def _tokenizer_ids_from_models_yaml() -> list:
+    """Every SCORING model id in configs/models.yaml, so a new model cannot
+    enter the study with its tokenizer unchecked (D090)."""
+    import yaml as _y
+    cfg = _y.safe_load((ROOT / "configs/models.yaml").read_text())
+    ids: list = []
+
+    def walk(node):
+        if isinstance(node, dict):
+            if isinstance(node.get("id"), str) and "/" in node["id"]:
+                ids.append(node["id"])
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    present = [k for k in SCORING_SECTIONS if k in cfg]
+    missing = [k for k in SCORING_SECTIONS if k not in cfg]
+    if missing:
+        # Fail loudly rather than quietly checking fewer tokenizers than the
+        # study scores with -- that is exactly how G4-10 slipped through.
+        print(f"!! configs/models.yaml has no {', '.join(missing)} section(s); "
+              f"option-length checking may be incomplete")
+    for k in present:
+        walk(cfg[k])
+    # Preserve order, drop duplicates. Smallest first keeps the common case fast.
+    return list(dict.fromkeys(ids))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tokenizer", default="EleutherAI/pythia-70m")
+    ap.add_argument("--tokenizer", default=None,
+                    help="force a single tokenizer. Default: EVERY distinct "
+                         "tokenizer in configs/models.yaml (D090)")
     ap.add_argument("--strict", action="store_true",
                     help="treat WARN as BLOCK")
     args = ap.parse_args()
 
     vignettes = yaml.safe_load(TEMPLATES.read_text())
     from transformers import AutoTokenizer
-    tok = AutoTokenizer.from_pretrained(args.tokenizer)
+
+    # D090: the option-length limit MUST be checked against every tokenizer that
+    # scores, not one representative. G4-10's option set was spread 2 tok under
+    # pythia (a warning) and spread 4 tok under Qwen3 and OLMo-2 (a blocker),
+    # because "corticosteroid" costs 3 pythia tokens and 6 on both 8B
+    # tokenizers. Checking pythia only meant the limit was never enforced
+    # against the three models whose nuisance floor that item sets -- and it
+    # sets H3's equivalence margin. One tokenizer cannot stand in for another.
+    tok_ids = ([args.tokenizer] if args.tokenizer
+               else _tokenizer_ids_from_models_yaml())
+    tokenizers, seen = {}, set()
+    for tid in tok_ids:
+        try:
+            t = AutoTokenizer.from_pretrained(tid)
+        except Exception as exc:                      # not cached / offline
+            print(f"  (tokenizer unavailable, skipped: {tid} -- "
+                  f"{type(exc).__name__})")
+            continue
+        # Dedupe by behaviour, not by name: the whole Pythia ladder shares one
+        # tokenizer, so loading seven of them would say nothing new.
+        sig = tuple(len(t(" " + w, add_special_tokens=False).input_ids)
+                    for w in ("corticosteroid", "flucloxacillin", "Topical",
+                              "immunocompetent", "lymphadenopathy"))
+        sig = (t.vocab_size, sig)
+        if sig in seen:
+            continue
+        seen.add(sig)
+        tokenizers[tid] = t
+    if not tokenizers:
+        print("!! no tokenizer could be loaded -- option-length check SKIPPED")
+
+    def ntok_all(s: str) -> dict:
+        """Token length of one option under every distinct tokenizer."""
+        txt = " " + str(s).strip()
+        return {tid: len(t(txt, add_special_tokens=False).input_ids)
+                for tid, t in tokenizers.items()}
 
     def ntok(s: str) -> int:
-        return len(tok(" " + str(s).strip(), add_special_tokens=False).input_ids)
+        """Worst-case (largest) length, kept for callers wanting one number."""
+        per = ntok_all(s)
+        return max(per.values()) if per else 0
 
     filled = 0
     for v in vignettes:
@@ -160,10 +255,23 @@ def main() -> int:
 
         # ---- C2 option token length -------------------------------------- #
         real = [o for o in map(str, opts) if o not in PLACEHOLDER_OPTS]
-        if len(real) >= 2:
-            lens = {o: ntok(o) for o in real}
-            spread = max(lens.values()) - min(lens.values())
-            label = f"spread {spread} tok  {lens}"
+        if len(real) >= 2 and tokenizers:
+            # Per-tokenizer spread. The verdict is the WORST tokenizer, because
+            # the item is scored under all of them (D090).
+            per_tok = {}
+            for tid in tokenizers:
+                lens_t = {o: ntok_all(o)[tid] for o in real}
+                per_tok[tid] = (max(lens_t.values()) - min(lens_t.values()),
+                                lens_t)
+            worst_tid = max(per_tok, key=lambda k: per_tok[k][0])
+            spread, lens = per_tok[worst_tid]
+            agree = len({v[0] for v in per_tok.values()}) == 1
+            where = ("" if agree or len(per_tok) == 1
+                     else f"  worst of {len(per_tok)} tokenizers: "
+                          f"{worst_tid.split('/')[-1]}"
+                          f" (others: "
+                          f"{', '.join(f'{k.split(chr(47))[-1]}={v[0]}' for k, v in per_tok.items() if k != worst_tid)})")
+            label = f"spread {spread} tok  {lens}{where}"
             if spread > MAX_TOKEN_SPREAD:
                 blocker(vid, f"answer_options unmatched in length -- {label}. "
                              f"Squashes the effect toward zero (D035)")
@@ -244,7 +352,8 @@ def main() -> int:
     # ---- report ---------------------------------------------------------- #
     print(f"templates: {len(vignettes)} vignettes · "
           f"clinical findings filled: {filled}/{len(vignettes)} · "
-          f"tokenizer: {args.tokenizer}\n")
+          f"tokenizers checked: "
+          f"{', '.join(t.split('/')[-1] for t in tokenizers) or 'NONE'}\n")
     for line in blockers:
         print(line)
     if blockers and warnings:
@@ -257,6 +366,65 @@ def main() -> int:
     n_block = len(blockers) + (len(warnings) if args.strict else 0)
     print(f"{len(blockers)} blocker(s), {len(warnings)} warning(s)")
 
+    # TEMPLATES-vs-CSV DRIFT. Everything downstream reads
+    # data/vignettes/vignettes.csv, including the staleness stamp in
+    # scripts/results_summary.py, which hashes THAT FILE. So editing
+    # templates.yaml without running `src.vignettes --build` leaves every
+    # staleness check passing while the study definition has already moved --
+    # the exact failure the stamp exists to catch, invisible to the stamp.
+    # Found 2026-11-08 when the G4-03b contradiction fix (D085) sat in
+    # templates.yaml and in the review workbook, which reads templates directly,
+    # while the scored prompts still carried the contradictory text and the
+    # summary reported itself current. Printed every run, like the clinician
+    # gate, and for the same reason: the moment everything looks clean is when
+    # this is easiest to miss.
+    csv_path = ROOT / "data/vignettes/vignettes.csv"
+    if not csv_path.exists():
+        print("PROMPT CSV MISSING -- run: .venv/bin/python -m src.vignettes --build")
+    else:
+        import csv as _csv
+        # D090: compare EVERY field the hash covers, not prompt_text alone.
+        # G4-10's answer_options were rewritten with its prompt_text untouched;
+        # a prompt_text-only comparison called the stale CSV current, which is
+        # the same defect the gate exists to catch.
+        sys.path.insert(0, str(ROOT))
+        from src.vignettes import (load as _load, expand as _expand,
+                                   HASHED_FIELDS as _HF)
+
+        # D092: blocked_on and analysis_ready are not hashed (they change which
+        # prompts EXIST, not what any one prompt says) but a change to either
+        # still makes the CSV stale. Retiring G2-01 edited only blocked_on, and
+        # a signature over _HF alone called the stale CSV current.
+        _DRIFT = tuple(_HF) + ("blocked_on", "analysis_ready")
+
+        def _sig(row: dict) -> tuple:
+            return tuple(str(row.get(f, "")).strip() for f in _DRIFT)
+
+        with csv_path.open(encoding="utf-8") as fh:
+            on_disk = {(r["vignette_id"], r["prompt_id"]): _sig(r)
+                       for r in _csv.DictReader(fh)}
+        # Expand from templates.yaml the same way src.vignettes does, so the
+        # comparison is against what a rebuild WOULD write, not a proxy for it.
+        _tpls, _arms = _load()
+        from_templates = {(r["vignette_id"], r["prompt_id"]): _sig(r)
+                          for tpl in _tpls for r in _expand(tpl, _arms)}
+        changed = sorted({vid for k, txt in from_templates.items()
+                          if (vid := k[0]) and on_disk.get(k) != txt})
+        gone = sorted({k[0] for k in on_disk if k not in from_templates})
+        added = sorted({k[0] for k in from_templates if k not in on_disk})
+        drift = sorted(set(changed) | set(gone) | set(added))
+        if drift:
+            print(f"\n!! PROMPT CSV IS BEHIND templates.yaml for "
+                  f"{len(drift)} vignette(s): {', '.join(drift)}")
+            print("   Nothing downstream can see your edit, and the staleness "
+                  "stamp hashes the CSV, so it will report the old prompts as "
+                  "CURRENT. Run: .venv/bin/python -m src.vignettes --build")
+            print(f"   (fields compared: {', '.join(_DRIFT)})")
+            n_block += 1
+        else:
+            print("prompt CSV matches templates.yaml "
+                  f"({len(from_templates)} prompts)")
+
     # The clinician gate, printed every run. "0 blockers" means the instrument
     # BUILDS; it does not mean anything built from it may be reported. Keeping
     # the two counts side by side is the whole point -- a clean validator run is
@@ -264,12 +432,31 @@ def main() -> int:
     vers = [v.get("verification") for v in vignettes]
     ok = sum(1 for x in vers if x in REPORTABLE)
     rej = sum(1 for x in vers if x == "rejected")
-    print(f"clinician-verified: {ok}/{len(vers)} reportable"
-          + (f", {rej} rejected" if rej else ""))
-    if ok < len(vers) - rej:
-        print(f"  {len(vers) - rej - ok} vignette(s) are AI-drafted and "
-              f"UNVERIFIED. They build and score, but no number computed from "
-              f"them may be reported as a finding (AI_USE.md, D038).")
+    ret = sum(1 for x in vers if x == "retired_superseded")
+    print(f"clinician-verified: {ok}/{len(vers) - rej - ret} live rows reportable"
+          + (f", {rej} rejected" if rej else "")
+          + (f", {ret} retired as superseded" if ret else ""))
+    # D092: a retired row is excluded from scoring exactly like a rejected one,
+    # so it must come out of the denominator too. Leaving it in made the live
+    # set look as though it still held an unreviewed vignette, which would drop
+    # the whole run from tier 1 to tier 0 (D091) on a bookkeeping error.
+    live = len(vers) - rej - ret
+    if ok < live:
+        # Split the non-reportable remainder. Calling an author-reviewed row
+        # "AI-drafted and UNVERIFIED" understates the work done on it and makes
+        # the one line a reader actually scans less accurate -- while lumping it
+        # in with reportable rows would overstate it. Both counts, every run.
+        auth = sum(1 for x in vers
+                   if x == "author_reviewed_against_quoted_guideline")
+        unver = live - ok - auth
+        if auth:
+            print(f"  {auth} vignette(s) are AUTHOR-REVIEWED against the quoted "
+                  f"guideline. That is a real check and it is NOT clinician "
+                  f"verification: still not reportable (AI_USE.md, D038).")
+        if unver:
+            print(f"  {unver} vignette(s) are AI-drafted and UNVERIFIED. They "
+                  f"build and score, but no number computed from them may be "
+                  f"reported as a finding (AI_USE.md, D038).")
     return 1 if n_block else 0
 
 

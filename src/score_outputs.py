@@ -308,14 +308,66 @@ def main() -> None:
                     help="score prompts whose clinical findings / reference "
                          "answers are not yet written (pipeline testing only)")
     ap.add_argument("--force", action="store_true", help="rescore completed models")
+    ap.add_argument("--prompts", default=None,
+                    help="alternative prompt CSV in the same schema. Used by the "
+                         "placebo validation set (D062), which must be scored by "
+                         "this same code path but written to its own raw "
+                         "directory so no statistics module can pool it with the "
+                         "gendered arms.")
+    ap.add_argument("--raw-subdir", default=None,
+                    help="write raw parquet under results/<subdir>/ instead of "
+                         "results/raw/. Required with --prompts.")
     args = ap.parse_args()
+    if args.prompts and not args.raw_subdir:
+        ap.error("--prompts requires --raw-subdir, so an alternative prompt set "
+                 "can never overwrite the primary audit's raw output.")
+
+    # An alternative prompt set writes to its own directory WITH ITS OWN
+    # MANIFEST. Sharing the primary manifest would mark a model "completed"
+    # after a 216-prompt placebo run and then skip it in the real 576-prompt
+    # audit -- silently, and with no way to tell from the output which set a
+    # parquet came from.
+    if args.raw_subdir:
+        global RAW, MANIFEST
+        RAW = ROOT / "results" / args.raw_subdir
+        MANIFEST = RAW / "manifest.json"
+        print(f"RAW OUTPUT OVERRIDE: results/{args.raw_subdir}/")
 
     cfg = yaml.safe_load((ROOT / args.config).read_text())
     seed = cfg.get("seed", 0)
     set_seeds(seed)
     device = "mps" if torch.backends.mps.is_available() else "cpu"
 
-    prompts = pd.read_csv(VIGNETTES)
+    prompt_path = (ROOT / args.prompts) if args.prompts else VIGNETTES
+    prompts = pd.read_csv(prompt_path)
+    if args.prompts:
+        print(f"PROMPT SET OVERRIDE: {prompt_path.relative_to(ROOT)}")
+    # A BLOCKED row is not an UNWRITTEN row, and the difference decides whether
+    # the run may proceed. "Not analysis-ready" originally meant one thing: the
+    # clinical findings or the reference answer had not been written yet, and
+    # scoring placeholder text would produce numbers that look real. Refusing
+    # outright is correct for that. D082 added a second way to be not-ready:
+    # blocked_on, set when the clinical reviewer REJECTS a row. Those rows are
+    # finished text that must be EXCLUDED, not missing text that must be filled
+    # -- and letting them trigger the refusal would mean one rejected vignette
+    # stops the other twenty-four from ever being scored. So drop them first,
+    # loudly, and apply the refusal only to what is genuinely unwritten.
+    blocked_mask = prompts.get("blocked_on")
+    if blocked_mask is not None:
+        blocked = prompts[blocked_mask.fillna("").astype(str).str.strip() != ""]
+        if len(blocked):
+            ids = sorted(blocked["vignette_id"].unique())
+            print(f"EXCLUDING {len(blocked)} prompt(s) from "
+                  f"{len(ids)} REJECTED vignette(s): {', '.join(ids)}")
+            for vid in ids:
+                why = (blocked[blocked["vignette_id"] == vid]["blocked_on"]
+                       .iloc[0] or "").strip().replace("\n", " ")
+                print(f"    {vid}: {why[:150]}")
+            print("    These are clinical-review rejects, not unwritten rows. "
+                  "They are excluded from the run and from the prompt hash.")
+            prompts = prompts[
+                prompts["blocked_on"].fillna("").astype(str).str.strip() == ""]
+
     ready = prompts[prompts["analysis_ready"] == True]  # noqa: E712
     if len(ready) < len(prompts):
         msg = (f"{len(prompts) - len(ready)}/{len(prompts)} prompts are not "
@@ -342,9 +394,10 @@ def main() -> None:
     purge = cfg["audit"]["pythia_checkpoints"].get("purge_after_scoring", False) \
         if args.checkpoints else cfg["runtime"].get("purge_after_scoring", False)
 
-    prompt_hash = hashlib.sha256(
-        pd.util.hash_pandas_object(prompts["prompt_text"], index=False).values.tobytes()
-    ).hexdigest()[:16]
+    # D090: one shared definition, covering every scored field -- not
+    # prompt_text alone, which left the hash blind to answer-option rewrites.
+    from src.vignettes import prompt_set_hash
+    prompt_hash = prompt_set_hash(prompts)
 
     print(f"device={device}  prompts={len(prompts)}  models={len(specs)}  "
           f"score_key={args.score_key}  prompt_hash={prompt_hash}")

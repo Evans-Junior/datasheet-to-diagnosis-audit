@@ -48,6 +48,35 @@ FIELDS = [
 NO_CUE = {"cue_absent": ""}
 
 
+# ---------------------------------------------------------------------------
+# D090: THE prompt-set hash. One definition, imported by src.score_outputs and
+# scripts.results_summary, because two copies of a hash are two hashes.
+#
+# It used to hash prompt_text alone. That made the entire staleness mechanism
+# blind to the answer options: rewriting G4-10's option set for token-length
+# matching changed what every model scores on that item and left the hash
+# IDENTICAL, so results_summary would have reported tables built from the old
+# options as "matches a scored run". Everything that decides which string is
+# scored, or which string counts as correct, belongs in the hash.
+HASHED_FIELDS = ("prompt_text", "question", "answer_options",
+                 "reference_answer", "target_option")
+
+
+def prompt_set_hash(df) -> str:
+    """sha256 over every field that changes what is scored (D090)."""
+    import hashlib
+    import pandas as pd
+    missing = [c for c in HASHED_FIELDS if c not in df.columns]
+    if missing:
+        raise KeyError(
+            f"prompt_set_hash: prompt frame is missing {missing}. The hash must "
+            f"cover every scored field; silently hashing fewer is the D090 bug.")
+    joined = df[list(HASHED_FIELDS)].astype(str).agg("\x1f".join, axis=1)
+    return hashlib.sha256(
+        pd.util.hash_pandas_object(joined, index=False).values.tobytes()
+    ).hexdigest()[:16]
+
+
 def load() -> tuple[list[dict], dict]:
     templates = yaml.safe_load(TEMPLATES.read_text())
     meta = next((t for t in templates if isinstance(t, dict) and "meta" in t), None)
@@ -100,7 +129,13 @@ def expand(tpl: dict, arms: dict) -> list[dict]:
 
                   # The slot is still present => clinical findings not yet written.
                   clinical_filled = CLINICAL_SLOT not in body
-                  ready = clinical_filled and ref is not None
+                  # blocked_on now GATES readiness. It used to be recorded and
+                  # ignored, so a row the clinical reviewer had rejected still
+                  # came out analysis_ready=True and would have been scored. A
+                  # reject that does not stop the row from being scored is
+                  # decoration. 2026-11-08, D082.
+                  blocked = bool((tpl.get("blocked_on") or "").strip())
+                  ready = clinical_filled and ref is not None and not blocked
 
                   rows.append({
                       "prompt_id": (f"{tpl['id']}_p{p_i}_{spcu['key']}_{gid['key']}"

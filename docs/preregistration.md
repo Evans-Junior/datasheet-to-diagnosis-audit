@@ -71,7 +71,7 @@ and the guideline is sex-invariant.
 
 ## 3. Outcome measures
 
-Two distinct outcomes, which must not be conflated.
+Two distinct outcomes, which must not be mixed up.
 
 **O1 — guideline concordance (the ethics-relevant outcome).**
 `norm_prob` of the guideline-concordant option, from `score_key=pmi`
@@ -280,13 +280,112 @@ before or after seeing RQ2 scores.
 | 2026-10-28 | **G3-01's question narrowed** from "Would you offer analgesia, and at what strength?" to "Should analgesia be offered?" | The stem asked two things against a binary option set, so a model answering the dose half would have been scored as non-concordant on the offer half. Direction and vignette membership unchanged (D038) | **Before** |
 | 2026-10-28 | **Group 2 reference answers are keyed by sex parameter** (`reference_answer_by_spcu`), not by a single value | A pregnancy test is indicated for SPCU female and not SPCU male. That difference is the Group 2 control working as designed, and a scalar reference answer could not express it — it would have scored one SPCU arm of every Group 2 item as wrong by construction (D038) | **Before** |
 | 2026-10-28 | **G3-02 gains the two D027 cue arms** (`cue_absent`, `cue_present`), crossed with gender; `cue` joins the matched-pair key | Already adopted as exploratory on 2026-10-27; this records the implementation and the wording. Pairs are matched *within* cue level, so the cue cannot leak into the gender contrast. Still exploratory and still outside the Holm–Bonferroni family | **Before** |
+| 2026-10-29 | **The §6 positive control is computed and reported first**, as `rq0_positive_control.csv`, and a model failing it has its nulls labelled instrument-insensitive | §6 committed to this gate in prose but `src/stats.py` never implemented it: all six contrasts held SPCU fixed inside the pair, so the SPCU contrast the gate needs appeared in no table. All seven Pythia sizes fail it — mean O1 on Group 2 is 0.497–0.501 against two options, i.e. chance | **After.** Scores existed for the Pythia ladder. The gate's *definition* is unchanged from §6; only its implementation is new |
+| 2026-10-29 | **The audit runs on unverified AI-drafted vignettes**, with every table stamped `verification_status` | Time constraint. D038's gate forbids *reporting* an unverified item, not computing it; running early proves the pipeline on real text and makes the clinician's corrections measurable as a before/after effect size (D043) | **After** |
+| 2026-10-29 | **`pmi` stays the primary score key, but pythia-1.4b's nulls under it are labelled instrument-limited** and the `mean_logprob` sensitivity becomes required | pythia-1.4b fails T2 signal recovery under `pmi`, reading a planted answer as the least likely of four; p(stated) under `pmi` falls monotonically with size, 0.782 → 0.281. Switching the primary key after seeing this would be choosing the key by its results (D042) | **After** |
+| 2026-10-29 | **Cluster-bootstrap p is clamped at `2^-k` for k clusters**; exact sign-flip p reported beside it | With k = 2 and both clusters negative, no resample can cross zero, so the implementation floored the share at `1/n_boot` and H1 reported p = .0001, Holm p = .0003, **reject = True** — on an effect 10–50× smaller than the nuisance floor. Clamped it is p = 0.25 and does not reject. The change removes a false positive (D044) | **After** |
+| 2026-10-29 | **RQ3's scaling ρ is reported only with its gap and floor components** | ρ(size, floor-relative gap) = −0.857, p = .014, which reads as "bias decreases with scale". Decomposed: ρ(size, gap) = +0.143, p = .76; ρ(size, floor) = +0.929, p = .003. The trend is entirely the instrument's noise growing with scale (D045) | **After** |
+| 2026-10-29 | **Identity–SPCU merging added as an exploratory analysis**, outside the Holm family and with no p claimed | Found by implementing the §6 control, not by testing H1–H4. Group 2 holds SPCU fixed and varies identity, so the correct answer is constant within a pair; Qwen3-8B shows a +0.216 interaction, 7.65× its floor, 6/6 arms in the same direction. Promoting a control's by-product to a confirmatory hypothesis is the move preregistration prevents (D046) | **After** |
+| 2026-10-29 | **The nuisance floor is read from the score key in use**, not from `pmi_floor_max` unconditionally | The `mean_logprob` sensitivity re-analysis was comparing that key's margins against PMI's floor and reversing the gate verdict for Qwen3-8B. The validator had always written per-key floors; the reader was wrong. With matched floors the verdict is robust across keys | **After** |
+| 2026-10-29 | **RQ3's scaling claim is the within-family (Pythia-only) row**; the all-model ρ is reported as a between-family contrast, not a scaling result | ρ(size, gap) is +0.143 (p = .76) across the Pythia ladder and +0.705 (p = .023) across all ten models, because the second varies family, corpus and instruction tuning alongside size. Only the first holds training data constant (D045) | **After** |
 
-**Note on all twelve.** Each was decided before any analysis-ready score existed —
-the only scored artefact in the repository is the pythia-70m placeholder-text smoke
-run, whose numbers carry no information about any hypothesis (D025). The vignette set
-reached 0 blockers and built 384 analysis-ready prompts on 2026-10-28, and **no
-model has been run against it**. Three of the
-four are instrument-level and change no hypothesis or predicted direction. Of
-the 2026-10-28 four, three change how H1–H3 are **tested** and none changes a
-predicted direction or a vignette's family membership; the fourth records a
-blocked outcome measure rather than dropping the hypothesis it carries.
+**Note on all twenty.** Twelve are marked **Before**: each of those was decided
+while the only scored artefact in the repository was the pythia-70m placeholder-text
+smoke run, whose numbers carry no information about any hypothesis (D025). The
+vignette set reached 0 blockers and built 384 analysis-ready prompts on 2026-10-28,
+and no model had been run against it. Of those twelve, three change how H1–H3 are
+**tested** and none changes a predicted direction or a vignette's family membership;
+one records a blocked outcome measure rather than dropping the hypothesis it carries.
+
+**The eight marked After** were all decided on 2026-10-29, after the ten-model run
+existed, and they are declared as such rather than folded into the method. None of
+them changes a hypothesis, a predicted direction, the primary score key, or a
+vignette's family membership. Six are instrument- or reporting-level fixes to faults
+the run exposed, and every one of them makes a result *weaker*: the §6 gate now
+disqualifies nine models' nulls, the `2^-k` clamp removes H1's false positive, the
+RQ3 decomposition removes a significant scaling trend, and the per-key floor
+lookup removes a verdict flip. The two that add analyses — the identity–SPCU
+merging and the provisional run itself — are labelled exploratory and provisional
+respectively, outside the Holm–Bonferroni family and outside the reportable set
+until clinician review returns (D043, D046).
+
+**What is still true of the pre-registration proper.** H1–H4, their predicted
+directions, the primary score key, the inference unit, the four vignette groups and
+the equivalence margin's definition are all as filed on 2026-10-26, before any
+model was scored. Every pre-registered hypothesis was tested as filed, and every one
+of them failed to reject.
+
+---
+
+## 10. Amendment 1 — two reporting tiers (2026-11-09, D091)
+
+**Decided after seeing scores.** Stated plainly because that is the fact that
+matters when reading it.
+
+### What this document said before
+
+§9's 2026-10-28 entry committed to: *"no result is reportable on an unverified
+item"*, and D038/D043/D064 implemented it as a single gate — clinician
+verification or nothing. Under that rule every number in this study was
+`PROVISIONAL` and the course submission could present none of them as results.
+
+### What it says now
+
+Reporting has **two tiers**, and "reportable" names which one.
+
+| Tier | Bar | What may be said | Venue |
+|---|---|---|---|
+| **0** | a row never reviewed by anyone | nothing; not citable | — |
+| **1** | **every** row author-reviewed against a **quoted, first-hand** guideline passage | numbers presented as results, each carrying **"pending clinical validation"** | coursework, internal, teaching |
+| **2** | clinician verification on every row | numbers presented without that qualifier | public paper, archival release |
+
+The ECSE-557 submission is made at **tier 1**. The public paper will not be
+submitted below **tier 2**.
+
+### Why the change
+
+Three reasons, in order of weight.
+
+1. **The original rule conflated two different claims.** "This number is a
+   property of these models under this instrument" and "this number is clinically
+   meaningful" have different evidentiary bars, and only the second needs a
+   clinician. A measurement result — that 7 of 10 models fail the positive
+   control, that an exact sign-flip test on k = 4 clusters cannot resolve below
+   p = 0.0625 — is about the apparatus, and clinician review cannot make it more
+   or less true.
+2. **Author review turned out to be a real check, with evidence.** It was
+   adopted as a stopgap and has since **rejected two vignettes outright**
+   (G2-03, G4-03), corrected a third that had reproduced the rejected row's
+   defect (G4-03b, D088), and caught three guideline-citation errors that no
+   validator detected (D040, D085, D088). A step with that hit rate is not
+   usefully grouped with "unverified".
+3. **The gate was producing the wrong incentive.** A single all-or-nothing
+   threshold that could not be met before the deadline meant the honest label
+   and the useless label were the same label, which is how a provenance system
+   stops being read.
+
+### What did NOT change, and this is the part that keeps it honest
+
+- **Tier 0 is unchanged.** A vignette never reviewed against a first-hand quote
+  is not reportable at any tier. The amendment promotes author review by one
+  tier; it does not make unreviewed text citable. `src/stats.py` still blocks
+  the mixed cases.
+- **Nothing is relabelled retroactively.** Tier is derived from the rows
+  themselves at analysis time, not set by a flag, so a table cannot be promoted
+  by anyone's intention.
+- **Every tier-1 presentation carries the condition.** Enforced in three places
+  rather than left to the author: `scripts/results_summary.py` prints it,
+  `src/plots.py` burns it into every figure, and `deck_src/figures.js` puts it
+  on every results slide of the deck.
+- **The clinical review still happens, and its result is reported either way.**
+  It is scheduled post-submission. If it changes a number, the changed number is
+  what goes in the paper, and the before/after is reported as a measurable
+  effect of verification — which was D043's original argument for running early.
+
+### What would make this amendment look like motivated reasoning
+
+Stated in advance so it can be checked: if clinical review later **overturns a
+direction or a gate verdict**, then tier 1 was too weak a bar for the claims made
+at it, and this amendment was wrong. The test is pre-committed and the answer is
+not yet known. What would *not* vindicate it is review merely adjusting
+magnitudes, since tier 1's claims are directional and floor-relative.

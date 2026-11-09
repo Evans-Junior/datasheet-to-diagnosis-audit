@@ -1,2 +1,11 @@
-model_id,revision,n_params_b,mean_abs_delta,nuisance_floor,floor_relative_gap,exceeds_floor,n_pairs
-EleutherAI/pythia-70m,main,0.07,0.009008280126109942,0.02073182107245447,-0.011723540946344528,False,66
+model_id,revision,n_params_b,mean_abs_delta,nuisance_floor,floor_relative_gap,exceeds_floor,t2_pmi_recovered,null_is_interpretable,n_pairs,verification_status,prompt_hash
+EleutherAI/pythia-1.4b,main,1.4,0.006909029760492044,0.011245216329081,-0.004336186568588955,False,False,False,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,0.16,0.006449040628039188,0.0136041387433072,-0.0071550981152680125,False,True,True,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,1.0,0.006844161317117133,0.0051243726247092,0.0017197886924079338,True,False,False,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,2.8,0.01287408724306151,0.0094485192830729,0.0034255679599886103,True,False,False,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,0.41,0.006813186613769624,0.0068365307140019,-2.33441002322754e-05,False,True,True,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,6.9,0.01009333878810601,0.0053409747096195,0.004752364078486509,True,True,True,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,0.07,0.005843261825245022,0.0057795575410636,6.370428418142268e-05,True,True,True,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,8.0,0.03474290415281652,0.0177243118782359,0.01701859227458062,True,True,True,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,7.0,0.017373051503063588,0.0097173643385863,0.007655687164477287,True,False,False,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,7.0,0.029547837598099144,0.0099267884380526,0.019621049160046544,True,True,True,162,PROVISIONAL__author_reviewed_not_clinician_validated,baaa22996b4c7da9

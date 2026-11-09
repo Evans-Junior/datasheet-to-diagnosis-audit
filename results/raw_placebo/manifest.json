@@ -1,0 +1,201 @@
+{
+  "completed": {
+    "EleutherAI/pythia-70m@main:float32": {
+      "file": "EleutherAI_pythia-70m__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-08T23:28:35",
+      "model_id": "EleutherAI/pythia-70m",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "audit",
+      "corpus_index": "v4_piletrain_llama"
+    },
+    "EleutherAI/pythia-160m@main:float32": {
+      "file": "EleutherAI_pythia-160m__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-08T23:28:50",
+      "model_id": "EleutherAI/pythia-160m",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "audit",
+      "corpus_index": "v4_piletrain_llama"
+    },
+    "EleutherAI/pythia-410m@main:float32": {
+      "file": "EleutherAI_pythia-410m__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-08T23:29:21",
+      "model_id": "EleutherAI/pythia-410m",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "audit",
+      "corpus_index": "v4_piletrain_llama"
+    },
+    "EleutherAI/pythia-1b@main:float32": {
+      "file": "EleutherAI_pythia-1b__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-08T23:30:25",
+      "model_id": "EleutherAI/pythia-1b",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "audit",
+      "corpus_index": "v4_piletrain_llama"
+    },
+    "EleutherAI/pythia-1.4b@main:float32": {
+      "file": "EleutherAI_pythia-1-4b__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-08T23:31:55",
+      "model_id": "EleutherAI/pythia-1.4b",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "audit",
+      "corpus_index": "v4_piletrain_llama"
+    },
+    "EleutherAI/pythia-2.8b@main:float32": {
+      "file": "EleutherAI_pythia-2-8b__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-08T23:34:58",
+      "model_id": "EleutherAI/pythia-2.8b",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "audit",
+      "corpus_index": "v4_piletrain_llama"
+    },
+    "EleutherAI/pythia-6.9b@main:float32": {
+      "file": "EleutherAI_pythia-6-9b__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-08T23:43:05",
+      "model_id": "EleutherAI/pythia-6.9b",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "audit",
+      "corpus_index": "v4_piletrain_llama"
+    },
+    "allenai/OLMo-2-1124-7B@main:float32": {
+      "file": "allenai_OLMo-2-1124-7B__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-08T23:52:00",
+      "model_id": "allenai/OLMo-2-1124-7B",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "base",
+      "corpus_index": "v4_olmo-mix-1124_llama"
+    },
+    "allenai/OLMo-2-1124-7B-Instruct@main:float32": {
+      "file": "allenai_OLMo-2-1124-7B-Instruct__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-09T00:00:22",
+      "model_id": "allenai/OLMo-2-1124-7B-Instruct",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "instruct",
+      "corpus_index": "v4_olmo-mix-1124_llama"
+    },
+    "Qwen/Qwen3-8B@main:float32": {
+      "file": "Qwen_Qwen3-8B__main__float32.parquet",
+      "rows": 756,
+      "n_prompts": 252,
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi",
+      "device": "mps",
+      "finished": "2026-11-09T00:10:18",
+      "model_id": "Qwen/Qwen3-8B",
+      "revision": "main",
+      "dtype": "float32",
+      "role": "contrast",
+      "corpus_index": null
+    }
+  },
+  "runs": [
+    {
+      "finished": "2026-11-08T17:09:23",
+      "env": {
+        "seed": 20261009,
+        "python": "3.12.15",
+        "machine": "arm64",
+        "torch": "2.14.1",
+        "transformers": "5.19.0",
+        "numpy": "2.5.3",
+        "pandas": "3.0.6"
+      },
+      "prompt_hash": "0c7f69952804b233",
+      "placeholder_text": false,
+      "score_key": "pmi"
+    },
+    {
+      "finished": "2026-11-08T19:42:52",
+      "env": {
+        "seed": 20261009,
+        "python": "3.12.15",
+        "machine": "arm64",
+        "torch": "2.14.1",
+        "transformers": "5.19.0",
+        "numpy": "2.5.3",
+        "pandas": "3.0.6"
+      },
+      "prompt_hash": "15cc0af8a9812afd",
+      "placeholder_text": false,
+      "score_key": "pmi"
+    },
+    {
+      "finished": "2026-11-09T00:10:18",
+      "env": {
+        "seed": 20261009,
+        "python": "3.12.15",
+        "machine": "arm64",
+        "torch": "2.14.1",
+        "transformers": "5.19.0",
+        "numpy": "2.5.3",
+        "pandas": "3.0.6"
+      },
+      "prompt_hash": "884acd3984d8f520",
+      "placeholder_text": false,
+      "score_key": "pmi"
+    }
+  ]
+}

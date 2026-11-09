@@ -114,15 +114,30 @@ reported result — which is the thing that actually matters for the paper.
 The `verification` field in `data/vignettes/templates.yaml` takes exactly these
 values:
 
+Reportability has **two tiers** since 2026-11-09 (D091, preregistration §10).
+**Tier 1** is the coursework bar: every row author-reviewed against a quoted,
+first-hand guideline passage, with "pending clinical validation" attached to every
+number. **Tier 2** is the publication bar: clinician verification on every row.
+A row that nobody has reviewed is reportable at **neither**.
+
 | Value | Meaning | Reportable? |
 |---|---|---|
-| `unverified_ai_drafted` | Drafted by the assistant; no clinician has seen it. The state of all 15 items as of 2026-10-28 | **No** |
-| `ai_drafted_clinician_verified` | Clinician confirmed the findings force the stated answer, text unchanged | Yes |
-| `ai_drafted_clinician_corrected` | Clinician found a fault, we applied the fix they described, they confirmed the corrected row | Yes |
-| `clinician_authored` | The clinician supplied the replacement wording themselves; that sentence is theirs | Yes |
+| `unverified_ai_drafted` | Drafted by the assistant; nobody has checked it against the guideline. The state of all 15 items as of 2026-10-28; **0 items as of 2026-11-09** | **No — tier 0** |
+| `author_reviewed_against_quoted_guideline` | **The author** checked the vignette against the guideline sentence quoted for it and confirmed the findings force the stated answer. A real step, and not a clinician: it catches drafting faults, wrong labels and unsupported answers, but it cannot certify clinical correctness. `src/stats.py` maps it to `REPORTABLE_TIER1__pending_clinical_validation` | **Tier 1 only** — numbers may be presented as results if "pending clinical validation" travels with them; not publishable |
+| `ai_drafted_clinician_verified` | Clinician confirmed the findings force the stated answer, text unchanged | Tier 2 |
+| `ai_drafted_clinician_corrected` | Clinician found a fault, we applied the fix they described, they confirmed the corrected row | Tier 2 |
+| `clinician_authored` | The clinician supplied the replacement wording themselves; that sentence is theirs | Tier 2 |
 | `rejected` | Failed review and is excluded from the instrument | **No** — and the item is dropped, not softened |
 
-Only the last three may enter a reported result, and `scripts/check_templates.py`
+**Why author review was promoted, briefly.** It was adopted as a stopgap and then
+earned the tier: it rejected two vignettes outright (G2-03, G4-03), corrected a
+third that had reproduced the rejected row's exact defect (G4-03b), and caught
+three guideline-citation errors no validator detected. The full argument, and the
+pre-committed test that would show the promotion was wrong, is in
+`docs/preregistration.md` §10.
+
+The last three values clear tier 2, `author_reviewed_against_quoted_guideline`
+clears tier 1 only, and `scripts/check_templates.py`
 rejects any other value, so the distinction cannot be lost by a typo.
 
 **Two consequences worth stating.**

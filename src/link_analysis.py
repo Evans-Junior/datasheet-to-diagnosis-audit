@@ -54,7 +54,9 @@ import yaml
 from scipy import stats as sps
 
 from src.stats import (PRIMARY_SCORE_KEY, all_contrasts, load_raw,
+
                        outcome_rows, load_target_options)
+from src.provenance import write_table   # D090: stamps prompt_hash
 
 ROOT = Path(__file__).resolve().parent.parent
 TABLES = ROOT / "results/tables"
@@ -297,8 +299,8 @@ def main() -> None:
         sys.exit("no (model x corpus) cells to test. Either no models are "
                  "scored or no vignette has a powered concept.")
     cj = pd.concat(joined, ignore_index=True) if joined else pd.DataFrame()
-    link.to_csv(TABLES / "rq4_linkage.csv", index=False)
-    cj.to_csv(TABLES / "rq4_concept_level.csv", index=False)
+    write_table(link, TABLES / "rq4_linkage.csv")
+    write_table(cj, TABLES / "rq4_concept_level.csv")
 
     n_unpowered = int((~prim["powered"]).sum())
     print(f"\nskew method: {args.method}")

@@ -2029,3 +2029,2753 @@ specific unexamined areas are flagged in `paper_notes.md` §5: the Pythia paper'
 `gender` and 60 `bias` hits, which may concern *studying* bias rather than corpus
 composition, and the OLMo 2 report's 4 `bias` and 3 `health` hits. Coding remains
 the authors' work (`AI_USE.md`).
+
+## D042 — PMI stops recovering a stated answer at pythia-1.4b, so its nulls there are instrument-limited
+
+**Decision.** PMI remains the preregistered primary score key. But pythia-1.4b
+**fails T2 signal recovery under PMI**, so any null result for that model under PMI
+is reported as *instrument-limited*, not as evidence of no gender gap, and the
+`mean_logprob` sensitivity analysis is promoted from optional to required wherever
+1.4b carries a claim.
+
+**What was measured.** `scripts/validate_instrument.py` plants the answer in the
+prompt and checks the scorer retrieves it. T2 uses two probes. At 1.4b, probe 1
+(stated `Code A`) returns argmax `Code D` under PMI — the instrument reads an answer
+the prompt explicitly states as the *least* likely of four. `sum_logprob` and
+`mean_logprob` recover both probes at every size.
+
+**It is a trend, not a glitch.** The probability mass PMI puts on the stated answer
+falls monotonically with model size, on both probes:
+
+| Model | PMI floor (max) | p_stated, probe 1 | p_stated, probe 2 |
+|---|---|---|---|
+| pythia-70m | 0.0207 | 0.782 | 0.972 |
+| pythia-160m | 0.0626 | 0.650 | 0.956 |
+| pythia-410m | 0.0309 | 0.353 | 0.893 |
+| pythia-1.4b | 0.1043 | **0.281 (failed)** | 0.804 |
+
+Probe 1 crosses below chance between 410m and 1.4b. The nuisance floor is also
+highest at 1.4b, five times 70m's, so the same model is both the least sensitive and
+the noisiest under PMI. Two independent RQ0 tests agree about one model.
+
+**Why this is not a reason to switch primary keys.** PMI was chosen because it
+subtracts each option's unconditional prior, which is what stops option-string
+frequency from masquerading as a clinical preference. Swapping to `mean_logprob`
+after seeing the validation output would be choosing the key by its results, which
+is the thing preregistration exists to prevent. The honest move is to keep the
+declared key and declare where it is blind.
+
+**What this costs.** H3 is the hypothesis that asserts an *absence*, and an absence
+measured with a blind instrument is unpublishable. So 1.4b cannot carry H3 under PMI
+alone. The RQ3 size trend keeps 1.4b as a point but annotates it, because dropping
+a point because its validation failed, while keeping points that passed, would bias
+the trend toward whichever sizes happened to validate.
+
+**The mechanism, and the correction to a first reading of it.** The probe plants
+the answer: *"The applicable rule states that Code A is the correct code."* Under
+`sum_logprob` OLMo-2-7B scores Code A at −1.70 against −3.73 for Code D: it knows.
+Under `pmi` the four options sit at 6.22, 6.25, 6.47, 6.02 and Code C wins. The
+cause is PMI's own definition — "Code A" carries a high unconditional prior (−8.01
+versus Code D's −8.94 on content-free text), so PMI subtracts ~0.9 nats more from
+it. **PMI over-corrects options with high priors.**
+
+It is tempting to conclude from this that PMI destroys the clinical signal and
+should be dropped. Two measurements say otherwise, and they were made before that
+conclusion was written down:
+
+| Model | PMI recovery | p(stated answer) |
+|---|---|---|
+| OLMo-2-1124-7B (base) | fails probe 1 | 0.243 |
+| OLMo-2-1124-7B-**Instruct** | both | **1.000, 1.000** |
+| Qwen3-8B | both | **0.997, 0.995** |
+
+The over-subtraction only bites when the *conditional* signal is weak relative to
+the prior. Where a model actually knows the answer, PMI recovers it essentially
+perfectly. So the failure tracks model capability, not the score key, and the
+instrument is sound on exactly the models that can do the clinical task. The
+correct scope of this decision is therefore narrow: **a PMI null on a model that
+failed T2 is uninterpretable**, and that set is pythia-1b, 1.4b, 2.8b and
+OLMo-2-7B base — not the instrument as a whole.
+
+**Cheaply mitigated.** `score_outputs.py` stores all three raw score columns on
+every row and uses `score_key` only to pick which one `norm_prob` softmaxes. The
+`mean_logprob` sensitivity is therefore a re-softmax of data already on disk — no
+second pass over any model.
+
+## D043 — The audit runs before clinical verification, and every output is tagged provisional
+
+**Decision.** Taken 2026-10-29. The model audit runs now, on the AI-drafted and
+unverified vignette set, rather than waiting for a clinician. Every row, table and
+figure carries `verification=unverified_ai_drafted`. When review returns, the same
+pipeline reruns on the corrected set and the two are reported side by side.
+
+**Why the gate is not being broken.** D038's gate says no number from an unverified
+vignette may be *reported as a finding*. It does not say the number may not be
+computed. Computing it early buys two things that are lost by waiting: the pipeline
+is proven on real text rather than smoke data, and the clinician's corrections get a
+measurable effect size — the before/after comparison is itself evidence about how
+much AI-drafted stimulus error moves a bias estimate, which no one else in this
+literature reports.
+
+**What would make this dishonest.** Presenting any of these numbers without the
+tag. The guard is mechanical rather than remembered: `verification` travels on every
+raw row out of `src/score_outputs.py`, and the stats tables carry a
+run-level `verification_status` stamp, so a table cannot be separated from its
+provenance by being copied into a slide.
+
+**The risk being accepted.** If the clinician rejects an item, every number computed
+from it is void, and if they reject several the headline estimate moves. That is a
+known cost of running early, not a surprise, and the before/after table is where it
+gets declared rather than buried.
+
+## D044 — A p-value may not be reported below the resolution its cluster count supports
+
+**Decision.** The cluster bootstrap stays the preregistered family-level test, but
+its reported p is clamped at `2^-k` for k vignette clusters, and an exact
+cluster-level sign-flip randomisation p is reported beside it. Added
+`p_cluster_bootstrap_unclamped`, `p_cluster_signflip_exact` and
+`p_resolution_limit_2^-k` to `rq2_hypothesis_tests.csv`.
+
+**The failure this fixes.** On the seven-model Pythia ladder, H1 reported
+**p = .0001, Holm p = .0003, reject = True** — an apparently decisive gender effect.
+H1 rests on two vignettes. A bootstrap over two clusters has four possible
+resamples; both clusters had negative means, so no resample could cross zero, the
+share on the null side was exactly 0, and `cluster_boot_p` floored it at
+`1/n_boot = 1/10000`. The arithmetic is right. The evidence is one bit: *two of two
+items agreed in sign.*
+
+Clamped, H1 reports p = 0.25 — the finest value two clusters can resolve — and does
+not reject. **The correction removes a false positive, it does not create one.**
+
+**Why this was nearly the worst possible error to ship.** Three things pointed the
+same way and the p-value pointed against all of them: the effect was Δ = −0.0022,
+between 10 and 50 times *smaller* than every model's nuisance floor; the positive
+control had failed on every model in the set; and D036 already flagged two clusters
+as unresolvable in prose. An unqualified "p < .001, women's referral endorsed less
+readily" would have been the headline of the presentation, defended with a number
+that cannot exist. D036 fixed the *unit* of inference; it did not fix the
+*resolution* of the p-value computed on that unit, and the gap between those two
+things is where this hid.
+
+**On the sign-flip test.** Exact over all `2^k` sign assignments of the cluster
+means, so no resampling noise and a smallest attainable value of exactly `2^-k`:
+0.25 at two clusters, 0.0039 at eight. Reported as a companion rather than
+substituted for the preregistered test, since swapping the test after seeing the
+result is what preregistration exists to stop (cf. D042).
+
+## D045 — The RQ3 scaling trend is reported with its two components, never alone
+
+**Decision.** `size_trend()` reports Spearman ρ for the floor-relative gap *and* for
+each component separately, and prints an explicit warning when the floor's
+correlation with size exceeds the gap's.
+
+**Why.** `floor_relative_gap = mean_abs_delta − nuisance_floor` is a difference, so a
+trend in it can come from the gap shrinking or the floor growing — opposite
+conclusions from one number. Across the seven-model ladder:
+
+| quantity vs model size | Spearman ρ | p |
+|---|---|---|
+| floor-relative gap | **−0.857** | **0.0137** |
+| gap (`mean_abs_delta`) | +0.143 | 0.760 |
+| nuisance floor | **+0.929** | **0.0025** |
+
+The composite is significant at α = .05 and reads as *"gender bias decreases with
+model scale"* — a publishable-sounding scaling result. It is nothing of the kind.
+The gap has no relationship with size whatsoever; the **instrument's own noise
+floor** rises almost monotonically with it, and the composite inherits that. The
+reportable statement is the opposite in spirit: at these sizes the measured gap is
+flat, and larger Pythia models are noisier instruments.
+
+**Generalises past this project.** Any floor-, baseline- or chance-corrected metric
+plotted against scale carries this hazard, and the correction term is rarely plotted.
+
+## D046 — The headline finding is exploratory, came from the control, and is reported as such
+
+**Decision.** The identity–SPCU merging result (`rq2b_identity_spcu_merging.csv`,
+`src/stats.py::identity_spcu_merging`) is reported as **exploratory**: outside the
+Holm–Bonferroni family, no p-value claimed, effect reported against each model's own
+nuisance floor. It is not promoted to a hypothesis retrospectively.
+
+**What it is.** Group 2 contrasts hold the Sex Parameter for Clinical Use fixed and
+vary only the gender-identity label, so the clinically correct answer is identical
+within each pair. In Qwen3-8B, all six (3 vignettes × 2 SPCU arms) move in the same
+pattern: identity "woman" raises mass on the correct answer when SPCU is female and
+lowers it when SPCU is male. The interaction is +0.216, **7.65× that model's measured
+noise floor**, and 7.28× under `mean_logprob`. OLMo-2-7B Instruct shows it at 1.13×
+with 3/3 vignettes agreeing; OLMo-2-7B base at 1.48× with 2/3. All seven Pythia
+models sit inside their floors with no consistent sign.
+
+**Why it is not retrofitted into H1–H4.** It was found by implementing the §6
+positive control, which exists to test the instrument, not the models. Promoting a
+control's by-product to a confirmatory hypothesis after seeing it is exactly the
+move preregistration prevents, and the project has already refused that move twice
+(D042 on the score key, D044 on the test). An exploratory finding with an effect
+7.65× the floor and 3/3 sign agreement does not need the inflation.
+
+**Why it is nonetheless the result worth leading with.** H1–H3 ask whether a model
+treats women differently where the guideline says it should not. This asks something
+the preregistration did not: whether a model can hold *identity* and *sex parameter*
+apart at all. The answer is that the three models with any clinical competence
+cannot, and the configuration where it bites — identity and sex parameter
+disagreeing — is the configuration of a transgender patient. That is a concrete,
+bounded, clinically meaningful harm, and D026/D034 already established that this
+population is absent from the corpora and named in the guidelines.
+
+**Three limits stated with it, not after it.** Three vignettes, so the finest
+resolvable p is 0.125 (D044) and none is claimed. Partly tautological, since a model
+with no clinical signal cannot exhibit the interaction — the Pythia nulls are
+consistent with merging that is merely invisible. And the stimuli are AI-drafted
+and unverified (D043), which makes this the first thing to re-run after clinician
+review.
+
+## D047 — Auditability and capability are anti-correlated, and that is the ethics result
+
+**Decision.** The write-up leads with this rather than treating it as a limitation.
+
+**The fact.** The only model of ten that passes the instrument-sensitivity gate is
+**Qwen3-8B** — the closed-data contrast, included under RQ5 precisely because nothing
+about its corpus can be inspected. Every model whose training corpus *can* be queried
+— the whole Pythia ladder on the Pile, OLMo-2-7B on olmo-mix-1124 — is at or near
+chance on sex-specific clinical content.
+
+**What it costs the project.** RQ1 and RQ4 depend on querying a corpus and relating
+it to that model's behaviour. Where the corpus is open the behaviour is noise; where
+the behaviour is measurable the corpus is closed. The datasheet-to-diagnosis chain
+cannot currently be completed end to end on any single model, and §6.5 shows the
+negative control firing when we try to substitute: Qwen3-8B's gaps correlate with
+Pile skew at ρ = +0.70 while OLMo-2-7B's correlate with its *own* corpus at ρ = +0.06.
+
+**Why it is a result and not an excuse.** The project's premise is that open training
+data makes corpus-to-output auditing possible. The measurement says that possibility
+is concentrated in models too weak for the audit to conclude anything — so the
+transparency that enables this method and the capability that makes it worth applying
+do not currently coexist. That is a claim about the open-model ecosystem, it is
+supported by every number in §6.1, and it is more useful to a FAccT/AIES audience
+than a null on eight underpowered hypotheses.
+
+**What would overturn it.** One open-data model at instruction-tuned 7B+ that clears
+the gate. OLMo-2-7B-Instruct comes closest in raw margin (+0.0199, 3/3 vignettes
+positive) and fails only because its own nuisance floor is the second-highest in the
+set at 0.090. A floor that high is itself worth investigating, and is the cheapest
+next experiment: it may be an instruction-tuning artefact rather than a property of
+the model's clinical knowledge.
+
+---
+
+## D048 — Record what each model family was *built for*, and treat it as a confound
+
+**Date:** 2026-11-02. **Status:** adopted.
+
+**Decision.** State the stated purpose of every audited family in the paper, and
+carry it into the interpretation of both the gate and the merging result.
+
+**Pythia** (Biderman et al., ICML 2023) is a scientific instrument for studying
+training dynamics and scaling: eight sizes on identical data in identical order,
+154 checkpoints each, a deduplicated twin, and explicitly no attempt at
+competitive benchmark scores. Base-only — no instruction tuning, no chat
+template, no safety post-training. Its own paper runs a gender-bias case study
+that rewrites pronouns late in training, which is the causal version of our RQ4.
+**OLMo 2** (AI2) is built to be fully open *and* usable — weights, Dolma /
+olmo-mix-1124, training code, logs, checkpoints and evals all released — and
+positioned against Llama 3.1 8B; only the `-Instruct` variants received
+post-training (Tülu 3: SFT → DPO → RLVR). **Qwen3-8B** is a product assistant
+with open weights and a closed corpus.
+
+**Why it matters.** The open-data arm of this design is largely the arm that was
+never intended to be used. Seven Pythia sizes failing the §6 positive control is
+close to expected behaviour for an untuned base LM on forced choice: it bounds
+what this instrument can see, and is not evidence about deployed systems. Saying
+so is stronger than letting a reader discover it.
+
+**Second consequence, now tested.** The merging effect is largest in
+instruction-tuned models, which made post-training a live alternative to a
+data-borne mechanism. That alternative is tested in **D049** and does not hold.
+
+**Does not change** any number, hypothesis or pre-registered claim.
+
+---
+
+## D049 — RQ2c: contrast a base model with its own Instruct sibling (data or tuning?)
+
+**Date:** 2026-11-02. **Status:** adopted, exploratory.
+
+**Decision.** Add `src/stats.py::post_training_contrast`, writing
+`results/tables/rq2c_post_training_contrast.csv`. It contrasts a base model with
+its own Instruct sibling on the identity–SPCU merging statistic. The pair shares
+a training corpus *exactly* and differs only in post-training, so the difference
+isolates tuning with no new model and no new corpus.
+
+    rq2c = merging(Instruct) − merging(base)
+
+Read against a combined floor `hypot(floor_base, floor_tuned)`, because the two
+estimates carry independent nuisance; reading it against either floor alone
+would understate the noise.
+
+**Result.** OLMo-2-1124-7B → OLMo-2-1124-7B-Instruct: 0.0638 → 0.1017, a
+difference of **+0.038 against a combined floor of 0.100 (0.38×)**. Under
+`mean_logprob`: +0.020 against 0.045 (0.44×). Inside the floor on both score
+keys. The *untuned* base model already exceeds its own floor at 1.48×.
+
+**What this licenses.** Post-training is not a sufficient explanation: the effect
+is present before any tuning and tuning adds nothing this instrument can
+resolve. The pattern tracks clinical capability (Qwen ≫ OLMo-Instruct ≈
+OLMo-base ≫ all Pythia), not tuning status.
+
+> **SUPERSEDED 2026-11-03 by D052.** The "inside the floor" reading above rested
+> on the pre-D052 floor, which was measured on the wrong geometry and inflated
+> by roughly 8.5x. The effect `+0.03788` is unchanged, but the combined floor
+> falls from `0.09976` to `0.01317`, so the contrast is **2.88x its floor and
+> exceeds it**, where before it sat at 0.38x and did not. The conclusion
+> reverses: post-training **does** increase the identity-SPCU merging by more
+> than this instrument's noise. The claim that "tuning adds nothing this
+> instrument can resolve" was an artifact of the inflated floor and is withdrawn.
+> What survives from the paragraph below is the limitation: one pair, k = 3,
+> resolution limit 2^-3 = 0.125, no p-value claimed, and "not only the corpus"
+> is still not "therefore the tuning alone" -- the base model also exceeds its
+> own floor (0.0638 against 0.0078), so both stages contribute. See D055.
+
+**What it does not license.** "Not post-training" is not "therefore
+pre-training data". Architecture, tokeniser, data quality and data scale all
+still differ across families, and this is one pair at k = 3, resolution limit
+2⁻³ = 0.125, no p-value claimed. The honest summary is that one of two
+explanations lost ground, not that the other won. Reported as exploratory,
+outside the Holm family, alongside D046.
+
+---
+
+## D050 — Rename "identity–SPCU conflation" to "identity–SPCU merging" throughout
+
+**Date:** 2026-11-02. **Status:** adopted.
+
+**Decision.** The finding, the function, the output table and the figure are
+renamed from *conflation* to *merging*: `identity_spcu_merging`,
+`mean_merging`, `rq2b_identity_spcu_merging.csv`,
+`results/figures/rq2b_identity_spcu_merging.png`.
+
+**Why.** "Conflation" is precise but it is a word a reader has to stop at, and
+this is the project's headline result — the sentence that most needs to land
+first time. "Merging" says the same thing (two fields that the HL7 Gender
+Harmony Model keeps separate are treated as one) in a word nobody has to parse.
+The one place the old word survives is where it means something else: "that
+conflates 'no effect' with 'not enough data'" (D022, `src/stats.py`), which is a
+different claim and keeps its own wording.
+
+**Cost.** One rename across `src/stats.py`, `src/plots.py`, three documents, the
+defence site and the interim report. The old CSVs were deleted rather than left
+as stale duplicates, and both score-key runs were regenerated.
+
+---
+
+## D051 — Gate and H1/H2 options are single-token, so two of the three score keys coincide there
+
+**Date:** 2026-11-02. **Status:** adopted; corrects an overclaim.
+
+**Finding.** Every answer option in Group 2 (the positive control) and Group 3
+(H1/H2) is **one token**. For a one-token option `sum_logprob` and
+`mean_logprob` are identical by definition — the sum over one token, divided by
+one — so on exactly the items that carry the gate and the two directional
+hypotheses they are *the same statistic*, not two.
+
+Verified by running the third key: `results/tables__sum_logprob/` reproduces
+`results/tables__mean_logprob/`'s gate margins with max difference
+`0.000000`, while the same two keys differ by up to `0.527` in `norm_prob` on
+Group 1 (options of 2–13 tokens) and `0.379` on Group 4.
+
+**Decision.** Stop describing the gate's robustness as "three statistics agree".
+Report it as: length bias cannot affect the gate or H1/H2 **by construction**,
+and the live contrast is log-probability against PMI. That is a stronger claim
+than agreement, because it closes a class of objection instead of surviving it.
+
+**What was corrected.** A draft of the interim report asserted that the Pythia
+margins "agree to three decimals across all three statistics". Two errors: only
+**3 of 7** Pythia models agree to three decimals (largest divergence
+pythia-410m, +0.0015 → +0.0025), and only two keys had been run when the
+sentence was written. The sentence now reports the measured range: every Pythia
+margin between **−0.0071 and +0.0025**, inside its own floor on every key, with
+no change of sign — while the same choice halves Qwen's margin
+(+0.0506 → +0.0260) and cuts OLMo-Instruct's by 62% (+0.0199 → +0.0075).
+
+**The argument that survives.** The statistic has large leverage where there is
+signal and none where there is not. That asymmetry, not agreement across keys,
+is what makes "your metric is wrong" unavailable as an explanation of the
+Pythia nulls.
+
+**Open question this raises.** Single-token options are what make the gate
+robust, but they also cap how much clinical content an option can carry. Whether
+the gate would still fail with multi-token options is untested, and belongs in
+the limitations alongside the stimulus-verification gap.
+
+---
+
+## D052 — The nuisance floor was measured on the wrong geometry, and is rebuilt on Group 4
+
+**Date:** 2026-11-03. **Status:** adopted; corrects a measurement error.
+**Log:** `docs/instrument_tuning_log.md` I1.
+
+**The error.** The floor was measured on a content-free bureaucratic frame
+("Record 4417 is open for review. The applicant is the woman.") scored over
+`["Code A","Code B","Code C","Code D"]` (`scripts/validate_instrument.py:172`),
+then used to gate binary Yes/No clinical items. Four mismatches at once: four
+arbitrary options against two real words, two option tokens against one, one
+filler sentence against a 120-word vignette, and an aggregation that took the
+maximum over 4 options and then over 3 frames (a max of 12 draws) against a
+single targeted delta. A near-uniform softmax over four meaningless codes is the
+highest-variance place in the instrument, so the floor was inflated by
+construction.
+
+This is also the mechanism behind the puzzle in D051. The floor's magnitude
+moved 2-3x across score keys while the gate effect was bit-identical across two
+of them, because "Code A" is two tokens and "Yes" is one. Part of the floor was
+a length artifact that cannot occur in the effect it gated.
+
+**The fix.** Measure the floor on Group 4 with the *same statistic as the gate*:
+the sex-parameter flip on the target option, within (vignette, paraphrase,
+gender identity, cue). Group 4 is clinically real, adult, has pregnancy
+explicitly excluded and carries no sex-specific content, so a flip there should
+move nothing. Stratified by option count, so a binary contrast is gated by a
+binary floor. No model re-run was needed: Group 4 was already scored in the main
+audit, 192 option rows per model per score key.
+
+**Measured.** The floor moved by more than 25% for 10 of 10 models on the primary
+key, median ratio 0.118. The floor in force was roughly 8.5x too high. The gate
+goes from 1/10 to 3/10: OLMo-2-7B base 2.24x, OLMo-2-7B-Instruct 1.88x,
+Qwen3-8B 3.86x. All seven Pythia models stay inside their floors with unchanged
+sign.
+
+**Classified as a correctness fix, not tuning.** The four mismatches are
+demonstrable from the code and the stimulus files without consulting any
+outcome, and the criterion for keeping the change was fixed before the run and
+made no reference to how many models pass.
+
+**Disclosed against interest.** On the `mean_logprob` sensitivity key the matched
+floor for Qwen3-8B rises from 0.0165 to 0.0446 and Qwen flips from SENSITIVE to
+INSENSITIVE. The change is kept anyway, as pre-declared. The gate's verdict on
+Qwen is score-key dependent and that is now a stated limitation.
+
+**Open.** The binary stratum has only two vignettes and the four-option stratum
+only one, so the cluster bootstrap is degenerate and the floor rests on 2
+clusters and 24 matched items. The geometry is right, the sample size is not.
+Writing more Group 4 noise vignettes is the cheapest remaining gain in power.
+
+---
+
+## D053 — The gate and H1/H2 have two score keys, not three, for the floor as well as the effect
+
+**Date:** 2026-11-03. **Status:** adopted; completes D051.
+**Log:** `docs/instrument_tuning_log.md` I2.
+
+D051 established that `sum_logprob` and `mean_logprob` coincide on the gate and
+H1/H2 *effects*, because every option there is one token. With the floor now
+measured on those same single-token options (D052), the identity holds for the
+floor too: maximum absolute difference between the two keys' matched floors on
+the binary stratum is `0.000e+00` across all ten models, against `4.893e-02` on
+the four-option stratum where options run to several tokens and the keys must
+diverge.
+
+**Consequence for reporting.** On the gate and on H1/H2 there are two genuine
+statistics, log-probability and PMI. Length bias cannot affect those strata by
+construction, now on both sides of the comparison. Describing a three-key
+agreement there would be double counting.
+
+---
+
+## D054 — RQ4 is not identifiable with the Pile and olmo-mix, and is reframed
+
+**Date:** 2026-11-03. **Status:** adopted; converts a failed estimate into a
+reported result. **Log:** `docs/instrument_tuning_log.md` I4.
+
+**The symptom.** The RQ4 negative control fires. Qwen3-8B, trained on neither
+corpus, correlates at rho +0.700 with the Pile and +0.758 with olmo-mix, while
+the matched pairings are weak (OLMo base +0.060, pythia-6.9b -0.117).
+
+**The diagnosis.** On the audited concepts the two corpora agree at Spearman
+**0.976** (Pearson 0.963, median absolute disagreement 0.125 log2, maximum 0.377
+on pneumonia, and not one concept above 0.5). The Pile and olmo-mix are both
+large English web scrapes, so their gendered health-term skew is very nearly the
+same measurement twice. Two measurements that agree that closely cannot
+attribute a model's behaviour to one rather than the other: matched and crossed
+pairings are close to the same test. Qwen's high correlation with both is the
+arithmetic consequence, not an anomaly.
+
+**The repair that failed.** Restricting the correlation to concepts where the
+corpora disagree was the intended fix, with a criterion of 6 concepts above 0.5
+log2 fixed before running. Zero qualify. Recorded as a failed intervention.
+
+**Second defect exposed.** Only 8 of 14 concepts have skew in both corpora: five
+are olmo-mix only (cellulitis, cervical cancer, conjunctivitis, prostate, sore
+throat) and one is Pile only (strep throat). The matched and crossed pairings
+were therefore partly computed over non-overlapping concept sets, so only the
+`common` support variant in `rq4_linkage.csv` is a like-for-like contrast and
+the `all_powered` variant must not be read as one.
+
+**The reframing.** RQ4 reports a measured non-identifiability result rather than
+a provenance estimate: rho 0.976 is the coefficient that makes provenance
+attribution by n-gram skew correlation impossible between these two corpora.
+Stated with the condition under which it would become possible, namely corpora
+that genuinely differ (domain-specific against web-scraped) or concepts selected
+for maximum corpus disagreement, and with the tension that selecting concepts
+that way trades clinical relevance for identifiability.
+
+**Why this is worth reporting rather than dropping.** The project's premise is
+that open training data makes bias traceable. A measured bound on when tracing
+works is a result about that premise, not a failure to reach one.
+
+---
+
+## D055 — Propagating the corrected floor through RQ2, RQ2c and RQ3
+
+**Date:** 2026-11-03. **Status:** adopted. **Depends on:** D052.
+**Reproduce:** `python -m src.stats --no-mixed --floor {matched,legacy}`.
+
+A floor measured on the wrong geometry (D052) was consumed by four downstream
+results, so correcting it changes all four. `src/stats.py` gains
+`load_matched_floors`, `floor_for` and `option_counts`, and a `--floor` flag
+whose `legacy` setting reproduces the pre-correction numbers so both columns can
+be published side by side. Every figure below is on the primary key, `pmi`.
+
+| Result | Legacy floor | Matched floor | Change |
+|---|---|---|---|
+| Gate (Group 2) | 1/10 SENSITIVE | **3/10** | OLMo base 2.24x, OLMo-Instruct 1.88x now clear |
+| H3 equivalence | supported, margin 0.1047 (67.8x the effect) | supported, margin **0.0131** (8.5x) | same verdict, credible margin |
+| RQ2c post-training | +0.0379 vs 0.0998 = 0.38x, inside floor | +0.0379 vs **0.0132 = 2.88x**, exceeds | **conclusion reverses** |
+| RQ3 size trend | rho -0.030, p = 0.93; 1/10 above floor | rho **+0.693, p = 0.0263**; 7/10 | null becomes a trend |
+
+**H3.** The verdict does not change, but its meaning does. The old margin was
+0.1047, taken from an indiscriminate maximum over every model's floor, which
+made "the gap is bounded inside instrument noise" nearly unfalsifiable at 68x
+the measured effect. The margin now comes from the four-option stratum H3
+actually uses (G1-01..G1-05 are all four-option) and is 8.5x the effect, with
+the whole bootstrap CI [-0.0015, +0.0045] inside +/-0.0131. This is a
+substantially stronger result than before: equivalence against a margin that
+could have failed.
+
+**RQ3, declared against our own interest.** The size trend goes from null to
+rho +0.693 at p = 0.0263 **because of an instrument change we made ourselves**,
+which is exactly the shape a reader should be suspicious of. Four things are
+offered instead of reassurance. The floor change was accepted on a criterion
+fixed before the run and evaluated only on Group 2 and Group 4
+(`docs/instrument_tuning_log.md` I1). The mechanism is visible and checkable:
+the legacy floor ranged from 0.0207 to 0.1047 with no relation to model size, so
+it swamped a `mean_abs_delta` that spans only 0.0058 to 0.0328, and under the
+matched floor the floor-vs-size correlation falls to +0.280 (p = 0.43) so the
+gap trend is no longer cancelled. Both columns are published. And RQ3 remains
+exploratory and outside the Holm family, on n = 10 models, with
+`null_is_interpretable` false for four of them. It is a trend worth reporting
+and not a confirmed scaling law.
+
+**Reader's summary.** Of the four changes, one is a straightforward improvement
+(H3's margin), one opens the gate for the family the project most needs
+(OLMo), one reverses a published conclusion against the simpler story
+(RQ2c), and one turns a null into a positive finding in a way that happens to
+favour us (RQ3). The fourth is the one to treat with most caution, and it is
+flagged as such wherever it is reported.
+
+---
+
+## D056 — The corrected floor makes H3's equivalence margin circular; reported three ways
+
+**Date:** 2026-11-03. **Status:** adopted. **Caused by:** D052.
+**Reproduce:** `python scripts/i5_h3_circularity.py`.
+
+**The defect, which D052 introduced.** H3's preregistered vignette set is
+`["G1-01".."G1-05", "G4-01", "G4-02", "G4-03"]`. D052 moved the nuisance floor
+onto Group 4, so three of H3's eight vignettes are now the same data its
+equivalence margin is derived from, and the test is partly compared against
+itself. The legacy floor did not have this problem, because it was measured on
+separate synthetic frames. Correcting the geometry therefore traded one error
+for another on this hypothesis specifically.
+
+Group 4's documented purpose in `data/vignettes/templates.yaml` is to establish
+background variance so a Group 1 or Group 3 gap can be separated from
+prompt-sensitivity noise (D002). That is the floor's job. Carrying the same
+items into H3 as test material was double duty before D052 made it circular.
+
+**Not resolved by redefining H3.** Changing a preregistered hypothesis's
+vignette set after seeing its result is precisely what the preregistration
+exists to prevent. The preregistered definition stands and all three variants
+are published.
+
+| Variant | n | Delta | 95% CI | Margin | TOST | Status |
+|---|---|---|---|---|---|---|
+| Preregistered (G1+G4), matched floor | 8 | +0.001544 | [-0.001453, +0.004513] | 0.0131 | supported | **circular** |
+| Preregistered (G1+G4), legacy floor | 8 | +0.001544 | [-0.001453, +0.004513] | 0.1047 | supported | clean, wrong geometry |
+| **Group 1 only, matched floor** | 5 | +0.000199 | [-0.003402, +0.003612] | 0.0117 | supported | **clean** |
+
+**Outcome: H3 survives the defect.** The non-circular test on Group 1 alone
+gives a mean gap of **+0.000199** with the whole interval inside a margin of
+0.0117, and the interval's half-width is about 30% of the margin, so this is a
+real equivalence test rather than a vacuous one. H3 is supported on all three
+readings, and the reading free of both defects is the one where the gap is
+closest to zero.
+
+**Which is primary.** The preregistered row remains primary, with the
+circularity stated. The Group 1 only row is the robustness check that carries
+the weight, and it is the number to quote when the margin's provenance matters.
+
+**Open.** With three Group 4 vignettes there is no clean split that both feeds a
+well-estimated floor and leaves H3 its preregistered items. Writing further
+Group 4 vignettes resolves this and the thin-floor problem in D052 at the same
+time, and is now the single highest-value addition to the stimulus set.
+
+---
+
+## D057 — Pythia's measured effect direction is set by the prompt format, not the model
+
+**Date:** 2026-11-03. **Status:** adopted; a finding, not a fix.
+**Log:** `docs/instrument_tuning_log.md` I3.
+**Reproduce:** `python scripts/i3_elicitation.py && python scripts/i3_analyse.py`.
+
+**Why this was attempted.** Pythia Group 2 target probabilities are 0.497 to
+0.501 across all seven sizes: exactly uniform over two options, meaning the
+model is not treating the input as a question at all. Pythia is a base LM with
+no instruction tuning and `score_outputs.py:66` poses every item as
+`"{prompt_text}\nQuestion: {question}\nAnswer:"`, so this looked like an
+elicitation failure of the instrument rather than evidence about the models.
+
+**What was run.** Three prompt formats over all seven models on the tuning
+strata only (Group 2 and the binary Group 4 items, 120 prompts each). Group 1
+and Group 3 were not touched. Pass criterion, fixed before the run: at least 2
+of 7 models with a Group 2 margin above their own matched floor.
+
+| Configuration | pmi (primary) | mean_logprob |
+|---|---|---|
+| baseline question-answer | 0/7 | 0/7 |
+| cloze ("... is indicated:") | 1/7 | 1/7 |
+| few-shot, 2 gender-free exemplars | 1/7 | 2/7 |
+
+**Result: all three fail.** Nothing tracks size (Spearman of margin against
+parameter count: +0.429, +0.071, +0.357; all p > 0.3).
+
+**The substantive finding.** **Every one of the 7 models changes the sign of its
+Group 2 margin across the three formats.** pythia-2.8b runs from -0.0005
+(baseline) to +0.0214 (cloze, 5.95x its floor); pythia-410m runs from +0.0015 to
+-0.0021 (few-shot); pythia-6.9b from -0.0019 to -0.0058 to +0.0051. The
+direction of a sex-parameter effect in this family is a property of the prompt
+format, not of the model. A single-format audit would report a direction that
+another equally defensible format reverses.
+
+**Contextual calibration was already in the design.** `score_outputs.py:65`
+sets `NEUTRAL_CONTEXT = "Question: {question}\nAnswer:"` and the `pmi` key is
+`logP(option | vignette, question) - logP(option | question)`. That is Zhao et
+al.'s content-free correction with a better-specified content-free input than
+their "N/A", so every Pythia margin reported in this project is already
+post-calibration. It also could not have helped: the calibrated binary
+probability `p(1-q)/[p(1-q)+(1-p)q]` has derivative `4a/(a+1)^2` at `p = 0.5`
+with `a = (1-q)/q`, which is maximised at 1 and strictly below it otherwise, so
+near-uniform probabilities are contracted rather than expanded, signal and noise
+alike. Calibration fixes which option wins. It does not create sensitivity to
+clinical content where there is none.
+
+**What this licenses.** The Pythia nulls elsewhere in this project are not
+evidence of unbiased models. They are evidence of an instrument that cannot
+resolve these models at all, and the gate already says so. Reported as a limit
+on the method, not as a result about Pythia.
+
+**What it does not license.** It is not a claim that Pythia is unbiased, nor
+that no harness could elicit a stable signal. Three formats were tried. A
+chat-template, a longer few-shot prefix or a generation-based rather than
+probability-based readout remain untested.
+
+**Consequence for the project's premise.** The models that ship the corpora the
+datasheet-to-diagnosis argument depends on are the models this method cannot
+measure. That tension is the honest headline, and it is stated rather than
+worked around.
+
+---
+
+## D058 — Extend Group 4 to eleven vignettes so the floor set and H3 can be disjoint
+
+**Date:** 2026-11-04. **Status:** adopted; clinical text AI-drafted and unverified.
+**Closes, once filled:** the thin-floor limitation in D052 and the circularity in
+D056. **Files:** `data/vignettes/templates.yaml`, `docs/vignette_sources.md`.
+
+**The problem.** D052 moved the nuisance floor onto Group 4, which had three
+vignettes: two binary and one four-option. That left the floor resting on **2
+clusters and 24 matched items** in the stratum that gates the Group 2 positive
+control, and on **1 cluster** in the stratum that gates Group 1 and H3. With two
+clusters the cluster bootstrap over vignettes is degenerate: resampling two items
+from two cannot produce a distribution, so `floor_boot_q95` came out exactly
+equal to the worst-vignette maximum. The floor had the right geometry and no
+sample size.
+
+Separately, D056: H3's preregistered vignette set is
+`["G1-01".."G1-05", "G4-01", "G4-02", "G4-03"]`, so after D052 the floor was
+derived from three of the eight vignettes H3 tests.
+
+**The decision.** Add eight Group 4 templates, `G4-04` to `G4-11`: six binary and
+two four-option, bringing the stratum to **eight binary and three four-option**.
+Once filled and scored, the sets separate:
+
+    floor set  = G4-04 .. G4-11     (new, and in no hypothesis)
+    H3 set     = G1-01 .. G1-05 + G4-01 + G4-02 + G4-03   (unchanged, as filed)
+
+That closes the circularity **without redefining a preregistered hypothesis**,
+which is the only acceptable way to close it. H3 keeps exactly the items it was
+filed with.
+
+**Selection rule, and the rejections it produced.** Each item is adult, has an
+unambiguous named-guideline answer, and has no documented gender disparity in its
+own literature. The third condition did real work: low back pain imaging
+(documented gender bias in pain management), acute gout (male-predominant),
+asymptomatic bacteriuria (explicitly sex-stratified guidance) and uncomplicated
+cystitis (female-predominant) were all rejected. A Group 4 item whose own
+literature reports a disparity cannot serve as a noise baseline, because a real
+effect there is indistinguishable from instrument drift. The rejections are
+recorded in `docs/vignette_sources.md` so the rule is auditable.
+
+**Clinical content: AI-drafted, same as the original fifteen.** An earlier draft
+of this entry left `<<CLINICAL_FINDINGS>>` unfilled on the grounds that D003
+forbids invented content. That read D003 too narrowly and broke the workflow the
+project actually runs on. D038 and D043 together say the opposite: clinical text
+is AI-drafted, marked `unverified_ai_drafted`, scored early on purpose, and then
+compared against the clinician-corrected version, because **the difference
+between the two runs is itself a result**. Eight items left unfilled could not
+enter that comparison at all.
+
+So all eight are now filled and carry `verification: unverified_ai_drafted` and
+tier 3, exactly as G4-01 to G4-03 do. `scripts.check_templates` reports
+**0 blockers, 23/23 filled, 0/23 reportable**, which is the correct state for
+this stage. The prompt set rebuilds to **576 prompts** (120 / 72 / 120 / 264 by
+group) from 384.
+
+**The real sourcing gap, stated separately because it is narrower than D003.**
+The original fifteen have their governing recommendation quoted verbatim from the
+primary document, read at first hand. These eight do not. The guideline named for
+each is a **candidate identified from knowledge, not opened at source**, and
+every row carries `[NOT YET QUOTED AT SOURCE]` in its `guideline_cited` field in
+the reviewer form, with the same caveat stated on the workbook's first sheet. The
+quoting step in `docs/vignette_sources.md` remains outstanding for G4-04 to
+G4-11, and until it is done these eight are weaker evidence than the other
+fifteen even after clinician review.
+
+**Answer-key design.** `target_option` is `"Yes"` on every binary item so the
+floor statistic is measured on the same option throughout the stratum. The
+reference answers are intended to split across Yes and No once written, because a
+stratum whose every answer is "No" risks interacting with a model's own answer
+prior; which way each falls is decided by the guideline, not by us. On `G4-11`
+the `target_option` is a distractor on purpose: for a floor item, putting the
+measured option on the expected answer pins the softmax near its ceiling where a
+real difference has no room to appear (D035).
+
+**What this does not fix.** The resolution limit. H1 still rests on two vignette
+clusters and the gate on three, so the finest resolvable p values stay 0.25 and
+0.125. Only more **Group 2 and Group 3** vignettes change that, and those carry
+hypotheses, so adding them is a preregistration amendment rather than an
+instrument fix. Recorded as the next separate decision to make.
+
+**Reviewer form updated.** The eight rows are appended to
+`docs/clinical_review_form.csv`, and a new
+`Clinical_Review_Form_Datasheet_to_Diagnosis.xlsx` carries all 23 items for the
+clinicians: an instruction sheet, the form with drop-downs on the three
+categorical judgement columns and the new items shaded, and the worked example on
+its own sheet. Rule-based items (G4-07, G4-09) and the two option-set
+compromises (G4-10, G4-11) carry a per-row note telling the reviewer what to
+check and what to ignore.
+
+**Activation.** The floor and H3 split above is inert until the eight items are
+clinician-reviewed and scored. `src/stats.py` is not changed in this decision:
+changing the floor source before the new items exist would silently fall back to
+the old three-vignette stratum.
+
+---
+
+## D059 — Add DCLM-baseline as a third corpus, to test whether RQ4 is identifiable at all
+
+**Date:** 2026-11-07. **Status:** adopted; corpus sweep run, model not yet added.
+**Supersedes nothing. Addresses:** D054. **Files:** `configs/terms.yaml`.
+
+**The problem.** D054 recorded RQ4's identifiability failure: the Pile and
+olmo-mix-1124 agree on concept-level gender skew at Spearman ρ = 0.976 across the
+8 concepts with support in both, maximum disagreement 0.377, nothing above 0.5.
+With two corpora that agree that closely, no output gap can be attributed to one
+rather than the other, and the planned repair (restrict to disagreeing concepts)
+returned **zero** qualifying concepts. RQ4 was reframed as a measured bound.
+
+That reframing is honest but it leaves the central mechanism claim untested. A
+third corpus is the only way to find out whether the agreement is a property of
+*these two* corpora or of web-scale English text in general.
+
+**The decision.** Add `v4_dclm-baseline_llama` (4.34T tokens) to
+`index_targets`. DCLM-baseline was chosen over every other indexed option
+because it is **a different kind of corpus**, not merely a different sample:
+CommonCrawl only, with aggressive model-based quality filtering, and **no curated
+PubMed or PMC component** of the sort the Pile carries. If concept-level skew is
+driven by curated biomedical text, DCLM should diverge. If it agrees anyway, that
+is a stronger negative result than two corpora agreeing, because three
+independently constructed corpora converging is a claim about web text rather
+than about a sampling coincidence.
+
+**Why this ordering.** The corpus sweep requires **no GPU and no weights** — it
+reuses the RQ1 infini-gram pipeline and its response cache. So the cheap half of
+the question is answered before committing to a model download, a 576-prompt
+scoring run, and a licence review. The sweep was run first, deliberately.
+
+**Caveat that must appear beside any DCLM result.** The index holds 4.34T tokens;
+DCLM-7B trained on 2.5T **sampled from it**. The index is therefore a *superset*
+of what the model saw, which is weaker provenance than olmo-mix-1124, the exact
+OLMo 2 stage-1 mix. A DCLM linkage result is an upper bound on attributable
+skew, not a point estimate, and must be reported as such.
+
+**Model-set change, decided but not executed.** If the skew diverges, add
+`apple/DCLM-7B` and `mlfoundations/dclm-7b-it` and drop **`pythia-410m` and
+`pythia-1b`** to hold the set at ten. Not the two smallest: all seven Pythia
+models fail the §6 gate (0.40×, −0.12×, −0.05×, −0.75×, −0.30×, −0.71×, −0.52×),
+so "weakest" does not discriminate between them, and `pythia-70m`/`pythia-160m`
+carry the evidence for D042 — the documented point where the instrument stops
+recovering a planted answer. Deleting them would delete the support for the
+"instrument-limited, not evidence of fairness" reading of every Pythia null. The
+**middle** rungs are the redundant ones: dropping 410m and 1b keeps five rungs
+spanning a 100× range, which is what the RQ3 trend test needs.
+
+**Licence status: unresolved, flagged.** `apple/DCLM-7B` carries the tag
+`apple-ascl` and the card body says "Apple Sample Code License". No licence file
+is present in the repository, and the publicly available texts under that name
+differ between versions. `TRI-ML/DCLM-1B-IT` is Apache-2.0, so the family is not
+uniformly licensed. This must be resolved before the weights are used in work
+that will be published.
+
+## D060 — Permutation nulls as a second, assumption-free threshold; my own prediction was wrong
+
+**Date:** 2026-11-07. **Status:** adopted. **Files:** `scripts/permutation_null.py`,
+`results/tables/v_b_permutation_contrasts.csv`,
+`results/tables/v_b_permutation_size_trend.csv`.
+
+**The problem.** Every effect was judged against two things, and neither is
+assumption-free. The Group 4 floor is measured on **proxy** stimuli and applied
+to the target stimuli — the matching is argued, not proved. The cluster
+bootstrap **approximates** a sampling distribution from k = 4 or 5 vignettes.
+
+Under the null that the arm label carries no information, the label assignment
+within a matched pair is arbitrary, so the **sign** of each vignette-level delta
+is exchangeable. With k ≤ 20 all 2^k sign vectors can be enumerated, giving the
+*exact* null distribution of the test statistic, on the target stimuli, with no
+proxy and no resampling approximation.
+
+**Criterion fixed before the run, and the prediction it contained.** Written into
+the module docstring before any number was produced: *"perm_floor < floor is the
+EXPECTED result and is not evidence that the Group 4 floor is inflated… What
+would be informative is perm_floor > floor."* The reasoning was that averaging k
+vignettes shrinks the null spread by roughly √k, so the aggregate threshold
+should sit below the per-item one.
+
+**Outcome: the prediction was wrong, in the direction that matters.**
+
+    perm_floor > Group 4 floor in 147 of 240 cells (61%), median ratio 1.413
+    verdict disagreements: 93 cells, ALL of them G4 = pass / permutation = fail
+
+Between-vignette heterogeneity in delta is large enough that the mean over four
+vignettes can wander further than the per-item resolution limit. **The Group 4
+floor alone is too lenient at the aggregate level in most cells.** This was
+recorded against interest and is the reason the validation was worth running: a
+threshold that I expected to be redundant turned out to be the binding one.
+
+**Consequence for reporting.** Where the two disagree, the **larger** threshold
+governs. No effect is reported as exceeding noise on the Group 4 floor alone.
+
+**Two further findings from the same run.**
+
+1. **Group 3 cannot produce a significant result at its current size.** Group 3
+   has four vignettes (G3-03 and G3-06 were dropped by D020 and D019), so the
+   smallest attainable two-sided permutation p is 2/2⁴ = **0.125**. No Group 3
+   finding can reach α = 0.05 regardless of what the models do. Observed
+   permutation p for woman-minus-man ranges 0.125 to 1.000 across the ten
+   models — i.e. every model is at or above the resolution limit. Reaching
+   p < 0.05 requires **k ≥ 6** (2/2⁶ = 0.031), so **two more Group 3 vignettes**
+   are needed. This is a preregistration amendment, not an instrument fix, and
+   it is now a quantified requirement rather than a vague wish.
+2. **RQ3's size trend survives permutation.** Permuting size labels across the
+   seven Pythia models gives p_permutation ≈ p_parametric throughout (e.g.
+   Group 1 woman-minus-man ρ = +0.821, p_param = 0.0234, p_perm = 0.0343), so
+   the parametric p was not relying on a broken asymptotic approximation. The
+   D045 caution about the composite still stands; this addresses only the
+   inferential machinery.
+
+## D061 — Paraphrase sign stability becomes a reported criterion, not an assumption
+
+**Date:** 2026-11-07. **Status:** adopted. **Files:**
+`scripts/paraphrase_consistency.py`, `results/tables/v_c_paraphrase_cells.csv`,
+`results/tables/v_c_paraphrase_summary.csv`.
+
+**The problem.** Every reported delta averages three paraphrases. Averaging is
+the right estimator and it **hides disagreement**: (+0.05, −0.04, +0.03) and
+(+0.013, +0.013, +0.013) have nearly the same mean, and only the second is a
+property of the vignette rather than of one sentence's phrasing. D057 already
+found that all seven Pythia models **change the sign** of their Group 2 margin
+across three elicitation formats, so stability across surface form cannot be
+assumed here either.
+
+**Criterion fixed before the run.** Report, for every cell that clears its own
+floor, whether all three paraphrases share the sign of their mean. No threshold
+was set for "acceptable", because the number is a disclosure requirement rather
+than a gate.
+
+**Outcome.**
+
+    all 1,920 cells          61.1% unanimous in sign
+                             41.2% wording moves the answer MORE than the label
+    1,260 floor-clearing     75.8% unanimous
+                             25.9% still swamped by wording
+    => 305 floor-clearing effects are NOT unanimous across paraphrases
+
+Per model on Group 3, the fraction of floor-clearing effects that are unanimous
+ranges from **47.1% (OLMo-2-7B base)** to 94.3% (pythia-160m). OLMo-2-7B base is
+the worst on every measure: 28.3% unanimous overall, 70% swamped by wording.
+
+**Consequence, and it is uncomfortable.** OLMo-2-7B base is one of the three
+models that **passes** the §6 gate and is an open-data model the project's whole
+argument depends on. Its Group 3 identity effects are the least paraphrase-stable
+in the set. These two facts are compatible — the gate effect is driven by strong
+clinical content while the Group 3 identity effects are small — but the honest
+conclusion is that **per-item Group 3 effects on OLMo-2-7B base are not stable
+enough to report individually**, and only the aggregate, with this number beside
+it, should be quoted.
+
+This script cannot distinguish a real-but-small effect from non-equivalent
+paraphrases from a genuinely form-unstable model. It flags the cells that need
+that judgement.
+
+## D062 — Placebo attribute perturbation: the right stimulus with the wrong manipulation
+
+**Date:** 2026-11-07. **Status:** adopted; 216 prompts built, scoring pending.
+**Files:** `configs/placebo_arms.yaml`, `scripts/build_placebo_prompts.py`,
+`data/vignettes/placebo_prompts.csv`, `src/score_outputs.py`.
+
+**The problem.** The Group 4 floor flips **gender** on a **different** vignette.
+That leaves one gap no amount of extra Group 4 items can close:
+
+    Group 4 floor   right manipulation, wrong stimulus
+    placebo         right stimulus,     wrong manipulation
+
+An effect that clears the Group 4 floor but not the placebo floor is a
+surface-token sensitivity that happens to be carried by the gender word, rather
+than a gender effect. Only a perturbation applied to the **same** vignette can
+separate those.
+
+**The decision.** Swap one clinically inert, guideline-silent attribute on the
+**gender-blinded** arm of the vignettes whose results are being reported, so no
+gender term is present at all and the measured movement is pure surface-form
+sensitivity. Three attributes × two levels, on Groups 1, 3 and the three original
+Group 4 items: **216 prompts, 108 matched placebo pairs.**
+
+Including the original Group 4 items is the key comparison: on those same items a
+gender-flip floor already exists, so placebo-versus-gender is measured on
+identical stimuli with nothing else varying.
+
+**The admissibility rule, which is the substance of this decision.** An attribute
+qualifies only if it is (1) clinically inert for every vignette it touches,
+(2) silent in the governing guideline, and (3) **not socially salient as a basis
+of health disparity**. Condition 3 is the one that is easy to get wrong: using a
+disparity-linked attribute would make the measurement a second bias audit, and
+subtracting it as a floor would subtract one bias from another. Nine attributes
+were **rejected** on these grounds and recorded with reasons in the config —
+handedness (laterality matters in G4-01), occupation, postcode, first language,
+insurance status, BMI, smoking status, patient name (already excluded by D012),
+and religion. The rejections are part of the method, not an oversight list.
+
+Adopted: eye colour, shirt colour, and appointment slot. The third is flagged as
+the weakest — "booked" implies a non-urgent pathway, which could interact with
+the acute presentations in G3-01 and G3-02 — so the headline placebo floor is
+taken over the two patient-descriptive attributes only, and the third is retained
+because its *disagreement* with the other two is informative.
+
+**Containment.** The placebo set is a separate CSV written to its own raw
+directory with its own manifest, via new `--prompts` and `--raw-subdir` flags.
+Sharing the primary manifest would mark a model "completed" after a 216-prompt
+placebo run and then skip it in the real 576-prompt audit, silently. Rows carry
+`arm_type = placebo:<attribute>:<level>` so no statistics module can pool them
+with the gendered arms.
+
+## D063 — Guideline contamination audit: three findings, one of which bears on H2
+
+**Date:** 2026-11-07. **Status:** adopted and run. **Files:**
+`configs/contamination_probes.yaml`, `scripts/contamination_audit.py`,
+`results/tables/v_d_contamination.csv`.
+
+**The problem.** Every reference answer is quoted from a named guideline. If that
+guideline's **text** is in the training corpus, a model answering correctly may be
+reciting a memorised string rather than reasoning clinically, and a gender
+difference may reflect the guideline's own phrasing. For these models this is
+directly testable, because the corpora are exact-n-gram queryable. We have found
+no published clinical-LLM audit that tests it.
+
+**Method, fixed before the run.** Two span lengths per guideline, read
+differently. A **long** span (≥ 10 tokens of continuous guideline prose) hitting
+means the document is in the corpus: contamination in the strict sense. A
+**short** span (4–7 tokens, the clinically operative phrase) hitting means only
+that the phrasing is in distribution — but a short span at **zero** is strong
+evidence the model never saw the decision stated in these terms. A **negative
+control** span, clinical in register but from no guideline we use, tests whether
+the probe has any power at all.
+
+**Outcome 1 — the probe has power.** The negative control long span occurs 1, 3
+and 3 times in the Pile, olmo-mix and DCLM respectively. So long clinical spans
+*can* be found, and the zeros below are specific to these guidelines rather than
+an artefact of long spans being rare.
+
+**Outcome 2 — contamination is rare but not absent.** 3 of 24 corpus × guideline
+cells have a long-span hit: the conjunctivitis guideline once in the Pile, and the
+GAS pharyngitis guideline 7 times in each of olmo-mix and the Pile. **G4-03 is one
+of the two vignettes the binary nuisance floor is built from.** Its guideline text
+being memorisable must be disclosed. Mitigating, and worth stating: G4-03
+produced the *larger* of the two floor values (0.0106 against G4-01's 0.0011), so
+memorisation is not suppressing the floor and making the gate more lenient.
+
+**Outcome 3 — and this is the important one. H2's decision is absent from all
+three corpora.** For G3-02, the chest-pain triage vignette that carries H2, both
+the long and the short spans return **zero in all three corpora**: neither
+"reviewed for STEMI within 10 minutes" nor "measured as soon as possible after
+presentation" occurs anywhere. The clinical decision H2 tests is not stated in
+these terms in any of the training data. **A null on H2 is therefore a
+data-absence finding, not a fairness finding**, and that distinction is exactly
+what the audit was built to make. The same holds for the conjunctivitis short
+span (G4-02) in all three corpora.
+
+**Outcome 4 — D026 sharpened, and a corpus-age effect.** The full NICE NG126
+scope sentence ("women, trans men and non-binary people with complications") is
+absent from all three corpora. But the fragment "trans men and non-binary people"
+occurs **2,675 times in DCLM, 2,694 in olmo-mix, and only 115 in the Pile** — a
+23× difference. So the phrase exists in general discourse, and markedly more in
+the 2024 corpora than in the 2020 one, while D026's clinical patient-reference
+framing ("the non-binary patient") remains at zero everywhere. The refined claim
+is narrower and stronger: trans and non-binary people are discussed in these
+corpora, and increasingly so, **but not as patients**.
+
+## D064 — Verification moves to author review; clinician validation deferred behind REB approval
+
+**Date:** 2026-11-07. **Status:** adopted, and it is a reduction in scope.
+**Supersedes:** the clinician-gate timing in D038 and D043, not their substance.
+
+**The decision.** For the course deliverable, the vignettes are AI-drafted and
+reviewed **by the author** against the guideline text quoted at first hand in
+`docs/vignette_sources.md`. Clinician review does not happen before the
+deadline. It moves to the publication track.
+
+**The reason, and it is not simply time pressure.** Interviewing medical experts
+and using their judgements as research data requires **REB approval from McGill**.
+That is a research-ethics requirement, not a scheduling problem, and it cannot be
+compressed into a course timeline. The honest statement is that the
+methodological standard the project set for itself is gated by an institutional
+ethics process that runs on a longer clock than the assignment.
+
+**That tension is itself worth reporting.** This is an ethics project whose
+central validity requirement — expert clinical validation — is blocked by a
+research-ethics governance process. Naming that explicitly is stronger than
+hiding it, and it belongs in the limitations section as a reflexive finding
+rather than as an apology.
+
+**What the labels become.** Author review is **not** clinician validation and must
+not be allowed to read as if it were. Two fields change, and the provisional
+stamp stays:
+
+    template level   verification: author_reviewed_against_quoted_guideline
+    run level        verification_status:
+                       PROVISIONAL__author_reviewed_not_clinician_validated
+
+`tier` is untouched, because D040 made provenance and verification separate axes:
+tier still records how well the guideline is sourced, which author review does
+not change. The nine vignettes with verbatim first-hand quotes are the ones
+author review can actually check; the eight new Group 4 items are **not yet
+quoted at source**, so author review of those is weaker still and they stay at
+tier 3.
+
+**What this costs, stated plainly.** D043's before/after comparison — the
+difference between the AI-drafted run and the clinician-corrected run, which was
+to be a measurement of how much stimulus error moves a bias estimate — **cannot
+be computed for this submission**. It remains the plan for the publication, with
+the current run as the "before". No claim of clinical validity is available for
+any vignette, and the limitations section must say so without hedging.
+
+---
+
+## D065 — DCLM-baseline is not an independent corpus: it is ~95% of olmo-mix-1124. D059's rationale fails
+
+**Date:** 2026-11-07. **Status:** adopted. **Amends:** D059, whose stated reason
+is withdrawn. **Supersedes nothing else. Bears on:** D054, D008.
+
+**What happened.** D059 added DCLM-baseline as a third corpus specifically to test
+whether the Pile-vs-olmo-mix agreement (ρ = 0.976, D054) was a property of those
+two corpora or of web-scale English generally. The sweep ran: 141 concepts, 117
+scored, 0 failed queries. The result was not a third corpus.
+
+    POWERED concepts, pairwise Spearman on skew_log2
+      Pile      vs olmo-mix    n=15  rho=+0.936  max|diff|=0.782  median=0.176
+      Pile      vs DCLM        n=15  rho=+0.936  max|diff|=0.790  median=0.187
+      olmo-mix  vs DCLM        n=27  rho=+0.999  max|diff|=0.039  median=0.003
+
+ρ = 0.999 with a median disagreement of **0.003** is not two corpora agreeing.
+It is one corpus measured twice.
+
+**Verified, two independent ways.** First, direct counts: `"she has"` returns
+**94,109,792** in olmo-mix against **93,884,699** in DCLM, a ratio of **1.0024**.
+The indexes are genuinely distinct (the Pile returns 3,977,926, and medical terms
+diverge more: `"pneumonia"` 1.11×, `"cardiac rehabilitation"` 1.26×), so this is
+not an API fault. Second, the documentation: the `allenai/olmo-mix-1124` dataset
+card lists **DCLM-Baseline at 3.70T tokens of a 3.90T total**, roughly 95%, and
+states the majority comes from DCLM-Baseline **"with no additional filtering"**.
+The infini-gram index sizes agree: 4.58T for olmo-mix against 4.34T for DCLM.
+
+**So D059's reason is withdrawn.** Adding DCLM does not restore RQ4
+identifiability, because its corpus is nested inside OLMo's. Had this been
+checked before the sweep it would have been obvious; it was not, and the sweep is
+how it was found. Recorded as an error in reasoning, not as a discovery.
+
+**But the finding is more useful than the thing it replaced.** Three consequences,
+all of which strengthen the paper:
+
+1. **It is the cleanest possible proof of the D054 identifiability problem.**
+   The claim is no longer the statistical "two corpora agree at ρ = 0.976". It is
+   structural and verifiable from a dataset card: **two of the three largest
+   open corpora are not independent, because one is 95% of the other.**
+   Corpus-level attribution is not merely hard for this model family, it is
+   impossible in principle. That is a far stronger limitation to state.
+2. **DCLM-7B becomes a better contrast than it would have been.** DCLM-7B and
+   OLMo-2-7B are trained on nearly the same tokens by different teams with
+   different recipes. That is a **near-controlled comparison of training
+   procedure with data held almost constant** — a contrast almost nobody can
+   run, and one this project is uniquely placed to report. The models are kept
+   for this reason, and the result must never be presented as corpus
+   replication.
+3. **The 5% that differs is disproportionately biomedical, and that is testable.**
+   Pronoun counts differ by 0.2% while `"pneumonia"` differs by 11% and
+   `"cardiac rehabilitation"` by 26%. The non-DCLM remainder of olmo-mix is
+   pes2o (58.6B), arXiv (20.8B) and similar curated sources. So the
+   OLMo-vs-DCLM corpus contrast is a natural experiment on **what adding
+   curated biomedical text does to gender skew around health concepts** — a
+   question nobody has asked, answerable with the sweep already in hand.
+
+**The Pile's status changes, and this is why all seven Pythia models are kept.**
+The Pile is now the **only** corpus in the study not nested inside another. It
+disagrees with the DCLM/olmo pair at up to 0.790, and on `"attention deficit"` it
+**flips sign**: +0.186 in the Pile (female-skewed) against −0.605 in DCLM
+(male-skewed). That concept underlies **G3-04**, which carries H1. So the single
+genuine cross-corpus disagreement in the whole dataset lands on a vignette
+concept, which is the one real identifiability opportunity RQ4 has. The Pythia
+family carries that arm alone and is therefore not thinned.
+
+## D066 — Group 3 goes from four vignettes to six, because the resolution limit, not the effect size, was binding
+
+**Date:** 2026-11-07. **Status:** adopted. **Arises from:** D060/I6.
+**Preregistration:** amendment, logged in §9. **Files:**
+`data/vignettes/templates.yaml`, `docs/vignette_sources.md`.
+
+**The argument, which is arithmetic rather than judgement.** The confirmatory test
+on Group 3 is an exact sign-flip / permutation test over vignette-level deltas.
+With k clusters there are 2^k sign vectors, so the smallest attainable two-sided
+p is 2 / 2^k:
+
+    k = 4   p_min = 0.1250      <- where Group 3 was
+    k = 5   p_min = 0.0625      still above alpha = .05
+    k = 6   p_min = 0.03125     <- first k that can reach significance
+    k = 7   p_min = 0.015625
+
+Group 3 held four vignettes, because G3-03 was dropped for having no governing
+guideline (D020) and G3-06 for overlapping G3-01 (D019). **At k = 4 no Group 3
+result could reach α = .05 regardless of what the models did.** The observed
+permutation p across all ten models ran 0.125 to 1.000, i.e. every single model
+sat at or above the limit. Reporting "no significant gender gap in Group 3" from
+that configuration would have been reporting the arithmetic of the test, not a
+property of the models.
+
+This is the same failure mode as D044, where a p of .0001 was claimed from two
+clusters. D044 clamped p at 2^−k so a false positive could not be reported. D066
+is the other half of the same problem: the clamp prevents an overclaim, but it
+does not create the power to detect anything, and nothing until now had checked
+whether α = .05 was *reachable*.
+
+**The decision.** Add **two** Group 3 vignettes, bringing k to 6: the smallest
+value at which a significant confirmatory result is attainable at all. Two, not
+more, because each additional vignette is a sourcing and review obligation and
+six is the point where the constraint stops binding. `G3-07` (cardiac
+rehabilitation referral after MI) and `G3-08` (joint replacement referral in knee
+osteoarthritis). See D067.
+
+**Why this is an amendment and not an instrument fix.** It changes the
+preregistered vignette membership of a hypothesis family, which the tuning log's
+standing rules forbid doing as "tuning". It is admissible because the change is
+driven by a property of the test that is **independent of any observed effect**:
+2/2^k depends only on k. The decision could have been made before any score
+existed, and would have been identical. Nothing about the direction or size of
+the measured gaps entered it. That is the test for whether a design change after
+seeing data is legitimate, and this one passes it.
+
+**What it does not fix.** Six clusters gives p_min = 0.031, which leaves very
+little room under α = .05: the effect must be close to unanimous in sign across
+all six vignettes to reach it. So Group 3 remains **low-powered by
+construction**, and that has to be said in the limitations rather than implied by
+a surviving p-value. The honest framing is that the study can now *detect* a
+strong, consistent Group 3 effect, and still cannot rule out a moderate one.
+
+**Group 3 after the amendment:** G3-01 (acute pain), G3-02 (chest pain triage,
+with the D027 cue factor), G3-04 (ADHD), G3-05 (autism), G3-07 (cardiac
+rehabilitation), G3-08 (joint replacement). Prompt count rises 576 → **624**;
+Group 3 rises 120 → 168.
+
+## D067 — The two new Group 3 vignettes, and an honest account of which half of each is weak
+
+**Date:** 2026-11-07. **Status:** adopted; AI-drafted, unverified, tier 3.
+**Implements:** D066.
+
+Group 3 membership requires **two** things: the clinically correct answer must be
+invariant across gender, *and* there must be documented real-world disparity. Each
+new item is strong on one and weak on the other, in opposite directions. Both
+gaps are recorded rather than averaged into a general claim of suitability.
+
+| | G3-07 cardiac rehabilitation | G3-08 joint replacement |
+|---|---|---|
+| **Invariance warrant** | Class I recommendation after MI, not sex-differentiated. **Asserted in review articles, not yet quoted from the ACC/AHA or ESC text** | **Strongest in the whole set.** NG226 explicitly forbids withholding referral because of "age, sex or gender, smoking, comorbidities, or overweight or obesity" |
+| **Disparity evidence** | **Strongest in the whole set.** 51.3% of women referred against 70.0% of men in an ACS cohort; 26.0% against 45.5% in a safety-net programme *after* provider education | **Weak.** No population-level study found measuring under-referral of women for arthroplasty |
+| **Tier** | 3 | 3 |
+
+**On G3-08's disparity gap.** The supporting inference is that NG226's developers
+enumerated "sex or gender" as a non-reason for withholding referral, which is
+prima facie evidence they considered it a live risk, since guidelines do not
+prohibit what nobody does. **That is an inference, not a prevalence finding**, and
+a citation is still required before G3-08 can carry a disparity claim. Until then
+G3-08 functions as an invariance test with an explicit guideline prohibition,
+which is valuable on its own and is how it will be reported.
+
+**On both tiers.** Neither guideline has been opened at first hand; the wording
+above comes from secondary summaries and a literature search. Both stay **tier 3**
+regardless of how strong the invariance warrant reads, because D040 keeps
+provenance and verification on separate axes and tier records sourcing only.
+
+**Design notes.** Both are binary `Yes`/`No`, deliberately: the binary floor
+stratum is the better-sampled one (eight Group 4 items against three), so a new
+item lands on the geometry whose noise is best characterised. Ages are 58 and 64
+so the reproductive-age pathway is not engaged and the "Pregnancy has been
+excluded" sentence (D018) is unnecessary — at those ages it would be the only
+clinically odd clause in the prompt and would itself act as a cue. G3-08 states
+no numerical severity score, because NG226 directs that referral rest on clinical
+assessment rather than scoring systems; supplying a number would let the model
+anchor on a threshold and would turn a clinical-reasoning item into a cutoff test.
+
+## D068 — Why these twelve models, and why no medical LLM is among them
+
+> **AMENDED 2026-11-07 by D070 — the count is now TEN, not twelve.** The two
+> DCLM-7B arms described below were withdrawn; the model set is 7 Pythia +
+> 2 OLMo-2 + 1 Qwen3-8B contrast. **Everything this decision says about why no
+> medical LLM qualifies is unaffected** and remains the substance of the record —
+> only the arithmetic in the title changed. The selection criteria are stated in
+> full in `docs/model_selection.md`, and the corpus-independence criterion that
+> caused the change is D069.
+
+**Date:** 2026-11-07. **Status:** adopted, and it is a record of a rejection as
+much as a selection. **Bears on:** RQ5, RQ6, and the limitations section.
+
+**The binding constraint, stated first.** The project's contribution is tracing
+skew from *training data* into *health advice*. That requires the training corpus
+to be **released and exact-n-gram queryable**. A model whose corpus is closed can
+only support an output audit, which is the thing this project exists to improve
+on. Clinical performance is therefore **not** the selection criterion;
+auditability is. That inversion is the design, and D047 already noted its
+uncomfortable consequence: auditability and capability are anti-correlated here.
+
+**The medical models considered, and why each fails.**
+
+| Model | Medical adaptation | Base corpus | Queryable? | Verdict |
+|---|---|---|---|---|
+| **Fully Open Meditron** (EPFL, 2026) | Clinician-audited SFT corpus, released | OLMo-2-32B-SFT | Base **yes** (`v4_olmo-2-0325-32b-instruct_llama` is indexed) | **Closest fit, still rejected.** 32B in float32 needs ~128 GB against 48 GB available. Its medical corpus is synthetic SFT data generated by gpt-oss-120b, not pretraining data, so the corpus→advice chain does not run through it. Corpus licence unstated |
+| **Meditron-7B** (EPFL) | GAP-Replay, 48.1B tokens, documented and downloadable | **Llama-2** | **No** | Rejected. Runnable at 7B, and the medical corpus is open, but the base is closed. The chain breaks at the largest component |
+| **BioMistral-7B** | PMC Open Access, ~3B tokens | **Mistral** | **No** | Rejected, same break |
+| **BioMedLM** (2.7B) | Trained only on PubMed abstracts + PMC | Pile subsets | **Partially** — infini-gram indexes the Pile whole, not per-subset | Rejected. Cannot isolate the subset the model actually saw; also weak and superseded |
+| **MedGemma, Med42, OpenBioLLM** | Various | Gemma / Llama-3, closed | **No** | Rejected |
+| **GatorTron, Clinical-T5** | Real clinical notes | Private health records | **No**, and not releasable | Rejected |
+
+**The conclusion, which is itself a finding.** There is currently **no medical LLM
+with a fully open, exact-n-gram-queryable pretraining corpus at a size runnable
+on 48 GB**. That is not a gap in our search; it is the state of the field, and it
+belongs in the paper as such. The models that clinicians would actually be
+offered are precisely the ones whose data cannot be audited.
+
+**What was selected instead, and the job each does.**
+
+| Family | n | Corpus | Queryable | Job |
+|---|---|---|---|---|
+| Pythia 70m–6.9b | 7 | the Pile | **yes** | RQ3 scale ladder; **and after D065 the only non-nested corpus in the study** |
+| OLMo 2 7B base + Instruct | 2 | olmo-mix-1124 | **yes** | RQ2 main audit; base-vs-instruct contrast (D004) |
+| DCLM 7B base + IT | 2 | DCLM-baseline | yes, but **nested in olmo-mix** (D065) | Training-recipe contrast with data near-constant. **Not** corpus replication |
+| Qwen3-8B | 1 | not released | **no** | RQ5 closed-data contrast. Its corpus being unqueryable *is* the measurement |
+
+Twelve models. The earlier plan to drop `pythia-410m` and `pythia-1b` to hold the
+set at ten is **reversed** (see `configs/models.yaml`): after D065 the Pile is the
+only independent corpus, so thinning the family that carries it would remove the
+study's one identifiability opportunity.
+
+**The honest limitation to state out loud.** None of the twelve is a medical
+model. So the study measures gender bias in **general-purpose** models answering
+clinical questions, which is a real deployment pattern but not the only one, and
+it cannot speak to models that have been clinically adapted. Extending to those
+requires either a medical model trained on an open, queryable corpus — which does
+not yet exist — or accepting an unauditable base and reporting only the
+adaptation corpus, which would abandon the project's central claim. That choice
+is deferred, not resolved.
+
+## D069 — Corpus independence is a selection criterion, and it is testable
+
+**Date:** 2026-11-07. **Status:** adopted. **Supersedes nothing; generalises D065.**
+
+D065 recorded that DCLM-baseline is ~95% of olmo-mix-1124 and that adding it as a
+third corpus arm therefore bought no identifiability. This decision records the
+*general* lesson and promotes it to a stated selection criterion, because it is
+the part that belongs in the methodology rather than in an errata note.
+
+**The criterion (C2 in `docs/model_selection.md`).** Corpora used as independent
+arms must be shown to be **mutually non-nested**, by measurement, before being
+treated as replicates. Provenance — different organisation, different release
+date, separate dataset card — is an argument about paperwork and is not
+sufficient.
+
+**The test, which costs nothing because the instrument already exists.** Run the
+RQ1 n-gram sweep on both corpora and compare per-concept `skew_log2`. Genuinely
+distinct samples of English correlate but diverge; a nested pair is near-identical.
+
+| Pair | n powered | ρ | median \|Δskew\| |
+|---|---|---|---|
+| olmo-mix-1124 vs DCLM-baseline | 27 | +0.9994 | **0.003** |
+| Pile vs olmo-mix-1124 | 15 | +0.9357 | 0.176 |
+| Pile vs DCLM-baseline | 15 | +0.9357 | 0.187 |
+
+The discriminant is a factor of ~59 in median disagreement, and the two
+independent pairs return ρ to four decimal places of each other — the signature of
+comparing the Pile against the same corpus twice.
+
+**Why this is recorded as a decision and not just a result.** It changes what the
+project claims. D054 previously stated the corpus-attribution limitation
+statistically ("two corpora agree at ρ = 0.976", therefore underpowered). It is
+now stated **structurally**: corpus-level attribution across this model family is
+impossible in principle, because two of the three corpora are the same corpus.
+That is a stronger limitation and a verifiable one.
+
+**Scope of the claim, stated narrowly.** The test falsifies independence; it does
+not prove it. A high median \|Δskew\| is consistent with independence but does not
+establish it — two corpora could diverge for reasons other than independent
+sampling. The claim made is only the negative one: a median disagreement of 0.003
+across 27 concepts is not two corpora.
+
+**Where it lives:** `docs/model_selection.md` §4, with the measurement and the two
+structural confirmations (dataset card: 3.70T of 3.90T tokens; `"she has"` counts
+94,109,792 vs 93,884,699, ratio 1.0024).
+
+---
+
+## D070 — DCLM-7B is not added as a model arm
+
+**Date:** 2026-11-07. **Status:** adopted. **Amends D059 and D065.** Model count
+returns to **ten**.
+
+**Decision.** `apple/DCLM-7B` and `mlfoundations/dclm-7b-it` are **removed from
+`configs/models.yaml`** and will not be scored. The DCLM **corpus sweep is kept**:
+it is already computed, it is the evidence for D069 and for the sharpened D054, and
+it costs nothing further.
+
+**The distinction that matters here.** "Adding DCLM" was two separable things and
+only one of them was ever worth doing:
+
+| | Status | Reason |
+|---|---|---|
+| DCLM as a **corpus arm** (infini-gram sweep) | **Kept** — already run | Produces the D069 nesting result. Zero marginal cost; the queries are cached |
+| DCLM as **model arms** (2 × 7B scored on 624 prompts) | **Dropped** | Rationale withdrawn, see below |
+
+**Why the model arms are dropped. Three reasons, in order of weight.**
+
+1. **The rationale was already withdrawn once and the replacement rationale did
+   not survive measurement.** D059 added DCLM as an independent third corpus;
+   D065 withdrew that. The fallback argument was that DCLM-7B vs OLMo-2-7B is a
+   near-controlled comparison of *training procedure with data held almost
+   constant*, and that the ~5% difference (pes2o, arXiv) would show up as
+   divergence on biomedical concepts. **Measured, it does not.** Median
+   co-occurrence count ratio olmo ÷ DCLM is 1.0071 and median \|Δskew\| is 0.0028.
+   An earlier draft of this reasoning asserted a substantially larger biomedical
+   divergence; that figure was not supported by the sweep table and is retracted
+   (`docs/model_selection.md` §6).
+2. **It is a different paper's contribution.** A procedure-held-data-constant
+   comparison is interesting and is not what RQ1–RQ6 ask. None of the six research
+   questions needs it, and nothing in the design becomes unanswerable without it.
+   Qwen3-8B already supplies the external-validity contrast (C5), and the Pythia
+   ladder already supplies the scale axis (C3).
+3. **It carries an unresolved licence.** `apple/DCLM-7B` is tagged `apple-ascl`
+   ("Apple Sample Code License") with **no LICENSE file in the repository** (404),
+   and the family is not uniformly licensed — `TRI-ML/DCLM-1B-IT` is Apache-2.0.
+   Scoring these models would make licence resolution a blocker on the results
+   rather than on an optional robustness check.
+
+**What is given up, stated plainly.** The design loses the ability to say "the
+effect is not an artefact of one team's training recipe" from within the open-data
+arm. That claim now rests on the Pythia ladder (seven models, one recipe, one
+corpus) plus Qwen3-8B (different recipe, different corpus, closed). This is a real
+reduction in robustness and is recorded as such rather than as a tidy
+simplification.
+
+**Cost saved.** 2 models × 624 prompts of inference, plus a licence escalation to
+the McGill library, plus two extra cells in every per-model table and figure during
+a time-constrained write-up.
+
+**Reversibility.** Fully reversible and cheap to reverse: the corpus sweep, the
+`dclm:` family block and the `v4_dclm-baseline_llama` terms entry all remain in the
+repo. If time appears after the primary results are in, the single most
+informative addition would be **`mlfoundations/dclm-7b-it` alone** (not both) as a
+one-model robustness check against OLMo-2-7B-Instruct. Adding the base model as
+well would double the cost for a comparison the instruct pair already makes.
+
+**Origin.** Proposed by the PI on the reasoning that OLMo and DCLM are too similar
+to be worth separate arms. That reasoning is correct and is now backed by
+measurement: ρ = +0.9994, median \|Δskew\| = 0.003.
+
+---
+
+## D071 — Sourcing round 2: nine of ten pending vignettes closed at source
+
+> **AMENDED 2026-11-07 by D072, D073, D074.** Three things this decision says are
+> no longer current. (1) Its **option A for G4-11 is withdrawn** — NICE CKS is
+> geo-restricted ("CKS via NICE is only available to eligible users within the
+> UK") and was in any case the lower-tier option; the row was **replaced**
+> (option B) per D072. (2) **G4-05's IDSA ambiguity is no longer load-bearing** —
+> the question was re-aimed onto NICE NG141 1.1.2, which states the rule outright
+> (D073). (3) **G2-03's currency caveat became disqualifying** — the Canadian Task
+> Force ended its mandate on 31 March 2026, and the row was re-sourced to USPSTF
+> (D074). Everything this decision records about rows G4-04, G4-06 through G4-10,
+> G3-07 and G3-08 stands unchanged, and its count of "nine of ten closed" was
+> accurate when written. The set is now **25 of 25 quoted at source**.
+
+
+**Date:** 2026-11-07. **Status:** adopted. **Does not change any verification
+label.**
+
+**What was done.** The ten rows left `PENDING` after D066/D067 were opened at
+source. Nine are now quoted verbatim from the primary document in
+`docs/vignette_sources.md` ("Sourcing round 2"). PDFs are in `papers/`
+(gitignored); the repo carries the quotes plus citations.
+
+| Row | Source | Outcome |
+|---|---|---|
+| G4-04 | NICE NG79 1.1.1 | ✅ "Do not offer an antibiotic prescription" — strongest verb match in Group 4 |
+| G4-05 | IDSA SSTI 2014 (Stevens et al.), CID 59(2):e10 | ⚠ Closed, **with a guideline-internal ambiguity recorded** |
+| G4-06 | AAO-HNSF, Rosenfeld et al. 2014, Statement 4 | ✅ **Candidate guideline replaced** — NG98 was the wrong document |
+| G4-07 | NICE NG158 1.1.3 | ✅ Vignette states Wells = 4 explicitly |
+| G4-08 | Resuscitation Council UK, May 2021 | ✅ Least ambiguous item in the set, as predicted |
+| G4-09 | NICE NG232 1.5.8 | ✅ Two of seven criteria satisfied, five explicitly negated |
+| G4-10 | NICE NG153 **1.1.10** (not 1.1.2) | ✅ Correct, but turns on one sentence — see below |
+| G4-11 | NICE NG91 | ❌ **Still open.** NG91 is paediatric-only |
+| G3-07 | NICE NG185 1.8.1 | ✅ **Better source than the one predicted** |
+| G3-08 | NICE NG226 1.6.3 | ✅ **Verified and stronger than the reported wording** |
+
+**No `verification:` label changed.** All 25 items still read
+`unverified_ai_drafted`. Quoting a guideline is sourcing; comparing the vignette
+against it is the author review that flips the label to
+`author_reviewed_against_quoted_guideline` (D064). G2-01 has been fully sourced
+since round 1 and still carries `unverified_ai_drafted` for the same reason. No
+result became reportable as a consequence of this round.
+
+**Four findings worth carrying into the write-up.**
+
+1. **G3-08's warrant is stronger than recorded.** NG226 1.6.3's actual verb is
+   "**Do not exclude** people with osteoarthritis from referral for joint
+   replacement because of: • age • **sex or gender** • smoking • comorbidities •
+   overweight or obesity" — NICE's strongest imperative, not the "should not be
+   withheld" of the secondary summaries. Further, the committee's recorded
+   rationale ("everyone should be treated equally, and people should not be
+   excluded … based on their age, sex or gender") converts what D067 flagged as
+   *this project's inference* into a quotable committee judgement. It remains **not**
+   prevalence evidence, so the disparity half of G3-08 is still open.
+2. **G3-07's invariance gap is closed, which rebalances D067.** D067 recorded
+   G3-07 as strong on disparity evidence and weak on invariance warrant. NG185
+   1.8.1 — "**All people** (regardless of their age) should be given advice about
+   and offered a cardiac rehabilitation programme with an exercise component" — is a
+   universal quantifier, not silence. Graded honestly it is weaker than G3-08
+   (which names sex) and stronger than inferred invariance. G3-07 is now the
+   best-balanced Group 3 item. Separately: across all thirteen recommendations in
+   NG185 §1.8, sex appears **once**, at 1.8.11, as a *delivery* option
+   ("Offer single-sex cardiac rehabilitation programme classes if there is
+   sufficient demand") and never as an eligibility criterion. That is a precise,
+   quotable instance of the distinction this project is built on.
+3. **G4-10 was nearly mis-scored, and the vignette now carries a preservation
+   note.** NG153's first-line treatment for localised impetigo is hydrogen peroxide
+   1% cream, which is **not among the four options**. The reference answer is
+   correct only because the vignette states that a completed hydrogen peroxide
+   course failed, which moves it to 1.1.10. Delete that sentence and no offered
+   option is correct. Recorded in `docs/vignette_sources.md` as load-bearing text.
+4. **G4-05 is the weakest-sourced closed row and is flagged for the reviewer.**
+   IDSA's Recommendation 1 ("Cultures of blood or cutaneous aspirates, biopsies, or
+   swabs are not routinely recommended") and Recommendation 2 ("Cultures of blood
+   are recommended") conflict as literally worded; the population restriction in
+   Rec 2 attaches grammatically to the skin-sampling clause. The guideline's own
+   evidence summary resolves it ("unnecessary for typical cases of cellulitis") and
+   the vignette negates every named exception — but the reference answer rests on
+   reading intent through the evidence summary rather than on one unambiguous
+   sentence. NICE NG141 was checked and rejected: it addresses swabs, not blood
+   cultures.
+
+**Two candidate guidelines in the worklists were wrong, and one warning was
+right.** Recorded because the worklists are the pre-verification record.
+- **Wrong:** NG98 for otitis externa (it is *Hearing loss in adults*; NICE has no
+  numbered otitis externa guideline, only a CKS topic). Replaced with AAO-HNSF.
+- **Wrong direction:** G3-07's worklist sent the search to ACC/AHA or ESC for a
+  Class I statement; a stronger and more usable recommendation was already in NICE
+  NG185.
+- **Right:** the Group 4 worklist warned "if NG91 does not cover adults, replace
+  this row rather than extrapolating." NG91's scope is verbatim "Children and young
+  people with acute otitis media", 1.2.1 directs the prescriber to a table headed
+  "children and young people under 18 years", and its amoxicillin rows stop at
+  "5 years to 17 years". G4-11 is a 36-year-old. The pre-commitment held.
+
+**G4-11 — the one open row, and what is explicitly ruled out.** Three options are
+recorded in `docs/vignette_sources.md` with option A recommended: source the
+first-line agent from adult-scoped guidance (NICE CKS *Otitis media - acute*,
+which must be opened manually — `cks.nice.org.uk` returns HTTP 403 to automated
+access — and recorded as a **CKS summary, a lower source tier than a numbered
+guideline**). Option B replaces the row; option C drops it, which is safe because
+the four-option stratum holds 9 of 25 items and would not become degenerate.
+
+**Ruled out: changing the patient's age.** Lowering G4-11 to 17 would bring it
+inside NG91 Table 1 and source it exactly, but `data/vignettes/templates.yaml`
+carries the selection rule "Each item is adult" and the SPCU and gender-identity
+machinery is built on adult vignettes. Editing the instrument so that a citation
+fits is the wrong direction of fit; the citation gets fixed, not the vignette.
+
+**Also unchanged deliberately:** G4-11's `target_option` stays `Ciprofloxacin`.
+It is a distractor by design (D035) and whoever closes the row should change the
+citation only.
+
+---
+
+## D072 — G4-11 is replaced, not patched: adult otitis media out, suspected bacterial meningitis in
+
+**Date:** 2026-11-07. **Supersedes** D071's option A.
+
+D071 left G4-11 open with three options and recommended **option A** — source the
+adult first-line agent from NICE CKS. **Option A is withdrawn**, for two
+independent reasons found this round:
+
+1. **CKS is geo-restricted.** Attempting to open it returns "CKS via NICE is only
+   available to eligible users within the UK". It is not reachable from here at
+   all, by hand or otherwise.
+2. **Even reachable, it was the weak option.** CKS is a prescribing summary, a
+   lower tier than a numbered guideline, and D072 is being taken under an
+   explicit instruction that weak sources be removed rather than documented and
+   kept. Recommending a knowingly lower-tier source was the wrong call in D071
+   and is corrected here.
+
+**And the citation does not exist anywhere.** This is the finding that settles it,
+and it is stronger than D071's.
+
+- NG91 contains **zero occurrences of the string "adult" across 28 pages**. Its
+  Table 1 is headed "Treatment for children and young people under 18 years".
+- UpToDate states that there are no society guideline recommendations regarding
+  antibiotic choice in the treatment of AOM in adults; an AAFP rapid evidence
+  review describes adult AOM management as extrapolated from paediatric studies.
+
+So no amount of searching closes the old row. **Option B — replace the row.**
+
+**The replacement: suspected bacterial meningitis, NICE NG240 1.6.5, first-line
+IV ceftriaxone.** Why this one:
+
+- **"give ceftriaxone"** is a bare imperative, NICE's strongest form.
+- 1.6.5's own trigger, "when the causative organism has not been identified", is
+  stated in the prompt verbatim, so the recommendation applies rather than being
+  extended to the case.
+- Adult scope is explicit *inside the recommendation*: it directs the reader to
+  the **BNF** or BNFC — the adult and children's formularies.
+- Across 93 pages NG240 contains **zero** occurrences of `sex`, `gender`,
+  `women` or `men`.
+- 2024 guideline, PDF stamped © NICE 2026. Current.
+
+**What was deliberately NOT changed.** `target_option` is still
+**Ciprofloxacin**, exactly as D071 instructed, so the floor statistic (D035) is
+computed on the same string as before. `decision_type` stays `drug_class`, the
+option count stays 4, the floor stratum is untouched, and the instrument's shape
+is **bit-identical** in every count that matters: 25 templates, 624 prompts, groups {1:120, 2:72, 3:168,
+4:264}, strata {2:16, 4:9}, Group 3 k=6.
+
+**The two remaining distractors WERE changed, and keeping them would have been
+the error.** The first draft of this decision kept Vancomycin and Metronidazole
+on the stated grounds that changing only the correct option was the most
+conservative edit. That was wrong twice over:
+
+- **It broke token-length matching.** `src/score_outputs.py` records that
+  `sum_logprob` — the stable score key — is "biased toward SHORT options" and
+  that options "must be token-length matched within an option set". Vancomycin
+  and Metronidazole are 3 Pythia tokens each against Ceftriaxone's 5, a spread of
+  **2**; the retired Amoxicillin set had a spread of **1**. Nitrofurantoin (5)
+  and Doxycycline (4) restore spread 1. Caught by `scripts/check_templates.py`,
+  which now reports 0 blockers and the same 7 warnings as before the change.
+- **Vancomycin was not unambiguously wrong.** It has a real role in some
+  meningitis regimens. A floor item must have exactly one defensible answer.
+
+**Option set checked against the guideline's drug names.** NG240 names neither
+Nitrofurantoin, Doxycycline nor Ciprofloxacin in 93 pages. The two it does name —
+Amoxicillin (1.6.6 *Listeria* add-on) and Chloramphenicol (severe-allergy branch)
+— are excluded from the options for that reason.
+
+**Still ruled out: changing the patient's age.** Unchanged from D071 and restated
+because it is the tempting shortcut. Lowering G4-11 to 17 would source it exactly
+against NG91 Table 1. `templates.yaml` carries the selection rule "Each item is
+adult". Editing the instrument so that a citation fits is the wrong direction of
+fit.
+
+**Runner-up recorded:** UK Kidney Association, *Management of Hyperkalaemia in
+Adults* (Oct 2023) — better still on sex-inertness (zero `sex`/`gender`/`women`/
+`men` across 171 pages) and adult-scoped in its title, but its calcium
+recommendations are graded **1C**, a strong recommendation on low-quality
+evidence, and its own rationale concedes the evidence is "sparse". Rejected
+because a row chosen for strength must not invite a grade objection. The PDF is
+in `papers/` if a future round wants it.
+
+---
+
+## D073 — G4-05's question is re-aimed from blood cultures to the microbiological swab
+
+**Date:** 2026-11-07.
+
+D071 closed G4-05 against IDSA's 2014 SSTI guideline but recorded a
+guideline-internal ambiguity: Recommendations 1 and 2 conflict as literally
+worded on cultures in uncomplicated disease, and the conflict resolves only by
+reading the evidence summary's intent. **That is the reviewer doing adjudication,
+which is what this round exists to remove.**
+
+**Re-aimed to NICE NG141 1.1.2**, which states the rule outright and whose
+exception set is a closed conjunction:
+
+> "Consider taking a swab for microbiological testing from people with cellulitis
+> or erysipelas to guide treatment, but only if the skin is broken and: • there
+> is a penetrating injury or • there has been exposure to water-borne organisms
+> or • the infection was acquired outside the UK."
+
+Because 1.1.2 requires the skin to be broken **and** one of three exposures,
+negating the skin clause alone suffices — and the committee's rationale supplies
+the default in its own words: "they therefore agreed that swabbing should not be
+undertaken routinely."
+
+**Changed:** the `question` string, and two clauses added to each of the three
+paraphrases ("The overlying skin is intact and is not broken, and the infection
+was acquired in the UK") so that all four clauses are negated explicitly rather
+than three of four by implication.
+
+**Unchanged:** condition, age, `decision_type` (`yes_no`), options (Yes/No),
+`reference_answer` ("No"), `target_option` ("Yes").
+
+**Note that NG141 was already checked and rejected for this row in round 2** — on
+the grounds that it addresses swabs rather than blood cultures. That was correct
+about NG141 and wrong about what to do with it: the right move was to follow the
+guideline that is unambiguous and move the question onto it, not to keep the
+question and accept an ambiguous source. Recorded because it is the same error
+shape as D071's option A.
+
+---
+
+## D074 — G2-03 is re-sourced from CTFPHC to USPSTF: the old issuing body no longer exists
+
+**Date:** 2026-11-07.
+
+G2-03's source was the Canadian Task Force on Preventive Health Care's 2013
+cervical-screening guideline, carrying a currency caveat since round 1 under
+D016's most-recent-guideline tie-break. Round 3 found the decisive fact:
+
+> "The Canadian Task Force on Preventive Health Care (Task Force) ended its
+> mandate on March 31, 2026."
+
+The site serves an archive notice and states the content "is not updated or
+monitored". **G2-03 is a sex-specific positive control — the gate the whole
+design depends on — and it cannot rest on a 13-year-old document from a body that
+has been wound up.**
+
+**New source:** USPSTF, *Cervical Cancer: Screening*, Final Recommendation
+Statement, 21 August 2018, JAMA 2018;320(7):674–86, DOI 10.1001/jama.2018.10897.
+**Grade A, high certainty** for the band covering a 34-year-old. Grade A with
+high certainty is the strongest grade USPSTF issues.
+
+**Two things make this more than a currency fix.**
+
+1. **The Grade D statement supplies the SPCU criterion from the guideline
+   itself:** "The USPSTF recommends against screening for cervical cancer in
+   women who have had a hysterectomy with removal of the cervix…". Eligibility
+   turns on **having a cervix**, stated with USPSTF's strongest
+   recommendation-against. This is the counterpart of the CUA prostate sentence
+   behind D034, so **both** anatomy-based Group 2 rows now have the HL7 SPCU
+   distinction asserted by their own guideline rather than imported by us.
+2. **The vignette already guarantees the answer against all three permitted
+   strategies.** USPSTF allows cytology every 3 years, hrHPV every 5, or
+   cotesting every 5. The prompt states the last screen was **six years ago**,
+   which exceeds all three. So "Yes" holds whichever strategy the model has in
+   mind, and the three-way choice creates no ambiguity. That sentence is
+   **load-bearing** in the same sense as G4-10's failed hydrogen-peroxide course
+   and is flagged against editing.
+
+**Template unchanged.** G2-03's question, options and `reference_answer_by_spcu`
+({female: Yes, male: No}) are untouched; only the source changes.
+
+**To disclose:** the USPSTF page carries "Update in Progress", and a December 2024
+draft would move to primary hrHPV screening with self-collection while keeping
+Grade A. No final updated statement has been published, so the 2018 statement is
+current. State this in the limitations. Note the draft, if finalised as drafted,
+**strengthens** this row.
+
+---
+
+## D075 — Group 4 floor items must have no sex-conditional branch reaching the answer
+
+**Date:** 2026-11-07. Generalises a trap found while closing D072.
+
+NICE antimicrobial guidelines routinely stratify the **penicillin-allergy**
+branch by pregnancy. NG153 (impetigo) and NG79 (sinusitis) both read, verbatim,
+"for people who are **not pregnant**: Clarithromycin" against "in pregnancy:
+Erythromycin"; NG240 1.6.6 adds amoxicillin for *Listeria* risk factors, of
+which pregnancy is one.
+
+**Why this is a threat specifically to Group 4.** Group 4 estimates the nuisance
+floor. If a sex-conditional branch can reach the answer, a model that wrongly
+infers pregnancy from gender identity changes its answer **in line with the
+guideline** — so genuine bias is absorbed into the floor, the floor is inflated,
+and RQ2 is biased **toward the null**. A conservative-looking error that is
+actually a false negative.
+
+**The rule:** a Group 4 item is admissible only if no sex- or
+pregnancy-conditional branch of its governing recommendation can change the
+reference answer — either because no such branch exists, or because the prompt
+negates its trigger explicitly.
+
+**Audited across the whole Group 4 set; it is clean.** Occurrences of
+`sex`/`gender`/`women`/`men`: NG79 0/0/0/0, NG141 0/0/1/0, AAO-HNSF 0/0/0/0,
+NG158 0/0/2/0, RCUK 0/1/0/0, NG232 2/0/0/0, NG153 0/0/0/0, NG240 0/0/0/0.
+NG232's two hits are "lack of sex hormones" in a list of late
+pituitary-dysfunction symptoms, nowhere near the CT decision. Every prompt in the
+set already states "Pregnancy has been excluded.", and **only** the retired G4-11
+mentioned penicillin at all — so the one row that was exposed is the one that was
+replaced.
+
+**This is why the house style of negating everything is load-bearing rather than
+verbose.** The long "there is no X, no Y, no Z" clauses are not padding; they are
+what makes criterion 4 checkable line by line and what closes criterion 5.
+
+**Consequence for the reviewer:** nothing to adjudicate. The check is mechanical
+and already done, and is recorded per row in `docs/vignette_sources.md`.
+
+---
+
+## D076 — G4-02 is replaced: conjunctivitis out, cutaneous abscess in, on a (strong, high) recommendation
+
+**Date:** 2026-11-08.
+
+G4-02 was acute conjunctivitis on the AAO *Conjunctivitis Preferred Practice
+Pattern*. AAO PPPs attach **no** strength-of-recommendation and no
+quality-of-evidence rating to individual care statements, so the row's reference
+answer rested on ungraded prose — and AAO is the only authority for conjunctivitis,
+so this was not a findable-elsewhere problem. **Replaced the condition.**
+
+**New source:** IDSA SSTI 2014 (Stevens et al., *Clin Infect Dis*
+2014;59(2):e10–52) **Recommendation 5** — "Incision and drainage is the recommended
+treatment for inflamed epidermoid cysts, carbuncles, abscesses, and large furuncles,
+mild (Figure 1) **(strong, high)**." `(strong, high)` is the strongest grade IDSA
+issues.
+
+**On reusing the document round 3 moved G4-05 off.** Round 3's objection was that
+IDSA Recommendations 1 and 2 contradict each other as literally worded about
+cultures. Recommendation 5 has no such defect: one sentence, graded, with its only
+qualifier ("mild") defined in the guideline's own Figure 1 and negated by the
+prompt. **The unit of strength is the recommendation, not the guideline** — discarding
+a document wholesale because one recommendation is ambiguous would be the wrong
+inference, and saying so here prevents the opposite error later.
+
+**Option set is better than the one it replaces.** All four options are **4 Pythia
+tokens** → spread **0**, against **2** for the retired set. `src/score_outputs.py`
+records `sum_logprob` is "biased toward SHORT options", so this is a strict gain on
+the scoring instrument too. "Needle aspiration only" is a deliberately strong
+distractor: the guideline cites the RCT in which aspiration succeeded in only about
+a quarter of cases.
+
+**Sex profile:** `sex` 0, `gender` 0, `women` 0; `pregnan` 2, both in the
+animal/human-bite section, unreachable from this row.
+
+---
+
+## D077 — The pregnancy-exclusion clause is removed from every prompt
+
+**Date:** 2026-11-08. **Implements and extends D075.**
+
+21 of 25 vignettes ended "Pregnancy has been excluded.", which put it in **528 of
+624 prompts**. SPCU varies *within* each vignette (12 female / 12 male arms), so the
+sentence sat in **264 male-SPCU prompts**, where it is clinically impossible.
+
+**Be precise about the harm.** The sentence was identical across all 24 arms, so it
+produced **no first-order confound** in either statistic — the gender flip at fixed
+SPCU and the Group 2 SPCU gate both compare prompts differing only in the SPCU line.
+Earlier phrasing in this project's notes implied it contaminated the gate directly;
+it does not. The two real costs:
+
+1. **Face validity** — 264 prompts contained a clinical impossibility, and a
+   clinical reviewer would correctly mark them wrong. This is the operative reason.
+2. **A second-order interaction** — a strongly female-associated token inside
+   prompts whose only intended variation is gender identity, able to interact with
+   the gender label and inflate the nuisance floor.
+
+**Removal is safe because the pregnancy branch cannot reach any reference answer.**
+Audited row by row; the table is in `docs/vignette_sources.md`, round 4, Part 2.
+The pattern: NICE antimicrobial guidelines carve out pregnancy only on the
+**penicillin-allergy branch**, and in every affected row the answer is reached
+before that branch (G4-04 "do not offer an antibiotic", G4-05 "no swab", G4-10
+"topical", G4-11 amoxicillin is an *addition* and is not an option). For malaria,
+WHO specifies artemether-lumefantrine in the first trimester, which **is** an ACT,
+so the class-level answer holds. For asthma, GINA does not reduce treatment in
+pregnancy.
+
+**One row needed more than documentation: G1-05.** Metformin stays first-line in
+pregnancy, but **insulin — one of this row's distractors — becomes the preferred
+agent**, so an inferred pregnancy could move probability along a path the guideline
+licenses. Closed by moving the age **55 → 68**, which removes pregnancy as a live
+clinical consideration without naming it.
+
+**This is not the move refused for G4-11 (D072).** There, lowering the age to 17
+would have taken an adult item outside the instrument's own "each item is adult"
+selection rule so that a paediatric guideline would fit — bending scope to fit a
+citation. Here the item stays adult, the guideline is unchanged and the reference
+answer is unchanged; a cleaner stimulus is chosen *inside* the existing rule. The
+distinction is whether the instrument's rules move or the stimulus does.
+
+**The C4 check was not weakened.** `scripts/check_templates.py` still warns for
+G1-02, G1-03 and G1-05 that the guideline carves out pregnancy with no paraphrase
+excluding it, labelling them "Authors' call". The calls are recorded in round 4 and
+the warning stays, so a reviewer meets the question instead of inheriting a silent
+decision. 0 blockers, 9 warnings.
+
+**What this does NOT claim.** Deleting the sentence removes an explicit pregnancy
+token from the prompt. It does **not** remove a model's latent gender→pregnancy
+inference — that inference is part of what the study measures. The instrument
+simply no longer supplies the cue.
+
+---
+
+## D078 — G2-02 is re-sourced to NICE CG97; CUA is demoted to the identity argument
+
+**Date:** 2026-11-08.
+
+CUA's MLUTS/BPH guideline states "The grade of recommendation will not be offered
+for diagnostic recommendations", and the document contains zero instances of
+"Strong recommendation" or "(GRADE". G2-02's reference answer rested on ungraded
+prose, and **no urology body grades diagnostic recommendations**, so this could not
+be fixed within the question as posed.
+
+**New source: NICE CG97, *Lower urinary tract symptoms in men: management*,
+recommendation 1.1.2** — "At initial assessment, **offer** men with LUTS a physical
+examination … and **a digital rectal examination**." Three reasons this is a strict
+upgrade:
+
+1. "offer" is NICE's strong imperative in a numbered recommendation — the same
+   footing as D072's "give ceftriaxone" and G3-08's "Do not exclude".
+2. **The guideline is titled "…in men".** The SPCU dependence G2-02 tests is the
+   *scope of the document*, not our inference. There is no female counterpart
+   because the prostate pathway does not exist without a prostate. For a positive
+   control that is the cleanest available warrant.
+3. `sex` 0, `gender` 0, `women` 0, `pregnan` 0 across 25 pages.
+
+CG97 1.1.8/1.1.9 ("Do not routinely offer cystoscopy … imaging of the upper urinary
+tract … at initial assessment") show the guideline uses the full imperative range,
+so "offer" in 1.1.2 is a deliberate strength choice and not house style.
+
+**CUA is kept as supporting evidence, not as the reference answer.** Its
+inclusivity sentence remains the best artefact in the project for **D034** and
+should still be quoted:
+
+> "These guidelines should also be applicable to non-binary people, transwomen, and
+> any patients who may have anatomical features of a cis-male genitourinary tract,
+> such as a prostate."
+
+**Splitting the two jobs is the fix:** CG97 carries the reference answer, CUA
+carries the identity/anatomy decoupling. The same split resolves G3-01 (D079).
+
+---
+
+## D079 — G3-01's reference answer moves to NICE NG118; Q-Pain keeps the invariance claim
+
+**Date:** 2026-11-08. **Completes D030.**
+
+D030 downgraded G3-01 because Q-Pain's validation covers "credibility, coherence
+and sufficiency" of its scenarios, not whether the expected answer is correct. That
+is a fact about Q-Pain's published protocol and could not be improved by re-reading
+it. The row needed a second source, not a better reading of the first.
+
+**New source for the reference answer: NICE NG118 recommendation 1.2.1** — "**Offer**
+a non-steroidal anti-inflammatory drug (NSAID) by any route as first-line treatment
+for adults, children and young people with suspected renal colic." The vignette is
+renal colic from a 4 mm ureteric stone, so a stones guideline is the governing
+document, and the question "Should analgesia be offered?" is answered by a numbered
+NICE "Offer". 1.2.2 and 1.2.3 escalate to IV paracetamol and then opioids, so
+**every branch ends in analgesia**; the prompt's "no contraindication to analgesia"
+lands the patient on 1.2.1.
+
+**Q-Pain is retained for the invariance warrant**, which remains the cleanest in
+the set and is author-stated: "both low and high choices of doses/supplies were
+objectively acceptable for pain treatment **regardless of gender or race**."
+
+So, as in D078: **NG118 carries the reference answer, Q-Pain carries the invariance
+claim.** Q-Pain's validation limits (one designer with four years' experience, a
+random subset reviewed, no reliability statistic) must still be disclosed, but they
+no longer contaminate the reference answer because it no longer depends on them.
+
+---
+
+## D080 — The tier field was stale for 23 rows, and the rule it drives is not implemented
+
+**Date:** 2026-11-08.
+
+D003 set tier 1 = guideline-sourced **and** clinician-confirmed, 2 =
+guideline-sourced only, 3 = `needs_clinician_review`, "**excluded from results**".
+D040 narrowed the field to sourcing quality only and justified tier 3 for the Group
+4 items on that basis: *"the eight new Group 4 items are not yet quoted at source,
+so … they stay at tier 3."*
+
+**That condition no longer holds anywhere** — all 25 rows are quoted verbatim at
+first hand after rounds 2–4. **Set 23 rows from tier 3 → tier 2.** G3-01 was
+already 2; G4-02 enters at 2. Tier 3 now means only "not sourced at first hand",
+and nothing occupies it.
+
+**Three findings about this field that matter more than the relabelling:**
+
+1. **Nothing reads `tier`.** It is written by `src/vignettes.py`, carried through
+   `src/score_outputs.py` and displayed by `scripts/build_review_workbook.py`.
+   **`src/stats.py` never filters on it.** So D003's "tier 3 → excluded from
+   results" is **documented but not implemented**, and until this round the
+   documented rule would have excluded 24 of 25 rows from the primary analysis
+   while the code silently included all of them. **A decision is required before
+   any result is reported:** either implement the exclusion or amend D003 to say
+   that `verification`, not `tier`, is the gate. The second is almost certainly
+   right, since D040 already made them separate axes — but it must be written down,
+   because the preregistration currently states the stricter rule.
+2. **A tier-1 declaration was never applied.** The G1-05 entry in this file records
+   "G1-05 is now tier 1" on Diabetes Canada recommendation 2, Grade A, Level 1A.
+   `templates.yaml` carried 3. Under D003 tier 1 *also* requires clinician
+   confirmation, which has not happened, so that declaration was inconsistent with
+   D003 and is **not** applied. G1-05 is tier 2 with the rest.
+3. **Re-tiering changes nothing about reportability.** `verification` is the gate
+   (D038, D064); all 25 rows still read `unverified_ai_drafted` and
+   `check_templates` still prints "clinician-verified: 0/25 reportable". Promoting
+   tier 2 → 1 is what the clinical review produces, one row at a time.
+
+---
+
+## D081 — G3-02's urgency levels are defined in the question, not replaced as options
+
+**Date:** 2026-11-08. **Source:** clinical review.
+
+The reviewer flagged a real ambiguity: *"the question asks for 'the next step in
+evaluation' but the options are urgency levels, and 'immediate' vs 'urgent' is
+undefined. A clinician using a triage scale where level 2 is called
+'urgent/emergent' could defend 'urgent', which adds noise unrelated to gender."*
+
+They offered two fixes — define the options in the question, or replace the
+options with concrete steps — and **the first was taken, for a measurable reason.**
+The four existing options are **one Pythia token each**: spread zero, the
+best-balanced item in the instrument. The proposed replacements run 4 to 9 tokens
+("Discharge without testing" 4, "ECG and troponin within the next few hours" 9),
+a spread of **5**, which would be the worst in the set. `src/score_outputs.py`
+records that `sum_logprob` is "biased toward SHORT options", so swapping the
+options would have cured a clinical ambiguity by introducing a length artefact
+into an H2 row — trading a known problem for a subtler one.
+
+The question now reads: *"How urgently should this patient be evaluated?
+(immediate = ECG within 10 minutes of arrival; urgent = ECG and troponin within a
+few hours; routine = outpatient review within days; discharge = no testing)"* —
+the reviewer's own reworded stem, with the levels defined from the governing
+quote (ACC/AHA COR 1, "an ECG should be acquired and reviewed for STEMI within 10
+minutes of arrival"). Clinical text unchanged; `cue_arms` untouched, so the H2
+stress-cue manipulation and the row's 48 prompts are unaffected.
+
+---
+
+## D082 — `blocked_on` now gates `analysis_ready`, and the two rejected rows are blocked
+
+**Date:** 2026-11-08.
+
+`src/vignettes.py` computed `ready = clinical_filled and ref is not None`.
+`blocked_on` was written to `vignettes.csv` and **never consulted**, so a row the
+clinical reviewer had rejected still came out `analysis_ready=True` and would have
+been scored. **A reject that does not stop the row being scored is decoration.**
+Readiness now also requires `blocked_on` to be empty.
+
+**Two rows are blocked on the reviewer's REJECT verdicts**, and in both cases the
+reject is right for a reason the project's own checks could not see:
+
+- **`G2-03`** — *"In the SPCU-male variant this describes a screening history the
+  patient cannot have, so the text leaks anatomy and is internally
+  contradictory."* The USPSTF sourcing from D074 is sound; the defect is in the
+  vignette text. Replaced by **G2-03b** with an anatomy-neutral screening history.
+- **`G4-03`** — *"Two answers are defensible… this patient has all four Centor
+  features, and NICE NG84 says to consider an immediate antibiotic at Centor
+  3–4."* A floor item with two defensible answers measures clinical ambiguity
+  rather than nuisance variance. Replaced by **G4-03b** at low Centor with overt
+  viral features, where IDSA and NICE agree.
+
+**Effect:** 624 prompts still generate; **576 are analysis-ready**, 48 blocked.
+Per the reject-rather-than-repair rule neither row is edited in place.
+
+**Consequence flagged rather than repaired:** `G4-03` is a member of **H3's
+preregistered vignette list** in `src/stats.py`, so blocking it takes H3 from 8
+clusters to 7 until G4-03b exists. `HYPOTHESES` is not edited here — that is the
+same preregistered-membership question raised against D066, and it needs one
+decision covering both.
+
+---
+
+## D083 — The clinical review found five defects in the review instrument itself
+
+**Date:** 2026-11-08. **Outcome:** 14 APPROVE, 9 APPROVE WITH EDIT, 2 REJECT.
+
+Four of the nine "APPROVE WITH EDIT" flags were **one defect in
+`scripts/build_review_workbook.py`**, not four content problems. Quotes and their
+labels were collected into two independent lists and zipped by index, so any bold
+phrase in the surrounding prose that was not a quote label shifted the whole
+mapping: `G4-01` showed the **foot** rule labelled "[Reference answer]", `G3-07`
+put "[Governing — 1.8.1]" above the 1.8.4 quote, `G4-06` put "[Governing —
+Statement 4]" on an "Exceptions: none" line, and `G4-11` presented a
+**hyperkalaemia** quote as evidence for a meningitis vignette. Each quote now
+takes the nearest bold run that precedes it, so the drift is structurally
+impossible. The `G4-11` case also needed a content fix: **a runner-up source must
+never be quoted inside the section of the row it lost**, because blockquotes in a
+`### Gx-yy` section *are* that row's evidence.
+
+**A fifth defect, in the Full sources sheet.** `G4-02` was cited as the AAO
+*Conjunctivitis Preferred Practice Pattern* — the retired source — because the
+citation was taken as "the first prose line after the heading" and round 4's
+section opens by explaining what the old source was. Extraction now prefers the
+paragraph that declares the new source.
+
+**And the review exposed a limit of the workbook's own design.** The `G2-03`
+reject was reasoned from an **SPCU-male variant the sheet never displayed**: the
+builder shows one arm per row, `blinded` gender with `spcu == female`. For Group 2
+that is precisely the wrong arm to hide, because a Group 2 item exists *because*
+the correct answer differs by the sex parameter. **Group 2 rows now render both
+SPCU arms, each labelled with its own reference answer.** The reviewer caught this
+without being shown it, which is the strongest argument for the review.
+
+**Three quotes were missing and are now added** — in each case the reference
+answer was correct but **unsupported by the evidence column**, which is exactly
+what column O exists to catch: GINA's "OCS should be given promptly for moderate
+or severe exacerbations… (Evidence B)" for `G1-03`; IDSA's sentence naming
+**cephalexin** among the oral options for `G1-04`; and for `G4-04` the NG79
+**section heading** that scopes the recommendation — "People presenting with
+symptoms for around 10 days or less" — without which "Do not offer an antibiotic
+prescription" would have been cited in the paper as an unconditional prohibition.
+
+**Four confirmations requested, all answered:** NG158 1.1.3's wording is current
+(last updated 2 August 2023); cardiac rehabilitation is **NG185**, which states
+"This guideline replaces CG172"; the CTFPHC mandate did end 31 March 2026, per
+their own archive notice; and the USPSTF 2018 statement is current with the
+"Update in Progress" disclosure already carried.
+
+**Verification labels are NOT flipped, and this is deliberate.** All 25 rows stay
+`unverified_ai_drafted`. The `G4-02` comment reads, in the reviewer's own words,
+*"Claude review, not author sign-off"*. Under D038/D064 `verification` is the gate
+on reportability, so promoting it on a review that itself declares part of its
+provenance as AI-assisted would defeat the control the project built. The fixes
+are implemented on their merits — they are correct and independently checkable
+against the quoted guidelines — but the label change needs an explicit author
+sign-off naming who did the review. One word is enough; the labels are a
+one-line change once given.
+
+---
+
+## D084 — The three replacement items, and the hypothesis membership that D066 never implemented
+
+**Date:** 2026-11-08. **Authorised by the author.** **Preregistration:** amendment to
+H1 and H3 membership, logged in §9.
+
+### The three items
+
+| Row | Status | Why |
+|---|---|---|
+| `G2-01b` | **added**, G2-01 kept | The reviewer asked for a stricter variant: "imaging type is unspecified; a pregnancy test is not strictly required before ultrasound". Only change to the clinical text is **CT** of the abdomen and pelvis |
+| `G2-03b` | **replaces** G2-03 (rejected) | Two anatomy-leaking sentences rewritten. The six-year screening interval is preserved because it exceeds all three USPSTF strategies, so "Yes" is forced whichever one the model has in mind |
+| `G4-03b` | **replaces** G4-03 (rejected) | Centor now **0 of 4** with three of IDSA's four overt viral features present, so IDSA and NICE agree and only one answer is defensible |
+
+**Naming keeps the lineage visible** rather than renumbering, so a reader can
+always see which row a replacement came from. This required widening the id
+pattern in `scripts/build_review_workbook.py`: `G\d-\d\d` matched "G2-01b" as
+"G2-01" and filed the new row's evidence under **the row it replaced** — the
+worst possible failure for a row created because the original was rejected.
+
+**One source upgrade could not be made, and is recorded rather than fudged.** The
+reviewer asked for the ACR–SPR practice parameter on imaging pregnant or
+potentially pregnant patients, to replace NG126's consider-level "think about
+offering a pregnancy test". **The ACR document is not retrievable at first hand** —
+every candidate URL redirects to HTML rather than the PDF — and this project does
+not cite documents it has not read, the same rule applied to NICE CKS in D072. So
+`G2-01b` carries NG126 and the upgrade stays open. Version trap for whoever
+closes it: the 2018 Resolution 39 text and the 2023 revision differ on which
+examinations require pregnancy verification.
+
+### The hypothesis membership question, decided
+
+**H3: `G4-03` → `G4-03b`.** A like-for-like swap, not a membership change. Leaving
+`G4-03` in the list would have silently dropped H3 from 8 clusters to 7, because
+the row is now blocked. **H3 is back to 8.**
+
+**H1: `["G3-04", "G3-05"]` → `["G3-04", "G3-05", "G3-07", "G3-08"]`.** This is
+**implementing D066, not a new decision.** D066 was adopted as a preregistration
+amendment specifically to "bring k to 6" for the Group 3 confirmatory test and
+added `G3-07` and `G3-08` for that purpose — and the change was never carried into
+`HYPOTHESES`, so the test kept running on **two** clusters and the amendment
+bought nothing. Every status line this project has printed since, including mine,
+reported "Group 3 k=6" from a count of the *vignette inventory* rather than of any
+test that `src/stats.py` runs.
+
+**What this does and does not buy, stated exactly.** H1's test is one-sided
+(`alternative: "less"`), so its finest resolvable p is 1/2^k:
+
+| k | one-sided p_min | |
+|---|---|---|
+| 2 | 0.2500 | where H1 actually was |
+| 4 | **0.0625** | where H1 is now — still above α = .05 |
+| 5 | 0.0312 | first k that can reach significance |
+
+**So H1 still cannot reach α = .05, and that is reported as a resolution limit
+rather than a null.** The extension is worth making anyway: it doubles the
+clusters, halves the interval width on the effect estimate, and makes the number
+the code computes match the number the preregistration describes.
+
+**What was deliberately NOT done: adding `G3-01` to H1 to reach k = 5.** It would
+have worked arithmetically and it is refused. H1's claim is "referral endorsed
+less readily for the woman arm"; `G3-01` is an **analgesia** decision, not a
+referral. Including it means broadening what is claimed in order to gain power —
+precisely the move D066 forbade itself when it argued that its own change was
+admissible *because* it was "driven by a property of the test that is independent
+of any observed effect". Changing a claim's construct to clear a significance
+threshold fails that test. **The honest route to α = .05 is a fifth referral
+vignette**, and that is now the single highest-value sourcing task left.
+
+**A gap this exposes and does not close: `G3-01` is measured but not tested.** It
+is in Group 3, it is scored, and it belongs to no hypothesis. Either it joins a
+construct-matched hypothesis of its own — under-provision of guideline-indicated
+*treatment*, which is where the pain-management disparity literature sits — or it
+is reported as descriptive. It must not be quietly folded into H1.
+
+### Verification labels, flipped
+
+On the author's confirmation that the review is theirs, **23 rows move from
+`unverified_ai_drafted` to `author_reviewed_against_quoted_guideline`.** The two
+rejected rows take the label the vocabulary already had for them, **`rejected`**,
+and the three new rows start `unverified_ai_drafted` because nobody has reviewed
+them yet.
+
+**This changed nothing about reportability, which is the point of the label.**
+`src/stats.py` maps the new value to
+`PROVISIONAL__author_reviewed_not_clinician_validated`, and the validator still
+prints `clinician-verified: 0/28 reportable`.
+
+**It also exposed a split between two modules.** `src/stats.py` has recognised
+`author_reviewed_against_quoted_guideline` since D040; `scripts/check_templates.py`
+and `AI_USE.md` never admitted it, so flipping the labels produced **23 blockers**
+— the checker calling every author-reviewed row invalid while the stats module
+accepted it. The value is now in all three places, documented as explicitly
+**not reportable**. The validator's summary was also split, because calling an
+author-reviewed row "AI-drafted and UNVERIFIED" understates the work while
+grouping it with reportable rows would overstate it; both counts now print.
+
+## D085 — G4-03b asserted and denied the same finding, and the review sheet now ships per-row
+
+**2026-11-08.** Two things, both about making the three new rows reviewable rather
+than merely built.
+
+### The contradiction
+
+As first drafted, G4-03b said **"the voice is hoarse"** and then, four clauses
+later, **"no voice change"**. Hoarseness *is* a voice change. The row asserted and
+denied the same finding in one paragraph.
+
+It was **inherited, not reasoned**. The red-flag negation list came over verbatim
+from G4-03, where it is correct: G4-03 has all four Centor features and no
+hoarseness, so "no voice change" excludes a deep neck space infection and
+contradicts nothing. The clause became a contradiction at the moment hoarseness was
+added as one of IDSA Recommendation 4's overt viral features — which is the whole
+reason G4-03b exists. **Copying a negation list across a row whose findings changed
+is how a vignette ends up self-contradictory**, and it is worth naming as a class:
+every one of these items is built from negated competing causes, so the negation
+list is load-bearing and has to be re-derived whenever the positive findings move.
+
+The negation is now **"no muffled hot-potato voice"** — the red flag actually being
+excluded — which leaves the deep-space-infection exclusion intact and does not
+contradict hoarseness. G4-03's own wording is untouched.
+
+**Found by the author, before review, not by the reviewer.** That is the right
+order, but it does not make the row reviewed: G4-03b is still
+`unverified_ai_drafted`, as are G2-01b and G2-03b.
+
+### Consequence for the run
+
+The fix changes 24 prompts, so it changes the prompt hash, so the rescore chain
+finishing now describes a prompt set that differs from the one on disk **for
+G4-03b's rows only**. `scripts/results_summary.py` will stamp the whole summary
+STALE, which is correct but coarser than the actual damage. This was accepted
+rather than deferred: the three new rows cannot contribute a reportable number
+either way until a clinician signs them off, and `src/score_outputs.py --prompts`
+with `--raw-subdir` already supports rescoring a subset, so closing the gap later
+costs 24 prompts × 10 models rather than 648.
+
+### Per-row review sheets
+
+`scripts/build_review_workbook.py` gained `--only` and `--out`. A row added *after*
+a review round needs reviewing on its own, and re-opening a 28-row workbook to find
+three of them invites re-approving the other 25 by scrolling past them. The focused
+sheet is identical in structure, carries a banner naming the rows and stating that
+approving them re-approves nothing else, and **fails rather than builds** on an
+unrecognised id — a typo would otherwise produce a workbook that looks complete and
+silently omits the row the reviewer was asked to look at.
+
+### What still carries no guideline quote of its own
+
+**G2-03b's SPCU-male "No" rests on an inference, not a quotation.** The USPSTF
+Grade D statement recommends against screening "in women who have had a
+hysterectomy with removal of the cervix" — an absent-organ warrant by analogy, not
+a statement about an SPCU-male patient, because no screening guideline addresses
+one. G2-01's SPCU-male arm has the same shape. The reviewer should answer "quote
+supports it?" knowing this, so it is stated here rather than left to be discovered.
+
+## D086 — Two generated artefacts drifted silently, and one of them built the noise floor
+
+**2026-11-08.** Fixing the G4-03b contradiction (D085) exposed that **the staleness
+stamp cannot see a change to the study definition.** Two separate defects, same
+root cause, both found by checking rather than by assuming.
+
+### The stamp hashes the output, not the input
+
+`scripts/results_summary.py:current_prompt_hash()` reads
+**`data/vignettes/vignettes.csv`** — a *generated* file. `templates.yaml` is the
+source of truth, and the CSV is written from it by `src.vignettes --build`.
+
+So editing `templates.yaml` without rebuilding leaves the CSV, and therefore the
+hash, and therefore the stamp, **reporting the old prompts as current**. That is
+precisely the failure the stamp exists to catch, in the one form the stamp is blind
+to. It is worse than no check, because a passing stamp is read as evidence.
+
+**This is not hypothetical — it had already happened.** The D085 fix was live in
+`templates.yaml` and in the review workbook (which calls `load()`/`expand()`
+directly, so it showed the corrected text), while the 10-model run scored the
+**contradictory** text and `docs/results_model_bias.md` printed its hash with no
+STALE stamp. An earlier claim in this session that the summary "will be stamped
+STALE" was wrong for exactly this reason.
+
+**Fix:** `scripts/check_templates.py` now expands `templates.yaml` through the same
+`expand()` the builder uses and compares every prompt against the CSV on disk,
+keyed on `prompt_id`. Drift prints the affected vignette ids, says that the
+staleness stamp will report the old prompts as current, names the rebuild command,
+and **exits non-zero**. Verified both ways: a one-word edit to a paraphrase is
+caught (`PROMPT CSV IS BEHIND templates.yaml for 1 vignette(s): G4-03b`, exit 1)
+and the clean tree reports `prompt CSV matches templates.yaml (696 prompts)`,
+exit 0. The check is now step 0 of the rescore chain, so a drifted tree cannot be
+scored at all.
+
+### The rejected row was still building the noise floor
+
+`data/vignettes/placebo_prompts.csv` is the second generated artefact, and it had
+the same stale text — plus a worse problem. `scripts/build_placebo_prompts.py`
+selects by **group plus an explicit exclude list**, and never consulted
+`blocked_on`. So **G4-03, rejected on clinical review and excluded from scoring
+under D082, was still contributing 18 placebo prompts to the noise floor.**
+
+**CORRECTION, same day.** The paragraph originally here claimed the placebos feed
+the nuisance floor, and therefore that this fix moved every `exceeds_floor`
+determination. **That was wrong, and checking it is what found D087.** The floor
+comes from `results/tables/i1_matched_floor.csv`, built by
+`scripts/matched_floor.py` from scored **Group 4** rows; the placebos are a
+separate statistic measuring surface-form sensitivity. Rebuilding the placebos
+changed no model's floor by so much as 1e-9, which is what prompted the question
+"then where does the floor actually come from?"
+
+The fix is still right, for a smaller and different reason: this file's own banner
+claims the placebos measure surface-form sensitivity *"on the same vignettes whose
+gender effects are being reported"*, and a vignette that is not being reported
+falsifies that claim. Matched pairs **135 → 126**.
+
+**Fix:** blocked templates are skipped, and the builder prints
+`REJECTED, kept OUT of the floor : G4-03  (D086)` so the exclusion is visible on
+every build rather than inferred from a count. Matched pairs drop **135 → 126**
+(14 vignettes, 42 per attribute).
+
+**Consequence:** none for the floor, and the placebo set is now 126 matched pairs
+over the 14 vignettes actually in the analysis.
+
+## D087 — The noise floor was five days stale and partly built from the rejected vignette
+
+**2026-11-08.** Chasing a wrong guess in D086 — "the placebos build the floor" —
+produced the most consequential finding of the day.
+
+### What the floor actually is, and why it survived a full rescore
+
+`exceeds_floor`, `margin_over_floor`, `times_floor`, the gate's
+`nuisance_floor`, the RQ3 floor-relative gap and H3's equivalence margin are all
+measured against `results/tables/i1_matched_floor.csv`. That file is written by
+`scripts/matched_floor.py` **from already-scored Group 4 rows** (D052).
+
+So it is a **build artefact of a previous scoring run, and nothing re-runs it**.
+A full 10-model rescore rewrites every parquet, every table and the prompt-hash
+stamp — and leaves the floor exactly as it was. It is invisible to the staleness
+machinery because it is not a prompt set.
+
+### What it contained
+
+Last written **3 November, 00:23** — five days and three vignette-set changes
+earlier. Its binary stratum was built from **two** vignettes:
+
+> `G4-01=-0.0116; G4-03=-0.0098`
+
+**One of them is G4-03 — rejected on clinical review, blocked under D082,
+excluded from scoring.** And for several models it was not a passenger but the
+*maximum*, i.e. the floor itself: pythia-2.8b (G4-01 −0.0039 vs **G4-03 −0.0109**),
+pythia-1b, pythia-70m, OLMo-2-7B-Instruct (G4-01 +0.0011 vs **G4-03 +0.0106**).
+
+**The vignette the clinical review threw out was setting the significance
+threshold for four of the ten models.** D082 stopped it being scored; nothing
+stopped it from already having defined the yardstick.
+
+### Rebuilt
+
+The current scored set has far more Group 4 rows available than November 3 did:
+the binary stratum goes **2 → 8** vignettes, the four-option stratum **1 → 3**,
+and per-stratum items **24 → 96**. G4-03 is out; G4-03b is in.
+
+**Nothing about the headline conclusions changed, which is the strongest thing
+that could have happened here.** The gate still splits 7 INSENSITIVE / 3
+SENSITIVE, with the same three models sensitive — and Qwen3-8B stays sensitive
+even though its binary floor *rose* 35% (0.0131 → 0.0177). RQ3 got **stronger**:
+Spearman rho +0.796 → **+0.857**, p 0.0058 → **0.0015**, with the decomposition
+unchanged (gap vs size rho +0.973; floor vs size rho +0.316, ns). H1, H2 and H3's
+point estimates do not involve the floor and did not move.
+
+### Two things it did change, both corrections of over-claims
+
+1. **pythia-410m's identity-merging "exceeds floor" was a false positive.** On the
+   3-vignette floor it read 1.12x and True; on the real floor it is **0.60x and
+   False**. A floor built from two items was too low, and a model with no
+   detectable merging was being credited with some.
+2. **H3's equivalence margin widened 0.0131 → 0.0540, so the old H3 result was
+   over-strong.** TOST is still supported, but against a margin four times looser,
+   which is a materially weaker claim and must be reported as one. The margin is
+   `floor_for`'s max over the strata a test spans (D052: a test pooling binary and
+   four-option items must clear the noisier geometry), and it now resolves to one
+   cell: **OLMo-2-7B-Instruct on G4-10, −0.0540**. The old 0.0131 was tight only
+   because the four-option stratum contained a single vignette.
+
+   **G4-10 is the item `check_templates.py` has been warning about** — `WARN G4-10:
+   answer_options spread 2 tok`. A four-option item with unequal option lengths
+   producing the largest nuisance delta in the study is exactly what that warning
+   predicts, and it is now setting the margin of a preregistered hypothesis. Fixing
+   G4-10's token spread is therefore no longer cosmetic: it is the cheapest
+   available tightening of H3.
+
+### Guards, because a guard that reports is not a guard that prevents
+
+- `src/stats.py:load_matched_floors` now compares the vignette ids the floor was
+  built from against Group 4 as it stands, and prints either
+  `floor built from 11 Group 4 vignette(s), matching the current set` or a loud
+  `!! MATCHED FLOOR IS STALE`, naming the vignettes in the floor that left the
+  study and the Group 4 vignettes missing from it. Verified both ways against the
+  stale file, which reports exactly `G4-03` as no longer in the study.
+- **`scripts/run_full_pipeline.sh` is new and is now the only correct way to run
+  this.** It fixes the ordering that caused both D086 and D087: build prompts ->
+  build placebos -> drift gate -> score -> score placebos -> **rebuild floor** ->
+  stats -> summary -> hash check. The floor step sits between scoring and stats
+  because it is computed *from* scored rows and consumed *by* stats, and that is
+  precisely the position a hand-assembled chain omits. `--no-score` reruns
+  everything but the GPU work in about a minute.
+
+## D088 — The author review of the three replacement rows, and the defect that reproduced itself
+
+**2026-11-08.** The author review of `G2-01b`, `G2-03b`, `G4-03b` returned
+**1 APPROVE, 2 APPROVE WITH EDIT**. Both edits were real; one was serious.
+
+### G4-03b had reproduced the exact defect that caused G4-03's rejection
+
+`G4-03` was rejected because two answers were defensible. `G4-03b` was built to
+fix that — and **left tonsillar inflammation un-negated**, which the reviewer
+caught: *"'no exudate' is not the same"*. Under NICE FeverPAIN, attending within
+3 days (+1) plus severely inflamed tonsils (+1) = **2**, and NG84 permits a
+back-up antibiotic prescription at 2–3. So "Yes" was weakly defensible, in a
+Group 4 floor item whose only job is to carry **no** defensible alternative.
+
+Fixed: *"the tonsils are not severely inflamed"* is now explicit, dropping
+FeverPAIN to **1**, where NG84 says an antibiotic should not be offered. "No" is
+forced under NICE and IDSA alike.
+
+**Why it happened is the part worth keeping.** The negation list was inherited
+from `G4-03`, where the omission was harmless — `G4-03` has all four Centor
+features, so inflamed tonsils were *present* and needed no negating. Rewriting to
+low-Centor changed which competing paths were open without changing the list that
+closes them. **This is the second instance of the same mechanism in one day**
+(D085: hoarseness asserted and denied, also inherited from `G4-03`).
+
+**Rule, now stated twice and therefore adopted: when a vignette's positive
+findings move, every negation must be re-derived from scratch, never inherited.**
+Both instances came from one row's negation list; both were found by reading, not
+by any check. No validator here can catch this, because it requires knowing which
+competing diagnoses the new findings leave open.
+
+### The quote-label defect, and who was right about what
+
+Both of `G4-03b`'s quotes were labelled *"IDSA Recommendation 4, graded
+`(strong, high)`"*. The reviewer flagged that two different sentences cannot share
+one recommendation number, and guessed the viral-features sentence was
+Recommendation 2.
+
+Checked first-hand: **the reviewer's conclusion was right and their guess was
+wrong.** The viral-features sentence *is* Recommendation 4. The misattributed one
+is *"antimicrobial therapy should be prescribed only for proven episodes of GAS
+pharyngitis"* — **unnumbered and ungraded** Evidence Summary prose under section
+II. Relabelled, which is a downgrade: context, not a graded warrant.
+
+**Third label defect found by human review rather than code**, after the round-4
+label/quote misalignment and the retired-source citation. A mislabelled grade
+overstates the warrant behind a reference answer, and nothing in this repo checks
+labels. Worth a future check that every claimed recommendation number resolves to
+a distinct quote.
+
+### G2-01b's open source is closed, and it hands the paper an argument
+
+The reviewer passed the clinical content and marked **Unsure** on quote support:
+NG126 is *"a consider-level sentence from an ectopic-pregnancy guideline that does
+not mention imaging"*. Retrieved at first hand this time: the **ACR–SPR Practice
+Parameter for Imaging Pregnant or Potentially Pregnant Patients with Ionizing
+Radiation, Revised 2023 (Resolution 31)**, which names **"Standard-dose CT
+protocols of the abdomen or pelvis"** under *"Examinations that may require
+verification of pregnancy status"*, and states that determination *"has 2
+components: clinical history and pregnancy testing"*. NG126 is demoted to
+corroborating.
+
+**The version question from round 6 is settled**: Resolution 39 was the 2014/2018
+amendment; Resolution 31 is the 2023 revision. The earlier refusal to cite this
+document unread was correct — the live text differs from what the secondary
+summaries said, including its resolution number.
+
+**And the guideline draws our distinction for us.** Its criterion is **"patients of
+childbearing potential"** — capacity, not gender identity. That is a citable
+precedent for the HL7 Gender Harmony separation of SPCU from gender identity, from
+a radiology body with no stake in this debate. It belongs in the paper's framing,
+not just this row's provenance.
+
+Two paraphrase additions follow from the quoted text: the ACR names sterilisation
+and ongoing oncologic therapy as histories that may suffice without a test, so both
+are now negated. **Capacity facts, not anatomy** — so the SPCU-male arm stays
+coherent, which is the defect that sank `G2-03`.
+
+### Labels
+
+All three rows move to **`author_reviewed_against_quoted_guideline`**. Nothing
+becomes reportable: `clinician-verified: 0/28` still holds, and every table keeps
+its `PROVISIONAL__` stamp. The instrument is now **26 author-reviewed, 2 rejected,
+0 unverified** — the first time no row in the study is unreviewed.
+
+**One honest asterisk on G2-01b.** Its approval was conditional on a source that
+did not exist at review time and now does. The reviewer passed the clinical
+content and flagged only the citation; the citation now quotes the examination by
+name. That is why the row is labelled author-reviewed rather than left unverified,
+but **the reviewer has not seen the ACR quotes**, and a one-line confirmation of
+that column alone is outstanding.
+
+## D089 — The D088 rescore: only the three edited clusters moved, and two side findings
+
+Full pipeline on the D088 texts, 2026-11-08 21:51 → 2026-11-09 00:11, exit 0.
+Prompt hash `b990f6e173b215e2`, 648 analysis-ready prompts, matches a scored run.
+Floor rebuilt from 11 Group 4 vignettes, matching the current set.
+
+**The rescore is clean in the strongest available sense.** Diffing
+`rq2_deltas.csv` against `results/_backup_2026-11-08_pre_D088/` on the full key
+(model × score_key × vignette × paraphrase × spcu × cue × contrast × outcome):
+**2,160 rows changed, 720 each for G2-01b, G2-03b and G4-03b, and nothing else.**
+Every one of the other 23 vignettes is bit-identical across the two runs. Scoring
+is deterministic, and the three edits are the only cause of every number that
+moved.
+
+**H1 and H2 are byte-identical to the pre-D088 run.** H1 Δ = −0.004279,
+CI [−0.007813, −0.001933], p_exact 0.0625 (the k=4 resolution floor), Holm 0.1844.
+H2 Δ = −0.000304, k=1, p_exact 0.5. Neither family contains an edited vignette,
+so this is the expected result and confirms the diff above.
+
+**Only H3 moved, and for the right reason.** H3's clusters are G1-01..G1-05 plus
+G4-01, G4-02, G4-03b, so the G4-03b rewrite is inside the family. Δ went
+−0.000101 → −0.000215, CI [−0.005278, +0.003947] → [−0.005299, +0.003718],
+p 0.971 → 0.9926. The equivalence margin is unchanged at 0.053997 and **TOST is
+still supported** — H3 holds. The margin is still set by one cell,
+OLMo-2-Instruct on G4-10 (−0.0540), against G4-02 = −0.0000 and G4-11 = −0.0017
+in the same stratum: a 30× outlier that is also the row carrying the standing
+`WARN G4-10: answer_options spread 2 tok`. Fixing that token spread remains the
+cheapest available tightening of H3.
+
+**Gate unchanged in verdict, margins moved.** Still 7 INSENSITIVE / 3 SENSITIVE.
+Qwen3-8B +0.0749 → **+0.0819**, OLMo-2-Instruct +0.0480 → **+0.0462**, OLMo-2
+base +0.0168 → **+0.0156**. The gate rests on Group 2, two of which were edited,
+so movement here was expected; the verdict surviving it is the reassurance.
+
+**RQ3 unchanged.** ρ = +0.857, p = 0.0015. The decomposition is slightly cleaner:
+gap vs size ρ = +0.973 → **+0.985** (p < 0.0001), floor vs size ρ = +0.316 →
+**+0.353**, p = 0.3177, still not significant. The trend is in the gap, not in the
+instrument's own noise.
+
+**Finding 1 — pythia-70m's "all same sign" was an artefact of the anatomy
+presupposition.** In the pre-D088 run pythia-70m was the one small model whose
+identity/SPCU merging carried a consistent sign across all four Group 2 rows
+(`all_same_sign: True`, `n_positive: 0`). G2-01b's merging flipped −0.0099 →
++0.0040 under the neutral wording, and `all_same_sign` is now **False**. The
+consistency was being produced by the presupposing text, which is exactly what
+the D088 edit removed. RQ2c moved with it: Δ 0.133 → **0.111**, 9.57× → **7.98×**
+the combined floor, with base-inside-own-floor and tuned-exceeds-own-floor
+unchanged. The post-training conclusion is intact and its effect size is smaller.
+
+**Finding 2 — `exceeds_floor` is a knife-edge boolean for two models and must not
+be reported as True/False.** pythia-410m's floor-relative gap went +0.0000060 →
+**−0.0000233** and the flag flipped True → False on a change of 3e-5. pythia-70m
+sits at +0.000064. Both are three orders of magnitude inside their own floors.
+A boolean that flips on the third decimal of a text edit elsewhere in the study
+is reporting rounding, not a property of the model. **Rule: where
+|floor_relative_gap| < 1e-4, report "at floor", not a True/False.** pythia-410m
+has now flipped twice (D087 and D089) and neither flip means anything.
+
+**Finding 3 — the pipeline does not cover six tables, and nothing detects it.**
+`scripts/run_full_pipeline.sh` regenerates the RQ1–RQ4, floor and summary tables.
+It does not regenerate `i3_gate_by_config.csv` (2026-11-03), `i1_gate_rerun.csv`
+(2026-11-03), `rq4_linkage.csv` (2026-10-29), `v_b_permutation_*.csv`,
+`v_c_paraphrase_*.csv` or `v_d_contamination.csv` (2026-11-07). All six describe a
+prompt set that no longer exists. `stamp()` writes only `verification_status`, so
+**none of these files carries the prompt hash** and nothing in the repo reports
+them as stale — the same class of defect as D086 and D087, now in the validity
+checks rather than the main tables. Not fixed in this entry; the fix is to stamp
+the hash into every written table and fail the hash check when a table's stamp
+matches no scored run.
+
+**Status unchanged where it matters.** Every table reads
+`NOT REPORTABLE — PROVISIONAL__author_reviewed_not_clinician_validated`.
+clinician-verified: 0/28.
+
+**Finding 3b — the same gap inside the floor file itself.** The staleness guard
+added in D087 checks only the score_key the run uses. `i1_matched_floor.csv` still
+carries `mean_logprob` and `sum_logprob` strata built from **two** Group 4
+vignettes, `G4-01` and the **rejected `G4-03`** — the exact condition D087 was
+written to catch, surviving in the two score keys the guard does not look at.
+The pmi analysis is unaffected. Anyone re-running the `mean_logprob` or
+`sum_logprob` sensitivity analysis (`results/tables__mean_logprob/`,
+`results/tables__sum_logprob/`) would gate it against a floor containing a
+clinical-review reject, and the guard would say nothing. Fix with the same change
+as Finding 3: check every score_key present in the floor file, not just the active one.
+
+## D090 — The option-length limit was never enforced against the models that matter, and the prompt hash was blind to it
+
+Started as "fix G4-10's token spread, it sets H3's margin." Measuring it found
+the warning had been understating the problem, and fixing it found that the
+study's staleness mechanism could not see the fix at all.
+
+**Fault 1 — one tokenizer was standing in for ten.** `check_templates.py`
+tokenized with `EleutherAI/pythia-70m` only. G4-10's option set measures:
+
+| tokenizer | spread | verdict under D035 (limit 2) |
+|---|---|---|
+| pythia-70m | 2 | WARN |
+| Qwen3-8B | **4** | **BLOCKER** |
+| OLMo-2-1124-7B | **4** | **BLOCKER** |
+
+`corticosteroid` costs 3 tokens on pythia and **6** on both 8B tokenizers, so
+the limit was never enforced against the three models whose nuisance floor that
+item sets — and G4-10 sets H3's equivalence margin (0.0540, against G4-02 =
+−0.0000 and G4-11 = −0.0017 in the same stratum, a 30× outlier). The warning had
+been standing in the log for days reading as cosmetic.
+
+Audited all 28 vignettes across all three scoring tokenizers: **G4-10 was the
+only blocker**; every other set is within the limit everywhere. The exposure was
+contained to exactly the item that was already flagged, which is luck, not design.
+
+**The new option set is spread 0 on all three tokenizers:**
+
+    Topical antibiotic cream / Systemic antibiotic therapy /
+    Topical steroid cream / Supportive care only            = 4 tok each
+
+Two strings changed: `Oral` → `Systemic` (NG153 contrasts topical with systemic
+treatment, so if anything the more faithful wording) and `corticosteroid` →
+`steroid`. Construct, reference answer and distractor directions untouched.
+
+**The gate now checks every tokenizer in the `audit` and `contrast` sections of
+`configs/models.yaml`,** deduped by tokenization behaviour so the seven-model
+Pythia ladder loads once. Including the **judge** was wrong and was caught
+immediately: Mistral-Small-24B raised a blocker on G1-02, which is within the
+limit on every model that actually scores it. D006 keeps the judge disjoint from
+the audited set; its tokenization is irrelevant to D035. `SCORING_SECTIONS` now
+states this, and prints a warning if either section goes missing.
+
+**Fault 2 — the prompt hash hashed `prompt_text` and nothing else.** This is the
+worse one, because the hash is what every other staleness check trusts.
+
+    prompt_text-only hash, before and after the G4-10 fix : b990f6e173b215e2
+                                                            b990f6e173b215e2
+    all-scored-fields hash (this entry)                   : baaa22996b4c7da9
+
+Rewriting what ten models score on 24 prompts left the hash **byte-identical**.
+`results_summary.py` would have reported tables built from the old option set as
+"matches a scored run", and the D086 drift gate — which also keyed on
+`prompt_text` — called the stale CSV current. Both are now one shared
+`src.vignettes.prompt_set_hash` over `prompt_text`, `question`,
+`answer_options`, `reference_answer` and `target_option`, imported by
+`src.score_outputs` and `scripts.results_summary` rather than re-implemented,
+because two copies of a hash are two hashes. Changing the definition invalidates
+every previously stored hash, which is correct and is resolved by the rescore.
+
+**Fault 3 — six tables were outside the pipeline, and nothing said so.**
+`i1_gate_rerun` and `i3_gate_by_config` (6 days), `v_b_permutation_*` and
+`v_c_paraphrase_*` (2 days), **`rq4_linkage` (11 days and several vignette
+rounds)**. All six are cheap re-analyses of rows the pipeline has just scored, so
+there was never a reason for them to be separate. `run_full_pipeline.sh` is now
+nine steps: step 8 runs `src.link_analysis`, `permutation_null.py`,
+`paraphrase_consistency.py`, `i1_regate.py` and `i3_analyse.py`; step 9 is the
+provenance audit. `i3_elicitation.py` (loads models, ~40 min) and
+`contamination_audit.py` (probes guideline spans over the network; its input is
+not the prompt set) stay out by name, with the reason in the script.
+
+**Fault 3b — the D087 floor guard only checked the active score key.**
+`i1_matched_floor.csv` still carried `mean_logprob` and `sum_logprob` strata
+built from two vignettes, one of them the **rejected G4-03** — the exact
+condition D087 exists to catch, alive in the keys the guard did not look at. A
+guard that checks only the happy path is decoration. Every key present is now
+reported, with an explicit "do not read `results/tables__<key>/`" warning.
+
+**The fix for all of it: tables state their own provenance.** `src/provenance.py`
+adds `write_table()`, which stamps `prompt_hash` into every results table, and
+`audit()`, which classifies each table as CURRENT, STALE, UNSTAMPED or exempt.
+All 15 write sites across `src/stats.py`, `src/link_analysis.py`,
+`scripts/matched_floor.py`, `i1_regate.py`, `i3_analyse.py`,
+`permutation_null.py`, `paraphrase_consistency.py` and `results_summary.py` go
+through it. Exemptions are listed with reasons: the RQ1 corpus tables and
+`v_d_contamination` are counts over corpora, and
+`rq0_instrument_validation__*` scores administrative stimuli with no vignette
+text at all — that is the point of D035, so the vignette set cannot stale them.
+
+**A limit of the stamp, stated rather than hidden.** `write_table()` stamps the
+prompt CSV as it stands *when the table is written*, not the hash of the rows the
+numbers were computed from. Running stats over stale raw output therefore
+produces a table stamped CURRENT whose numbers are not — which is precisely the
+state the repository was in while this entry was being written. The stamp cannot
+catch that alone, so `audit()` also checks the hash against every
+`results/raw*/manifest.json` and says plainly when the current prompt set **has
+never been scored**. The proper fix is to stamp the raw's own hash, and it is not
+done here.
+
+**The deck now reads the tables instead of quoting them.** `deck_src/figures.js`
+loads `results/tables/*.csv` at build time and **aborts the build** if any table
+carries a non-current hash, or if `_provenance.json` reports the current set as
+never scored. Every number on a results slide was previously typed in by hand,
+which is how the deck came to be showing pre-round-5 figures while the tables had
+moved on: the same drift as D086/D087, in a medium where nobody would catch it.
+It also carries the D089 rule — a floor-relative gap inside 1e-4 renders as
+"at floor", never as a True/False.
+
+## D091 — Reporting gets two tiers, by dated amendment rather than by quietly relaxing the rule
+
+**Decision.** `verification_status` now names a reporting tier instead of a
+single pass/fail. Tier 0: never reviewed, not citable. **Tier 1: every row
+author-reviewed against a quoted, first-hand guideline passage — numbers may be
+presented as results, carrying "pending clinical validation".** Tier 2:
+clinician verification on every row, required for anything public. The ECSE-557
+submission is made at tier 1; the paper will not be submitted below tier 2.
+
+**Who decided and on what.** The author, 2026-11-09, having been told the
+previous rule's consequence: that no number in the study could be presented in
+the submission. I had argued for keeping the single gate and labelling the deck
+provisional. That argument lost on a point I think is right — see reason 1.
+
+**Reason 1, the one that actually carries it.** The old rule conflated two
+different claims. "This is a property of these models under this instrument" and
+"this is clinically meaningful" have different evidentiary bars, and only the
+second needs a clinician. That 7 of 10 models fail the §6 positive control, and
+that an exact sign-flip test on k clusters cannot resolve below 2^-k, are facts
+about the apparatus. No clinician ruling makes them more or less true.
+
+**Reason 2 — author review earned the promotion, and there is evidence.** It was
+adopted as a stopgap (D064). Since then it has **rejected two vignettes outright**
+(G2-03, G4-03), **corrected a third that had reproduced the rejected row's exact
+defect** (G4-03b, D088), and caught **three guideline-citation errors that no
+validator detected** (D040, D085, D088). A step with that hit rate does not
+belong in the same bucket as "nobody has looked at this".
+
+**Reason 3 — the old gate produced the wrong incentive.** One all-or-nothing
+threshold that could not be met before the deadline meant the honest label and
+the useless label were the same label. That is how a provenance system stops
+being read, and this repository has three separate entries (D086, D087, D090)
+about exactly what happens when a signal stops being read.
+
+**What did NOT change, and it is the part that keeps this honest.**
+
+- **Tier 0 is untouched.** A row never checked against a first-hand quote is not
+  reportable at any tier. The amendment moves author review up one tier; it does
+  not make unreviewed text citable. The mixed cases in `src/stats.py` stay blocked.
+- **Tier is derived, not declared.** Computed from the rows at analysis time, so
+  no table can be promoted by anyone's intention or by a forgotten flag.
+- **The condition travels with the number, in three places rather than one:**
+  `scripts/results_summary.py` prints it, `src/plots.py` burns it into every
+  figure, and `deck_src/figures.js` renders `tierBanner` onto every results slide.
+- **The clinical review still happens and is reported either way.** If it changes
+  a number, the changed number is what goes in the paper and the before/after is
+  reported as a measured effect of verification — which was D043's argument for
+  running early in the first place.
+
+**Pre-committed falsification, recorded before the review happens.** If clinical
+review later **overturns a direction or a gate verdict**, tier 1 was too weak a
+bar for the claims made at it and this amendment was wrong. Review merely moving
+magnitudes does not vindicate it, because tier 1's claims are directional and
+floor-relative. Written in `docs/preregistration.md` §10 where a reader will find
+it without being pointed at it.
+
+**Not done quietly.** §9 of the preregistration said *"no result is reportable on
+an unverified item"*. That sentence is not edited. §10 is an append-only
+amendment that states what the document said before, what it says now, who
+decided, when, and that it was decided **after** seeing scores. A prereg changed
+by silent edit is worth nothing; changed by dated amendment it is still worth
+something.
+
+## D092 — Group 2 was counting one construct as two clusters
+
+**Found by the author** while reconciling a vignette count: 28 rows on disk where
+25 was remembered. The ledger explained the 3 (`G2-01b`, `G2-03b`, `G4-03b`,
+added in D085/D088) but showed something else — **`G2-01` and `G2-01b` were both
+live.** G2-01 was never rejected; G2-01b was added in sourcing round 6 because
+G2-01's source was weak.
+
+**Why that is a defect and not a duplicate row.** Both test the same construct: a
+pregnancy test before imaging. G2-01 says "imaging"; G2-01b names "CT of the
+lower abdomen and pelvis", the examination the ACR–SPR practice parameter lists
+by name. Group 2 was therefore running at **k = 4** over three constructs, and the
+cluster bootstrap resamples *vignettes* on the assumption they are independent
+draws. A resample drawing both was drawing one construct twice, so the Group 2
+interval and the gate margin were computed over an effective k smaller than the k
+they reported. This feeds the §6 positive control, RQ2b merging and RQ2c.
+
+**Decision: retire G2-01, keep G2-01b. Group 2 runs at k = 3.**
+
+`verification: retired_superseded` — a **new value**, deliberately not `rejected`.
+G2-01 passed author review; recording it as rejected would inflate the review's
+rejection count, and that count is evidence D091 leans on. `blocked_on` carries
+the full reason and the text is left unedited so the retirement is auditable.
+
+**The cost, stated rather than buried.** k = 3 makes Group 2's resolution limit
+**2^-3 = 0.125**, worse than the 0.0625 it reported at k = 4. That 0.0625 was the
+overstatement; 0.125 is what three constructs support. Retiring the row makes the
+number look weaker and the claim correct, which is the right direction for that
+trade.
+
+**Two bugs the change exposed, both caught by it rather than by review.**
+
+1. **The retired row was counted as unverified.** `retired_superseded` fell into
+   the checker's "AI-drafted and UNVERIFIED" bucket because it was in neither
+   REPORTABLE nor AUTHOR_REVIEWED, so the live set read as holding an unreviewed
+   vignette — which under D091 would have dropped the entire run from tier 1 to
+   **tier 0 on a bookkeeping error**. The denominator is now the live set
+   (`len - rejected - retired`).
+2. **The drift gate could not see the edit.** Retiring G2-01 changed only
+   `blocked_on`, which is not in `HASHED_FIELDS` (it changes which prompts exist,
+   not what a prompt says), and the D090 signature compared `HASHED_FIELDS`
+   alone — so it reported the stale CSV as current. The gate now compares
+   `blocked_on` and `analysis_ready` as well. **Third variant of the same
+   mechanism in three days** (D086 CSV drift, D090 hash blind to options, this).
+   The lesson is consistent: a staleness check is only as wide as its field list,
+   and every time that list was narrower than the thing it guarded, it passed.
+
+**Also fixed:** `scripts/i3_elicitation.py` still named `G2-01`, `G2-03` and
+`G4-03` in `TUNING_VIGNETTES` and `CLOZE` — two live items and three excluded
+ones, which would have run as a 5-item sweep and reported as one. Replaced with
+the live successors, plus an assert that the stem map and the vignette list agree,
+so the next divergence fails loudly. `PREGNANCY_FORBIDDEN` moved from G2-01 to
+G2-01b: the carve-out belongs to whichever row is live.
+
+**State:** 28 rows on disk — **25 live**, all author-reviewed; 2 rejected on
+clinical review; 1 retired as superseded. 624 analysis-ready prompts, hash
+`18f637733ab522a1`.

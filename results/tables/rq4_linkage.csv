@@ -1,9 +1,121 @@
-model_id,revision,model_corpus,skew_index,pairing,support,skew_variant,n_vignettes,spearman_rho,p_one_sided,n_signed,n_concordant,prop_concordant,p_binom_one_sided
-EleutherAI/pythia-70m,main,(none declared),v4_olmo-mix-1124_llama,unknown,all_powered,centred,9,-0.13333333333333333,0.6338162473818514,9,3,0.3333333333333333,0.91015625
-EleutherAI/pythia-70m,main,(none declared),v4_olmo-mix-1124_llama,unknown,all_powered,raw,9,-0.13333333333333333,0.6338162473818514,9,4,0.4444444444444444,0.74609375
-EleutherAI/pythia-70m,main,(none declared),v4_olmo-mix-1124_llama,unknown,common,centred,6,0.08571428571428573,0.43587172011661807,6,2,0.3333333333333333,0.890625
-EleutherAI/pythia-70m,main,(none declared),v4_olmo-mix-1124_llama,unknown,common,raw,6,0.08571428571428573,0.43587172011661807,6,4,0.6666666666666666,0.34375
-EleutherAI/pythia-70m,main,(none declared),v4_piletrain_llama,unknown,all_powered,centred,6,0.028571428571428574,0.4785772594752187,6,4,0.6666666666666666,0.34375
-EleutherAI/pythia-70m,main,(none declared),v4_piletrain_llama,unknown,all_powered,raw,6,0.028571428571428574,0.4785772594752187,6,4,0.6666666666666666,0.34375
-EleutherAI/pythia-70m,main,(none declared),v4_piletrain_llama,unknown,common,centred,6,0.028571428571428574,0.4785772594752187,6,4,0.6666666666666666,0.34375
-EleutherAI/pythia-70m,main,(none declared),v4_piletrain_llama,unknown,common,raw,6,0.028571428571428574,0.4785772594752187,6,4,0.6666666666666666,0.34375
+model_id,revision,model_corpus,skew_index,pairing,support,skew_variant,n_vignettes,spearman_rho,p_one_sided,n_signed,n_concordant,prop_concordant,p_binom_one_sided,prompt_hash
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,0.018181818181818184,0.4788426205108094,11,5,0.45454545454545453,0.7255859375,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,0.018181818181818184,0.4788426205108094,11,9,0.8181818181818182,0.03271484375,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,centred,8,-0.261904761904762,0.7345385692170996,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,raw,8,-0.261904761904762,0.7345385692170996,8,6,0.75,0.14453125,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,centred,11,0.06363636363636364,0.4262695362712609,11,5,0.45454545454545453,0.7255859375,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,raw,11,0.06363636363636364,0.4262695362712609,11,9,0.8181818181818182,0.03271484375,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,centred,8,-0.261904761904762,0.7345385692170996,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,raw,8,-0.261904761904762,0.7345385692170996,8,6,0.75,0.14453125,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,centred,8,-0.30952380952380953,0.772177554631209,8,2,0.25,0.96484375,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,raw,8,-0.30952380952380953,0.772177554631209,8,6,0.75,0.14453125,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,centred,8,-0.30952380952380953,0.772177554631209,8,2,0.25,0.96484375,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,raw,8,-0.30952380952380953,0.772177554631209,8,6,0.75,0.14453125,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,-0.24545454545454545,0.7665388165089918,11,4,0.36363636363636365,0.88671875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,-0.24545454545454545,0.7665388165089918,11,4,0.36363636363636365,0.88671875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,centred,8,-0.261904761904762,0.7345385692170996,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,raw,8,-0.261904761904762,0.7345385692170996,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,centred,11,-0.28181818181818186,0.7994275510197608,11,4,0.36363636363636365,0.88671875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,raw,11,-0.28181818181818186,0.7994275510197608,11,4,0.36363636363636365,0.88671875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,centred,8,-0.261904761904762,0.7345385692170996,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,raw,8,-0.261904761904762,0.7345385692170996,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,centred,8,-0.2380952380952381,0.714921839592116,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,raw,8,-0.2380952380952381,0.714921839592116,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,centred,8,-0.2380952380952381,0.714921839592116,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-160m,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,raw,8,-0.2380952380952381,0.714921839592116,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,-0.009090909090909092,0.5105817499279032,11,8,0.7272727272727273,0.11328125,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,-0.009090909090909092,0.5105817499279032,11,6,0.5454545454545454,0.5,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,centred,8,-0.261904761904762,0.7345385692170996,8,6,0.75,0.14453125,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,raw,8,-0.261904761904762,0.7345385692170996,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,centred,11,0.05454545454545456,0.4367232887616575,11,8,0.7272727272727273,0.11328125,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,raw,11,0.05454545454545456,0.4367232887616575,11,6,0.5454545454545454,0.5,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,centred,8,-0.261904761904762,0.7345385692170996,8,6,0.75,0.14453125,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,raw,8,-0.261904761904762,0.7345385692170996,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,centred,8,-0.3571428571428572,0.8074396782218719,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,raw,8,-0.3571428571428572,0.8074396782218719,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,centred,8,-0.3571428571428572,0.8074396782218719,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-1b,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,raw,8,-0.3571428571428572,0.8074396782218719,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,0.6272727272727273,0.019422626810176664,11,7,0.6363636363636364,0.2744140625,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,0.6272727272727273,0.019422626810176664,11,7,0.6363636363636364,0.2744140625,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,centred,8,0.6428571428571429,0.04277944550633664,8,6,0.75,0.14453125,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,raw,8,0.6428571428571429,0.04277944550633664,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,centred,11,0.6636363636363638,0.012992066959382745,11,7,0.6363636363636364,0.2744140625,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,raw,11,0.6636363636363638,0.012992066959382745,11,7,0.6363636363636364,0.2744140625,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,centred,8,0.6428571428571429,0.04277944550633664,8,6,0.75,0.14453125,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,raw,8,0.6428571428571429,0.04277944550633664,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,centred,8,0.5476190476190477,0.0800128212694483,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,raw,8,0.5476190476190477,0.0800128212694483,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,centred,8,0.5476190476190477,0.0800128212694483,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-2.8b,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,raw,8,0.5476190476190477,0.0800128212694483,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,-0.3090909090909091,0.8224857801492464,11,9,0.8181818181818182,0.03271484375,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,-0.3090909090909091,0.8224857801492464,11,5,0.45454545454545453,0.7255859375,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,centred,8,-0.19047619047619052,0.6742992521487594,8,7,0.875,0.03515625,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,raw,8,-0.19047619047619052,0.6742992521487594,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,centred,11,-0.23636363636363636,0.7579544188873016,11,9,0.8181818181818182,0.03271484375,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,raw,11,-0.23636363636363636,0.7579544188873016,11,5,0.45454545454545453,0.7255859375,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,centred,8,-0.19047619047619052,0.6742992521487594,8,7,0.875,0.03515625,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,raw,8,-0.19047619047619052,0.6742992521487594,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,centred,8,-0.261904761904762,0.7345385692170996,8,5,0.625,0.36328125,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,raw,8,-0.261904761904762,0.7345385692170996,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,centred,8,-0.261904761904762,0.7345385692170996,8,5,0.625,0.36328125,baaa22996b4c7da9
+EleutherAI/pythia-410m,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,raw,8,-0.261904761904762,0.7345385692170996,8,3,0.375,0.85546875,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,-0.21818181818181823,0.740375876222509,11,1,0.09090909090909091,0.99951171875,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,-0.21818181818181823,0.740375876222509,11,7,0.6363636363636364,0.2744140625,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,centred,8,-0.3333333333333334,0.7901234567901234,8,1,0.125,0.99609375,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,raw,8,-0.3333333333333334,0.7901234567901234,8,5,0.625,0.36328125,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,centred,11,-0.20909090909090913,0.7313895323943386,11,1,0.09090909090909091,0.99951171875,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,raw,11,-0.20909090909090913,0.7313895323943386,11,7,0.6363636363636364,0.2744140625,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,centred,8,-0.3333333333333334,0.7901234567901234,8,1,0.125,0.99609375,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,raw,8,-0.3333333333333334,0.7901234567901234,8,5,0.625,0.36328125,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,centred,8,-0.30952380952380953,0.772177554631209,8,1,0.125,0.99609375,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,raw,8,-0.30952380952380953,0.772177554631209,8,5,0.625,0.36328125,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,centred,8,-0.30952380952380953,0.772177554631209,8,1,0.125,0.99609375,baaa22996b4c7da9
+EleutherAI/pythia-6.9b,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,raw,8,-0.30952380952380953,0.772177554631209,8,5,0.625,0.36328125,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,-0.38181818181818183,0.876720212110515,11,5,0.45454545454545453,0.7255859375,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,-0.38181818181818183,0.876720212110515,11,5,0.45454545454545453,0.7255859375,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,centred,8,-0.30952380952380953,0.772177554631209,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_dclm-baseline_llama,crossed,common,raw,8,-0.30952380952380953,0.772177554631209,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,centred,11,-0.36363636363636365,0.8641812295030887,11,5,0.45454545454545453,0.7255859375,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,all_powered,raw,11,-0.36363636363636365,0.8641812295030887,11,5,0.45454545454545453,0.7255859375,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,centred,8,-0.30952380952380953,0.772177554631209,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_olmo-mix-1124_llama,crossed,common,raw,8,-0.30952380952380953,0.772177554631209,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,centred,8,-0.4047619047619048,0.8400556793855918,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_piletrain_llama,matched,all_powered,raw,8,-0.4047619047619048,0.8400556793855918,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,centred,8,-0.4047619047619048,0.8400556793855918,8,4,0.5,0.63671875,baaa22996b4c7da9
+EleutherAI/pythia-70m,main,v4_piletrain_llama,v4_piletrain_llama,matched,common,raw,8,-0.4047619047619048,0.8400556793855918,8,4,0.5,0.63671875,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_dclm-baseline_llama,unknown,all_powered,centred,11,0.48181818181818187,0.06671691912841438,11,8,0.7272727272727273,0.11328125,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_dclm-baseline_llama,unknown,all_powered,raw,11,0.48181818181818187,0.06671691912841438,11,6,0.5454545454545454,0.5,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_dclm-baseline_llama,unknown,common,centred,8,0.38095238095238104,0.17590627655878244,8,7,0.875,0.03515625,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_dclm-baseline_llama,unknown,common,raw,8,0.38095238095238104,0.17590627655878244,8,3,0.375,0.85546875,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_olmo-mix-1124_llama,unknown,all_powered,centred,11,0.5272727272727273,0.04778260917657712,11,8,0.7272727272727273,0.11328125,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_olmo-mix-1124_llama,unknown,all_powered,raw,11,0.5272727272727273,0.04778260917657712,11,6,0.5454545454545454,0.5,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_olmo-mix-1124_llama,unknown,common,centred,8,0.38095238095238104,0.17590627655878244,8,7,0.875,0.03515625,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_olmo-mix-1124_llama,unknown,common,raw,8,0.38095238095238104,0.17590627655878244,8,3,0.375,0.85546875,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_piletrain_llama,unknown,all_powered,centred,8,0.4761904761904762,0.11646776732504903,8,7,0.875,0.03515625,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_piletrain_llama,unknown,all_powered,raw,8,0.4761904761904762,0.11646776732504903,8,3,0.375,0.85546875,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_piletrain_llama,unknown,common,centred,8,0.4761904761904762,0.11646776732504903,8,7,0.875,0.03515625,baaa22996b4c7da9
+Qwen/Qwen3-8B,main,(none declared),v4_piletrain_llama,unknown,common,raw,8,0.4761904761904762,0.11646776732504903,8,3,0.375,0.85546875,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,0.43636363636363645,0.08983243829000558,11,4,0.36363636363636365,0.88671875,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,0.43636363636363645,0.08983243829000558,11,10,0.9090909090909091,0.005859375,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_dclm-baseline_llama,crossed,common,centred,8,0.2380952380952381,0.2850781604078841,8,2,0.25,0.96484375,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_dclm-baseline_llama,crossed,common,raw,8,0.2380952380952381,0.2850781604078841,8,8,1.0,0.00390625,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_olmo-mix-1124_llama,matched,all_powered,centred,11,0.36363636363636365,0.13581877049691124,11,4,0.36363636363636365,0.88671875,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_olmo-mix-1124_llama,matched,all_powered,raw,11,0.36363636363636365,0.13581877049691124,11,10,0.9090909090909091,0.005859375,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_olmo-mix-1124_llama,matched,common,centred,8,0.2380952380952381,0.2850781604078841,8,2,0.25,0.96484375,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_olmo-mix-1124_llama,matched,common,raw,8,0.2380952380952381,0.2850781604078841,8,8,1.0,0.00390625,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_piletrain_llama,crossed,all_powered,centred,8,0.261904761904762,0.26546143078290046,8,4,0.5,0.63671875,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_piletrain_llama,crossed,all_powered,raw,8,0.261904761904762,0.26546143078290046,8,8,1.0,0.00390625,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_piletrain_llama,crossed,common,centred,8,0.261904761904762,0.26546143078290046,8,4,0.5,0.63671875,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B,main,v4_olmo-mix-1124_llama,v4_piletrain_llama,crossed,common,raw,8,0.261904761904762,0.26546143078290046,8,8,1.0,0.00390625,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_dclm-baseline_llama,crossed,all_powered,centred,11,0.7818181818181819,0.002236581126391521,11,8,0.7272727272727273,0.11328125,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_dclm-baseline_llama,crossed,all_powered,raw,11,0.7818181818181819,0.002236581126391521,11,6,0.5454545454545454,0.5,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_dclm-baseline_llama,crossed,common,centred,8,0.7857142857142858,0.01040756362676264,8,6,0.75,0.14453125,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_dclm-baseline_llama,crossed,common,raw,8,0.7857142857142858,0.01040756362676264,8,4,0.5,0.63671875,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_olmo-mix-1124_llama,matched,all_powered,centred,11,0.8000000000000002,0.0015552141551929226,11,8,0.7272727272727273,0.11328125,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_olmo-mix-1124_llama,matched,all_powered,raw,11,0.8000000000000002,0.0015552141551929226,11,6,0.5454545454545454,0.5,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_olmo-mix-1124_llama,matched,common,centred,8,0.7857142857142858,0.01040756362676264,8,6,0.75,0.14453125,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_olmo-mix-1124_llama,matched,common,raw,8,0.7857142857142858,0.01040756362676264,8,4,0.5,0.63671875,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_piletrain_llama,crossed,all_powered,centred,8,0.8333333333333335,0.005087770061728379,8,8,1.0,0.00390625,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_piletrain_llama,crossed,all_powered,raw,8,0.8333333333333335,0.005087770061728379,8,4,0.5,0.63671875,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_piletrain_llama,crossed,common,centred,8,0.8333333333333335,0.005087770061728379,8,8,1.0,0.00390625,baaa22996b4c7da9
+allenai/OLMo-2-1124-7B-Instruct,main,v4_olmo-mix-1124_llama,v4_piletrain_llama,crossed,common,raw,8,0.8333333333333335,0.005087770061728379,8,4,0.5,0.63671875,baaa22996b4c7da9

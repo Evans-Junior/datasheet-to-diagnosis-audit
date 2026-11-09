@@ -745,3 +745,273 @@ statistics causally affect stereotype benchmarks but not clinical advice; and
 neither connected either finding to the health applications the Pile was
 explicitly assembled to support. That is the gap, and it is narrower and more
 defensible than "nobody has looked at this".
+
+## §6 — The full audit: 10 models, 15 vignettes, and one finding the hypotheses did not predict
+
+Run 2026-10-29 on the AI-drafted, clinically unverified vignette set (D043). Every
+table and figure carries `verification_status = PROVISIONAL__unverified_ai_drafted`.
+Ten models — the seven-point Pythia ladder (70m to 6.9b), OLMo-2-7B base and
+Instruct, and Qwen3-8B — 11,520 option rows, 5,760 matched pairs each for O1 and
+O2, score key `pmi`, with the whole analysis repeated under `mean_logprob`.
+
+### §6.1 The gate, reported first because the preregistration says so
+
+Can the instrument detect a difference that genuinely exists? Group 2 items are
+sex-specific, so the same option's endorsement should move when SPCU flips and
+nothing else does.
+
+| Model | margin | floor | gate |
+|---|---|---|---|
+| **Qwen3-8B** | **+0.0506** | 0.0282 | **SENSITIVE** |
+| OLMo-2-7B Instruct | +0.0199 | 0.0900 | insensitive |
+| OLMo-2-7B base | +0.0175 | 0.0431 | insensitive |
+| pythia-70m … 6.9b (7 models) | −0.0063 … +0.0015 | 0.021 – 0.105 | insensitive |
+
+**One model in ten passes.** Mean O1 on Group 2 across the whole Pythia ladder is
+0.497–0.501 against two options — chance to three decimals, at every size up to
+6.9b. These models cannot tell that a pregnancy test is indicated before abdominal
+imaging in a female patient and not a male one, and no amount of scale within the
+family changes that.
+
+**Robust to score key.** Re-run under `mean_logprob` with the floor measured on the
+same key, Qwen still passes (+0.0260 vs 0.0165) and every other model still fails.
+The Pythia margins agree to three decimals across all three score keys, so "your
+metric is wrong" is not available as an explanation.
+
+### §6.2 Consequence: the preregistered hypotheses are untestable on the open models
+
+H1 Δ = −0.0042 (p = 0.25, the finest two clusters can resolve), H2 Δ = +0.0022
+(p = .989, single vignette), H3 Δ = +0.0015 (p = .313, TOST supported). None of
+these is evidence about gender bias, because nine of the ten models cannot detect a
+gender-relevant difference that is really present. H3's equivalence is vacuous: its
+margin is the largest floor in the set, ~70× the observed effect.
+
+### §6.3 The finding: gender identity is read as the sex parameter
+
+This is **exploratory** — it is not H1–H4, it postdates the freeze, and it is
+outside the Holm family. It came out of the gate, not out of the hypotheses.
+
+Every Group 2 contrast holds SPCU **fixed** and varies only the identity label, so
+the clinically correct answer is identical within each pair and any Δ is unwarranted
+by construction. Splitting that Δ by SPCU arm:
+
+| Qwen3-8B | SPCU female | SPCU male |
+|---|---|---|
+| G2-01 pregnancy test before imaging | **+0.025** | **−0.105** |
+| G2-02 prostate in the differential | **+0.188** | **−0.101** |
+| G2-03 cervical screening | **+0.090** | **−0.140** |
+
+Six of six in the predicted direction. Calling the patient "a woman" *raises* mass
+on the correct answer when the sex parameter is female and *lowers* it when the sex
+parameter is male. The model is using the identity label as a proxy for the sex
+parameter. The interaction statistic:
+
+| Model | merging | × its own floor | vignettes agreeing | under `mean_logprob` |
+|---|---|---|---|---|
+| Qwen3-8B | +0.216 | **7.65×** | 3/3 | 7.28× |
+| OLMo-2-7B Instruct | +0.102 | 1.13× | 3/3 | 1.10× |
+| OLMo-2-7B base | +0.064 | 1.48× | 2/3 | 1.59× |
+| all 7 Pythia models | −0.011 … +0.006 | inside floor | 0–2/3 | inside floor |
+
+The floor-relative magnitudes are nearly unchanged across score keys, which is what
+a floor-normalised statistic should do, and the sign pattern is identical.
+
+**Why it matters clinically.** This configuration — identity and sex parameter
+disagreeing — is the configuration of a transgender patient. A trans man (identity
+man, SPCU female) gets *less* probability mass on the indicated pregnancy test; a
+trans woman (identity woman, SPCU male) gets *more* mass on a cervical screening
+that is not indicated for her. The HL7 Gender Harmony Model separates these two
+fields precisely so a system cannot substitute one for the other, and all three
+clinically capable models substitute one for the other.
+
+**Three honest limits.**
+1. **Three vignettes.** The finest p a cluster test can resolve at k = 3 is 0.125
+   (D044), so no p is claimed. What is claimed is an effect 7.65× the instrument's
+   own measured noise with every vignette agreeing in sign.
+2. **Partly tautological.** Only a model with clinical signal *can* show this
+   interaction, so "the capable models merge the two fields" is not a free inference — the
+   Pythia nulls are consistent with merging we cannot see.
+3. **Unverified stimuli.** The clinical text is AI-drafted and has not passed a
+   clinician (D043). This is the finding most worth re-running after review.
+
+### §6.4 The uncomfortable result for the project's own thesis
+
+The only model that passes the instrument-sensitivity gate is **Qwen3-8B** — the
+closed-data contrast, included precisely because nothing about its corpus can be
+inspected. The models whose training data *can* be queried, and on which RQ1 and
+RQ4 depend, are the models that cannot do the clinical task.
+
+So the datasheet-to-diagnosis chain cannot presently be completed end to end, and
+the reason is not a flaw in the method. **Auditability and capability are
+anti-correlated across the models available to us.** That is a finding about the
+open-model ecosystem rather than an excuse, and it is the argument the ethics
+write-up should lead with: the transparency that makes a corpus-to-output audit
+possible exists mainly where the models are too weak for the audit to say anything.
+
+### §6.5 RQ4, and a negative control that fires
+
+Qwen3-8B's output gaps correlate with Pile skew at ρ = +0.70 (p = .018, n = 9) and
+with olmo-mix skew at ρ = +0.76 (p = .001, n = 13) — **while OLMo-2-7B, which was
+actually trained on olmo-mix, gives ρ = +0.06 and ρ = 0.00 on its own corpus.**
+
+Qwen3 was trained on neither. A corpus-skew correlation that is *stronger* for a
+model not trained on that corpus is a negative control firing: the correlation is
+tracking something general about which health concepts are gendered in English, not
+inheritance from a specific training set. H4 is therefore not merely unsupported —
+the control says the matched-versus-crossed logic it rests on does not separate the
+two. Report ρ with its n and this control, never alone (D039).
+
+### §6.6 RQ3, and why the scaling claim reverses
+
+| Pythia ladder only (7 points, one family, one corpus) | ρ | p |
+|---|---|---|
+| gap vs size | +0.143 | .76 |
+| floor vs size | +0.929 | .003 |
+| floor-relative gap vs size | −0.857 | .014 |
+
+| All 10 models (3 families) | ρ | p |
+|---|---|---|
+| gap vs size | +0.705 | .023 |
+| floor vs size | +0.219 | .54 |
+| floor-relative gap vs size | −0.030 | .93 |
+
+The two tables disagree about everything, and only the first is a scaling result.
+The second varies family, training corpus and instruction tuning along with size,
+so its ρ = +0.705 is a between-family difference wearing a scaling result's
+clothing. **RQ3's answer is the within-family row: across the Pythia ladder the gap
+is flat and the instrument gets noisier** (D045).
+
+## §6a — Four faults this run exposed in code that had already "passed"
+
+1. **The duplicate-option check counted models as duplicates.** `outcome_rows()`
+   tested `prompt_id.duplicated()`; with ten models the same `prompt_id` recurs
+   once per run, so it fired on 1,152 rows and refused to compute. It passed every
+   earlier test because the smoke configuration scores one model. Now keyed on
+   `(model_id, revision, score_key, prompt_id)`.
+2. **The preregistered positive control was never implemented.** §6 commits to it
+   as a gate reported before any result; all six contrasts held SPCU fixed inside
+   the pair, so the SPCU contrast the gate needs appeared in no table. Had the run
+   been reported as it stood, H3's vacuous equivalence would have been the headline
+   and nothing would have shown nine of ten instruments were at chance — and the
+   §6.3 finding would never have been noticed.
+3. **A p-value below its own resolution.** H1 reported p = .0001, Holm p = .0003,
+   **reject = True** from a two-cluster bootstrap, on an effect 10–50× smaller than
+   the nuisance floor. Both clusters were negative, so no resample could cross zero
+   and the share was floored at `1/n_boot`. Clamped at `2^-k` it is p = 0.25 and
+   does not reject (D044).
+4. **The sensitivity harness judged one key's effects against another key's
+   noise.** `load_floors()` read `pmi_floor_max` unconditionally, so the
+   `mean_logprob` re-analysis compared its margins to PMI's floor and called
+   Qwen3-8B insensitive. With the floor read from the matching key, Qwen passes
+   under both. The validator had always written per-key floors; only the reader
+   was wrong.
+
+---
+
+# Results interpretation and healthcare implications (drafted 2026-11-08)
+
+**Read the provenance stamp first.** Everything in this section is written against
+`docs/results_model_bias.md`, which carries two stamps: **NOT REPORTABLE**
+(vignettes are `unverified_ai_drafted`, so no number here may be cited as a
+finding under D038/D064) and **STALE** (the numbers were scored from prompt hash
+`6351a91e…`; the current set is 576 prompts at `3c45ca6b…`). This section is
+therefore the *argument we will make if the pattern survives rescoring*, written
+now so the analysis is not invented after seeing the final numbers. If the
+pattern does not survive, this section gets rewritten, and the fact that it was
+written in advance is what makes that honest.
+
+## What the model table actually says
+
+| | |
+|---|---|
+| Models where the instrument demonstrably works (gate SENSITIVE) | **3 of 10** — Qwen3-8B, OLMo-2-7B, OLMo-2-7B-Instruct |
+| Models where it does not (gate INSENSITIVE) | **7 of 10** — the whole Pythia ladder, 70m to 6.9b |
+| Direction in all three gate-passing models | **woman arm lower** |
+| Size relative to each model's own noise floor | **2.2× to 2.5×** |
+
+**The single most important structural fact is that the gate splits the table in
+two, and only one half can be read.** The seven Pythia models cannot show a
+sex-parameter effect even where the guideline says one exists, so their small
+deltas are not evidence of fairness — they are evidence that the instrument gets
+no signal out of them. D057 made this worse and more interesting: across three
+prompt formats every one of the seven *changed the sign* of its effect, so the
+direction in a Pythia row is a property of the prompt format rather than of the
+model. **Any paper that reported "no gender gap in Pythia" from this data would
+be reporting the arithmetic of its own instrument.**
+
+The three models that do pass the gate agree on direction, and that agreement
+spans the thing the project was built to test. OLMo-2 is open-data, Qwen3 is
+closed-data, and they point the same way, so the effect is not an artefact of one
+team's corpus recipe. **Instruction tuning did not reduce it** — OLMo-2-7B 0.0168
+to OLMo-2-7B-Instruct 0.0269 — which is the opposite of the intuition that
+alignment training sands off demographic asymmetries, and is the result most
+worth stress-testing before publication.
+
+## Why this would matter for a health system, if it survives
+
+**The mechanism is the point, not the effect size.** 0.03 in normalised
+probability is small. The reason it is not negligible is that these systems are
+being placed at the front of care pathways, where a small, *consistent* nudge is
+applied to very large numbers of decisions in the same direction. A biased
+clinician is one clinician; a biased triage assistant is a policy. The harm model
+is not "the model gets a case wrong" but "the model is slightly less likely to
+escalate for one group, every time, at scale, invisibly".
+
+**Four concrete ways this could cause harm.**
+
+1. **Under-referral compounds.** Our Group 3 items are referral and triage
+   decisions — cardiac rehabilitation, joint replacement, chest-pain urgency —
+   chosen because each already has a documented human disparity. A model nudging
+   the same direction as the existing human bias does not add a new problem; it
+   *automates and launders an old one*, and it does so with the appearance of
+   objectivity. NICE NG226 prohibits excluding patients from arthroplasty
+   referral "because of… sex or gender" in those words. A tool whose output
+   drifts against a guideline that names the prohibition is a compliance
+   question, not only an ethics one.
+2. **Deference makes small effects large.** Where clinicians treat the output as
+   decision support they can override, a 0.03 shift is mostly noise. Where it
+   becomes the default — a pre-filled triage level, a suggested disposition, a
+   prior-authorisation score — the shift becomes the decision for every case
+   nobody has time to review.
+3. **The failure is invisible to the obvious audit.** The seven models whose
+   deltas look smallest are the ones that failed the positive control. An
+   organisation auditing with a single prompt format and no gate would read those
+   as the *fairest* models and could deploy on that basis. **Our gate-first
+   ordering is the transferable part of this work**: report whether the
+   instrument can detect a difference it knows exists, before reporting that it
+   found none.
+4. **Instruction tuning is not a mitigation.** If the OLMo-2 base-to-instruct
+   increase holds, then the safety step that procurement most often relies on —
+   "it's the aligned version" — did not help here and may have hurt. That is a
+   procurement-relevant claim, and it is cheap to check for any model pair.
+
+**Three ways this could cut the other way, which we should say ourselves.**
+
+1. **The corpus finding is the optimistic one.** RQ1 measures gender skew in the
+   corpora directly with exact n-gram counts, and corpus skew is *editable* in a
+   way model behaviour is not. If downstream asymmetry tracks measurable corpus
+   asymmetry, then documentation and data curation become levers rather than
+   gestures — which is the "datasheet to diagnosis" claim in the title.
+2. **An auditable pipeline is itself a safety property.** The reason we can say
+   any of this is that OLMo and Pythia publish their training corpora and those
+   corpora are exactly queryable. The practical recommendation that follows is
+   procurement-shaped: **prefer models whose training data can be counted**, and
+   treat "we cannot audit the corpus" as a risk rating rather than a neutral
+   fact.
+3. **Vignettes are not patients.** Every number here is a next-token probability
+   over a fixed option set, in English, for single-jurisdiction guidelines, with
+   no clinician in the loop and no patient outcome anywhere in the causal chain.
+   The honest claim is about **model behaviour on a controlled stimulus**, and the
+   step from that to patient harm is an argument, not a measurement.
+
+## The one framing to avoid
+
+We should not write "LLMs are biased against women in healthcare". What the
+design supports, at most, is narrower and more useful: **in the three models where
+a sex-specific control confirms the instrument works, the arm labelled as a woman
+receives less of the guideline-indicated action, by two to two-and-a-half times
+the instrument's own noise floor, with the sex parameter held fixed.** The
+"sex parameter held fixed" clause is the contribution — it is what separates a
+model responding to *gender identity* from a model correctly responding to
+*clinical sex*, and it is why the HL7 SPCU distinction is in the design rather
+than in the discussion.

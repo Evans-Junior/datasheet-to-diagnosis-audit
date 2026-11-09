@@ -50,7 +50,7 @@ document. The two rows that were outstanding closed on 2026-10-27.
 | G1-04 | Cellulitis | [doi.org/10.1093/cid/ciu296](https://doi.org/10.1093/cid/ciu296) `library` | Confirm you land on the **full guideline** (pp e10–e52), not the executive summary (`ciu444`, pp 147–159). Find the recommendation for uncomplicated non-purulent cellulitis. |
 | G1-05 | Type 2 diabetes | [doi.org/10.1016/j.jcjd.2024.08.002](https://doi.org/10.1016/j.jcjd.2024.08.002) `library` · [Diabetes Canada Ch13 PDF](https://guidelines.diabetes.ca/GuideLines/media/Docs/cpg/Ch13-Pharmacologic-Glycemic-Management-of-Type-2-Diabetes-in-Adults.pdf) `free` | **Check the free PDF's version** — it may be the 2018/2020 chapter, while the 2024 update (Shah et al.) is current. Find the first-line agent recommendation. |
 | G2-02 | Prostate | [PMC9054332](https://pmc.ncbi.nlm.nih.gov/articles/PMC9054332/) `free` | **Decision needed, not just confirmation.** See the warning below. |
-| G2-03 | Cervical screening | [PMC3537778](https://pmc.ncbi.nlm.nih.gov/articles/PMC3537778/) `free` · [CTFPHC clinician FAQ](https://canadiantaskforce.ca/tools-resources/cervical-cancer-2/clinician-faqs/) `free` | Confirm the screening interval and age band for a 34-year-old. **Dated 2013** — check the CTFPHC page for an update in progress, and note that provinces have moved to HPV-based primary screening. |
+| G2-03 | Cervical screening | [USPSTF final recommendation](https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/cervical-cancer-screening) `free` · [doi.org/10.1001/jama.2018.10897](https://doi.org/10.1001/jama.2018.10897) `library` | **RE-SOURCED 2026-11-07 (D074).** The CTFPHC 2013 guideline is withdrawn as this row's source: the Task Force **ended its mandate on 31 March 2026** and its site is archived and unmaintained. Confirm the **Grade A** statement for ages 30–65 and the **Grade D** statement on hysterectomy with removal of the cervix. Note the page's "Update in Progress" banner. |
 | G3-01 | Acute pain | [arXiv:2108.01764](https://arxiv.org/abs/2108.01764) · [PhysioNet v1.0.0](https://physionet.org/content/q-pain/1.0.0/) `free` | Read §Methods for how their clinician validation was done — we **inherit** it, so we need to describe it accurately. Download the 5 CSVs (CC BY-SA 4.0, no DUA). |
 | G3-02 | Chest pain — cardiac triage | [ahajournals.org/doi/10.1161/CIR.0000000000001029](https://www.ahajournals.org/doi/10.1161/CIR.0000000000001029) `free` (blocks scripts, opens in a browser) | Find the recommendation for initial evaluation of acute chest pain, with its **COR and LOE**. Note: this guideline *does* discuss sex — read that section carefully, it may affect whether G3-02 is a valid Group 3 vignette. |
 | G3-04 | ADHD | [NICE NG87](https://www.nice.org.uk/guidance/ng87) `free` | Find the numbered recommendation on referral for specialist assessment in adults. Note the review date on the page. Also compare against CADDRA (Canadian) — jurisdiction matters. |
@@ -148,3 +148,39 @@ nothing could have been quoted from them without OCR — and the one claim taken
 that pair *was* wrong (the PMC paraphrase). Browser screenshots of secondary sources
 are not evidence; they were scaffolding while the publisher returned 403, and they
 should not have outlived it.
+
+
+---
+
+## Addendum, 2026-11-07 — round 3 re-sourcings, and what in this file is stale
+
+This file was written as a reading list before the Group 4 floor set existed, so it
+has no rows for `G4-03` onward. The authoritative per-row source record is
+**`docs/vignette_sources.md`**, and the reviewer-facing instrument is
+**`Vignette_Review_Datasheet_to_Diagnosis.xlsx`**, which is generated from it by
+`scripts/build_review_workbook.py`. Use those two. This file is kept for the
+reading notes in it, not as a citation list.
+
+**Sources added in round 3** (all free, all in `papers/`):
+
+| Row | Source | Open at |
+|---|---|---|
+| `G2-03` | USPSTF, *Cervical Cancer: Screening*, 2018 — Grade A / Grade D | [uspreventiveservicestaskforce.org](https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/cervical-cancer-screening) |
+| `G4-05` | NICE **NG141** 1.1.2, swab for microbiological testing | [nice.org.uk/guidance/ng141](https://www.nice.org.uk/guidance/ng141) |
+| `G4-11` | NICE **NG240** 1.6.5, "give ceftriaxone" | [nice.org.uk/guidance/ng240](https://www.nice.org.uk/guidance/ng240) |
+
+**Two things in this file are resolved and should not be acted on:**
+
+1. **"G2-02 is contested, which breaks it as a control."** Resolved by **D019**: the
+   row was moved off PSA screening onto the CUA *Male LUTS/BPH* guideline
+   (Elterman et al., CUAJ 2022;16(8), doi:10.5489/cuaj.7906), whose "mandatory"
+   evaluation is uncontested and which states the SPCU criterion outright
+   (D034). The PSA-screening disagreement is no longer load-bearing.
+2. **The CTFPHC links throughout.** The issuing body no longer exists (see the
+   G2-03 row above). Anything still citing it needs re-sourcing, not re-reading.
+
+**Access notes worth keeping:** `nice.org.uk` returns HTTP 403 to default automated
+fetchers but HTTP 200 to a plainly identified client, so the guideline PDFs are
+retrievable. `cks.nice.org.uk` is different — it is **geo-restricted** ("CKS via
+NICE is only available to eligible users within the UK") and cannot be used as a
+source here at all. `ahajournals.org` blocks scripts and needs a browser.

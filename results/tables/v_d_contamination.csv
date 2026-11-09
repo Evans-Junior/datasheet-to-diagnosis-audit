@@ -1,0 +1,55 @@
+index,vignette,guideline,span_kind,span,n_tokens_approx,count,approx,present,query_failed
+v4_piletrain_llama,G2-01,NICE NG126 (ectopic pregnancy and miscarriage),long,think about offering a pregnancy test even when symptoms are non-specific,11,0,False,False,False
+v4_piletrain_llama,G2-01,NICE NG126 (ectopic pregnancy and miscarriage),short,offering a pregnancy test,4,7,False,True,False
+v4_piletrain_llama,G2-01b,NICE NG126 scope statement,long,"women, trans men and non-binary people with complications",8,0,False,False,False
+v4_piletrain_llama,G2-01b,NICE NG126 scope statement,short,trans men and non-binary people,5,115,False,True,False
+v4_piletrain_llama,G1-01,CAP guideline (outpatient antibiotic choice),long,we recommend amoxicillin 1 g three times daily,8,0,False,False,False
+v4_piletrain_llama,G1-01,CAP guideline (outpatient antibiotic choice),short,amoxicillin 1 g three times daily,6,7,False,True,False
+v4_piletrain_llama,G4-03,GAS pharyngitis guideline,long,the clinical features alone do not reliably discriminate,8,7,False,True,False
+v4_piletrain_llama,G4-03,GAS pharyngitis guideline,short,rapid antigen detection test,4,624,False,True,False
+v4_piletrain_llama,G2-03,Cervical screening guideline,long,we recommend routine screening for cervical cancer every 3 years,10,0,False,False,False
+v4_piletrain_llama,G2-03,Cervical screening guideline,short,routine screening for cervical cancer,5,73,False,True,False
+v4_piletrain_llama,G4-02,Acute conjunctivitis guideline,long,Indiscriminate use of topical antibiotics or corticosteroids should be avoided,10,1,False,True,False
+v4_piletrain_llama,G4-02,Acute conjunctivitis guideline,short,mild bacterial conjunctivitis is likely to be self-limited,8,0,False,False,False
+v4_piletrain_llama,G3-02,AHA/ACC chest pain guideline,long,an ECG should be acquired and reviewed for STEMI within 10 minutes of arrival,14,0,False,False,False
+v4_piletrain_llama,G3-02,AHA/ACC chest pain guideline,short,reviewed for STEMI within 10 minutes,6,0,False,False,False
+v4_piletrain_llama,G3-02b,AHA/ACC chest pain guideline (troponin),long,cTn should be measured as soon as possible after presentation,10,0,False,False,False
+v4_piletrain_llama,G3-02b,AHA/ACC chest pain guideline (troponin),short,measured as soon as possible after presentation,7,0,False,False,False
+v4_piletrain_llama,NEGATIVE_CONTROL,not from any guideline,long,the patient was advised to return if symptoms worsened,9,1,False,True,False
+v4_piletrain_llama,NEGATIVE_CONTROL,not from any guideline,short,advised to return if symptoms,5,20,False,True,False
+v4_olmo-mix-1124_llama,G2-01,NICE NG126 (ectopic pregnancy and miscarriage),long,think about offering a pregnancy test even when symptoms are non-specific,11,0,False,False,False
+v4_olmo-mix-1124_llama,G2-01,NICE NG126 (ectopic pregnancy and miscarriage),short,offering a pregnancy test,4,152,False,True,False
+v4_olmo-mix-1124_llama,G2-01b,NICE NG126 scope statement,long,"women, trans men and non-binary people with complications",8,0,False,False,False
+v4_olmo-mix-1124_llama,G2-01b,NICE NG126 scope statement,short,trans men and non-binary people,5,2694,False,True,False
+v4_olmo-mix-1124_llama,G1-01,CAP guideline (outpatient antibiotic choice),long,we recommend amoxicillin 1 g three times daily,8,0,False,False,False
+v4_olmo-mix-1124_llama,G1-01,CAP guideline (outpatient antibiotic choice),short,amoxicillin 1 g three times daily,6,63,False,True,False
+v4_olmo-mix-1124_llama,G4-03,GAS pharyngitis guideline,long,the clinical features alone do not reliably discriminate,8,7,False,True,False
+v4_olmo-mix-1124_llama,G4-03,GAS pharyngitis guideline,short,rapid antigen detection test,4,1880,False,True,False
+v4_olmo-mix-1124_llama,G2-03,Cervical screening guideline,long,we recommend routine screening for cervical cancer every 3 years,10,0,False,False,False
+v4_olmo-mix-1124_llama,G2-03,Cervical screening guideline,short,routine screening for cervical cancer,5,335,False,True,False
+v4_olmo-mix-1124_llama,G4-02,Acute conjunctivitis guideline,long,Indiscriminate use of topical antibiotics or corticosteroids should be avoided,10,0,False,False,False
+v4_olmo-mix-1124_llama,G4-02,Acute conjunctivitis guideline,short,mild bacterial conjunctivitis is likely to be self-limited,8,0,False,False,False
+v4_olmo-mix-1124_llama,G3-02,AHA/ACC chest pain guideline,long,an ECG should be acquired and reviewed for STEMI within 10 minutes of arrival,14,0,False,False,False
+v4_olmo-mix-1124_llama,G3-02,AHA/ACC chest pain guideline,short,reviewed for STEMI within 10 minutes,6,0,False,False,False
+v4_olmo-mix-1124_llama,G3-02b,AHA/ACC chest pain guideline (troponin),long,cTn should be measured as soon as possible after presentation,10,0,False,False,False
+v4_olmo-mix-1124_llama,G3-02b,AHA/ACC chest pain guideline (troponin),short,measured as soon as possible after presentation,7,0,False,False,False
+v4_olmo-mix-1124_llama,NEGATIVE_CONTROL,not from any guideline,long,the patient was advised to return if symptoms worsened,9,3,False,True,False
+v4_olmo-mix-1124_llama,NEGATIVE_CONTROL,not from any guideline,short,advised to return if symptoms,5,64,False,True,False
+v4_dclm-baseline_llama,G2-01,NICE NG126 (ectopic pregnancy and miscarriage),long,think about offering a pregnancy test even when symptoms are non-specific,11,0,False,False,False
+v4_dclm-baseline_llama,G2-01,NICE NG126 (ectopic pregnancy and miscarriage),short,offering a pregnancy test,4,149,False,True,False
+v4_dclm-baseline_llama,G2-01b,NICE NG126 scope statement,long,"women, trans men and non-binary people with complications",8,0,False,False,False
+v4_dclm-baseline_llama,G2-01b,NICE NG126 scope statement,short,trans men and non-binary people,5,2675,False,True,False
+v4_dclm-baseline_llama,G1-01,CAP guideline (outpatient antibiotic choice),long,we recommend amoxicillin 1 g three times daily,8,0,False,False,False
+v4_dclm-baseline_llama,G1-01,CAP guideline (outpatient antibiotic choice),short,amoxicillin 1 g three times daily,6,50,False,True,False
+v4_dclm-baseline_llama,G4-03,GAS pharyngitis guideline,long,the clinical features alone do not reliably discriminate,8,0,False,False,False
+v4_dclm-baseline_llama,G4-03,GAS pharyngitis guideline,short,rapid antigen detection test,4,1383,False,True,False
+v4_dclm-baseline_llama,G2-03,Cervical screening guideline,long,we recommend routine screening for cervical cancer every 3 years,10,0,False,False,False
+v4_dclm-baseline_llama,G2-03,Cervical screening guideline,short,routine screening for cervical cancer,5,287,False,True,False
+v4_dclm-baseline_llama,G4-02,Acute conjunctivitis guideline,long,Indiscriminate use of topical antibiotics or corticosteroids should be avoided,10,0,False,False,False
+v4_dclm-baseline_llama,G4-02,Acute conjunctivitis guideline,short,mild bacterial conjunctivitis is likely to be self-limited,8,0,False,False,False
+v4_dclm-baseline_llama,G3-02,AHA/ACC chest pain guideline,long,an ECG should be acquired and reviewed for STEMI within 10 minutes of arrival,14,0,False,False,False
+v4_dclm-baseline_llama,G3-02,AHA/ACC chest pain guideline,short,reviewed for STEMI within 10 minutes,6,0,False,False,False
+v4_dclm-baseline_llama,G3-02b,AHA/ACC chest pain guideline (troponin),long,cTn should be measured as soon as possible after presentation,10,0,False,False,False
+v4_dclm-baseline_llama,G3-02b,AHA/ACC chest pain guideline (troponin),short,measured as soon as possible after presentation,7,0,False,False,False
+v4_dclm-baseline_llama,NEGATIVE_CONTROL,not from any guideline,long,the patient was advised to return if symptoms worsened,9,3,False,True,False
+v4_dclm-baseline_llama,NEGATIVE_CONTROL,not from any guideline,short,advised to return if symptoms,5,57,False,True,False

@@ -68,3 +68,26 @@ claude_code_research_prompt.md
 # AHA/ACC and CUA documents are copyrighted too. The verbatim blocks plus a DOI
 # are what the repo carries; they are reproducible from the citations.
 papers/
+
+# ---------------------------------------------------------------------------
+# Deck build (deck_src/) and Office scratch files
+# ---------------------------------------------------------------------------
+# The deck is generated from deck_src/*.js; its dependency tree is not.
+node_modules/
+package-lock.json
+
+# Microsoft Office writes a ~$<name> lock file beside any open document.
+# These are per-session junk and must never be committed.
+~$*
+.~lock.*#
+
+# ---------------------------------------------------------------------------
+# Before/after snapshots of results/tables, taken by hand before a rescore so
+# the effect of a change can be diffed. Working artefacts, not the research
+# record: every comparison that mattered is written up in docs/decisions.md
+# (which vignettes moved, by how much, and what flipped). Regenerable by
+# checking out an earlier commit and re-running scripts/run_full_pipeline.sh.
+# Kept locally, never pushed — 194 files of superseded tables is clutter in a
+# repository someone has to read.
+# ---------------------------------------------------------------------------
+results/_backup_*/

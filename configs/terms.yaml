@@ -10,6 +10,18 @@
 index_targets:
   - v4_piletrain_llama        # Pythia's training corpus
   - v4_olmo-mix-1124_llama    # OLMo 2 stage-1 mix (stage 2 is not indexed; D008)
+  # Added 2026-11-07 (D059). Third corpus, for the RQ4 identifiability test.
+  # The Pile and olmo-mix agree at rho=0.976, so neither can be attributed as
+  # the source of a skew (D054). DCLM-baseline is a DIFFERENT KIND of corpus:
+  # CommonCrawl only, aggressive model-based quality filtering, and no curated
+  # PubMed/PMC component of the sort the Pile carries. If its skew profile
+  # diverges, identifiability is restored. If it agrees too, that is a stronger
+  # negative result than two corpora agreeing.
+  #
+  # CAVEAT to report: the index holds 4.34T tokens but DCLM-7B trained on 2.5T
+  # sampled from it, so the index is a SUPERSET of what the model saw. This is
+  # weaker provenance than olmo-mix-1124, which is the exact training mix.
+  - v4_dclm-baseline_llama    # DCLM-7B's training pool
 
 # find_cnf co-occurrence window, in tokens. MUST be set explicitly: the API
 # returns cnt=0 when max_diff_tokens is omitted, silently (D022).

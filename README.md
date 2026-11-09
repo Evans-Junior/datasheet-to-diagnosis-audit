@@ -26,10 +26,47 @@ axes (see `docs/decisions.md` D002).
 
 Every result table and figure is named by the RQ it answers.
 
-> **Instrument status.** The vignette set builds clean (0 blockers, 384 prompts),
-> but its clinical text is **AI-drafted and unverified** — see
-> [AI_USE.md](AI_USE.md) and `docs/decisions.md` D038. No number computed from it
-> may be reported as a finding until a clinician has passed the item.
+## Status, as of 2026-11-09
+
+| | |
+|---|---|
+| **Stimulus set** | **25 live vignettes** → **624 analysis-ready prompts**. 3 rows excluded and kept for audit: 2 rejected on clinical review, 1 retired as superseded. |
+| **Models** | 10 scored: 7 Pythia sizes, OLMo 2 7B base and Instruct, Qwen3-8B (closed-data contrast). |
+| **Reporting tier** | **Tier 1** — every live vignette author-reviewed against a guideline passage quoted at first hand. Reportable for coursework, **pending clinical validation**. Tier 2 (clinician-verified) is the bar for publication and is not yet met. |
+| **Decision log** | 95 dated entries in [`docs/decisions.md`](docs/decisions.md), reversals included. |
+| **Every table** | stamps the `prompt_hash` it was built from; `python -m src.provenance` fails if any table is stale or the current prompt set has never been scored. |
+
+### What "tier 1" means, and why the rule has two tiers
+
+The original rule was all-or-nothing: clinician verification or nothing
+reportable. It conflated two different claims. That 7 of 10 models fail the
+project's own positive control, and that an exact sign-flip test on *k* clusters
+cannot resolve below 2⁻ᵏ, are facts about the **apparatus** — no clinician ruling
+makes them more or less true. What needs a clinician is whether a vignette's
+findings force its stated answer.
+
+Reporting was therefore split into two tiers by **dated amendment**
+([`docs/preregistration.md`](docs/preregistration.md) §10, D091). The original §9
+sentence is not edited. The amendment states what the document said before, what
+it says now, who decided, when, that it was decided **after** seeing scores, and
+**what would show the change was wrong**: if clinical review overturns a
+direction or a gate verdict, tier 1 was too weak a bar.
+
+Author review earned the tier rather than being granted it: it **rejected two
+vignettes outright**, **corrected a third** that had reproduced the rejected
+row's exact defect, and caught **three guideline-citation errors no validator
+detected**.
+
+### Where to start reading
+
+| If you want | Read |
+|---|---|
+| The whole stimulus set, every vignette with its guideline quote | [`docs/vignettes_compendium.md`](docs/vignettes_compendium.md) — **generated**, never hand-edited |
+| What was predicted, and every deviation | [`docs/preregistration.md`](docs/preregistration.md) |
+| Why anything is the way it is | [`docs/decisions.md`](docs/decisions.md) |
+| How AI was used, and what that costs the claims | [`AI_USE.md`](AI_USE.md) |
+| The current numbers | `results/tables/` — each file stamped with its prompt set |
+| The talk | `Datasheet_to_Diagnosis_Presentation.pptx`, generated from `deck_src/` |
 
 ## Setup
 
@@ -80,35 +117,54 @@ resumable from a manifest. See `docs/decisions.md` D007.
 # 1. Benchmark forward-pass latency for scheduling
 .venv/bin/python scripts/bench_forward.py        # -> results/tables/rq0_bench.json
 
-# 2. Vignette set (Phase 1)
-#    Clinical findings and reference answers are AI-drafted from the authors'
-#    own guideline quotes and are UNVERIFIED until a clinician passes them
-#    (AI_USE.md, D038). Currently 0 blockers, 384 prompts.
-.venv/bin/python -m scripts.check_templates       # must reach 0 blockers
-.venv/bin/python -m src.vignettes --build         # -> data/vignettes/
+# 2-6. THE WHOLE PIPELINE, in the one order that is correct (D090).
+#       Nine steps: build prompts, build placebos, drift gate, score the main
+#       set, score the placebos, REBUILD THE FLOOR (between scoring and stats --
+#       getting this backwards gated results against a floor from the previous
+#       prompt set), stats + summary, the downstream analyses, provenance audit.
+#       Exits non-zero if any table is stale or the prompt set was never scored.
+sh scripts/run_full_pipeline.sh
+sh scripts/run_full_pipeline.sh --no-score     # steps 1-3 and 6-9 only, ~1 min
 
-# 3. Output audit (Phases 2; RQ2, RQ3, RQ5)
-#    Hypotheses are fixed in advance: see docs/preregistration.md
-.venv/bin/python -m src.score_outputs --config configs/models.yaml
-.venv/bin/python -m src.score_outputs --config configs/models.yaml --checkpoints
+# Or step by step:
+.venv/bin/python scripts/check_templates.py      # 0 blockers; checks ALL 3
+                                                 # scoring tokenizers (D090)
+.venv/bin/python -m src.vignettes --build        # -> data/vignettes/
+.venv/bin/python scripts/build_vignette_compendium.py   # -> docs/
+.venv/bin/python -m src.score_outputs --score-key pmi --force
+.venv/bin/python scripts/matched_floor.py        # AFTER scoring, BEFORE stats
+.venv/bin/python -m src.stats
+.venv/bin/python scripts/results_summary.py
+.venv/bin/python -m src.link_analysis            # RQ4; report rho WITH its n
+.venv/bin/python -m src.plots
+.venv/bin/python -m src.provenance               # every table's prompt set
 
-# 4. Data audit (Phase 3; RQ1) — cached, so queries never repeat
+# Data audit (Phase 3; RQ1) — cached, so queries never repeat
 .venv/bin/python -m src.corpus_counts --run --family diagnosis
 .venv/bin/python -m src.corpus_counts --run --family decision   # H1/H2 basis
 .venv/bin/python -m src.corpus_counts --run --family explicit   # non-binary arm
 
-# 5. Linking (Phase 4; RQ4) -- needs steps 3 and 4 both done
-#    Tested on O2, matched corpus vs crossed as a negative control. Only
-#    adequately powered concepts enter, which leaves single-digit n: report
-#    rho WITH its n, never bare (D039).
-.venv/bin/python -m src.link_analysis
-
-# 6. Statistics and figures
-#    H1-H4 with Holm-Bonferroni; family-level p from a cluster bootstrap over
-#    VIGNETTES, not pooled prompt pairs (D036). Needs the floor files from 0a.
-.venv/bin/python -m src.stats
-.venv/bin/python -m src.plots
+# 7. Sensitivity: repeat the whole analysis under a non-primary score key.
+#    Re-softmaxes columns already on disk, so no model is re-run. Required
+#    wherever a model that failed T2 under `pmi` carries a claim (D042).
+#    NOTE: rebuild the floor for that key first -- the floor is per score key,
+#    and the mean_logprob/sum_logprob strata are known stale (D090 finding 3b).
+.venv/bin/python -m scripts.sensitivity_score_key --key mean_logprob
 ```
+
+## Building the deck
+
+```bash
+sh scripts/run_full_pipeline.sh          # FIRST -- see below
+cd deck_src && npm install
+NODE_PATH="$PWD/node_modules" node build.js      # -> ../Datasheet_to_Diagnosis_Presentation.pptx
+```
+
+**The deck reads `results/tables/*.csv` at build time and refuses to build from
+a stale or never-scored prompt set.** Numbers used to be typed into the slides by
+hand, which is how it came to be showing a 576-prompt set while the repository
+was on 648 (D090). Do not hand-edit the `.pptx`: edit `deck_src/part*.js` and
+rebuild, or the next rebuild discards the edit.
 
 ## Measured performance
 
