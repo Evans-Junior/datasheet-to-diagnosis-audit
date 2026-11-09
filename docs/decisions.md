@@ -4855,3 +4855,54 @@ somewhere the guard does not look.
 reproducibility but means an interrupted 10-model run restarts from model 1.
 Not changed, the alternative is a resume path that reintroduces exactly the
 mixed-provenance risk rejected above.
+
+## D094 — A model that dies overnight would have shrunk the roster silently, so the pipeline now gates on it
+
+**Date:** 2026-11-09
+
+**What happened.** The D093 rescore was about to be left to run unattended
+overnight. Checking whether that was safe turned up a gap. `src/score_outputs.py`
+wraps each model in `try/except`, prints `FAILED: ...`, and continues to the next
+one. That is the right behaviour for a sequential run of ten models, because one
+model exhausting memory should not discard nine good ones. The problem is what
+happens after. `src/stats.py` analyses whatever raw files it finds and never
+checks the roster against the config.
+
+So if `allenai/OLMo-2-1124-7B-Instruct` had run out of memory at 03:00, the run
+would have continued, the floor would have been rebuilt, the statistics would
+have been computed, the tables would have been stamped as current, and the deck
+would have built from them without a single error. The claim "7 of 10 models
+fail the positive control" would have become a claim about nine models while
+still reading as ten, and the sentence that states it is hand-written on the
+slide, not generated from the data.
+
+Nothing in the existing guards covers this. The prompt-hash stamp (D090, D093)
+answers "were these numbers computed from the current prompt set"; it is silent
+on "were they computed from every model". The drift gate (D092) compares
+templates to the prompt CSV. The provenance audit (D090) runs at step 10, after
+every table has already been written.
+
+**Decision.** `scripts/check_scored_models.py` is a gate at **step 6 of 10**, after
+scoring and before the floor rebuild, so a partial run stops before anything
+downstream is written rather than after. It calls `build_specs()` from the
+scorer itself, so the roster it checks is by construction the roster the scorer
+intended to run, and for each model it requires both
+
+1. a manifest entry, and
+2. a `prompt_hash` equal to the hash of the prompt set on disk now.
+
+The second condition is D093's lesson: a stale entry is not a scored model, it
+is yesterday's numbers wearing today's filename. The gate prints which models
+are missing and which are stale, and names the resume command that keeps the
+work already done.
+
+**Verified against the real failure.** Run now, with six of ten models scored,
+the gate fails and names exactly the four that are stale, and
+`run_full_pipeline.sh` stops at step 6 with exit 1.
+
+**What this does not fix.** The scorer still continues past a failed model, by
+design. The gate catches the consequence rather than the cause, which is the
+right split: a long run should finish what it can, and nothing should be allowed
+to report from a partial result. The fifth variant of the staleness family
+(D052, D090, D092, D093, D094), and the first one caught before it produced a
+wrong number rather than after.

@@ -25,28 +25,37 @@ set -e
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
 
-echo "=========== 1/9 BUILD PROMPTS        $(date) ==========="
+echo "=========== 1/10 BUILD PROMPTS        $(date) ==========="
 $PY -m src.vignettes --build
-echo "=========== 2/9 BUILD PLACEBOS       $(date) ==========="
+echo "=========== 2/10 BUILD PLACEBOS       $(date) ==========="
 $PY scripts/build_placebo_prompts.py
-echo "=========== 3/9 DRIFT GATE           $(date) ==========="
+echo "=========== 3/10 DRIFT GATE           $(date) ==========="
 $PY scripts/check_templates.py
 
 if [ "$1" != "--no-score" ]; then
-  echo "=========== 4/9 SCORE MAIN SET       $(date) ==========="
+  echo "=========== 4/10 SCORE MAIN SET       $(date) ==========="
   $PY -m src.score_outputs --score-key pmi --force
-  echo "=========== 5/9 SCORE PLACEBOS       $(date) ==========="
+  echo "=========== 5/10 SCORE PLACEBOS       $(date) ==========="
   $PY -m src.score_outputs --score-key pmi --force \
       --prompts data/vignettes/placebo_prompts.csv --raw-subdir raw_placebo
 else
-  echo "=========== 4-5/9 SCORING SKIPPED (--no-score) ==========="
+  echo "=========== 4-5/10 SCORING SKIPPED (--no-score) ==========="
 fi
 
+echo "=========== 6/10 ROSTER GATE         $(date) ==========="
+# D094. score_outputs catches a per-model failure, prints FAILED, and carries on
+# to the next model. Nothing downstream checks the roster: src/stats.py analyses
+# whatever raw files exist, so one model dying overnight would turn "7 of 10
+# models fail the positive control" into a claim about nine, and every table and
+# slide built from it would look perfectly well formed. This gate runs before
+# the floor rebuild so the run stops BEFORE any table is written.
+$PY scripts/check_scored_models.py
+
 # MUST run after scoring and before stats. See the header.
-echo "=========== 6/9 REBUILD FLOOR        $(date) ==========="
+echo "=========== 7/10 REBUILD FLOOR        $(date) ==========="
 $PY scripts/matched_floor.py
 
-echo "=========== 7/9 STATS + SUMMARY      $(date) ==========="
+echo "=========== 8/10 STATS + SUMMARY      $(date) ==========="
 $PY -m src.stats
 $PY scripts/results_summary.py
 
@@ -62,7 +71,7 @@ $PY scripts/results_summary.py
 #                                corpora over the network. Its input is not the
 #                                prompt set, so a prompt change cannot stale it
 #                                (see NOT_PROMPT_DERIVED in src/provenance.py).
-echo "=========== 8/9 DOWNSTREAM ANALYSES  $(date) ==========="
+echo "=========== 9/10 DOWNSTREAM ANALYSES  $(date) ==========="
 $PY -m src.link_analysis
 $PY scripts/permutation_null.py
 $PY scripts/paraphrase_consistency.py
@@ -72,7 +81,7 @@ $PY scripts/i3_analyse.py
 # D090. Every table now carries the prompt-set hash it was built from, so a
 # stale table is a fact on disk instead of something a reader must infer from
 # file timestamps. Non-zero exit if any table is stale or unstamped.
-echo "=========== 9/9 PROVENANCE AUDIT     $(date) ==========="
+echo "=========== 10/10 PROVENANCE AUDIT     $(date) ==========="
 $PY -m src.provenance
 
 echo "=========== HASH CHECK               $(date) ==========="
