@@ -2,16 +2,16 @@
 
 Tracing gender bias through open training-data pipelines into LLM health advice.
 
-Most LLM bias audits can only inspect outputs, because training data is closed.
-Fully open model families release theirs — Pythia (the Pile) and OLMo 2
-(OLMo-mix-1124) — so gender skew in the data can be linked to gender bias in model
-health advice, and dataset documentation can be checked for whether it discloses
-that risk.
+Most LLM bias audits can only look at outputs, because the training data is
+closed. Two families publish theirs: Pythia, trained on the Pile, and OLMo 2, on
+OLMo-mix-1124. That makes a harder question available. If gender is skewed in the
+data, does the skew show up in the health advice the model gives, and did the
+dataset's own documentation warn anyone it might?
 
-**Key design rule.** A gender difference in output counts as bias only when the
-clinically correct answer is the same for every patient. Every vignette therefore
-carries a guideline-sourced reference answer, and vignettes are arranged on two
-axes (see `docs/decisions.md` D002).
+One design rule governs everything else. A gender difference in output counts as
+bias only where the clinically correct answer is the same for every patient.
+Every vignette therefore carries a reference answer taken from a guideline, and
+the vignettes sit on two axes (`docs/decisions.md`, D002).
 
 ## Research questions
 
@@ -32,18 +32,19 @@ Every result table and figure is named by the RQ it answers.
 |---|---|
 | **Stimulus set** | **25 live vignettes** → **624 analysis-ready prompts**. 3 rows excluded and kept for audit: 2 rejected on clinical review, 1 retired as superseded. |
 | **Models** | 10 scored: 7 Pythia sizes, OLMo 2 7B base and Instruct, Qwen3-8B (closed-data contrast). |
-| **Reporting tier** | **Tier 1** — every live vignette author-reviewed against a guideline passage quoted at first hand. Reportable for coursework, **pending clinical validation**. Tier 2 (clinician-verified) is the bar for publication and is not yet met. |
+| **Reporting tier** | **Tier 1**: every live vignette author-reviewed against a guideline passage quoted at first hand. Reportable for coursework, **pending clinical validation**. Tier 2 (clinician-verified) is the bar for publication and is not yet met. |
 | **Decision log** | 95 dated entries in [`docs/decisions.md`](docs/decisions.md), reversals included. |
 | **Every table** | stamps the `prompt_hash` it was built from; `python -m src.provenance` fails if any table is stale or the current prompt set has never been scored. |
 
 ### What "tier 1" means, and why the rule has two tiers
 
-The original rule was all-or-nothing: clinician verification or nothing
-reportable. It conflated two different claims. That 7 of 10 models fail the
-project's own positive control, and that an exact sign-flip test on *k* clusters
-cannot resolve below 2⁻ᵏ, are facts about the **apparatus** — no clinician ruling
-makes them more or less true. What needs a clinician is whether a vignette's
-findings force its stated answer.
+The original rule was all or nothing: clinician verification, or nothing could
+be reported. That turned out to run two different claims together. Seven of ten
+models fail the project's own positive control, and an exact sign-flip test on
+*k* clusters cannot resolve below 2⁻ᵏ. Both are facts about the apparatus, and no
+clinician ruling makes either more or less true. What does need a clinician is
+the separate question of whether a vignette's findings force the answer it
+states.
 
 Reporting was therefore split into two tiers by **dated amendment**
 ([`docs/preregistration.md`](docs/preregistration.md) §10, D091). The original §9
@@ -52,20 +53,19 @@ it says now, who decided, when, that it was decided **after** seeing scores, and
 **what would show the change was wrong**: if clinical review overturns a
 direction or a gate verdict, tier 1 was too weak a bar.
 
-Author review earned the tier rather than being granted it: it **rejected two
-vignettes outright**, **corrected a third** that had reproduced the rejected
-row's exact defect, and caught **three guideline-citation errors no validator
-detected**.
+The tier was earned rather than assumed. Author review rejected two vignettes
+outright, corrected a third that had reproduced the rejected row's exact defect,
+and caught three guideline-citation errors that no validator had flagged.
 
 ### Where to start reading
 
 | If you want | Read |
 |---|---|
-| The whole stimulus set, every vignette with its guideline quote | [`docs/vignettes_compendium.md`](docs/vignettes_compendium.md) — **generated**, never hand-edited |
+| The whole stimulus set, every vignette with its guideline quote | [`docs/vignettes_compendium.md`](docs/vignettes_compendium.md), **generated**, never hand-edited |
 | What was predicted, and every deviation | [`docs/preregistration.md`](docs/preregistration.md) |
 | Why anything is the way it is | [`docs/decisions.md`](docs/decisions.md) |
 | How AI was used, and what that costs the claims | [`AI_USE.md`](AI_USE.md) |
-| The current numbers | `results/tables/` — each file stamped with its prompt set |
+| The current numbers | `results/tables/`, each file stamped with its prompt set |
 | The talk | `Datasheet_to_Diagnosis_Presentation.pptx`, generated from `deck_src/` |
 
 ## Setup
@@ -139,7 +139,7 @@ sh scripts/run_full_pipeline.sh --no-score     # steps 1-3 and 6-9 only, ~1 min
 .venv/bin/python -m src.plots
 .venv/bin/python -m src.provenance               # every table's prompt set
 
-# Data audit (Phase 3; RQ1) — cached, so queries never repeat
+# Data audit (Phase 3; RQ1). Cached, so queries never repeat
 .venv/bin/python -m src.corpus_counts --run --family diagnosis
 .venv/bin/python -m src.corpus_counts --run --family decision   # H1/H2 basis
 .venv/bin/python -m src.corpus_counts --run --family explicit   # non-binary arm

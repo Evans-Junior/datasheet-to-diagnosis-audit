@@ -10,9 +10,9 @@ Every hypothesis in `preregistration.md` is a claim about a difference between t
 measured numbers. None of it means anything until the apparatus producing those
 numbers is shown to detect an effect that is really present and to stay quiet when
 one is not. That check is logically prior to the hypotheses, and it does not need
-clinical content — so it could be run while the vignettes were still unwritten.
+clinical content, so it could be run while the vignettes were still unwritten.
 
-The stimuli are deliberately **administrative, not clinical** — record numbers and
+The stimuli are deliberately **administrative, not clinical**: record numbers and
 letter codes. Nothing here asserts a clinical fact, so nothing here crosses the
 line `AI_USE.md` draws around clinical content, and nothing can leak into the
 authored vignettes by accident.
@@ -21,7 +21,7 @@ The harness imports `option_logprob` and `fp32_head` from `src/score_outputs.py`
 rather than reimplementing them. A validation that reimplements what it validates
 shows only that two of our own functions agree.
 
-## T1 — Determinism ✅ PASS
+## T1, Determinism ✅ PASS
 
 Same prompt scored twice. **Maximum absolute PMI drift: exactly 0.0**, on all three
 models.
@@ -32,7 +32,7 @@ repeat-measurement error bar to separate a gender effect from run-to-run noise.
 It is zero, so a single pass per prompt is sufficient and Δ carries no measurement
 variance. One fewer thing to defend.
 
-## T2 — Signal recovery (positive control for the apparatus) ✅ PASS
+## T2, Signal recovery (positive control for the apparatus) ✅ PASS
 
 The prompt states the answer in plain words ("the applicable rule states that Code
 A is the correct code"). The named option must win.
@@ -44,13 +44,13 @@ A is the correct code"). The named option must win.
 | `pmi` | ✅ p = 0.782 | ✅ p = 0.972 |
 
 Recovered on every score key, both targets, all three models. **This is the control
-the design was missing.** Without it, a null in Phase 2 is uninterpretable — a
+the design was missing.** Without it, a null in Phase 2 is uninterpretable, a
 model with no gender gap and a broken scorer produce the same table. Note it is a
 distinct control from Group 2: Group 2 tests whether the *models* respond to gender
 when gender is clinically relevant; T2 tests whether the *instrument* can see
 anything at all.
 
-## T3 — Nuisance floor (the important one)
+## T3, Nuisance floor (the important one)
 
 Matched prompt pairs differing **only** by the gender token, in content-free
 administrative text. Max |Δ norm_prob| across three frames, `pmi`:
@@ -71,17 +71,17 @@ difference is the floor a clinical effect has to clear before it means anything.
    clinical vignette is not evidence of clinical bias at 70m; it is what the gender
    token does on its own.
 2. **RQ3 is confounded unless each model is normalised by its own floor.** The floor
-   is not constant across the ladder — it triples from 70m to 160m and is
+   is not constant across the ladder, it triples from 70m to 160m and is
    **non-monotonic** (160m above 410m). So "the gap grows with model size", the
    natural RQ3 finding, can be produced entirely by the floor growing. RQ3 must
    compare *floor-relative* gaps, and the floor must be measured per model and per
    checkpoint. This was not in the pre-registration and is recorded as a deviation.
 
-## T4 — Score-key robustness: no key is length-neutral
+## T4, Score-key robustness: no key is length-neutral
 
 Options matched in meaning, deliberately unmatched in length ("Code A" vs "the code
 designated as A in the schedule"). Share of probability mass landing on the short
-options — 0.5 would be length-neutral:
+options, 0.5 would be length-neutral:
 
 | Model | `sum_logprob` | `mean_logprob` | `pmi` |
 |---|---|---|---|
@@ -89,11 +89,11 @@ options — 0.5 would be length-neutral:
 | pythia-160m | 1.0000 | 0.402 | **0.037** |
 | pythia-410m | 1.0000 | 0.756 | 0.306 |
 
-`sum_logprob` is catastrophic and consistently so — it puts **essentially all** mass
+`sum_logprob` is catastrophic and consistently so, it puts **essentially all** mass
 on the short option, every model, every time. That confirms the docstring's claim
 empirically rather than by assertion. But the headline is worse than expected:
 **`mean_logprob` and `pmi` are both unstable across models, in opposite
-directions**, and `pmi` at 160m is the single worst reading in the table (0.037 —
+directions**, and `pmi` at 160m is the single worst reading in the table (0.037,
 it over-corrects almost completely toward the long options).
 
 So the `pmi` default cannot be defended as "length-neutral". It is defensible only
@@ -103,7 +103,7 @@ as "least bad on average", which is a weaker claim than the code comment implies
 effects: length bias is identical across the gender arms of a matched pair, so it
 cancels in Δ. What it destroys is **sensitivity**. If length bias pushes the softmax
 to p ≈ 0.9999 on one option, both arms sit at 0.9999 and the gender effect is
-squashed to nothing — a floor effect that would read as "no bias found".
+squashed to nothing, a floor effect that would read as "no bias found".
 
 **Therefore: answer options must be matched in token length within each option
 set.** This is a hard constraint on the authored vignettes, not a preference, and

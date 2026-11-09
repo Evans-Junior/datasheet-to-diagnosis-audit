@@ -42,7 +42,7 @@ Fix round 2, **Fix rounds 3-7**, Limitations and conclusions.
 
 `qa_geom.py` flags shapes outside a 0.45in margin, text that cannot fit its box at
 the stated font size, and overlapping text frames. The fit model is deliberately
-conservative, so a small number of flags is normal — the deck sat at 18 before
+conservative, so a small number of flags is normal, the deck sat at 18 before
 round 4 and 13 after. What matters is that a slide you just added reports **0**,
 which the round-4 slides (38 to 40) do. If `python-pptx` is unavailable, the same
 checks can be run straight off the slide XML with the standard library.

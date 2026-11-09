@@ -1,4 +1,4 @@
-# Outreach email — clinical reviewer
+# Outreach email, clinical reviewer
 
 Replace `[NAME]` and the one bracketed sentence tailored to each recipient.
 
@@ -8,11 +8,11 @@ Replace `[NAME]` and the one bracketed sentence tailored to each recipient.
 **Do not remove the AI-drafting paragraph.** It belongs in the email body, not only
 in the attachment. A reviewer who learns it after agreeing has been asked under a
 false impression, and a reviewer who believes a clinician wrote the scenarios reads
-them less sharply — which is the opposite of what we need from them.
+them less sharply, which is the opposite of what we need from them.
 
 ---
 
-**Subject:** 45-minute clinical review request — McGill MSc project on gender bias in AI health advice
+**Subject:** 45-minute clinical review request. McGill MSc project on gender bias in AI health advice
 
 Dear Dr. [NAME],
 
@@ -21,7 +21,7 @@ Boustani on our Ethics in AI final project. We are auditing whether open-source
 large language models give different health advice when only a patient's gender
 changes, with everything else held fixed.
 
-[One tailored sentence — e.g. "I am writing to you because your work on sex and
+[One tailored sentence, e.g. "I am writing to you because your work on sex and
 gender differences in cardiovascular outcomes is directly relevant to our chest
 pain and cardiac triage scenarios."]
 
@@ -36,20 +36,20 @@ management genuinely does not vary or that the question was never considered.
 
 **One thing I should tell you up front.** The 15 clinical scenarios, the answer
 options and our proposed answers were **drafted by an AI assistant** from those
-guideline quotations — not from the assistant's own medical knowledge, and not by a
+guideline quotations, not from the assistant's own medical knowledge, and not by a
 clinician. We disclose this in the project's tool-use declaration, and I am telling
 you because it changes what the review is for. A drafted scenario can read fluently,
 mention every finding a decision rule requires, and still fail to rule out one
-alternative — in which case our "correct" answer is wrong and every number we
+alternative, in which case our "correct" answer is wrong and every number we
 compute from that item is meaningless. We cannot see that ourselves. So the form has
 a column asking whether the stated findings *force* our proposed answer. **If they
-do not, please mark the row wrong rather than fixing it** — we would much rather
+do not, please mark the row wrong rather than fixing it**, we would much rather
 rewrite an item than carry one that looks plausible and is not.
 
 **The ask is one review of about 45 minutes.** The attached table has 15 conditions,
 already filled in: the full scenario text, the answer options, our proposed
 reference answer, and the guideline and section we took it from. You would fill four
-columns — whether our answer is correct, whether the findings force it, whether
+columns, whether our answer is correct, whether the findings force it, whether
 correct management differs by patient sex or gender identity, and any comment.
 Nothing else: no vignette writing, no reviewing model outputs, no reading the paper.
 
@@ -75,7 +75,7 @@ kwakukumi14@gmail.com
 
 ## Follow-up, if no reply after 10 days
 
-**Subject:** Re: 45-minute clinical review request — McGill MSc project
+**Subject:** Re: 45-minute clinical review request, McGill MSc project
 
 Dear Dr. [NAME],
 

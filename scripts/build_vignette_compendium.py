@@ -32,19 +32,19 @@ SOURCES = ROOT / "docs/vignette_sources.md"
 OUT = ROOT / "docs/vignettes_compendium.md"
 
 GROUPS = {
-    1: ("Group 1 — Sex-neutral conditions",
+    1: ("Group 1: Sex-neutral conditions",
         "The guideline specifies no sex- or gender-dependent difference. **Carries "
         "H3**: a gap here would be the instrument responding to the descriptor, "
         "not to clinical content."),
-    2: ("Group 2 — Sex-specific, SPCU-dependent",
+    2: ("Group 2: Sex-specific, SPCU-dependent",
         "The correct answer genuinely differs with the Sex Parameter for Clinical "
         "Use. **This is the positive control.** A model that cannot move here "
         "cannot be read anywhere else, because a null and a broken instrument "
         "look identical."),
-    3: ("Group 3 — Historically biased conditions",
+    3: ("Group 3: Historically biased conditions",
         "Conditions with documented sex or gender disparities in human care. "
         "**Carries H1 and H2.**"),
-    4: ("Group 4 — Noise baseline",
+    4: ("Group 4: Noise baseline",
         "Clinically unambiguous items with no sex- or gender-relevant content. "
         "**Builds the nuisance floor** that every delta is judged against, "
         "stratified by option count."),
@@ -57,7 +57,7 @@ def source_sections() -> dict[str, str]:
         return {}
     text = SOURCES.read_text(encoding="utf-8")
     out: dict[str, str] = {}
-    # Headings look like "### G4-03b — Acute pharyngitis ...  ✅ COMPLETE".
+    # Headings look like "### G4-03b: Acute pharyngitis ...  ✅ COMPLETE".
     # Keyed on the longest id first so "G2-01b" never matches as "G2-01".
     parts = re.split(r"^### ", text, flags=re.M)[1:]
     for part in parts:
@@ -99,7 +99,7 @@ def main() -> int:
     L.append("")
     L.append("**Generated** by `scripts/build_vignette_compendium.py` from "
              "`data/vignettes/templates.yaml` and the first-hand guideline "
-             "quotes in `docs/vignette_sources.md`. Do not edit by hand — "
+             "quotes in `docs/vignette_sources.md`. Do not edit by hand. "
              "edit the template and rebuild, or the next rebuild discards it.")
     L.append("")
     L.append(f"- **Live vignettes:** {len(live)}")
@@ -119,7 +119,7 @@ def main() -> int:
     L.append("")
     L.append("The **reference answer** is the option the quoted guideline forces. "
              "The **target option** is the option whose probability mass is the "
-             "second outcome measure (O2) — it is not always the correct one, "
+             "second outcome measure (O2), it is not always the correct one, "
              "and for Group 3 it is deliberately the over- or under-treatment "
              "choice.")
     L.append("")
@@ -146,7 +146,7 @@ def main() -> int:
         L.append("")
         for t in rows:
             vid = t["id"]
-            L.append(f"### {vid} — {t.get('condition', '(no condition)')}")
+            L.append(f"### {vid}: {t.get('condition', '(no condition)')}")
             L.append("")
             opts = [str(o) for o in (t.get("answer_options") or [])]
             by_spcu = t.get("reference_answer_by_spcu") or {}
@@ -157,10 +157,10 @@ def main() -> int:
             L.append(f"| **Question** | {t.get('question', '')} |")
             L.append(f"| **Options** | {' · '.join(opts)} |")
             L.append(f"| **Reference answer** | {ref} |")
-            L.append(f"| **Target option (O2)** | {t.get('target_option', '—')} |")
-            L.append(f"| **Decision type** | `{t.get('decision_type', '—')}` |")
-            L.append(f"| **Patient age** | {t.get('age', '—')} |")
-            L.append(f"| **Verification** | `{t.get('verification', '—')}` |")
+            L.append(f"| **Target option (O2)** | {t.get('target_option', 'n/a')} |")
+            L.append(f"| **Decision type** | `{t.get('decision_type', 'n/a')}` |")
+            L.append(f"| **Patient age** | {t.get('age', 'n/a')} |")
+            L.append(f"| **Verification** | `{t.get('verification', 'n/a')}` |")
             L.append(f"| **Arms** | {48 if t.get('cue_arms') else 24} |")
             L.append("")
             paras = t.get("paraphrases") or []
@@ -180,7 +180,7 @@ def main() -> int:
                 L.append("")
             else:
                 L.append("**Governing guideline:** see "
-                         "`docs/vignette_sources.md` — no quote block parsed "
+                         "`docs/vignette_sources.md`. No quote block parsed "
                          "for this id, which is itself worth checking.")
                 L.append("")
             note = (t.get("note") or "").strip()
@@ -203,7 +203,7 @@ def main() -> int:
             kind = ("RETIRED AS SUPERSEDED"
                     if t.get("verification") == "retired_superseded"
                     else "REJECTED ON CLINICAL REVIEW")
-            L.append(f"### {vid} — {t.get('condition', '')}  ·  **{kind}**")
+            L.append(f"### {vid}: {t.get('condition', '')}  ·  **{kind}**")
             L.append("")
             reason = (t.get("blocked_on") or "").strip()
             for para in reason.split("\n\n"):

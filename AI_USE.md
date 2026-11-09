@@ -3,15 +3,15 @@
 **Project:** From datasheet to diagnosis: tracing gender bias through open training-data pipelines into LLM health advice
 **Course:** Ethics in Artificial Intelligence (McGill University)
 **Authors:** Evans Kumi, Aymen Boustani
-**Last updated:** 2026-10-28
+**Last updated:** 2026-11-09
 
 ## Summary
 
 An AI coding assistant (Claude Code, Anthropic) was used during the implementation
-and analysis phases of this project, and — as of 2026-10-28 — in drafting the
-clinical text of the vignette instrument. This document records what it was used
-for and what it was not, so that readers, markers, and reviewers can judge the work
-on an accurate account of how it was produced.
+and analysis phases of this project and, from 2026-10-28, in drafting the clinical
+text of the vignette instrument. This document records what it was used for and
+what it was not, so that readers, markers and reviewers can judge the work against
+an accurate account of how it was produced.
 
 **Change of scope, 2026-10-28.** An earlier version of this declaration stated that
 all clinical content was the authors' own and was "not filled in by a model". That
@@ -37,7 +37,7 @@ that is disclosure plus a hard verification gate, not a quiet redefinition of
 - **Drafting and editing support.** Restructuring and copy-editing prose drafted by
   the authors, and summarising prior work for the authors to verify.
 - **Methodological critique.** Several design faults were identified by the
-  assistant and adopted on the authors' judgement — among them that the inference
+  assistant and adopted on the authors' judgement, among them that the inference
   unit was the vignette rather than the prompt pair (D036), that the instrument
   needed a positive control and a nuisance floor (D035), and that answer options
   must be token-length matched. Each is recorded in `docs/decisions.md` with its
@@ -45,9 +45,13 @@ that is disclosure plus a hard verification gate, not a quiet redefinition of
   trust.
 - **Clinical content drafting.** See below.
 
-## Clinical content — what the assistant drafted, and from what
+## Clinical content, what the assistant drafted, and from what
 
-For each of the 15 vignettes the assistant wrote:
+*Count note, 2026-11-09: this section was written when the set held 15
+vignettes. It now holds 28 rows, of which 25 are live. The description below
+applies unchanged to every one of them; only the number has moved.*
+
+For each vignette the assistant wrote:
 
 - the **clinical findings** sentence shared by all arms of that vignette,
 - the **answer option set**, and
@@ -57,7 +61,7 @@ These were derived from guideline passages that the **authors had already locate
 retrieved and quoted verbatim at first hand** in `docs/vignette_sources.md`,
 together with each passage's own strength-of-recommendation and
 quality-of-evidence grading. The drafting task was, in each case, to express
-criteria already quoted in that file — for example, to write findings that
+criteria already quoted in that file, for example, to write findings that
 explicitly satisfy or negate each limb of a decision rule the guideline states.
 
 **What this is not.** No clinical fact in the instrument originates from the
@@ -76,7 +80,7 @@ one. Two distinct concerns:
 2. **Stimulus–instrument affinity.** Text written by one language model may be
    unrepresentative of clinical prose in ways that interact with how other language
    models score it. This cannot be fully removed. It is mitigated by holding the
-   clinical text identical across all arms of a vignette — the measured quantity is
+   clinical text identical across all arms of a vignette, the measured quantity is
    a *difference* between arms of the same text, so any affinity effect is common to
    both sides of every contrast and cancels in Δ. It is not mitigated for
    between-vignette comparisons, and the limitations section says so.
@@ -98,7 +102,7 @@ The following is binding and is enforced in code, not left to intention:
   Where unverified items are scored during development, their numbers are labelled
   as such and carry no inferential weight.
 
-## Provenance after review — what the label can and cannot become
+## Provenance after review, what the label can and cannot become
 
 Review changes a vignette's **verification status**. It does not erase its
 **origin**. Those are two different fields and this project keeps them separate,
@@ -109,7 +113,7 @@ answer.
 So a reviewed item does **not** become "clinician-authored, not AI-generated". A
 sentence an assistant drafted was drafted by an assistant, and no later approval
 changes that fact. What a review does change is whether the item may support a
-reported result — which is the thing that actually matters for the paper.
+reported result, which is the thing that actually matters for the paper.
 
 The `verification` field in `data/vignettes/templates.yaml` takes exactly these
 values:
@@ -122,12 +126,12 @@ A row that nobody has reviewed is reportable at **neither**.
 
 | Value | Meaning | Reportable? |
 |---|---|---|
-| `unverified_ai_drafted` | Drafted by the assistant; nobody has checked it against the guideline. The state of all 15 items as of 2026-10-28; **0 items as of 2026-11-09** | **No — tier 0** |
-| `author_reviewed_against_quoted_guideline` | **The author** checked the vignette against the guideline sentence quoted for it and confirmed the findings force the stated answer. A real step, and not a clinician: it catches drafting faults, wrong labels and unsupported answers, but it cannot certify clinical correctness. `src/stats.py` maps it to `REPORTABLE_TIER1__pending_clinical_validation` | **Tier 1 only** — numbers may be presented as results if "pending clinical validation" travels with them; not publishable |
+| `unverified_ai_drafted` | Drafted by the assistant; nobody has checked it against the guideline. The state of all 15 items as of 2026-10-28; **0 items as of 2026-11-09** | **No, tier 0** |
+| `author_reviewed_against_quoted_guideline` | **The author** checked the vignette against the guideline sentence quoted for it and confirmed the findings force the stated answer. A real step, and not a clinician: it catches drafting faults, wrong labels and unsupported answers, but it cannot certify clinical correctness. `src/stats.py` maps it to `REPORTABLE_TIER1__pending_clinical_validation` | **Tier 1 only**: numbers may be presented as results if "pending clinical validation" travels with them; not publishable |
 | `ai_drafted_clinician_verified` | Clinician confirmed the findings force the stated answer, text unchanged | Tier 2 |
 | `ai_drafted_clinician_corrected` | Clinician found a fault, we applied the fix they described, they confirmed the corrected row | Tier 2 |
 | `clinician_authored` | The clinician supplied the replacement wording themselves; that sentence is theirs | Tier 2 |
-| `rejected` | Failed review and is excluded from the instrument | **No** — and the item is dropped, not softened |
+| `rejected` | Failed review and is excluded from the instrument | **No**: and the item is dropped, not softened |
 
 **Why author review was promoted, briefly.** It was adopted as a stopgap and then
 earned the tier: it rejected two vignettes outright (G2-03, G4-03), corrected a
@@ -185,8 +189,8 @@ rejects any other value, so the distinction cannot be lost by a typo.
 ## Note on the object of study
 
 This project audits language models, and a language model was used to build part of
-the instrument. These are separate models — the assistant is not among the systems
-under audit (Pythia, OLMo 2, and the weights-only contrast model) — and it played no
+the instrument. These are separate models, the assistant is not among the systems
+under audit (Pythia, OLMo 2, and the weights-only contrast model), and it played no
 part in **generating, scoring, or coding the data analysed**: it produced no model
 output that enters the results, computed no score, and assigned no qualitative code.
 Its role in the instrument itself is declared above and carried into the limitations

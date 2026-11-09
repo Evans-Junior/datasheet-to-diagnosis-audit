@@ -36,7 +36,7 @@ rather than being asked to trust that it was not chosen for its effect on them.
 
 ---
 
-## I1 — Rebuild the nuisance floor on matched geometry
+## I1, Rebuild the nuisance floor on matched geometry
 
 **Status:** criterion fixed, not yet run. **Classification:** correctness fix.
 
@@ -119,7 +119,7 @@ instrument's power and is the recommended next build step.
 
 ---
 
-## I2 — Score-key sensitivity under the matched floor
+## I2, Score-key sensitivity under the matched floor
 
 **Status:** criterion fixed, not yet run. **Classification:** correctness fix.
 
@@ -146,7 +146,7 @@ strata by construction, for both the effect and now also the floor. Reporting
 
 ---
 
-## I3 — Elicitation for the Pythia family
+## I3, Elicitation for the Pythia family
 
 **Status:** criterion fixed, not yet run. **Classification:** tuning (budget item 1).
 
@@ -247,7 +247,7 @@ retired without a run on structural grounds (I3a). All three recorded as failed.
 
 ---
 
-## I4 — RQ4 corpus-provenance identifiability
+## I4, RQ4 corpus-provenance identifiability
 
 **Status:** criterion fixed. **Classification:** correctness fix (diagnostic).
 
@@ -312,7 +312,7 @@ variant should not be read as a like-for-like contrast.
 
 ---
 
-## I5 — Circularity introduced by I1 (found during execution, not planned)
+## I5, Circularity introduced by I1 (found during execution, not planned)
 
 **Status:** run 2026-11-03. **Classification:** correctness fix, arising from I1.
 
@@ -338,7 +338,7 @@ derived quantity must be reported alongside its Group 1 only counterpart.**
 
 ---
 
-# Validation round 1 — 2026-11-07
+# Validation round 1, 2026-11-07
 
 A different kind of entry from I1–I5. Those changed the instrument. These add
 **independent thresholds and disclosures** without altering any measured effect,
@@ -350,7 +350,7 @@ prediction failure that belongs on the record.
 Prompted by a direct question about whether the floor alone is trustworthy. It
 is not, and the measurements below say so.
 
-## I6 — Permutation nulls on the real data
+## I6, Permutation nulls on the real data
 
 **Status:** run 2026-11-07. **Classification:** added threshold, no effect changed.
 **Decision:** D060. **Script:** `scripts/permutation_null.py`.
@@ -375,7 +375,7 @@ threshold I expected to be redundant is the binding one in the majority of cells
 **Consequence.** Where the two disagree the larger threshold governs. No effect
 is reported as exceeding noise on the Group 4 floor alone. This is a tightening
 of the project's own criteria after seeing the data, which is only acceptable
-because it runs *against* interest — it can remove findings and cannot create
+because it runs *against* interest, it can remove findings and cannot create
 any.
 
 **Second outcome, not anticipated.** Group 3 has four vignettes, so the smallest
@@ -385,14 +385,14 @@ p ranges 0.125 to 1.000 across ten models. Reaching 0.05 needs k ≥ 6. This is
 now a quantified requirement for a preregistration amendment rather than a
 general wish for more data.
 
-## I7 — Paraphrase sign stability
+## I7, Paraphrase sign stability
 
 **Status:** run 2026-11-07. **Classification:** added disclosure.
 **Decision:** D061. **Script:** `scripts/paraphrase_consistency.py`.
 
 **Criterion fixed before the run.** Report, for every cell clearing its own
 floor, whether all three paraphrases share the sign of their mean. **No pass
-threshold was set, deliberately** — the number is a disclosure requirement, not
+threshold was set, deliberately**, the number is a disclosure requirement, not
 a gate, and setting a threshold after seeing it would be the exact failure this
 log exists to prevent.
 
@@ -407,7 +407,7 @@ floor-clearing effects unanimous. It is one of the three models that passes the
 §6 gate and an open-data model the argument depends on. Per-item Group 3 effects
 on that model are not stable enough to quote individually.
 
-## I8 — Placebo attribute perturbation
+## I8, Placebo attribute perturbation
 
 **Status:** built 2026-11-07, **scoring pending**. **Classification:** added
 threshold. **Decision:** D062.
@@ -419,7 +419,7 @@ as a gender effect. Fixed now, before the 216 prompts are scored, so the rule
 cannot be chosen to suit the answer.
 
 **Rule 2 compliance.** The placebo runs on the gender-blinded arm of Groups 1, 3
-and the original Group 4 — which includes sealed hypothesis material. It is
+and the original Group 4, which includes sealed hypothesis material. It is
 admissible under the I5 amendment because it adds no tunable parameter: it emits
 one threshold, and the direction of its effect on conclusions (it can only
 remove findings) is fixed in advance by the criterion above.
@@ -428,7 +428,7 @@ remove findings) is fixed in advance by the criterion above.
 floor comes out *above* the gender effects on Group 3, that is a finding against
 the project and will be recorded as one.
 
-## I9 — Guideline contamination audit
+## I9, Guideline contamination audit
 
 **Status:** run 2026-11-07. **Classification:** added disclosure.
 **Decision:** D063. **Script:** `scripts/contamination_audit.py`.
@@ -441,7 +441,7 @@ result is interpretable.
 
 **Outcome.** The negative control returns 1 / 3 / 3 hits across the Pile,
 olmo-mix and DCLM, so the probe has power. Long-span contamination in 3 of 24
-cells — including **G4-03, one of the two vignettes the binary floor is built
+cells, including **G4-03, one of the two vignettes the binary floor is built
 from**. Disclosed; mitigating that G4-03 gave the *larger* floor value, so
 memorisation is not making the gate more lenient.
 

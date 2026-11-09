@@ -1,8 +1,8 @@
-# Clinical review request — one page
+# Clinical review request, one page
 
 **Project:** From datasheet to diagnosis: tracing gender bias through open
 training-data pipelines into LLM health advice
-**Authors:** Evans Kumi, Aymen Boustani — MSc Intelligent Systems, McGill
+**Authors:** Evans Kumi, Aymen Boustani, MSc Intelligent Systems, McGill
 **Course:** Ethics in Artificial Intelligence
 **Estimated time:** 45–60 minutes, once
 
@@ -11,7 +11,7 @@ training-data pipelines into LLM health advice
 ## What we are testing
 
 We audit whether open large language models (Pythia, OLMo 2) give different health
-advice when only the patient's gender changes — age, symptoms, history and all
+advice when only the patient's gender changes, age, symptoms, history and all
 clinical details held fixed. Because these model families release their training
 data, we can also ask whether gender skew in that data predicts the output
 differences.
@@ -28,8 +28,8 @@ ourselves. We have sourced each reference answer to a named clinical guideline, 
 guidelines state correct management for a condition and are almost always **silent**
 on whether it varies by patient gender. That silence has two readings:
 
-1. Management genuinely does not vary by gender — which supports a bias claim.
-2. The guideline never considered gender — which does not.
+1. Management genuinely does not vary by gender, which supports a bias claim.
+2. The guideline never considered gender, which does not.
 
 Distinguishing these is a clinical judgement, not a literature-search result. It is
 also the first thing a reviewer will challenge, because if invariance fails for a
@@ -54,7 +54,7 @@ in separating gender identity from Sex Parameter for Clinical Use, and hold SPCU
 fixed in every vignette, so sex-specific conditions are handled separately as a
 control.
 
-## How the vignettes were produced — please read this before Column A
+## How the vignettes were produced, please read this before Column A
 
 We sourced every reference answer ourselves: for each of the 15 conditions we
 retrieved the governing clinical guideline, read it at first hand, and quoted the
@@ -63,13 +63,13 @@ quality-of-evidence grading. Those quotations are in `docs/vignette_sources.md` 
 we will send them with the form.
 
 **The scenario text and the proposed reference answers were then drafted by an AI
-coding assistant** from those quotations — not from the assistant's own medical
+coding assistant** from those quotations, not from the assistant's own medical
 knowledge, and not by a clinician. We disclose this in the project's
 [AI_USE.md](../AI_USE.md) and we are disclosing it to you because it changes what
 your review is for.
 
 Concretely: a drafted scenario can read fluently, name every finding a rule
-requires, and still fail to exclude one alternative — in which case our "correct"
+requires, and still fail to exclude one alternative, in which case our "correct"
 answer is simply wrong and every number computed from that item is meaningless. We
 cannot detect that ourselves. So the form carries an extra column, **A2**, asking
 whether the stated findings *force* our proposed answer. If they do not, please mark
@@ -80,7 +80,7 @@ That is enforced in our code, not merely intended.
 
 ## What we are **not** asking
 
-- Not writing or editing vignettes — mark a bad one wrong and we rewrite it
+- Not writing or editing vignettes, mark a bad one wrong and we rewrite it
 - Not reviewing model outputs or results
 - Not reading or co-writing the paper
 - No patient data is involved; nothing is deployed clinically
@@ -89,7 +89,7 @@ That is enforced in our code, not merely intended.
 
 Conditions you confirm enter our primary analysis. Conditions you flag as uncertain
 move to a sensitivity analysis, and we report both. Anything you cannot confirm is
-excluded rather than guessed at — no clinical guidance in this project originates
+excluded rather than guessed at, no clinical guidance in this project originates
 from anywhere but a cited guideline, and none ever will.
 
 ## Credit
@@ -100,4 +100,4 @@ declining the paper does not mean declining the review.
 
 ## Contact
 
-Evans Kumi — kwakukumi14@gmail.com
+Evans Kumi, kwakukumi14@gmail.com

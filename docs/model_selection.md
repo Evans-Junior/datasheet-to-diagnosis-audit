@@ -1,4 +1,4 @@
-# Model and corpus selection — methodology
+# Model and corpus selection, methodology
 
 **Status:** methodology section, written 2026-11-07. Records the reasoning and the
 measurements behind the choice of model families. Companion to **D068** (why no
@@ -35,10 +35,10 @@ data" as the phrase is usually used.
 | | Criterion | Why the design needs it | What it rules out |
 |---|---|---|---|
 | **C1** | Pretraining corpus publicly released **and** indexed for exact n-gram counting | RQ1 and RQ4 are impossible otherwise | Every closed model; every "open-weights, undisclosed-data" model; **every medical LLM** (D068) |
-| **C2** | Corpora **mutually non-nested** — verified, not assumed | Two nested corpora give one measurement reported twice, inflating apparent agreement | DCLM as a third corpus arm (D065) |
+| **C2** | Corpora **mutually non-nested**: verified, not assumed | Two nested corpora give one measurement reported twice, inflating apparent agreement | DCLM as a third corpus arm (D065) |
 | **C3** | At least one family with a parameter ladder trained on **fixed data in fixed order** | RQ3's size trend is otherwise confounded by data differences between sizes | Almost every family except Pythia |
 | **C4** | Base **and** instruction-tuned checkpoints within one family | Separates pretraining-corpus effects from alignment effects | Families releasing only one or the other |
-| **C5** | One closed-data model as contrast | External validity: shows whether the open models behave atypically | — |
+| **C5** | One closed-data model as contrast | External validity: shows whether the open models behave atypically | n/a |
 
 C1 is a gate. C2 is the criterion this project contributes a test for. C3 and C4
 are satisfied by exactly one family each. C5 is a single deliberate exception to
@@ -60,7 +60,7 @@ sample.
 
 ---
 
-## 4. C2 — the criterion that is usually asserted and never tested
+## 4. C2, the criterion that is usually asserted and never tested
 
 ### 4.1 The idea
 
@@ -70,7 +70,7 @@ argument about paperwork, not about text.
 
 But the n-gram instrument built for RQ1 can test it directly. If two corpora are
 genuinely different samples of written English, their per-concept gender skew
-should **correlate but diverge** — the same broad social patterns, different
+should **correlate but diverge**: the same broad social patterns, different
 sampling noise, different editorial mix. If one corpus is largely contained in
 the other, skew should be **near-identical**, because it is the same text.
 
@@ -99,7 +99,7 @@ against essentially the same corpus twice.
 The measurement said "same corpus"; the documentation says why.
 
 1. **The dataset card.** `allenai/olmo-mix-1124` lists **DCLM-baseline at 3.70T
-   tokens of a 3.90T total** — roughly 95% — "with no additional filtering."
+   tokens of a 3.90T total**, roughly 95%,  "with no additional filtering."
 2. **Direct counts.** The phrase `"she has"` returns **94,109,792** occurrences in
    olmo-mix-1124 against **93,884,699** in DCLM-baseline, a ratio of **1.0024**.
 
@@ -111,7 +111,7 @@ recorded as an error in reasoning in **D065**, not as a discovery.
 "Trained on open data" is routinely treated as if it implied *independently*
 open data. It does not. Two of the three largest open pretraining corpora are not
 independent samples of text, and this is discoverable either from a dataset card
-or from fifteen minutes of n-gram counting — but only if someone looks.
+or from fifteen minutes of n-gram counting, but only if someone looks.
 
 For this project it means **corpus-level attribution in this model family is
 impossible in principle, not merely underpowered.** That is a stronger and more
@@ -132,8 +132,8 @@ that could plausibly matter.
 | Corpus scale | ~300B tokens | ~3.9T tokens (≈13×) |
 | Construction philosophy | 22 **named, curated** sources assembled deliberately | Model-filtered Common Crawl (DCLM-baseline) plus curated additions |
 | Deduplication | Released both as-is and deduplicated | Filtered upstream |
-| Parameter ladder on fixed data | **Yes — 70m to 12b, same data, same order** (C3) | No |
-| Base + instruct | — | **Yes** (C4) |
+| Parameter ladder on fixed data | **Yes, 70m to 12b, same data, same order** (C3) | No |
+| Base + instruct | n/a | **Yes** (C4) |
 | Exact n-gram queryable | Yes | Yes |
 
 ### 5.1 And they disagree exactly where the experiment needs them to
@@ -153,7 +153,7 @@ best-placed one possible:
 female-skewed in the Pile, male-skewed in olmo-mix. That concept underlies
 **G3-04, which carries H1**. It is the single largest and most consequential
 cross-corpus disagreement in the whole sweep, and **only the Pile/OLMo pair
-exposes it** — olmo and DCLM differ by 0.008 on the same concept.
+exposes it**, olmo and DCLM differ by 0.008 on the same concept.
 
 Note also the shape of the table: on every row, olmo and DCLM agree to three
 decimal places while the Pile stands apart. The nesting is visible by eye.
@@ -162,16 +162,16 @@ decimal places while the Pile stands apart. The nesting is visible by eye.
 
 Because the Pile is now the **only non-nested corpus in the design**, every Pythia
 checkpoint carries unique information and none is redundant. That is the
-independent reason all seven sizes were kept rather than trimmed to five (D065) —
+independent reason all seven sizes were kept rather than trimmed to five (D065),
 a decision originally taken for RQ3's size ladder, and now over-determined.
 
 ---
 
-## 6. What the 5% that differs actually buys — a null result
+## 6. What the 5% that differs actually buys, a null result
 
 olmo-mix-1124 minus DCLM-baseline is roughly pes2o, arXiv and other curated
 additions: disproportionately academic and biomedical. That invites an obvious
-question — does adding curated biomedical text change the gender skew a health
+question, does adding curated biomedical text change the gender skew a health
 audit would see?
 
 Measured on the same sweep:
@@ -183,8 +183,8 @@ Measured on the same sweep:
 
 **So: adding curated academic biomedical text at this proportion raises biomedical
 volume slightly and moves measured gender skew essentially not at all.** Stated as
-a null, because that is what it is. The largest volume effect lands where expected
-— the most academic phrasing, "community-acquired pneumonia", at 1.14× — but it
+a null, because that is what it is. The largest volume effect lands where expected,
+the most academic phrasing, "community-acquired pneumonia", at 1.14×, but it
 does not propagate into skew.
 
 This is recorded here because an earlier draft of the reasoning claimed the
@@ -194,7 +194,7 @@ DCLM as a model arm. On measurement it does not, and that reason is withdrawn
 
 ---
 
-## 7. Qwen3-8B — the one deliberate C1 failure
+## 7. Qwen3-8B, the one deliberate C1 failure
 
 Included under C5 as a closed-data contrast. It is **not a corpus arm**. No RQ4
 statement about Qwen is possible by construction, and that impossibility is the
@@ -213,7 +213,7 @@ assistant.
 | Qwen3 | 1 (8B) | undisclosed | **C5** |
 
 Ten models, two independent corpora, one closed contrast. DCLM-7B base and
-Instruct were considered and **not added** — see D070 and §6.
+Instruct were considered and **not added**: see D070 and §6.
 
 ---
 
@@ -224,11 +224,11 @@ Instruct were considered and **not added** — see D070 and §6.
 | Biderman et al. 2023, *Pythia: A Suite for Analyzing Large Language Models Across Training and Scaling*, ICML 2023 (PMLR 202:2397–2430), [arXiv:2304.01373](https://arxiv.org/abs/2304.01373) | C3. The only family trained at 8 sizes on identical data in identical order, released in both Pile and deduplicated-Pile variants, explicitly built so that scaling and training dynamics can be studied rather than guessed |
 | Gao et al. 2020, *The Pile: An 800GB Dataset of Diverse Text for Language Modeling*, [arXiv:2101.00027](https://arxiv.org/abs/2101.00027) | Corpus 1 provenance: 22 named, individually documented sources, which is what makes its divergence from web-filtered corpora interpretable rather than mysterious |
 | OLMo 2 team, *2 OLMo 2 Furious*, [arXiv:2501.00656](https://arxiv.org/abs/2501.00656) | Corpus 2 and the base/instruct pair (C4) |
-| Li et al. 2024, *DataComp-LM: In Search of the Next Generation of Training Sets for Language Models*, NeurIPS 2024, [arXiv:2406.11794](https://arxiv.org/abs/2406.11794) | DCLM-baseline's construction by model-based filtering of Common Crawl — the provenance that explains why it dominates olmo-mix by token count |
+| Li et al. 2024, *DataComp-LM: In Search of the Next Generation of Training Sets for Language Models*, NeurIPS 2024, [arXiv:2406.11794](https://arxiv.org/abs/2406.11794) | DCLM-baseline's construction by model-based filtering of Common Crawl, the provenance that explains why it dominates olmo-mix by token count |
 | Soldaini et al. 2024, *Dolma: an Open Corpus of Three Trillion Tokens for Language Model Pretraining Research*, ACL 2024, [arXiv:2402.00159](https://arxiv.org/abs/2402.00159) | AI2's corpus-documentation lineage, the predecessor to olmo-mix; ~200 TB of raw text curated to 11 TB, released ODC-BY |
 | Biderman et al. 2022, *Datasheet for the Pile*, [arXiv:2201.07311](https://arxiv.org/abs/2201.07311) | **Directly relevant to this project's title.** The Pile is one of very few pretraining corpora with a published datasheet in Gebru et al.'s sense, which is part of why corpus 1 can be reasoned about at all. Its existence for the Pile and absence for most corpora is itself the "datasheet" half of *datasheet to diagnosis* |
 | Liu et al. 2024, *Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens*, COLM 2024, [arXiv:2401.17377](https://arxiv.org/abs/2401.17377) | **The instrument C1 depends on.** Exact-substring counting at corpus scale, with an index of ~7 bytes per token; without it C1 is unsatisfiable by any model |
-| Elazar et al. 2024, *What's In My Big Data?*, ICLR 2024 spotlight, [arXiv:2310.20707](https://arxiv.org/abs/2310.20707) | The premise, and the precedent for corpus-level auditing: "we have a limited understanding of the content of these corpora". Also the methodological sibling — count-and-search over 35 TB on one node |
+| Elazar et al. 2024, *What's In My Big Data?*, ICLR 2024 spotlight, [arXiv:2310.20707](https://arxiv.org/abs/2310.20707) | The premise, and the precedent for corpus-level auditing: "we have a limited understanding of the content of these corpora". Also the methodological sibling, count-and-search over 35 TB on one node |
 | Feng et al. 2023, *From Pretraining Data to Language Models to Downstream Tasks: Tracking the Trails of Political Biases Leading to Unfair NLP Models*, ACL 2023 **best paper**, [arXiv:2305.08283](https://arxiv.org/abs/2305.08283) | **The closest methodological relative.** Runs the corpus-property → model-property → downstream-unfairness chain for political bias; this project runs it for gender in clinical advice. Their finding that unfairness can arise from "non-toxic and non-malicious data" is the premise for auditing skew rather than toxicity |
 | Dodge et al. 2021, *Documenting Large Webtext Corpora: A Case Study on the Colossal Clean Crawled Corpus*, EMNLP 2021, [arXiv:2104.08758](https://arxiv.org/abs/2104.08758) | Documentation debt: what filtering decisions remove, and who they remove |
 | Gebru et al. 2021, *Datasheets for Datasets*, CACM 64(12) | The "datasheet" in this project's title, and the normative standard the corpora are held to |

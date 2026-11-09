@@ -28,17 +28,17 @@ guideline-sourced reference answer, and vignettes sit on two axes (D002):
 
 |  | Answer should be identical | Answer should differ |
 |---|---|---|
-| **No documented human bias** | **Group 4** — noise baseline (ankle sprain, conjunctivitis, strep throat) | — |
-| **Documented human bias** | **Group 3** — the direct bias test (pain, chest pain, ADHD, autism) | **Group 2** — positive control (pregnancy test, prostate, cervical screening) |
-| **Routine, sex-neutral** | **Group 1** — main bias test (pneumonia, malaria, asthma, cellulitis, diabetes) | — |
+| **No documented human bias** | **Group 4**: noise baseline (ankle sprain, conjunctivitis, strep throat) | n/a |
+| **Documented human bias** | **Group 3**: the direct bias test (pain, chest pain, ADHD, autism) | **Group 2**: positive control (pregnancy test, prostate, cervical screening) |
+| **Routine, sex-neutral** | **Group 1**: main bias test (pneumonia, malaria, asthma, cellulitis, diabetes) | n/a |
 
 Group 2 is the control that makes the whole thing honest: there the answer
 *should* differ by sex, so if the audit finds no difference in Group 2, the audit
 cannot detect differences at all and every null elsewhere is meaningless.
 
 **What is varied.** Gender identity (man / woman / non-binary / blinded) is
-manipulated. **Sex Parameter for Clinical Use (SPCU)** — the HL7 Gender Harmony
-Model's term for the sex value a clinician actually needs — is stated explicitly
+manipulated. **Sex Parameter for Clinical Use (SPCU)**: the HL7 Gender Harmony
+Model's term for the sex value a clinician actually needs, is stated explicitly
 and held fixed (D001). This is what lets us say "the clinical facts were
 identical and only the gender wording changed."
 
@@ -63,7 +63,7 @@ identical and only the gender wording changed."
 | 1 | Vignette engine (360 prompts generated) | **Engine done; clinical content missing** |
 | 2 | Output scoring (log-probability) | **Code done and tested; cannot run** |
 | 3 | Corpus counts (RQ1) | **Done, result in §5** |
-| 4 | Linking data skew to output gaps (RQ4) | Not written — needs Phase 2 output |
+| 4 | Linking data skew to output gaps (RQ4) | Not written, needs Phase 2 output |
 | 5 | Statistics and figures | Not written |
 | 6 | Datasheet audit (RQ6) | Not started |
 
@@ -73,8 +73,8 @@ on real data until the clinical text and reference answers are written. The
 scoring code *refuses* to run on them without `--allow-unready`, and tags any
 such output `placeholder_text=True` so it can never leak into a result table.
 
-That is deliberate. The alternative — inventing plausible-sounding clinical
-findings — would make every number in the paper unsourced.
+That is deliberate. The alternative, inventing plausible-sounding clinical
+findings, would make every number in the paper unsourced.
 
 ---
 
@@ -84,7 +84,7 @@ findings — would make every number in the paper unsourced.
 
 **360 prompts = 15 vignettes × 3 paraphrases × 2 SPCU values × 4 gender arms.**
 
-- **15 vignettes** — 5 in Group 1, 3 in Group 2, 4 in Group 3, 3 in Group 4.
+- **15 vignettes**: 5 in Group 1, 3 in Group 2, 4 in Group 3, 3 in Group 4.
 - **3 paraphrases** each, to bound prompt sensitivity. Prompt wording moves LLM
   answers; three phrasings let us report how much.
 - **2 SPCU values** (female / male), stated as an explicit sentence
@@ -101,7 +101,7 @@ Composition as generated: 270 gendered prompts, 90 blinded.
 
 **Verb agreement per arm (D013).** The first build emitted *"They is a non-binary
 person."* Ungrammatical text in the **non-binary arm alone** lowers that arm's
-sequence probability for grammatical reasons, not bias reasons — consistently,
+sequence probability for grammatical reasons, not bias reasons, consistently,
 across every model and every vignette. It would have manufactured a clean,
 publishable, completely false "bias against non-binary patients." Each arm now
 carries its own verb forms (`be`, `present_v`, `report_v`, `attend_v`).
@@ -116,7 +116,7 @@ forward pass computes the model's log-probability of that option's tokens given
 the prompt; options are then compared.
 
 Why: it works on **base** models (which cannot follow instructions), it is
-**deterministic** (no sampling noise), and it is cheap — one forward pass per
+**deterministic** (no sampling noise), and it is cheap, one forward pass per
 option. The whole scoring design is under an hour of compute.
 
 The score used is **PMI** (pointwise mutual information), not raw
@@ -124,7 +124,7 @@ log-probability (D014): raw probability favours options that are simply common
 English. `norm_prob` is the softmax over options of their PMI.
 
 **Rationales are a second outcome, not an explanation (D005).** Short generated
-justifications are coded for themes — including psychologizing — by an LLM judge
+justifications are coded for themes, including psychologizing,  by an LLM judge
 validated against hand-coding at **Cohen's κ ≥ 0.70**. A model's stated reason is
 not evidence of its actual computation, and the paper must not treat it as such.
 
@@ -135,7 +135,7 @@ not evidence of its actual computation, and the paper must not treat it as such.
 | Audit ladder | Pythia 70m → 12b (8 sizes) | Open training data (the Pile); size is the RQ3 axis |
 | Checkpoints | pythia-1.4b at 9 log-spaced steps | When during training does a gap appear |
 | Audit | OLMo 2 7B base **and** instruct | Second open corpus; base vs instruct = post-training effect |
-| Contrast (RQ5) | Qwen3-8B | Strong model, no data access — the comparison most audits are stuck with |
+| Contrast (RQ5) | Qwen3-8B | Strong model, no data access, the comparison most audits are stuck with |
 | Judge | Mistral-Small-24B-Instruct, 8-bit MLX | Codes rationales; disjoint from the audited set (D006) |
 
 Hardware: Apple M4 Pro, 48 GB unified memory, **no CUDA**. Execution is strictly
@@ -160,13 +160,13 @@ and deletes each checkpoint: 2.9 GB peak instead of 414 GB.
 
 ## 4.2 Configuration
 
-- `configs/models.yaml` — the model ladder, dtypes, seed `20261009`, judge spec
+- `configs/models.yaml`, the model ladder, dtypes, seed `20261009`, judge spec
   and κ validation plan.
-- `configs/gender_arms.yaml` — the four arms with their pronouns **and verb
+- `configs/gender_arms.yaml`, the four arms with their pronouns **and verb
   forms**, and the two SPCU statements.
-- `configs/terms.yaml` — the corpus term lists, the three template families, and
+- `configs/terms.yaml`, the corpus term lists, the three template families, and
   a `polysemy_excluded` block documenting every term removed and why.
-- `data/vignettes/templates.yaml` — the 15 vignettes. **This is the file awaiting
+- `data/vignettes/templates.yaml`, the 15 vignettes. **This is the file awaiting
   clinical content.**
 
 ## 4.3 Documentation
@@ -205,7 +205,7 @@ and deletes each checkpoint: 2.9 GB peak instead of 414 GB.
 
 # 5. Results
 
-## 5.1 RQ1: gender skew in the training corpora — the headline finding
+## 5.1 RQ1: gender skew in the training corpora, the headline finding
 
 **The measure.** For each health concept, using eight illness-narration frames
 ("{pron} has", "{pron} was diagnosed with", "{pron} complained of", …):
@@ -217,7 +217,7 @@ skew_log2    = log2( rate(female) / rate(male) )
 
 Dividing by the frame's own count is what makes this work. **Raw co-occurrence
 counts are worthless here**: "he was anxious" appears 21,073 times against "she
-was anxious" 8,723, a ratio of 2.42 — and the base rate of "he" versus "she" is
+was anxious" 8,723, a ratio of 2.42, and the base rate of "he" versus "she" is
 2.421. The entire apparent difference is the pronoun base rate. Normalised skew:
 **+0.003**. This is D022, and it is the single most important methodological point
 in RQ1.
@@ -226,7 +226,7 @@ in RQ1.
 **1,504 queries, 0 failures**. 76 of 94 rows scored; **42 cleared the power
 threshold** (≥100 hits in both arms).
 
-### Validation — does the measure detect what it must?
+### Validation, does the measure detect what it must?
 
 | Concept | Pile | OLMo-mix | Should be |
 |---|---|---|---|
@@ -242,7 +242,7 @@ corpora, so it is not an artefact of either one.
 ### The correction that changes interpretation
 
 Mean skew across **sex-neutral** concepts is **+0.778** (Pile) and **+0.560**
-(OLMo-mix) — a baseline *female* skew in illness narration, presumably because
+(OLMo-mix), a baseline *female* skew in illness narration, presumably because
 narrating illness is itself female-associated in text.
 
 **So zero is not a reference point.** Reading raw signs would have you conclude
@@ -259,7 +259,7 @@ Centred skew by concept family. Negative = relatively male-associated.
 | cardiac | **−0.929** | **−0.671** | G3-02 |
 | other somatic | +0.180 | +0.058 | G1-\*, G4-\* |
 | pain | +0.287 | +0.107 | G3-01 |
-| **psychological** | **+0.804** | **+0.651** | (no vignette — D020) |
+| **psychological** | **+0.804** | **+0.651** | (no vignette, D020) |
 
 **The ordering is identical in both corpora.** Extremes in OLMo-mix:
 
@@ -275,10 +275,10 @@ Centred skew by concept family. Negative = relatively male-associated.
 
 Each limb matches a **separately documented human clinical bias**:
 
-- **Psychologizing** of women's symptoms — Hoffmann & Tarzian (2001).
-- **Cardiac under-recognition** in women — including Dr Louise Pilote's GENESIS
+- **Psychologizing** of women's symptoms, Hoffmann & Tarzian (2001).
+- **Cardiac under-recognition** in women, including Dr Louise Pilote's GENESIS
   work at McGill, which is one reason she is on the outreach list.
-- **ADHD and autism under-diagnosis** in women and girls — a well-established
+- **ADHD and autism under-diagnosis** in women and girls, a well-established
   literature.
 
 The corpora reproduce, in text frequency, the shape of biases documented in
@@ -305,10 +305,10 @@ for RQ2 rather than a correlation to be computed afterwards. Those are frozen in
 
 | | Prediction | Tested on | Corpus basis |
 |---|---|---|---|
-| **H1** | Δ < 0 — less referral for women | G3-04, G3-05 | neurodev −0.97 / −0.81 |
-| **H2** | Δ < 0 — less urgent triage for women | G3-02 | cardiac −0.93 / −0.67 |
-| **H3** | Δ ≈ 0 — **no** gap where corpus is unskewed | G1-\*, G4-\* | somatic +0.18 / +0.06 |
-| **H4** | sign(Δ) = sign(skew) across concepts | all | — |
+| **H1** | Δ < 0, less referral for women | G3-04, G3-05 | neurodev −0.97 / −0.81 |
+| **H2** | Δ < 0, less urgent triage for women | G3-02 | cardiac −0.93 / −0.67 |
+| **H3** | Δ ≈ 0, **no** gap where corpus is unskewed | G1-\*, G4-\* | somatic +0.18 / +0.06 |
+| **H4** | sign(Δ) = sign(skew) across concepts | all | n/a |
 
 where Δ = outcome(woman arm) − outcome(man arm) on matched prompt pairs.
 Holm–Bonferroni across the four at family-wise α = .05.
@@ -316,7 +316,7 @@ Holm–Bonferroni across the four at family-wise α = .05.
 **Three things to understand about this document, because they are what a reviewer
 will probe:**
 
-**(a) The claim is narrower than "pre-registered".** RQ1 was observed first — that
+**(a) The claim is narrower than "pre-registered".** RQ1 was observed first, that
 is the whole point of it. So these are *informed predictions committed before any
 analysis-ready score existed*, not blind hypotheses. §1 of the pre-registration
 concedes this explicitly and declares the one prior scoring run (the pythia-70m
@@ -324,7 +324,7 @@ placeholder smoke test). Stating the limit ourselves costs nothing; being caught
 not stating it costs the result.
 
 **(b) H3 is the important one.** If gaps appear on *every* vignette, we have shown
-much less than if they appear *only* where the corpus is skewed — the second is a
+much less than if they appear *only* where the corpus is skewed, the second is a
 mechanism claim, the first is just a sentiment. **H3 failing damages the thesis
 more than H1 or H2 failing.**
 
@@ -387,7 +387,7 @@ computing a difference; the number format was erasing it.
 **Fix, in two parts.** First, compute the final projection in float32
 (`fp32_head()`). Then the regression test showed that bf16 noise in the model
 *body* (0.242 nats) also exceeds the closest option gap (0.140 nats) and can
-reverse the ranking — so the whole forward pass moved to float32.
+reverse the ranking, so the whole forward pass moved to float32.
 
 **Why it matters beyond this project:** had this shipped, we would have published
 "no gender bias detected," which is a *reassuring* false conclusion. It is guarded
@@ -400,7 +400,7 @@ more than half of prompts have all options tied within 1e-9.
 
 **Cause:** infini-gram rate-limits with **HTTP 403** and body
 `{"message": "Forbidden"}`. That body has no `"error"` key, so the client treated
-it as a successful response — **and cached it.** On every subsequent read it came
+it as a successful response, **and cached it.** On every subsequent read it came
 back as `cnt = 0`, permanently.
 
 **Scale: 287 of 378 cached entries (76%) were poisoned.** The non-zero rows were
@@ -415,7 +415,7 @@ whole run if any query failed.
 
 The original plan used infini-gram's windowed co-occurrence endpoint. All 125
 responses came back `approx=True` (versus 0 of 18 for exact `count`), with clause
-frequencies three orders of magnitude above the `max_clause_freq` cap — "he" alone
+frequencies three orders of magnitude above the `max_clause_freq` cap, "he" alone
 has 506M occurrences against a 500k cap.
 
 It **disagreed with exact counts in sign**: pneumonia −7.069 vs +2.012,
@@ -432,8 +432,8 @@ if spec.key in manifest["completed"] and not args.force:
 
 So "completed" meant "completed **once**", not "completed for this prompt set".
 Once the real clinical findings land, a rerun would have **silently skipped
-pythia-70m and kept its placeholder-text scores** — numbers computed from
-vignettes with no clinical content and no reference answers — while reporting the
+pythia-70m and kept its placeholder-text scores**, numbers computed from
+vignettes with no clinical content and no reference answers, while reporting the
 run as complete.
 
 The stale entry was *already* being honoured: the prompt set had changed twice
@@ -451,7 +451,7 @@ Verified on the next run:
 
 **Two of the four were caches returning something that was never valid.** The
 lesson generalises: a cache needs a validity condition checked on **read**, not
-only on write. The other two were a number format and an API estimate — in both
+only on write. The other two were a number format and an API estimate, in both
 cases the code ran without error and produced output in the right shape.
 
 **None of these announced itself.** Every one produced numbers that could have
@@ -466,9 +466,9 @@ one of these got through first.
 26 entries in `docs/decisions.md`. Grouped by what they govern.
 
 **The sex/gender position**
-- **D001** SPCU held fixed, gender identity varied — the core manipulation.
+- **D001** SPCU held fixed, gender identity varied, the core manipulation.
 - **D012** SPCU crossed with gender identity; no patient names (ethnicity confound).
-- **D011** Sex-invariance judged once, globally, by the reviewer — not per vignette.
+- **D011** Sex-invariance judged once, globally, by the reviewer, not per vignette.
 - **D018** Pregnancy excluded in identical wording across arms, so it cannot be a
   hidden cue.
 
@@ -477,14 +477,14 @@ one of these got through first.
 - **D003** Tiered reference answers; nothing invented to fill a row.
 - **D016** Where guidelines conflict, the most recent one governs.
 - **D017 / D017a** G2-01's pregnancy-test decision, approved and verified against
-  NICE NG126 — which turned out to state trans-inclusive scope outright.
+  NICE NG126, which turned out to state trans-inclusive scope outright.
 - **D019** PSA decision replaced; G3-06 chronic pain dropped.
 - **D020** G3-03 psychologizing dropped as a vignette (no guideline says "do not
   attribute this to anxiety"), retained as a rationale code.
 - **D021** The gender-blinded reference arm.
 
 **Measurement**
-- **D013** Verb agreement per arm — the grammaticality confound.
+- **D013** Verb agreement per arm, the grammaticality confound.
 - **D014** PMI scoring, not raw log-probability.
 - **D015** float32 throughout.
 - **D022** Base-rate normalisation is mandatory; two infini-gram traps.
@@ -516,18 +516,18 @@ measure at all. Since the non-binary arm is part of the project's novelty claim,
 that asymmetry sat exactly where the contribution is.
 
 **Why it was skipped.** `"they has"` is ungrammatical, so the non-binary arm
-cannot use the same eight frames — the same confound as D013, but in the corpus
+cannot use the same eight frames, the same confound as D013, but in the corpus
 measure instead of the prompts. And `"they"` in corpus text is overwhelmingly
 **plural**, so counting it does not isolate non-binary reference.
 
-**What was built instead — two measures, honestly labelled:**
+**What was built instead, two measures, honestly labelled:**
 
-1. **`phrase_templates_plural`** — the same eight frames, plural inflection
+1. **`phrase_templates_plural`**: the same eight frames, plural inflection
    (`"they have"`, `"they were diagnosed with"`). This *is* measured now, and its
    skew is reported but **never interpreted as a non-binary result**, because the
    plural contamination is real. The point of measuring it is to quantify the
    contamination rather than assert it.
-2. **`explicit_subjects`** — the actually valid comparison. Noun subjects, singular
+2. **`explicit_subjects`**: the actually valid comparison. Noun subjects, singular
    frames, no pronoun ambiguity whatsoever: `"the woman has X"` vs `"the man has
    X"` vs `"the non-binary patient has X"`.
 
@@ -537,7 +537,7 @@ count would misreport both. If the trans arm is wanted, it gets its own group.
 
 **The expected outcome is near-zero counts, and that is a result.** Non-binary
 health narration being near-absent from both open corpora is a substantive
-finding about the corpora — and one that bears directly on the ethics argument —
+finding about the corpora, and one that bears directly on the ethics argument,
 not a failed measurement. The code says so explicitly when it happens.
 
 ## 8.2 The corpus measured diagnoses; the hypotheses are about decisions
@@ -547,8 +547,8 @@ urgency**. The diagnosis family measures only which *conditions* attach to which
 gender. So the corpus basis for the two directional hypotheses was one inferential
 step removed from what RQ2 actually scores.
 
-**Why it was deferred.** Decision language does not fit the diagnosis frames —
-nobody "has an x-ray" in the diagnostic sense — so it needs its own templates.
+**Why it was deferred.** Decision language does not fit the diagnosis frames,
+nobody "has an x-ray" in the diagnostic sense, so it needs its own templates.
 
 **What was built:** a `decision` family with six frames
 (`"{pron} was referred for"`, `"{pron} was referred to"`, `"{pron} underwent"`,
@@ -562,7 +562,7 @@ surgery).
 `"he was referred for an x-ray"` = 13 hits and the female arm 6, in the Pile.
 These phrases are far rarer than diagnosis phrases. OLMo-mix is roughly 17× larger
 and may clear the threshold; the Pile probably will not. That is worth knowing
-either way — if the decision family cannot be powered, the paper must say H1 and
+either way, if the decision family cannot be powered, the paper must say H1 and
 H2 rest on *diagnosis* skew with decision skew as an inferential step, rather than
 implying direct measurement.
 
@@ -592,7 +592,7 @@ Run 2026-10-26. **2,436 further queries, 0 failures.**
 ### The non-binary finding: zero, and verified as a real zero
 
 The explicit noun-subject family returned **0 non-binary hits across all 94
-concept-corpus rows in both corpora** — and the reason is upstream of the
+concept-corpus rows in both corpora**, and the reason is upstream of the
 concepts. The *frames themselves* never occur:
 
 | Probe | OLMo-mix | Pile |
@@ -607,7 +607,7 @@ concepts. The *frames themselves* never occur:
 | `non-binary` (bare term) | **1,350,944** | **66,269** |
 
 The last row is what makes this a finding rather than a vocabulary gap. Non-binary
-people are **not absent from these corpora** — the term appears over 1.35 million
+people are **not absent from these corpora**: the term appears over 1.35 million
 times in OLMo-mix. They are absent from the **clinical subject position**. In two
 corpora totalling trillions of tokens, the phrase "the non-binary patient" occurs
 zero times, against 646,440 occurrences of "the woman has".
@@ -619,8 +619,8 @@ non-zero counts, so the pipeline was working when it returned the zeros.
 
 For the write-up, this belongs in the ethics argument, not the limitations. A model
 cannot have learned how to narrate a non-binary patient's illness from training
-data that never does so. The downstream prediction — that non-binary arm outputs
-will be less stable and less guideline-concordant than either gendered arm — now
+data that never does so. The downstream prediction, that non-binary arm outputs
+will be less stable and less guideline-concordant than either gendered arm, now
 has a stated basis, though it is **not** pre-registered as confirmatory, because
 the measure arrived after D025 was frozen.
 
@@ -638,7 +638,7 @@ and it is just as plural-dominated as predicted:
 
 The `they` frames are **more** frequent than the `she` frames, which no account of
 non-binary reference can explain. So the arm is measured, reported, and explicitly
-not interpreted as a non-binary result — which is the whole reason for building the
+not interpreted as a non-binary result, which is the whole reason for building the
 explicit family alongside it.
 
 ### The decision family: powered in OLMo-mix, and it supports H1 and H2
@@ -659,7 +659,7 @@ explicit family alongside it.
 Underpowered but same direction: `an ECG` raw −0.695 (F=48, M=199).
 
 **The informative contrast is cardiologist vs psychiatrist**: −0.811 against
-+0.127, a gap of 0.94 log2 units — roughly **1.9×**. Referral to cardiology is
++0.127, a gap of 0.94 log2 units, roughly **1.9×**. Referral to cardiology is
 male-associated; referral to psychiatry and prescription of antidepressants are
 female-associated, *in the referral language itself*, not merely in which
 diagnoses attach to which gender.
@@ -684,16 +684,16 @@ no vignette (D020) and was otherwise only measurable through rationale coding.
 
 | Family | Queries | Powered (F/M) | NB powered | Usable? |
 |---|---|---|---|---|
-| `diagnosis` | 1,504 | 42 / 94 | 40 (plural-contaminated) | **Yes** — the headline result, replicated across corpora |
-| `decision` | ~560 | 15 / 28 | 8 | **Yes, OLMo-mix only** — direct basis for H1, H2 |
-| `explicit` | ~1,880 | 2 / 94 | **0** | As a *presence* measure, yes — the zero is the finding. As a skew comparison, no: too sparse. |
+| `diagnosis` | 1,504 | 42 / 94 | 40 (plural-contaminated) | **Yes**: the headline result, replicated across corpora |
+| `decision` | ~560 | 15 / 28 | 8 | **Yes, OLMo-mix only**: direct basis for H1, H2 |
+| `explicit` | ~1,880 | 2 / 94 | **0** | As a *presence* measure, yes, the zero is the finding. As a skew comparison, no: too sparse. |
 
 
 ---
 
 # 9. What is left, and who owns it
 
-## 9.1 Yours — the critical path
+## 9.1 Yours, the critical path
 
 Everything downstream is blocked on the first two.
 
@@ -713,11 +713,11 @@ Everything downstream is blocked on the first two.
 
 | Component | Depends on |
 |---|---|
-| `src/stats.py` — the §7 analysis plan from the pre-registration | Phase 2 output |
-| `src/link_analysis.py` — RQ4 linkage | Phase 2 output + §5.1 (done) |
-| `src/plots.py` — figures per RQ | stats |
-| `docs/codebook.md` — RQ6 datasheet audit codebook | nothing; can start now |
-| Judge validation harness — κ against two hand-coders | rationale generation |
+| `src/stats.py`, the §7 analysis plan from the pre-registration | Phase 2 output |
+| `src/link_analysis.py`, RQ4 linkage | Phase 2 output + §5.1 (done) |
+| `src/plots.py`, figures per RQ | stats |
+| `docs/codebook.md`, RQ6 datasheet audit codebook | nothing; can start now |
+| Judge validation harness, κ against two hand-coders | rationale generation |
 | pythia-6.9b float32 vs float16 sensitivity check | nothing; can run now |
 
 ## 9.3 Open questions with no answer yet
@@ -740,18 +740,18 @@ The five checks, in order. Each exists because something went wrong.
 2. **Did any query fail?** `corpus_counts` aborts the run if so, because a partial
    sum over gender terms makes the ratio meaningless (D022).
 3. **Is it powered?** `powered=False` means under 100 hits in an arm. Report it
-   separately, do not discard it — the two clearest validation signals in RQ1 are
+   separately, do not discard it, the two clearest validation signals in RQ1 are
    both underpowered.
 4. **Is it centred?** Raw corpus skew is contaminated by a baseline female skew of
    +0.56 to +0.78 in illness narration. An uncentred sign is not interpretable
    (D024).
 5. **Did Group 2 move?** If the positive control shows no gender effect, the
-   instrument is insensitive and **no null anywhere else means anything** —
+   instrument is insensitive and **no null anywhere else means anything**,
    including H3, which means the mechanism claim cannot be made in either
    direction. This is reported first, before any other result.
 
 And one standing rule for the write-up: **where a corpus finding is strong but the
-corresponding output test is weak, say so.** Psychologizing is the clearest case —
+corresponding output test is weak, say so.** Psychologizing is the clearest case,
 the largest effect in RQ1 (+0.80 / +0.65), but it has no vignette, so it is
 reachable only through judge-dependent rationale coding. The corpus finding must
 not be allowed to stand in for an output finding.

@@ -65,7 +65,7 @@ def _footer(fig, df: pd.DataFrame | None) -> None:
                   "a clinician" if "author_reviewed" in status
                   else "AI-drafted vignettes not yet passed by a clinician")
         fig.text(0.5, 0.005,
-                 f"NOT REPORTABLE — computed on {detail} "
+                 f"NOT REPORTABLE: computed on {detail} "
                  f"(AI_USE.md, D038, D043, D091)",
                  ha="center", va="bottom", fontsize=7, color=ORANGE)
     elif status and status.startswith("REPORTABLE_TIER1"):

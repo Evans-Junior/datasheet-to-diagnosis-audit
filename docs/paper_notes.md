@@ -1,4 +1,4 @@
-# Paper notes — difficulties, decisions and numbers
+# Paper notes, difficulties, decisions and numbers
 
 Working notes for the write-up. Everything here is either a measured number, a
 verified citation, or a problem we actually hit. `docs/decisions.md` holds the
@@ -36,17 +36,17 @@ should not appear in a causal sense anywhere.
 
 ---
 
-## 2. Related work — verified citations
+## 2. Related work, verified citations
 
 All DOIs resolved against CrossRef via `scripts/verify_dois.py`; raw output in
 `results/tables/doi_verification.json`.
 
 | Role in the paper | Citation |
 |---|---|
-| Closest prior design — 2×2 of documented bias × clinical relevance, paired prompts. **Our template.** | Chang CT, et al. Evaluating anti-LGBTQIA+ medical bias in large language models. *PLOS Digit Health* 2025;4(9):e0001001. doi:10.1371/journal.pdig.0001001 |
+| Closest prior design, 2×2 of documented bias × clinical relevance, paired prompts. **Our template.** | Chang CT, et al. Evaluating anti-LGBTQIA+ medical bias in large language models. *PLOS Digit Health* 2025;4(9):e0001001. doi:10.1371/journal.pdig.0001001 |
 | Precedent for vignette-based gender/race audit in clinical LLMs | Zack T, et al. *Lancet Digit Health* 2024;6(1):e12–e22. doi:10.1016/S2589-7500(23)00225-X |
 | Sex/gender bias framing specific to health AI | Cirillo D, et al. *npj Digit Med* 2020;3:81. doi:10.1038/s41746-020-0288-5 |
-| Sex vs gender operational standard — **our position rests on this** | McClure RC, et al. Gender harmony. *JAMIA* 2021;29(2):354–363. doi:10.1093/jamia/ocab196 |
+| Sex vs gender operational standard, **our position rests on this** | McClure RC, et al. Gender harmony. *JAMIA* 2021;29(2):354–363. doi:10.1093/jamia/ocab196 |
 | Reporting standard obliging explicit sex/gender treatment | Heidari S, et al. SAGER guidelines. *Res Integr Peer Rev* 2016;1:2. doi:10.1186/s41073-016-0007-6 |
 | Why binary-only gender treatment is itself a harm; grounds the non-binary arm | Dev S, et al. EMNLP 2021:1968–1994 |
 | Pain-management vignettes; the only part of our set with inherited clinician validation | Logé C, et al. Q-Pain. NeurIPS Datasets & Benchmarks 2021. arXiv:2108.01764; PhysioNet doi:10.13026/2tdv-hj07 |
@@ -54,7 +54,7 @@ All DOIs resolved against CrossRef via `scripts/verify_dois.py`; raw output in
 | The actual causal method, named as future work | Vig J, et al. NeurIPS 2020 |
 | Documentation analysis basis (RQ6) | Gebru T, et al. Datasheets for Datasets |
 
-### 2.1 The two closest papers — ED triage gender audits
+### 2.1 The two closest papers, ED triage gender audits
 
 Both verified on arXiv. **Abstracts read; full texts not yet read.**
 
@@ -88,10 +88,10 @@ swap, in DeepSeek from the gender token alone.
 triage from a headline vignette to one condition among seventeen; do not compete on
 their ground with 288 prompts against their 374,000.
 
-**What survives — and it is the whole project.** Neither has training-data access:
+**What survives, and it is the whole project.** Neither has training-data access:
 EQUITRIAGE audits five closed models, Guerra-Adames trains on hospital records. So
 RQ1, RQ3 and RQ4 are impossible for both. Our contribution is not "LLMs show gender
-bias in triage" — that is now established by others — it is **where the bias comes
+bias in triage", that is now established by others,  it is **where the bias comes
 from**. Lead with the data link, not the output gap.
 
 **Three findings that help us:**
@@ -100,7 +100,7 @@ from**. Lead with the data link, not the output gap.
   design. Cite it rather than arguing the point from first principles.
 - Their result that chain-of-thought reduced accuracy strengthens **D005**.
 - Guerra-Adames's effect vanishing under sex-neutralised retraining is suggestive of
-  a data→output pathway — adjacent to RQ4 but without corpus access. Good to
+  a data→output pathway, adjacent to RQ4 but without corpus access. Good to
   position against.
 
 **Two differentiators to state explicitly:** both appear to treat gender as binary,
@@ -108,7 +108,7 @@ so our non-binary arm is novel ground; and neither has a sex-specific control gr
 so neither can show its models correctly differentiate where they should.
 
 **Cautions.** EQUITRIAGE is a two-author preprint, not peer-reviewed, with some
-strikingly large numbers — read critically, and do not let a 43.8% flip rate anchor
+strikingly large numbers, read critically, and do not let a 43.8% flip rate anchor
 expectations for a real effect size. Separately, both use **MIMIC-IV-ED** as a
 vignette source; that is a real alternative to authoring our own, but it needs
 PhysioNet credentialing and would cost us the guideline-anchored invariance rule
@@ -150,7 +150,7 @@ belong in a reproducibility or threats-to-validity section.
   on DCLM, Dolma, Starcoder, Proof Pile II), stage 2 on `dolmino-mix-1124`.
 - **The stage-2 mix is not searchable.** infini-gram currently offers 13 indexes,
   including `v4_olmo-mix-1124_llama`, `v4_dolma-v1_7_llama` and
-  `v4_piletrain_llama` — but **nothing for `dolmino-mix-1124`**, and nothing for
+  `v4_piletrain_llama`, but **nothing for `dolmino-mix-1124`**, and nothing for
   any Olmo 3 mix. So RQ4's OLMo arm speaks to stage 1 only. Stated as a limitation,
   with ">90% of the token budget" as the honest quantifier. (D008)
 - **OLMoTrace has no public API.** Access is the Ai2 Playground UI; the backend is
@@ -160,10 +160,10 @@ belong in a reproducibility or threats-to-validity section.
 
 **Paper-relevant point:** "open training data" is not a binary property. OLMo 2 is
 *more* open than Llama and *less* searchable than its own documentation implies.
-That nuance is worth a paragraph — it is the kind of gap between stated and
+That nuance is worth a paragraph, it is the kind of gap between stated and
 practical openness that the RQ6 documentation analysis exists to surface.
 
-### 4.1a One guideline states gender-invariance outright — NICE NG126
+### 4.1a One guideline states gender-invariance outright, NICE NG126
 
 Worth its own paragraph in the paper. Across the whole set, our invariance premise
 rests on **interpreting guideline silence** about gender (§4.2, D011). NG126 is the
@@ -174,12 +174,12 @@ trans men and non-binary people**", and it uses "trans men" 9 times and "non-bin
 So for G2-01 the claim "correct management does not vary by gender identity" is
 **stated by the guideline**, not inferred by us. That single item needs no clinician
 to ratify its premise, and it demonstrates that guidelines *can* be explicit about
-this — which sharpens the RQ6 argument considerably: when other guidelines are silent,
+this, which sharpens the RQ6 argument considerably: when other guidelines are silent,
 that silence is a documentation choice, not an inevitability.
 
 **Also a small RQ6 finding in itself:** NG126's recommendation 1.4.5 says "women of
 reproductive age" while its scope says women, trans men and non-binary people. The
-scope governs, but the recommendation text lags the stated intent — documentation
+scope governs, but the recommendation text lags the stated intent, documentation
 inconsistency inside a single document, which is exactly the phenomenon RQ6 codes for.
 
 ### 4.2 Guideline sourcing was harder than expected
@@ -188,15 +188,15 @@ inconsistency inside a single document, which is exactly the phenomenon RQ6 code
 The three outstanding ones are each outstanding for a *different* structural
 reason, which is itself the finding:
 
-- **`G1-02` malaria — living guideline.** WHO malaria guidance sits on MAGICapp,
+- **`G1-02` malaria, living guideline.** WHO malaria guidance sits on MAGICapp,
   is version-dated, and a September 2026 release supersedes 13 August 2025. No
   stable DOI. A DOI circulating from a third-party host was **not** used. Needs a
   version + access-date citation pinned like a model revision, or a reference
   answer can go stale mid-project.
-- **`G2-01` pregnancy — wrong level of description.** "Pregnancy-related
+- **`G2-01` pregnancy, wrong level of description.** "Pregnancy-related
   presentation" cannot be assigned a guideline, because the guideline follows from
   the *decision*, not the condition. Blocked until the decision is specified.
-- **`G3-03` psychologizing — no guideline exists, structurally.** No guideline says
+- **`G3-03` psychologizing, no guideline exists, structurally.** No guideline says
   "do not attribute this patient's symptoms to anxiety." This is our *most wanted*
   vignette and the least sourceable. Planned fix: reframe so the guideline-mandated
   next step is a specific investigation and score whether it is ordered, making
@@ -206,8 +206,8 @@ Also surfaced:
 
 - **Jurisdictional conflict is substantive.** CUA recommends offering PSA screening;
   the Canadian Task Force recommends against and has not revised since 2014. Both
-  are current Canadian guidance. This makes PSA screening a **poor Group 2 control**
-  — a control needs one correct answer to differ by sex against, not a contested
+  are current Canadian guidance. This makes PSA screening a **poor Group 2 control**:
+  a control needs one correct answer to differ by sex against, not a contested
   one. Same pattern for NICE NG87 vs CADDRA (ADHD), Diabetes Canada vs ADA, CTFPHC
   2013 cervical guidance vs provinces that have moved to HPV-based screening.
 - **`G4-03` was swapped.** Laceration repair had no society guideline; replaced with
@@ -215,7 +215,7 @@ Also surfaced:
   unambiguous test-then-treat pathway.
 - **Secondary sources are unreliable about their own citations.** Three separate
   cases: two different DOIs circulating for the IDSA SSTI guideline (`ciu296` is the
-  full guideline, `ciu444` the executive summary — same trap again for pharyngitis);
+  full guideline, `ciu444` the executive summary, same trap again for pharyngitis);
   a third-party index mislabelling the 2024 AAO conjunctivitis PPP as
   "Cornea/External Disease PPP"; and **CrossRef itself** misspelling Stiell as
   "Shell" on the 1993 Ottawa Ankle Rules record. Hence `scripts/verify_dois.py`.
@@ -226,7 +226,7 @@ Also surfaced:
 Apple M4 Pro, 14 cores, 48 GB unified memory, ~270 GB free. **No CUDA**, so: MPS
 backend only, no `bitsandbytes` quantisation, no flash-attention.
 
-- Mistral-Small-24B cannot run at bf16 — the official checkpoint is 47.1 GB against
+- Mistral-Small-24B cannot run at bf16, the official checkpoint is 47.1 GB against
   48 GB of unified memory with a ~36 GB default GPU wired limit. Judge runs at
   8-bit (25.05 GB).
 - pythia-12b cannot run in float32 (~48 GB of weights alone) and runs in float16
@@ -236,7 +236,7 @@ backend only, no `bitsandbytes` quantisation, no flash-attention.
 - The checkpoint sweep is one model (pythia-1.4b) at 9 log-spaced steps, with
   download→score→delete. All 143 checkpoints across all sizes would need ~414 GB.
 
-**Useful framing:** the whole study runs on one laptop. That is worth stating — it
+**Useful framing:** the whole study runs on one laptop. That is worth stating, it
 makes the audit reproducible by anyone, which matters for an accountability paper.
 
 ### 4.4 Two numerical faults that would have produced false findings
@@ -246,7 +246,7 @@ the single most transferable lesson of the project.
 
 **(a) Grammaticality confound (D013).** The first vignette build emitted *"They is
 a non-binary person."* Ungrammatical text in the non-binary arm **alone** depresses
-that arm's sequence probability for reasons of grammaticality rather than bias —
+that arm's sequence probability for reasons of grammaticality rather than bias,
 and it would have done so consistently across every model and every vignette,
 producing exactly the clean, replicable "bias against non-binary patients" result
 we would have been most tempted to publish. Fixed by carrying verb forms per arm.
@@ -255,7 +255,7 @@ we would have been most tempted to publish. Fixed by carrying verb forms per arm
 probe reported 16 of 20 concepts as having zero gender co-occurrence, and gave
 dramatic skew for the rest (pneumonia −5.9, asthma +2.3). All of it was an artefact:
 infini-gram rate-limits with HTTP 403 and a body of `{"message": "Forbidden"}`, which
-carries no `"error"` key, so our client treated it as success and **cached it** — after
+carries no `"error"` key, so our client treated it as success and **cached it**: after
 which it read back as `cnt = 0` forever. 287 of 378 cached entries (76%) held
 "Forbidden", and the non-zero rows were sums over nine gender terms mixing blocked and
 successful queries, so those ratios were meaningless too.
@@ -263,17 +263,17 @@ successful queries, so those ratios were meaningless too.
 **(b) Precision fault (D015).** The first scored output gave **P(Yes) = 0.500 for
 every prompt in every arm**. Pythia's logits reach magnitudes around 1080, where
 bfloat16's representable spacing exceeds the gap between the " Yes" and " No"
-logits — both rounded to the same value, all options tied, and the measured gender
+logits, both rounded to the same value, all options tied, and the measured gender
 gap was identically zero everywhere.
 
 Casting logits to float32 *after* the forward pass does not help; the precision is
 already gone. Two fixes were needed: perform the final projection in float32
-(`fp32_head`), and then — after a regression test — move the whole body to float32,
+(`fp32_head`), and then, after a regression test,  move the whole body to float32,
 because measured bf16 deviation was **0.242 nats** against a **0.140 nat** gap
 between the two leading options, large enough to reverse their ranking. Gender gaps
 of interest may be exactly that small.
 
-**The common pattern — worth a paragraph of its own.** Three bugs (D013, D015, D022),
+**The common pattern, worth a paragraph of its own.** Three bugs (D013, D015, D022),
 all of which produced *plausible-looking results rather than errors*, and all three
 caught by inspecting output rather than reading code. One manufactured a clean effect,
 one manufactured a clean null, one manufactured dramatic false skew. The project's
@@ -294,14 +294,14 @@ methods, not in a footnote. We have not seen this discussed in the audit literat
 ### 4.5 Clinician access
 
 No clinician attached as of 2026-10-15. Restructured the ask rather than the
-science: the reviewer's job is **one global judgement** — do guidelines support
-sex-invariance for this condition set — not per-vignette validation (D011). ~45–60
+science: the reviewer's job is **one global judgement**: do guidelines support
+sex-invariance for this condition set, not per-vignette validation (D011). ~45–60
 minutes. Materials in `docs/clinical_review_request.md`, `clinical_review_form.md`,
 `outreach_email.md`. Five McGill contacts identified.
 
 **Contingency, and why plain deferral is not enough:** excluding unvalidated
 vignettes is **not neutral**, because the hardest conditions to source are
-disproportionately the ambiguous Group 3 ones — where bias is most expected. So the
+disproportionately the ambiguous Group 3 ones, where bias is most expected. So the
 primary analysis runs on tiers 1+2 and is repeated on tier 1 alone; if conclusions
 hold either way, the missing clinician provably does not change them.
 
@@ -356,7 +356,7 @@ mlx 0.32.3. Seed 20261009. `requirements.txt` pins all versions.
 Linear at ~83–98 ms per billion parameters; projects to ~250 ms (2.8b), ~600 ms
 (6.9b), ~1.05 s (12b). Note these are **bf16** figures; float32 roughly doubles
 them (D015). Log-probability scoring is one forward pass per option, so the full
-scoring design is well under an hour of compute — **download bandwidth, not
+scoring design is well under an hour of compute, **download bandwidth, not
 compute, is the binding constraint.**
 
 **Vignette set:** 16 templates → **288 prompts** (3 paraphrases × 2 SPCU × 3 gender
@@ -371,7 +371,7 @@ was fixed in advance (PMI) and all three are retained for sensitivity reporting.
 
 ---
 
-## 6. Limitations — draft list
+## 6. Limitations, draft list
 
 1. **Association, not causation** (RQ4). Corpus co-occurrence skew correlating with
    output gaps does not establish that the data caused the gap. The causal method
@@ -412,7 +412,7 @@ was fixed in advance (PMI) and all three are retained for sensitivity reporting.
 
 ## 8. Running list of things to do before submission
 
-- [x] Identify and assess the two ED-triage preprints (§2.1) — abstracts read
+- [x] Identify and assess the two ED-triage preprints (§2.1), abstracts read
 - [ ] Read both ED-triage preprints in **full**; decide whether to adopt a
       pre-registered flip-rate metric (§2.1)
 - [ ] Fill the verbatim guideline quote blocks in `docs/vignette_sources.md`
@@ -432,8 +432,8 @@ RQ2's hypotheses were fixed in `docs/preregistration.md` and committed before an
 analysis-ready score existed. For the write-up, three framing points matter more
 than the hypothesis list itself.
 
-**Word the claim precisely.** RQ1 was observed before the predictions were written
-— deliberately, since the predictions are derived from it. The claim is "committed
+**Word the claim precisely.** RQ1 was observed before the predictions were written,
+deliberately, since the predictions are derived from it. The claim is "committed
 before any analysis-ready output was generated," not "pre-registered blind." A
 reviewer who spots the difference and finds us overclaiming will discount the whole
 result; one who sees us state it ourselves will not. §1 of the pre-registration
@@ -442,7 +442,7 @@ smoke run.
 
 **The discriminant null is the interesting hypothesis.** H3 predicts *no* gap on
 the unskewed somatic conditions (G1-*, G4-*). An audit finding gaps everywhere
-shows much less than one finding them exactly where the corpus is skewed — the
+shows much less than one finding them exactly where the corpus is skewed, the
 latter is a mechanism claim, the former just a sentiment. So H3 failing hurts the
 thesis more than H1 or H2 failing, and the paper should say that before showing
 results, not after.
@@ -457,7 +457,7 @@ uniformly supportive result would be.
 
 **The gate to report first.** Group 2's answers genuinely differ by sex, so Δ must
 be large there. If it is not, the instrument is insensitive and every null is
-uninterpretable — H3 included, which means the mechanism claim cannot be made
+uninterpretable, H3 included, which means the mechanism claim cannot be made
 either way. Group 2 effect size therefore goes in the results before anything else.
 
 **Asymmetry to state, not bury.** RQ1 has no non-binary measure while RQ2 has a
@@ -490,14 +490,14 @@ illness, because none exists in its data.
 
 **Use it carefully in two respects.** It postdates the D025 freeze, so the
 downstream prediction (less stable, less concordant non-binary outputs) is
-exploratory, not confirmatory — say so. And the measure is phrase presence, so the
+exploratory, not confirmatory, say so. And the measure is phrase presence, so the
 claim is about this construction, not about all possible ways a non-binary patient
 might be described; `"the transgender patient has"` returns 53 and 2, which is
 near-absence of a different construct rather than the same one.
 
 ## 4d. Referral language carries the gender skew too (D026)
 
-The confirmatory hypotheses are about decisions — H1 referral, H2 triage — but
+The confirmatory hypotheses are about decisions. H1 referral, H2 triage,  but
 until now the corpus measured only which *diagnoses* attach to which gender,
 leaving a gap between the predictor and what RQ2 scores. Measuring referral and
 treatment frames directly closes it:
@@ -508,7 +508,7 @@ cardiologist/psychiatrist gap is 0.94 log2 units, roughly 1.9x.
 
 So the psychologizing pattern is present in *decision* language, not only in
 diagnosis attachment. That matters because G3-03 was dropped (D020) and
-psychologizing was otherwise reachable only through judge-coded rationales — the
+psychologizing was otherwise reachable only through judge-coded rationales, the
 weakest instrument in the project. It now has corpus evidence at the level the
 hypotheses operate on.
 
@@ -518,7 +518,7 @@ family can. And prefer within-family contrasts over absolute centred values, sin
 the centring base here is the 13 measured concepts rather than a broad sex-neutral
 pool.
 
-## §4e — The guidelines are more inclusive than the data (D034)
+## §4e, The guidelines are more inclusive than the data (D034)
 
 The sharpest version of the datasheet-to-diagnosis argument came out of sourcing,
 not modelling, and it is one sentence long: **the clinical guidance is more
@@ -529,13 +529,13 @@ themselves, rather than leaving us to impose it. CUA MLUTS/BPH: *"We acknowledge
 that not all patients identify as male. These guidelines should also be applicable
 to non-binary people, transwomen, and any patients who may have anatomical features
 of a cis-male genitourinary tract, such as a prostate."* NICE NG126's scope covers
-trans men and non-binary people. In both, the operative criterion is anatomy — the
-HL7 **SPCU** — and identity is explicitly *not* determinative.
+trans men and non-binary people. In both, the operative criterion is anatomy, the
+HL7 **SPCU**: and identity is explicitly *not* determinative.
 
 Against that, the RQ1 corpus result: `"the non-binary patient"` occurs **zero
 times** in both the Pile and olmo-mix-1124, in a frame where `"the woman has"`
 occurs 646,440 and 20,142 times respectively. Non-binary people are *present* in
-the corpora — 1,350,944 and 66,269 bare occurrences of "non-binary" — but absent
+the corpora, 1,350,944 and 66,269 bare occurrences of "non-binary",  but absent
 from the **clinical subject position**.
 
 So a model trained on these corpora cannot have learned what these guidelines
@@ -543,7 +543,7 @@ require, because the data contains no instance of the sentence in which the
 requirement would appear. This is not a performance claim and must not be written
 as one; it is a claim about what the training distribution makes learnable. It is
 also the cleanest available answer to "why audit the data rather than just the
-outputs" — an output-only audit would record a failure here, and could not say that
+outputs", an output-only audit would record a failure here, and could not say that
 the failure was structurally guaranteed.
 
 **Framing discipline.** Report this as *absence of the clinical subject position*,
@@ -555,7 +555,7 @@ what D022 was.
 
 ---
 
-## §5 — RQ6 search results: what the documentation does and does not say
+## §5, RQ6 search results: what the documentation does and does not say
 
 Ten documents retrieved 2026-10-28 (`scripts/rq6_fetch.py`, identity-checked),
 term counts in `results/tables/rq6_search_counts.csv`. **These are §4 step-2
@@ -597,7 +597,7 @@ authors did not overclaim.
    *heart attack* at −1.39, *attention deficit* at −1.16, *autism* at −1.04. A
    sentiment-neutral component can be concept-skewed, and Figure 13 would not
    show it.
-2. **Their gender measurement is binary by construction** — "co-occurrences for
+2. **Their gender measurement is binary by construction**: "co-occurrences for
    **binary pronouns**", their words. `non-binary` and `transgender` return **0
    hits in both Pile documents**. So the only gender analysis in the entire
    documentation corpus could not have detected the thing D026/D034 identifies:
@@ -645,7 +645,7 @@ the closest any document comes to the intersection:
 | Qwen3 report | 0 | 0 | 0 | 0 | 1 | 0 |
 | Qwen3 model card | 0 | 0 | 0 | 0 | 0 | 0 |
 
-The corpus this project queries for OLMo 2 — `olmo-mix-1124` — has a dataset card
+The corpus this project queries for OLMo 2, `olmo-mix-1124`,  has a dataset card
 containing **zero** occurrences of every gender term, every demographic term, and
 the word "bias". The Dolma paper, which documents the corpus family, mentions
 `gender` **once** in 64 pages while discussing `harm` twelve times.
@@ -654,7 +654,7 @@ the word "bias". The Dolma paper, which documents the corpus family, mentions
 
 **The Qwen3 comparison does not say what it looks like it says.** Qwen3's zeros sit
 beside an undisclosed training corpus, so there is nothing for its documentation to
-characterise. The contrast that matters is Pile-vs-OLMo — two projects that both
+characterise. The contrast that matters is Pile-vs-OLMo, two projects that both
 released their data, one of which documented gender composition and one of which
 did not. That shows the disclosure is a *choice*, not a property of being open.
 
@@ -662,7 +662,7 @@ did not. That shows the disclosure is a *choice*, not a property of being open.
 full read and a structural check before any level-0 code; only step 2 is done. In
 particular the OLMo 2 report has 4 `bias` and 3 `health` hits that have not been
 read in context, and the Pythia paper's 32 `gender` and 60 `bias` hits are
-substantial and unexamined — Pythia is a model suite whose stated purpose is bias
+substantial and unexamined, Pythia is a model suite whose stated purpose is bias
 research, so those hits may be about *studying* bias rather than about the corpus's
 composition. That distinction is exactly what D7 (measurement vs assertion) exists
 to record, and it cannot be settled from a hit count.
@@ -670,7 +670,7 @@ to record, and it cannot be settled from a hit count.
 
 ---
 
-## §5b — Two things the full read changed, one of them about the project's novelty
+## §5b, Two things the full read changed, one of them about the project's novelty
 
 ### The OLMo 2 absence is cleaner than the counts suggested
 
@@ -685,8 +685,8 @@ Read in context, the OLMo 2 report's hits evaporate:
 
 So a 58-page report on a fully open model family contains **no discussion of
 social bias at all**, and no medical content discussion. The model card carries one
-generic sentence — *"Such content may also be produced unintentionally, especially
-in cases involving bias, so we recommend that users consider the risks"* — with
+generic sentence, *"Such content may also be produced unintentionally, especially
+in cases involving bias, so we recommend that users consider the risks"*, with
 gender unspecified. Had the hit counts gone into the write-up unread, the paper
 would have claimed this report discusses health and bias. It discusses neither.
 
@@ -710,7 +710,7 @@ reports a **counterfactual retraining intervention**:
 
 Measured on WinoBias and CrowS-Pairs, with a clear effect across scale. So the
 claim "corpus gender statistics affect downstream gender bias" is **already
-established for Pythia specifically, causally, by intervention** — a stronger
+established for Pythia specifically, causally, by intervention**, a stronger
 design than H4's observational correlation.
 
 **What this does and does not cost us.** H4 cannot be presented as establishing
@@ -725,8 +725,8 @@ of the suite's own flagship result. Rewritten, three things remain genuinely new
    identical findings" are different claims about different harms.
 2. **Concept-level rather than pronoun-level corpus measurement.** Their
    intervention manipulated *pronoun grammatical gender* wholesale. RQ1 measures
-   the gender skew of **specific clinical concepts** — heart attack −1.39,
-   attention deficit −1.16 — which is what lets RQ4 ask whether the gap appears
+   the gender skew of **specific clinical concepts**: heart attack −1.39,
+   attention deficit −1.16, which is what lets RQ4 ask whether the gap appears
    *where the skew is*, rather than whether gender signal matters in general.
    H3's discriminant null is only meaningful at concept level.
 3. **The documentation arm.** RQ6 has no counterpart in their work.
@@ -736,8 +736,8 @@ Pythia exists to support exactly this: 154 checkpoints and a public retraining
 codebase. The strongest possible version of this project would intervene on the
 *clinical concept* frequencies and retrain, converting RQ4 from correlation to
 causation using the mechanism its own authors built. That is out of scope for a
-course project on a 48 GB laptop, and saying so explicitly — naming the design we
-would run with more compute — is better than leaving a reviewer to propose it.
+course project on a 48 GB laptop, and saying so explicitly, naming the design we
+would run with more compute, is better than leaving a reviewer to propose it.
 
 **Positioning, in one sentence.** The Pile authors measured gender bias in their
 corpus but not in clinical concepts; the Pythia authors showed corpus gender
@@ -746,12 +746,12 @@ neither connected either finding to the health applications the Pile was
 explicitly assembled to support. That is the gap, and it is narrower and more
 defensible than "nobody has looked at this".
 
-## §6 — The full audit: 10 models, 15 vignettes, and one finding the hypotheses did not predict
+## §6, The full audit: 10 models, 15 vignettes, and one finding the hypotheses did not predict
 
 Run 2026-10-29 on the AI-drafted, clinically unverified vignette set (D043). Every
 table and figure carries `verification_status = PROVISIONAL__unverified_ai_drafted`.
-Ten models — the seven-point Pythia ladder (70m to 6.9b), OLMo-2-7B base and
-Instruct, and Qwen3-8B — 11,520 option rows, 5,760 matched pairs each for O1 and
+Ten models, the seven-point Pythia ladder (70m to 6.9b), OLMo-2-7B base and
+Instruct, and Qwen3-8B, 11,520 option rows, 5,760 matched pairs each for O1 and
 O2, score key `pmi`, with the whole analysis repeated under `mean_logprob`.
 
 ### §6.1 The gate, reported first because the preregistration says so
@@ -768,7 +768,7 @@ nothing else does.
 | pythia-70m … 6.9b (7 models) | −0.0063 … +0.0015 | 0.021 – 0.105 | insensitive |
 
 **One model in ten passes.** Mean O1 on Group 2 across the whole Pythia ladder is
-0.497–0.501 against two options — chance to three decimals, at every size up to
+0.497–0.501 against two options, chance to three decimals, at every size up to
 6.9b. These models cannot tell that a pregnancy test is indicated before abdominal
 imaging in a female patient and not a male one, and no amount of scale within the
 family changes that.
@@ -788,7 +788,7 @@ margin is the largest floor in the set, ~70× the observed effect.
 
 ### §6.3 The finding: gender identity is read as the sex parameter
 
-This is **exploratory** — it is not H1–H4, it postdates the freeze, and it is
+This is **exploratory**: it is not H1–H4, it postdates the freeze, and it is
 outside the Holm family. It came out of the gate, not out of the hypotheses.
 
 Every Group 2 contrast holds SPCU **fixed** and varies only the identity label, so
@@ -816,8 +816,8 @@ parameter. The interaction statistic:
 The floor-relative magnitudes are nearly unchanged across score keys, which is what
 a floor-normalised statistic should do, and the sign pattern is identical.
 
-**Why it matters clinically.** This configuration — identity and sex parameter
-disagreeing — is the configuration of a transgender patient. A trans man (identity
+**Why it matters clinically.** This configuration, identity and sex parameter
+disagreeing, is the configuration of a transgender patient. A trans man (identity
 man, SPCU female) gets *less* probability mass on the indicated pregnancy test; a
 trans woman (identity woman, SPCU male) gets *more* mass on a cervical screening
 that is not indicated for her. The HL7 Gender Harmony Model separates these two
@@ -829,14 +829,14 @@ clinically capable models substitute one for the other.
    (D044), so no p is claimed. What is claimed is an effect 7.65× the instrument's
    own measured noise with every vignette agreeing in sign.
 2. **Partly tautological.** Only a model with clinical signal *can* show this
-   interaction, so "the capable models merge the two fields" is not a free inference — the
+   interaction, so "the capable models merge the two fields" is not a free inference, the
    Pythia nulls are consistent with merging we cannot see.
 3. **Unverified stimuli.** The clinical text is AI-drafted and has not passed a
    clinician (D043). This is the finding most worth re-running after review.
 
 ### §6.4 The uncomfortable result for the project's own thesis
 
-The only model that passes the instrument-sensitivity gate is **Qwen3-8B** — the
+The only model that passes the instrument-sensitivity gate is **Qwen3-8B**: the
 closed-data contrast, included precisely because nothing about its corpus can be
 inspected. The models whose training data *can* be queried, and on which RQ1 and
 RQ4 depend, are the models that cannot do the clinical task.
@@ -851,13 +851,13 @@ possible exists mainly where the models are too weak for the audit to say anythi
 ### §6.5 RQ4, and a negative control that fires
 
 Qwen3-8B's output gaps correlate with Pile skew at ρ = +0.70 (p = .018, n = 9) and
-with olmo-mix skew at ρ = +0.76 (p = .001, n = 13) — **while OLMo-2-7B, which was
+with olmo-mix skew at ρ = +0.76 (p = .001, n = 13), **while OLMo-2-7B, which was
 actually trained on olmo-mix, gives ρ = +0.06 and ρ = 0.00 on its own corpus.**
 
 Qwen3 was trained on neither. A corpus-skew correlation that is *stronger* for a
 model not trained on that corpus is a negative control firing: the correlation is
 tracking something general about which health concepts are gendered in English, not
-inheritance from a specific training set. H4 is therefore not merely unsupported —
+inheritance from a specific training set. H4 is therefore not merely unsupported,
 the control says the matched-versus-crossed logic it rests on does not separate the
 two. Report ρ with its n and this control, never alone (D039).
 
@@ -881,7 +881,7 @@ so its ρ = +0.705 is a between-family difference wearing a scaling result's
 clothing. **RQ3's answer is the within-family row: across the Pythia ladder the gap
 is flat and the instrument gets noisier** (D045).
 
-## §6a — Four faults this run exposed in code that had already "passed"
+## §6a, Four faults this run exposed in code that had already "passed"
 
 1. **The duplicate-option check counted models as duplicates.** `outcome_rows()`
    tested `prompt_id.duplicated()`; with ten models the same `prompt_id` recurs
@@ -892,7 +892,7 @@ is flat and the instrument gets noisier** (D045).
    as a gate reported before any result; all six contrasts held SPCU fixed inside
    the pair, so the SPCU contrast the gate needs appeared in no table. Had the run
    been reported as it stood, H3's vacuous equivalence would have been the headline
-   and nothing would have shown nine of ten instruments were at chance — and the
+   and nothing would have shown nine of ten instruments were at chance, and the
    §6.3 finding would never have been noticed.
 3. **A p-value below its own resolution.** H1 reported p = .0001, Holm p = .0003,
    **reject = True** from a two-cluster bootstrap, on an effect 10–50× smaller than
@@ -924,15 +924,15 @@ written in advance is what makes that honest.
 
 | | |
 |---|---|
-| Models where the instrument demonstrably works (gate SENSITIVE) | **3 of 10** — Qwen3-8B, OLMo-2-7B, OLMo-2-7B-Instruct |
-| Models where it does not (gate INSENSITIVE) | **7 of 10** — the whole Pythia ladder, 70m to 6.9b |
+| Models where the instrument demonstrably works (gate SENSITIVE) | **3 of 10**: Qwen3-8B, OLMo-2-7B, OLMo-2-7B-Instruct |
+| Models where it does not (gate INSENSITIVE) | **7 of 10**: the whole Pythia ladder, 70m to 6.9b |
 | Direction in all three gate-passing models | **woman arm lower** |
 | Size relative to each model's own noise floor | **2.2× to 2.5×** |
 
 **The single most important structural fact is that the gate splits the table in
 two, and only one half can be read.** The seven Pythia models cannot show a
 sex-parameter effect even where the guideline says one exists, so their small
-deltas are not evidence of fairness — they are evidence that the instrument gets
+deltas are not evidence of fairness, they are evidence that the instrument gets
 no signal out of them. D057 made this worse and more interesting: across three
 prompt formats every one of the seven *changed the sign* of its effect, so the
 direction in a Pythia row is a property of the prompt format rather than of the
@@ -942,8 +942,8 @@ be reporting the arithmetic of its own instrument.**
 The three models that do pass the gate agree on direction, and that agreement
 spans the thing the project was built to test. OLMo-2 is open-data, Qwen3 is
 closed-data, and they point the same way, so the effect is not an artefact of one
-team's corpus recipe. **Instruction tuning did not reduce it** — OLMo-2-7B 0.0168
-to OLMo-2-7B-Instruct 0.0269 — which is the opposite of the intuition that
+team's corpus recipe. **Instruction tuning did not reduce it**: OLMo-2-7B 0.0168
+to OLMo-2-7B-Instruct 0.0269, which is the opposite of the intuition that
 alignment training sands off demographic asymmetries, and is the result most
 worth stress-testing before publication.
 
@@ -960,7 +960,7 @@ escalate for one group, every time, at scale, invisibly".
 **Four concrete ways this could cause harm.**
 
 1. **Under-referral compounds.** Our Group 3 items are referral and triage
-   decisions — cardiac rehabilitation, joint replacement, chest-pain urgency —
+   decisions, cardiac rehabilitation, joint replacement, chest-pain urgency,
    chosen because each already has a documented human disparity. A model nudging
    the same direction as the existing human bias does not add a new problem; it
    *automates and launders an old one*, and it does so with the appearance of
@@ -970,8 +970,8 @@ escalate for one group, every time, at scale, invisibly".
    question, not only an ethics one.
 2. **Deference makes small effects large.** Where clinicians treat the output as
    decision support they can override, a 0.03 shift is mostly noise. Where it
-   becomes the default — a pre-filled triage level, a suggested disposition, a
-   prior-authorisation score — the shift becomes the decision for every case
+   becomes the default, a pre-filled triage level, a suggested disposition, a
+   prior-authorisation score, the shift becomes the decision for every case
    nobody has time to review.
 3. **The failure is invisible to the obvious audit.** The seven models whose
    deltas look smallest are the ones that failed the positive control. An
@@ -981,8 +981,8 @@ escalate for one group, every time, at scale, invisibly".
    instrument can detect a difference it knows exists, before reporting that it
    found none.
 4. **Instruction tuning is not a mitigation.** If the OLMo-2 base-to-instruct
-   increase holds, then the safety step that procurement most often relies on —
-   "it's the aligned version" — did not help here and may have hurt. That is a
+   increase holds, then the safety step that procurement most often relies on,
+   "it's the aligned version", did not help here and may have hurt. That is a
    procurement-relevant claim, and it is cheap to check for any model pair.
 
 **Three ways this could cut the other way, which we should say ourselves.**
@@ -991,7 +991,7 @@ escalate for one group, every time, at scale, invisibly".
    corpora directly with exact n-gram counts, and corpus skew is *editable* in a
    way model behaviour is not. If downstream asymmetry tracks measurable corpus
    asymmetry, then documentation and data curation become levers rather than
-   gestures — which is the "datasheet to diagnosis" claim in the title.
+   gestures, which is the "datasheet to diagnosis" claim in the title.
 2. **An auditable pipeline is itself a safety property.** The reason we can say
    any of this is that OLMo and Pythia publish their training corpora and those
    corpora are exactly queryable. The practical recommendation that follows is
@@ -1011,7 +1011,7 @@ design supports, at most, is narrower and more useful: **in the three models whe
 a sex-specific control confirms the instrument works, the arm labelled as a woman
 receives less of the guideline-indicated action, by two to two-and-a-half times
 the instrument's own noise floor, with the sex parameter held fixed.** The
-"sex parameter held fixed" clause is the contribution — it is what separates a
+"sex parameter held fixed" clause is the contribution, it is what separates a
 model responding to *gender identity* from a model correctly responding to
 *clinical sex*, and it is why the HL7 SPCU distinction is in the design rather
 than in the discussion.
