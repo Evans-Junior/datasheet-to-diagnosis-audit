@@ -15,9 +15,15 @@ import sys
 import time
 from pathlib import Path
 
+import os
+
 import requests
 
-MAILTO = "kwakukumi14@gmail.com"  # CrossRef asks callers to identify themselves
+# CrossRef asks callers to identify themselves; providing a contact address puts
+# requests in their "polite pool". Kept out of the source so the repository can be
+# shared without carrying a personal address: set CROSSREF_MAILTO in your
+# environment. Without it the script still runs, on the anonymous pool.
+MAILTO = os.environ.get("CROSSREF_MAILTO", "").strip()
 
 # Candidate DOIs for the project's guideline and methods citations.
 REGISTRY = {
@@ -36,7 +42,8 @@ REGISTRY = {
 
 def resolve(doi: str) -> dict:
     url = f"https://api.crossref.org/works/{doi}"
-    r = requests.get(url, params={"mailto": MAILTO}, timeout=30)
+    params = {"mailto": MAILTO} if MAILTO else {}
+    r = requests.get(url, params=params, timeout=30)
     if r.status_code == 404:
         return {"doi": doi, "ok": False, "error": "not registered"}
     r.raise_for_status()
