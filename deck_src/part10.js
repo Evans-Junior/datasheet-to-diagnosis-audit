@@ -123,11 +123,21 @@ const r4Title = R4.strongestIsUndeclared
         + `(${R4.strongest.model}, ${R4.strongest.corpus})`
       : `The strongest correlation is a model against a corpus it never saw `
         + `(${R4.strongest.model}, ${R4.strongest.corpus})`);
+// A model that discloses no training corpus has no matched test at all, which
+// is not the same as a matched correlation of zero. Plotting NaN as 0 drew Qwen
+// a zero-length bar in the "own corpus" series, which reads as "no relationship
+// with its own data" when the truth is that there is no such measurement. null
+// leaves the category empty, and the series name says who is missing and why.
+const _undeclared = r4rows.filter(r => !r.declares).map(r => r.model);
+const r4OwnName = "Against its own corpus"
+  + (_undeclared.length
+      ? ` (not disclosed: ${_undeclared.join(", ")})`
+      : "");
 s.addChart(pres.ChartType.bar, [
-  { name: "Against its own corpus", labels: r4rows.map(r => LBL(r.model)),
-    values: r4rows.map(r => (isNaN(r.own) ? 0 : r.own)) },
+  { name: r4OwnName, labels: r4rows.map(r => LBL(r.model)),
+    values: r4rows.map(r => (isNaN(r.own) ? null : r.own)) },
   { name: "Best against a corpus it never saw", labels: r4rows.map(r => LBL(r.model)),
-    values: r4rows.map(r => (isNaN(r.other) ? 0 : r.other)) },
+    values: r4rows.map(r => (isNaN(r.other) ? null : r.other)) },
 ], { x: 0.55, y: 1.7, w: 7.0, h: 3.5, barDir: "bar", barGrouping: "clustered",
   chartColors: [BERRY, "C8B4AE"],
   showTitle: true, title: r4Title,

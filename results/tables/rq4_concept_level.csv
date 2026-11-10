@@ -1,391 +1,361 @@
 model_id,revision,vignette_id,delta_o2,delta_sd,n_pairs,corpus_index,concept,skew_log2,skew_centred,skew_index,pairing,prompt_hash
-EleutherAI/pythia-1.4b,main,G1-01,-0.005710640279708246,0.0017731772647672365,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-02,0.0035998406186349974,0.004204533439766883,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-03,3.030383416297485e-06,0.0040269361062555235,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-04,0.015561314608194437,0.0058599040761315125,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-05,0.0016942379226030323,0.0008479083783051956,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G2-01,-0.0006935708440857965,0.004698052636514057,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G2-02,-0.011466869147507755,0.005318762623338303,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-01,-0.012733012339985991,0.004115963494142704,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-02,0.0015397842550353223,0.0019185907373549327,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-04,-0.004803661793860048,0.004088994103815804,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-05,-0.0048450895784423005,0.002616973303314393,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G4-01,-0.014334199324187188,0.004939185360055881,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G4-02,3.124688140009509e-05,0.0076514717686310425,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-01,-0.005710640279708246,0.0017731772647672365,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-02,0.0035998406186349974,0.004204533439766883,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-03,3.030383416297485e-06,0.0040269361062555235,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-04,0.015561314608194437,0.0058599040761315125,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-05,0.0016942379226030323,0.0008479083783051956,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G2-01,-0.0006935708440857965,0.004698052636514057,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G2-02,-0.011466869147507755,0.005318762623338303,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-01,-0.012733012339985991,0.004115963494142704,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-02,0.0015397842550353223,0.0019185907373549327,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-04,-0.004803661793860048,0.004088994103815804,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-05,-0.0048450895784423005,0.002616973303314393,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G4-01,-0.014334199324187188,0.004939185360055881,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G4-02,3.124688140009509e-05,0.0076514717686310425,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-01,-0.005710640279708246,0.0017731772647672365,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-02,0.0035998406186349974,0.004204533439766883,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-03,3.030383416297485e-06,0.0040269361062555235,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-04,0.015561314608194437,0.0058599040761315125,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G1-05,0.0016942379226030323,0.0008479083783051956,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G2-01,-0.0006935708440857965,0.004698052636514057,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G2-02,-0.011466869147507755,0.005318762623338303,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-01,-0.012733012339985991,0.004115963494142704,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-02,0.0015397842550353223,0.0019185907373549327,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-04,-0.004803661793860048,0.004088994103815804,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G3-05,-0.0048450895784423005,0.002616973303314393,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G4-01,-0.014334199324187188,0.004939185360055881,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1.4b,main,G4-02,3.124688140009509e-05,0.0076514717686310425,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-01,-0.016450844860659397,0.006115500289423221,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-02,0.006051187821916239,0.00525818813530846,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-03,0.004237082243748314,0.0023840187755771202,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-04,-0.005591822086080149,0.005835657073584473,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-05,-0.0009489434517164864,0.0007879575912272021,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G2-01,-0.0039591639534718405,0.0028407741570195535,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G2-02,0.0030698702127432836,0.0084321455402583,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-01,0.011818222598980141,0.007144282578989516,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-02,-0.007119856976571974,0.004418882373752478,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-04,0.0111242257772277,0.009130356712300823,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-05,0.005491207795184462,0.0015999217302401021,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G4-01,0.005472012901415894,0.005395287804996625,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G4-02,0.0002866446794388966,0.004199677335365501,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-01,-0.016450844860659397,0.006115500289423221,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-02,0.006051187821916239,0.00525818813530846,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-03,0.004237082243748314,0.0023840187755771202,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-04,-0.005591822086080149,0.005835657073584473,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-05,-0.0009489434517164864,0.0007879575912272021,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G2-01,-0.0039591639534718405,0.0028407741570195535,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G2-02,0.0030698702127432836,0.0084321455402583,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-01,0.011818222598980141,0.007144282578989516,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-02,-0.007119856976571974,0.004418882373752478,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-04,0.0111242257772277,0.009130356712300823,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-05,0.005491207795184462,0.0015999217302401021,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G4-01,0.005472012901415894,0.005395287804996625,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G4-02,0.0002866446794388966,0.004199677335365501,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-01,-0.016450844860659397,0.006115500289423221,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-02,0.006051187821916239,0.00525818813530846,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-03,0.004237082243748314,0.0023840187755771202,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-04,-0.005591822086080149,0.005835657073584473,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G1-05,-0.0009489434517164864,0.0007879575912272021,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G2-01,-0.0039591639534718405,0.0028407741570195535,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G2-02,0.0030698702127432836,0.0084321455402583,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-01,0.011818222598980141,0.007144282578989516,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-02,-0.007119856976571974,0.004418882373752478,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-04,0.0111242257772277,0.009130356712300823,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G3-05,0.005491207795184462,0.0015999217302401021,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G4-01,0.005472012901415894,0.005395287804996625,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-160m,main,G4-02,0.0002866446794388966,0.004199677335365501,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-01,-0.006722502860905051,0.002689148513701983,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-02,0.004187627577311781,0.0014941139731048298,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-03,-0.010049046091158744,0.005091246397885512,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-04,0.004314525433479988,0.01014378151181276,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-05,0.0005008654359495773,0.00024002777808183176,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G2-01,-0.0061444964285705395,0.001623433651645357,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G2-02,-0.011071697103170389,0.008415971976028112,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-01,-0.014295546587236927,0.007842345031714638,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-02,-0.01358508642710797,0.0052102122689202755,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-04,-0.005252704972754217,0.0034528410184861786,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-05,-0.006056496824177683,0.005340589722380978,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G4-01,-0.0022453667769344507,0.0018534543813474346,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G4-02,-0.0076468358688196484,0.0010391820676117092,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-01,-0.006722502860905051,0.002689148513701983,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-02,0.004187627577311781,0.0014941139731048298,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-03,-0.010049046091158744,0.005091246397885512,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-04,0.004314525433479988,0.01014378151181276,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-05,0.0005008654359495773,0.00024002777808183176,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G2-01,-0.0061444964285705395,0.001623433651645357,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G2-02,-0.011071697103170389,0.008415971976028112,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-01,-0.014295546587236927,0.007842345031714638,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-02,-0.01358508642710797,0.0052102122689202755,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-04,-0.005252704972754217,0.0034528410184861786,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-05,-0.006056496824177683,0.005340589722380978,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G4-01,-0.0022453667769344507,0.0018534543813474346,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G4-02,-0.0076468358688196484,0.0010391820676117092,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-01,-0.006722502860905051,0.002689148513701983,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-02,0.004187627577311781,0.0014941139731048298,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-03,-0.010049046091158744,0.005091246397885512,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-04,0.004314525433479988,0.01014378151181276,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G1-05,0.0005008654359495773,0.00024002777808183176,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G2-01,-0.0061444964285705395,0.001623433651645357,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G2-02,-0.011071697103170389,0.008415971976028112,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-01,-0.014295546587236927,0.007842345031714638,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-02,-0.01358508642710797,0.0052102122689202755,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-04,-0.005252704972754217,0.0034528410184861786,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G3-05,-0.006056496824177683,0.005340589722380978,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G4-01,-0.0022453667769344507,0.0018534543813474346,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-1b,main,G4-02,-0.0076468358688196484,0.0010391820676117092,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-01,-0.005414401649084547,0.0018302473550334934,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-02,0.012160245154580288,0.0061541657862633535,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-03,-0.01177877654800343,0.023618042836854168,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-04,0.014531090116199843,0.0066749594540779136,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-05,0.05278532048531622,0.01953422161114301,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G2-01,-0.004414418033450339,0.005826448864720499,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G2-02,-0.019722736911232625,0.01651994560916659,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-01,-0.007499336291975411,0.014429998924901311,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-02,-0.0157676094921889,0.008770349330639101,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-04,-0.015002558709246994,0.011408902365873295,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-05,-0.013607440234836732,0.004794218108594559,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G4-01,-0.011363566396862914,0.007829130711546657,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G4-02,0.01511922721933999,0.006765789068420762,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-01,-0.005414401649084547,0.0018302473550334934,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-02,0.012160245154580288,0.0061541657862633535,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-03,-0.01177877654800343,0.023618042836854168,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-04,0.014531090116199843,0.0066749594540779136,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-05,0.05278532048531622,0.01953422161114301,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G2-01,-0.004414418033450339,0.005826448864720499,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G2-02,-0.019722736911232625,0.01651994560916659,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-01,-0.007499336291975411,0.014429998924901311,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-02,-0.0157676094921889,0.008770349330639101,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-04,-0.015002558709246994,0.011408902365873295,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-05,-0.013607440234836732,0.004794218108594559,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G4-01,-0.011363566396862914,0.007829130711546657,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G4-02,0.01511922721933999,0.006765789068420762,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-01,-0.005414401649084547,0.0018302473550334934,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-02,0.012160245154580288,0.0061541657862633535,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-03,-0.01177877654800343,0.023618042836854168,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-04,0.014531090116199843,0.0066749594540779136,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G1-05,0.05278532048531622,0.01953422161114301,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G2-01,-0.004414418033450339,0.005826448864720499,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G2-02,-0.019722736911232625,0.01651994560916659,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-01,-0.007499336291975411,0.014429998924901311,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-02,-0.0157676094921889,0.008770349330639101,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-04,-0.015002558709246994,0.011408902365873295,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G3-05,-0.013607440234836732,0.004794218108594559,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G4-01,-0.011363566396862914,0.007829130711546657,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-2.8b,main,G4-02,0.01511922721933999,0.006765789068420762,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-01,-0.005540449505847293,0.0026109024943962045,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-02,-0.00599912529904717,0.0030167268552045343,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-03,-0.008633894538143968,0.004675660174953607,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-04,0.01475820641080632,0.011808888809401837,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-05,-0.0030971455815150075,0.0017007017340004346,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G2-01,-0.0002896671701000016,0.0021099336301787816,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G2-02,-0.0009006306792538518,0.0022969539814879053,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-01,-0.011949258968355516,0.004032720236856041,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-02,0.00531831867483445,0.0045819884371950765,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-04,-0.002833010753718862,0.0032763032145584903,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-05,-0.009235355003475184,0.006471332095117081,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G4-01,-0.002929190964402556,0.0023759027891506568,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G4-02,-0.001917257757468036,0.0006561268440281982,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-01,-0.005540449505847293,0.0026109024943962045,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-02,-0.00599912529904717,0.0030167268552045343,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-03,-0.008633894538143968,0.004675660174953607,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-04,0.01475820641080632,0.011808888809401837,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-05,-0.0030971455815150075,0.0017007017340004346,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G2-01,-0.0002896671701000016,0.0021099336301787816,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G2-02,-0.0009006306792538518,0.0022969539814879053,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-01,-0.011949258968355516,0.004032720236856041,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-02,0.00531831867483445,0.0045819884371950765,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-04,-0.002833010753718862,0.0032763032145584903,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-05,-0.009235355003475184,0.006471332095117081,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G4-01,-0.002929190964402556,0.0023759027891506568,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G4-02,-0.001917257757468036,0.0006561268440281982,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-01,-0.005540449505847293,0.0026109024943962045,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-02,-0.00599912529904717,0.0030167268552045343,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-03,-0.008633894538143968,0.004675660174953607,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-04,0.01475820641080632,0.011808888809401837,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G1-05,-0.0030971455815150075,0.0017007017340004346,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G2-01,-0.0002896671701000016,0.0021099336301787816,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G2-02,-0.0009006306792538518,0.0022969539814879053,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-01,-0.011949258968355516,0.004032720236856041,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-02,0.00531831867483445,0.0045819884371950765,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-04,-0.002833010753718862,0.0032763032145584903,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G3-05,-0.009235355003475184,0.006471332095117081,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G4-01,-0.002929190964402556,0.0023759027891506568,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-410m,main,G4-02,-0.001917257757468036,0.0006561268440281982,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-01,-0.0019519694311478444,0.0007771320068369415,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-02,0.004512397011097957,0.0010386711614524097,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-03,0.012965689917716886,0.006456528009036428,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-04,0.014227915476869272,0.0061355572659475685,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-05,0.012236872659870906,0.004801831307878319,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G2-01,0.0009757843362860896,0.007434991393080278,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G2-02,0.01050201659269473,0.00927335592034754,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-01,0.009456811683358324,0.00797541670815872,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-02,0.022256612664697844,0.007063243429086909,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-04,0.015705626094922005,0.006156466426953855,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-05,0.002105227077159081,0.007900523161039726,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G4-01,-0.003965773582443904,0.009037675560203696,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G4-02,0.016613561087967355,0.008770517943920498,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-01,-0.0019519694311478444,0.0007771320068369415,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-02,0.004512397011097957,0.0010386711614524097,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-03,0.012965689917716886,0.006456528009036428,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-04,0.014227915476869272,0.0061355572659475685,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-05,0.012236872659870906,0.004801831307878319,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G2-01,0.0009757843362860896,0.007434991393080278,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G2-02,0.01050201659269473,0.00927335592034754,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-01,0.009456811683358324,0.00797541670815872,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-02,0.022256612664697844,0.007063243429086909,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-04,0.015705626094922005,0.006156466426953855,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-05,0.002105227077159081,0.007900523161039726,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G4-01,-0.003965773582443904,0.009037675560203696,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G4-02,0.016613561087967355,0.008770517943920498,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-01,-0.0019519694311478444,0.0007771320068369415,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-02,0.004512397011097957,0.0010386711614524097,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-03,0.012965689917716886,0.006456528009036428,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-04,0.014227915476869272,0.0061355572659475685,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G1-05,0.012236872659870906,0.004801831307878319,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G2-01,0.0009757843362860896,0.007434991393080278,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G2-02,0.01050201659269473,0.00927335592034754,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-01,0.009456811683358324,0.00797541670815872,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-02,0.022256612664697844,0.007063243429086909,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-04,0.015705626094922005,0.006156466426953855,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G3-05,0.002105227077159081,0.007900523161039726,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G4-01,-0.003965773582443904,0.009037675560203696,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-6.9b,main,G4-02,0.016613561087967355,0.008770517943920498,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-01,-0.003078394628584037,0.008429627012141228,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-02,0.022711625763818244,0.014610485473666444,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-03,-0.014742228197053842,0.006953055192732337,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-04,-0.0024334813801684535,0.0029356542984881155,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-05,0.0010545924222395049,0.0032452333518662936,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G2-01,-0.005914851122312187,0.006184253898945288,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G2-02,0.001088017435105416,0.0024035339494861163,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-01,0.004765147817748477,0.0012911828140108159,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-02,-0.0014005673350874076,0.005682794078492851,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-04,-0.001149119182576384,0.001220698945443525,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-05,0.006681231791696232,0.0018756691819202364,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G4-01,0.014348529364907317,0.009619588996637882,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G4-02,0.0008075075350194213,0.004112226042156491,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-01,-0.003078394628584037,0.008429627012141228,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-02,0.022711625763818244,0.014610485473666444,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-03,-0.014742228197053842,0.006953055192732337,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-04,-0.0024334813801684535,0.0029356542984881155,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-05,0.0010545924222395049,0.0032452333518662936,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G2-01,-0.005914851122312187,0.006184253898945288,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G2-02,0.001088017435105416,0.0024035339494861163,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-01,0.004765147817748477,0.0012911828140108159,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-02,-0.0014005673350874076,0.005682794078492851,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-04,-0.001149119182576384,0.001220698945443525,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-05,0.006681231791696232,0.0018756691819202364,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G4-01,0.014348529364907317,0.009619588996637882,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G4-02,0.0008075075350194213,0.004112226042156491,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-01,-0.003078394628584037,0.008429627012141228,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-02,0.022711625763818244,0.014610485473666444,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-03,-0.014742228197053842,0.006953055192732337,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-04,-0.0024334813801684535,0.0029356542984881155,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G1-05,0.0010545924222395049,0.0032452333518662936,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G2-01,-0.005914851122312187,0.006184253898945288,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G2-02,0.001088017435105416,0.0024035339494861163,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-01,0.004765147817748477,0.0012911828140108159,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-02,-0.0014005673350874076,0.005682794078492851,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-04,-0.001149119182576384,0.001220698945443525,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G3-05,0.006681231791696232,0.0018756691819202364,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G4-01,0.014348529364907317,0.009619588996637882,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-EleutherAI/pythia-70m,main,G4-02,0.0008075075350194213,0.004112226042156491,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-01,0.0008071910023034756,0.015734725526375355,6,(none declared),pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-02,-0.0053327501129031805,0.003688505895234121,6,(none declared),malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-03,-0.005040825063482006,0.01734658821433972,6,(none declared),asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-04,0.0035152053089418565,0.0015529901253640008,6,(none declared),cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-05,-0.03956768699457671,0.039640169032862514,6,(none declared),type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G2-01,0.064947346982617,0.05366308850056006,6,(none declared),,,,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G2-02,-0.14419211848294314,0.16370023148083598,6,(none declared),prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-01,-0.0016661648608792083,0.01650066879203478,6,(none declared),pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-02,-0.005549962205196796,0.002690866332754434,12,(none declared),chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-04,-0.001447608548269493,0.0042072093622890225,6,(none declared),ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-05,-0.03902257279596796,0.020310310552823365,6,(none declared),autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G4-01,0.019243485108705053,0.024812799122205666,6,(none declared),,,,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G4-02,1.3877423219991209e-05,2.015822763367461e-05,6,(none declared),conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-01,0.0008071910023034756,0.015734725526375355,6,(none declared),pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-02,-0.0053327501129031805,0.003688505895234121,6,(none declared),malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-03,-0.005040825063482006,0.01734658821433972,6,(none declared),asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-04,0.0035152053089418565,0.0015529901253640008,6,(none declared),cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-05,-0.03956768699457671,0.039640169032862514,6,(none declared),type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G2-01,0.064947346982617,0.05366308850056006,6,(none declared),,,,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G2-02,-0.14419211848294314,0.16370023148083598,6,(none declared),prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-01,-0.0016661648608792083,0.01650066879203478,6,(none declared),pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-02,-0.005549962205196796,0.002690866332754434,12,(none declared),chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-04,-0.001447608548269493,0.0042072093622890225,6,(none declared),ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-05,-0.03902257279596796,0.020310310552823365,6,(none declared),autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G4-01,0.019243485108705053,0.024812799122205666,6,(none declared),,,,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G4-02,1.3877423219991209e-05,2.015822763367461e-05,6,(none declared),conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-01,0.0008071910023034756,0.015734725526375355,6,(none declared),pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-02,-0.0053327501129031805,0.003688505895234121,6,(none declared),malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-03,-0.005040825063482006,0.01734658821433972,6,(none declared),asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-04,0.0035152053089418565,0.0015529901253640008,6,(none declared),,,,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G1-05,-0.03956768699457671,0.039640169032862514,6,(none declared),type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G2-01,0.064947346982617,0.05366308850056006,6,(none declared),,,,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G2-02,-0.14419211848294314,0.16370023148083598,6,(none declared),,,,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-01,-0.0016661648608792083,0.01650066879203478,6,(none declared),pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-02,-0.005549962205196796,0.002690866332754434,12,(none declared),chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-04,-0.001447608548269493,0.0042072093622890225,6,(none declared),ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G3-05,-0.03902257279596796,0.020310310552823365,6,(none declared),autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G4-01,0.019243485108705053,0.024812799122205666,6,(none declared),,,,v4_piletrain_llama,unknown,baaa22996b4c7da9
-Qwen/Qwen3-8B,main,G4-02,1.3877423219991209e-05,2.015822763367461e-05,6,(none declared),,,,v4_piletrain_llama,unknown,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-01,0.0012377810719183303,0.006347365305092877,6,v4_olmo-mix-1124_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-02,0.0018075000792162437,0.0013586797843394393,6,v4_olmo-mix-1124_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-03,0.009600921482700383,0.02558142390966134,6,v4_olmo-mix-1124_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-04,-0.011775350187114167,0.0067629195268937995,6,v4_olmo-mix-1124_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-05,0.008525944736316918,0.004698715303507074,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G2-01,0.015561748729418956,0.017414284154626893,6,v4_olmo-mix-1124_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G2-02,-0.08406317009248014,0.05109222920987634,6,v4_olmo-mix-1124_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-01,0.0016321889952203665,0.024757773722139564,6,v4_olmo-mix-1124_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-02,0.011927906103580964,0.015835186679272584,12,v4_olmo-mix-1124_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-04,-0.0028893538441080078,0.013477848593950374,6,v4_olmo-mix-1124_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-05,-0.009868564496721447,0.01675837090126514,6,v4_olmo-mix-1124_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G4-01,-0.023876493479431642,0.012119555522802172,6,v4_olmo-mix-1124_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G4-02,0.0003526074185457088,0.0003885537564628401,6,v4_olmo-mix-1124_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-01,0.0012377810719183303,0.006347365305092877,6,v4_olmo-mix-1124_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-02,0.0018075000792162437,0.0013586797843394393,6,v4_olmo-mix-1124_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-03,0.009600921482700383,0.02558142390966134,6,v4_olmo-mix-1124_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-04,-0.011775350187114167,0.0067629195268937995,6,v4_olmo-mix-1124_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-05,0.008525944736316918,0.004698715303507074,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G2-01,0.015561748729418956,0.017414284154626893,6,v4_olmo-mix-1124_llama,,,,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G2-02,-0.08406317009248014,0.05109222920987634,6,v4_olmo-mix-1124_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-01,0.0016321889952203665,0.024757773722139564,6,v4_olmo-mix-1124_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-02,0.011927906103580964,0.015835186679272584,12,v4_olmo-mix-1124_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-04,-0.0028893538441080078,0.013477848593950374,6,v4_olmo-mix-1124_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-05,-0.009868564496721447,0.01675837090126514,6,v4_olmo-mix-1124_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G4-01,-0.023876493479431642,0.012119555522802172,6,v4_olmo-mix-1124_llama,,,,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G4-02,0.0003526074185457088,0.0003885537564628401,6,v4_olmo-mix-1124_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-01,0.0012377810719183303,0.006347365305092877,6,v4_olmo-mix-1124_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-02,0.0018075000792162437,0.0013586797843394393,6,v4_olmo-mix-1124_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-03,0.009600921482700383,0.02558142390966134,6,v4_olmo-mix-1124_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-04,-0.011775350187114167,0.0067629195268937995,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G1-05,0.008525944736316918,0.004698715303507074,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G2-01,0.015561748729418956,0.017414284154626893,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G2-02,-0.08406317009248014,0.05109222920987634,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-01,0.0016321889952203665,0.024757773722139564,6,v4_olmo-mix-1124_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-02,0.011927906103580964,0.015835186679272584,12,v4_olmo-mix-1124_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-04,-0.0028893538441080078,0.013477848593950374,6,v4_olmo-mix-1124_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G3-05,-0.009868564496721447,0.01675837090126514,6,v4_olmo-mix-1124_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G4-01,-0.023876493479431642,0.012119555522802172,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B,main,G4-02,0.0003526074185457088,0.0003885537564628401,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-01,0.00548455279444322,0.006436606591923467,6,v4_olmo-mix-1124_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-02,-0.003025134469355706,0.00963826443775695,6,v4_olmo-mix-1124_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-03,-0.0018744210146378244,0.0020049358769476,6,v4_olmo-mix-1124_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-04,-0.00025590825330761214,9.702311246596725e-05,6,v4_olmo-mix-1124_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-05,-0.009841952470282168,0.025560189471688415,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G2-01,0.007390341458740753,0.014591962080903107,6,v4_olmo-mix-1124_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G2-02,-0.10096499880583885,0.09313514536278425,6,v4_olmo-mix-1124_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-01,0.0020722781342898586,0.017356773086683465,6,v4_olmo-mix-1124_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-02,-0.0006597439098654905,0.024458990255860992,12,v4_olmo-mix-1124_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-04,-0.010815285956097173,0.029827080397397766,6,v4_olmo-mix-1124_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-05,-0.028710278425191176,0.06048013807016879,6,v4_olmo-mix-1124_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G4-01,-0.010681908648767361,0.007687204763753956,6,v4_olmo-mix-1124_llama,,,,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G4-02,6.6069942568819755e-06,8.081726915562587e-06,6,v4_olmo-mix-1124_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-01,0.00548455279444322,0.006436606591923467,6,v4_olmo-mix-1124_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-02,-0.003025134469355706,0.00963826443775695,6,v4_olmo-mix-1124_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-03,-0.0018744210146378244,0.0020049358769476,6,v4_olmo-mix-1124_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-04,-0.00025590825330761214,9.702311246596725e-05,6,v4_olmo-mix-1124_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-05,-0.009841952470282168,0.025560189471688415,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G2-01,0.007390341458740753,0.014591962080903107,6,v4_olmo-mix-1124_llama,,,,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G2-02,-0.10096499880583885,0.09313514536278425,6,v4_olmo-mix-1124_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-01,0.0020722781342898586,0.017356773086683465,6,v4_olmo-mix-1124_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-02,-0.0006597439098654905,0.024458990255860992,12,v4_olmo-mix-1124_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-04,-0.010815285956097173,0.029827080397397766,6,v4_olmo-mix-1124_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-05,-0.028710278425191176,0.06048013807016879,6,v4_olmo-mix-1124_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G4-01,-0.010681908648767361,0.007687204763753956,6,v4_olmo-mix-1124_llama,,,,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G4-02,6.6069942568819755e-06,8.081726915562587e-06,6,v4_olmo-mix-1124_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,matched,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-01,0.00548455279444322,0.006436606591923467,6,v4_olmo-mix-1124_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-02,-0.003025134469355706,0.00963826443775695,6,v4_olmo-mix-1124_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-03,-0.0018744210146378244,0.0020049358769476,6,v4_olmo-mix-1124_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-04,-0.00025590825330761214,9.702311246596725e-05,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G1-05,-0.009841952470282168,0.025560189471688415,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G2-01,0.007390341458740753,0.014591962080903107,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G2-02,-0.10096499880583885,0.09313514536278425,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-01,0.0020722781342898586,0.017356773086683465,6,v4_olmo-mix-1124_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-02,-0.0006597439098654905,0.024458990255860992,12,v4_olmo-mix-1124_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-04,-0.010815285956097173,0.029827080397397766,6,v4_olmo-mix-1124_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G3-05,-0.028710278425191176,0.06048013807016879,6,v4_olmo-mix-1124_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G4-01,-0.010681908648767361,0.007687204763753956,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
-allenai/OLMo-2-1124-7B-Instruct,main,G4-02,6.6069942568819755e-06,8.081726915562587e-06,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,baaa22996b4c7da9
+EleutherAI/pythia-1.4b,main,G1-01,-0.005710640279708246,0.0017731772647672365,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-02,0.0035998406186349974,0.004204533439766883,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-03,3.030383416297485e-06,0.0040269361062555235,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-04,0.015561314608194437,0.0058599040761315125,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-05,0.0016942379226030323,0.0008479083783051956,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G2-02,-0.011466869147507755,0.005318762623338303,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-01,-0.012733012339985991,0.004115963494142704,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-02,0.0015397842550353223,0.0019185907373549327,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-04,-0.004803661793860048,0.004088994103815804,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-05,-0.0048450895784423005,0.002616973303314393,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G4-01,-0.014334199324187188,0.004939185360055881,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G4-02,3.124688140009509e-05,0.0076514717686310425,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-01,-0.005710640279708246,0.0017731772647672365,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-02,0.0035998406186349974,0.004204533439766883,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-03,3.030383416297485e-06,0.0040269361062555235,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-04,0.015561314608194437,0.0058599040761315125,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-05,0.0016942379226030323,0.0008479083783051956,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G2-02,-0.011466869147507755,0.005318762623338303,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-01,-0.012733012339985991,0.004115963494142704,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-02,0.0015397842550353223,0.0019185907373549327,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-04,-0.004803661793860048,0.004088994103815804,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-05,-0.0048450895784423005,0.002616973303314393,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G4-01,-0.014334199324187188,0.004939185360055881,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G4-02,3.124688140009509e-05,0.0076514717686310425,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-01,-0.005710640279708246,0.0017731772647672365,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-02,0.0035998406186349974,0.004204533439766883,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-03,3.030383416297485e-06,0.0040269361062555235,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-04,0.015561314608194437,0.0058599040761315125,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G1-05,0.0016942379226030323,0.0008479083783051956,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G2-02,-0.011466869147507755,0.005318762623338303,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-01,-0.012733012339985991,0.004115963494142704,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-02,0.0015397842550353223,0.0019185907373549327,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-04,-0.004803661793860048,0.004088994103815804,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G3-05,-0.0048450895784423005,0.002616973303314393,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G4-01,-0.014334199324187188,0.004939185360055881,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1.4b,main,G4-02,3.124688140009509e-05,0.0076514717686310425,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-01,-0.016450844860659397,0.006115500289423221,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-02,0.006051187821916239,0.00525818813530846,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-03,0.004237082243748314,0.0023840187755771202,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-04,-0.005591822086080149,0.005835657073584473,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-05,-0.0009489434517164864,0.0007879575912272021,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G2-02,0.0030698702127432836,0.0084321455402583,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-01,0.011818222598980141,0.007144282578989516,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-02,-0.007119856976571974,0.004418882373752478,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-04,0.0111242257772277,0.009130356712300823,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-05,0.005491207795184462,0.0015999217302401021,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G4-01,0.005472012901415894,0.005395287804996625,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G4-02,0.0002866446794388966,0.004199677335365501,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-01,-0.016450844860659397,0.006115500289423221,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-02,0.006051187821916239,0.00525818813530846,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-03,0.004237082243748314,0.0023840187755771202,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-04,-0.005591822086080149,0.005835657073584473,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-05,-0.0009489434517164864,0.0007879575912272021,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G2-02,0.0030698702127432836,0.0084321455402583,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-01,0.011818222598980141,0.007144282578989516,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-02,-0.007119856976571974,0.004418882373752478,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-04,0.0111242257772277,0.009130356712300823,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-05,0.005491207795184462,0.0015999217302401021,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G4-01,0.005472012901415894,0.005395287804996625,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G4-02,0.0002866446794388966,0.004199677335365501,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-01,-0.016450844860659397,0.006115500289423221,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-02,0.006051187821916239,0.00525818813530846,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-03,0.004237082243748314,0.0023840187755771202,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-04,-0.005591822086080149,0.005835657073584473,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G1-05,-0.0009489434517164864,0.0007879575912272021,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G2-02,0.0030698702127432836,0.0084321455402583,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-01,0.011818222598980141,0.007144282578989516,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-02,-0.007119856976571974,0.004418882373752478,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-04,0.0111242257772277,0.009130356712300823,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G3-05,0.005491207795184462,0.0015999217302401021,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G4-01,0.005472012901415894,0.005395287804996625,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-160m,main,G4-02,0.0002866446794388966,0.004199677335365501,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-01,-0.006722502860905051,0.002689148513701983,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-02,0.004187627577311781,0.0014941139731048298,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-03,-0.010049046091158744,0.005091246397885512,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-04,0.004314525433479988,0.01014378151181276,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-05,0.0005008654359495773,0.00024002777808183176,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G2-02,-0.011071697103170389,0.008415971976028112,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-01,-0.014295546587236927,0.007842345031714638,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-02,-0.01358508642710797,0.0052102122689202755,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-04,-0.005252704972754217,0.0034528410184861786,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-05,-0.006056496824177683,0.005340589722380978,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G4-01,-0.0022453667769344507,0.0018534543813474346,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G4-02,-0.0076468358688196484,0.0010391820676117092,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-01,-0.006722502860905051,0.002689148513701983,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-02,0.004187627577311781,0.0014941139731048298,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-03,-0.010049046091158744,0.005091246397885512,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-04,0.004314525433479988,0.01014378151181276,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-05,0.0005008654359495773,0.00024002777808183176,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G2-02,-0.011071697103170389,0.008415971976028112,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-01,-0.014295546587236927,0.007842345031714638,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-02,-0.01358508642710797,0.0052102122689202755,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-04,-0.005252704972754217,0.0034528410184861786,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-05,-0.006056496824177683,0.005340589722380978,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G4-01,-0.0022453667769344507,0.0018534543813474346,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G4-02,-0.0076468358688196484,0.0010391820676117092,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-01,-0.006722502860905051,0.002689148513701983,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-02,0.004187627577311781,0.0014941139731048298,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-03,-0.010049046091158744,0.005091246397885512,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-04,0.004314525433479988,0.01014378151181276,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G1-05,0.0005008654359495773,0.00024002777808183176,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G2-02,-0.011071697103170389,0.008415971976028112,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-01,-0.014295546587236927,0.007842345031714638,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-02,-0.01358508642710797,0.0052102122689202755,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-04,-0.005252704972754217,0.0034528410184861786,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G3-05,-0.006056496824177683,0.005340589722380978,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G4-01,-0.0022453667769344507,0.0018534543813474346,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-1b,main,G4-02,-0.0076468358688196484,0.0010391820676117092,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-01,-0.005414401649084547,0.0018302473550334934,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-02,0.012160245154580288,0.0061541657862633535,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-03,-0.01177877654800343,0.023618042836854168,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-04,0.014531090116199843,0.0066749594540779136,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-05,0.05278532048531622,0.01953422161114301,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G2-02,-0.019722736911232625,0.01651994560916659,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-01,-0.007499336291975411,0.014429998924901311,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-02,-0.0157676094921889,0.008770349330639101,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-04,-0.015002558709246994,0.011408902365873295,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-05,-0.013607440234836732,0.004794218108594559,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G4-01,-0.011363566396862914,0.007829130711546657,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G4-02,0.01511922721933999,0.006765789068420762,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-01,-0.005414401649084547,0.0018302473550334934,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-02,0.012160245154580288,0.0061541657862633535,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-03,-0.01177877654800343,0.023618042836854168,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-04,0.014531090116199843,0.0066749594540779136,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-05,0.05278532048531622,0.01953422161114301,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G2-02,-0.019722736911232625,0.01651994560916659,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-01,-0.007499336291975411,0.014429998924901311,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-02,-0.0157676094921889,0.008770349330639101,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-04,-0.015002558709246994,0.011408902365873295,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-05,-0.013607440234836732,0.004794218108594559,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G4-01,-0.011363566396862914,0.007829130711546657,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G4-02,0.01511922721933999,0.006765789068420762,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-01,-0.005414401649084547,0.0018302473550334934,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-02,0.012160245154580288,0.0061541657862633535,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-03,-0.01177877654800343,0.023618042836854168,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-04,0.014531090116199843,0.0066749594540779136,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G1-05,0.05278532048531622,0.01953422161114301,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G2-02,-0.019722736911232625,0.01651994560916659,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-01,-0.007499336291975411,0.014429998924901311,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-02,-0.0157676094921889,0.008770349330639101,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-04,-0.015002558709246994,0.011408902365873295,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G3-05,-0.013607440234836732,0.004794218108594559,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G4-01,-0.011363566396862914,0.007829130711546657,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-2.8b,main,G4-02,0.01511922721933999,0.006765789068420762,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-01,-0.005540449505847293,0.0026109024943962045,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-02,-0.00599912529904717,0.0030167268552045343,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-03,-0.008633894538143968,0.004675660174953607,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-04,0.01475820641080632,0.011808888809401837,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-05,-0.0030971455815150075,0.0017007017340004346,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G2-02,-0.0009006306792538518,0.0022969539814879053,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-01,-0.011949258968355516,0.004032720236856041,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-02,0.00531831867483445,0.0045819884371950765,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-04,-0.002833010753718862,0.0032763032145584903,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-05,-0.009235355003475184,0.006471332095117081,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G4-01,-0.002929190964402556,0.0023759027891506568,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G4-02,-0.001917257757468036,0.0006561268440281982,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-01,-0.005540449505847293,0.0026109024943962045,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-02,-0.00599912529904717,0.0030167268552045343,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-03,-0.008633894538143968,0.004675660174953607,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-04,0.01475820641080632,0.011808888809401837,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-05,-0.0030971455815150075,0.0017007017340004346,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G2-02,-0.0009006306792538518,0.0022969539814879053,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-01,-0.011949258968355516,0.004032720236856041,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-02,0.00531831867483445,0.0045819884371950765,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-04,-0.002833010753718862,0.0032763032145584903,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-05,-0.009235355003475184,0.006471332095117081,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G4-01,-0.002929190964402556,0.0023759027891506568,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G4-02,-0.001917257757468036,0.0006561268440281982,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-01,-0.005540449505847293,0.0026109024943962045,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-02,-0.00599912529904717,0.0030167268552045343,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-03,-0.008633894538143968,0.004675660174953607,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-04,0.01475820641080632,0.011808888809401837,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G1-05,-0.0030971455815150075,0.0017007017340004346,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G2-02,-0.0009006306792538518,0.0022969539814879053,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-01,-0.011949258968355516,0.004032720236856041,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-02,0.00531831867483445,0.0045819884371950765,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-04,-0.002833010753718862,0.0032763032145584903,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G3-05,-0.009235355003475184,0.006471332095117081,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G4-01,-0.002929190964402556,0.0023759027891506568,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-410m,main,G4-02,-0.001917257757468036,0.0006561268440281982,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-01,-0.0019519694311478444,0.0007771320068369415,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-02,0.004512397011097957,0.0010386711614524097,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-03,0.012965689917716886,0.006456528009036428,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-04,0.014227915476869272,0.0061355572659475685,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-05,0.012236872659870906,0.004801831307878319,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G2-02,0.01050201659269473,0.00927335592034754,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-01,0.009456811683358324,0.00797541670815872,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-02,0.022256612664697844,0.007063243429086909,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-04,0.015705626094922005,0.006156466426953855,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-05,0.002105227077159081,0.007900523161039726,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G4-01,-0.003965773582443904,0.009037675560203696,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G4-02,0.016613561087967355,0.008770517943920498,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-01,-0.0019519694311478444,0.0007771320068369415,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-02,0.004512397011097957,0.0010386711614524097,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-03,0.012965689917716886,0.006456528009036428,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-04,0.014227915476869272,0.0061355572659475685,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-05,0.012236872659870906,0.004801831307878319,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G2-02,0.01050201659269473,0.00927335592034754,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-01,0.009456811683358324,0.00797541670815872,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-02,0.022256612664697844,0.007063243429086909,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-04,0.015705626094922005,0.006156466426953855,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-05,0.002105227077159081,0.007900523161039726,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G4-01,-0.003965773582443904,0.009037675560203696,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G4-02,0.016613561087967355,0.008770517943920498,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-01,-0.0019519694311478444,0.0007771320068369415,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-02,0.004512397011097957,0.0010386711614524097,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-03,0.012965689917716886,0.006456528009036428,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-04,0.014227915476869272,0.0061355572659475685,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G1-05,0.012236872659870906,0.004801831307878319,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G2-02,0.01050201659269473,0.00927335592034754,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-01,0.009456811683358324,0.00797541670815872,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-02,0.022256612664697844,0.007063243429086909,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-04,0.015705626094922005,0.006156466426953855,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G3-05,0.002105227077159081,0.007900523161039726,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G4-01,-0.003965773582443904,0.009037675560203696,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-6.9b,main,G4-02,0.016613561087967355,0.008770517943920498,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-01,-0.003078394628584037,0.008429627012141228,6,v4_piletrain_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-02,0.022711625763818244,0.014610485473666444,6,v4_piletrain_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-03,-0.014742228197053842,0.006953055192732337,6,v4_piletrain_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-04,-0.0024334813801684535,0.0029356542984881155,6,v4_piletrain_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-05,0.0010545924222395049,0.0032452333518662936,6,v4_piletrain_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G2-02,0.001088017435105416,0.0024035339494861163,6,v4_piletrain_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-01,0.004765147817748477,0.0012911828140108159,6,v4_piletrain_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-02,-0.0014005673350874076,0.005682794078492851,12,v4_piletrain_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-04,-0.001149119182576384,0.001220698945443525,6,v4_piletrain_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-05,0.006681231791696232,0.0018756691819202364,6,v4_piletrain_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G4-01,0.014348529364907317,0.009619588996637882,6,v4_piletrain_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G4-02,0.0008075075350194213,0.004112226042156491,6,v4_piletrain_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-01,-0.003078394628584037,0.008429627012141228,6,v4_piletrain_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-02,0.022711625763818244,0.014610485473666444,6,v4_piletrain_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-03,-0.014742228197053842,0.006953055192732337,6,v4_piletrain_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-04,-0.0024334813801684535,0.0029356542984881155,6,v4_piletrain_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-05,0.0010545924222395049,0.0032452333518662936,6,v4_piletrain_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G2-02,0.001088017435105416,0.0024035339494861163,6,v4_piletrain_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-01,0.004765147817748477,0.0012911828140108159,6,v4_piletrain_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-02,-0.0014005673350874076,0.005682794078492851,12,v4_piletrain_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-04,-0.001149119182576384,0.001220698945443525,6,v4_piletrain_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-05,0.006681231791696232,0.0018756691819202364,6,v4_piletrain_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G4-01,0.014348529364907317,0.009619588996637882,6,v4_piletrain_llama,,,,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G4-02,0.0008075075350194213,0.004112226042156491,6,v4_piletrain_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,crossed,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-01,-0.003078394628584037,0.008429627012141228,6,v4_piletrain_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-02,0.022711625763818244,0.014610485473666444,6,v4_piletrain_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-03,-0.014742228197053842,0.006953055192732337,6,v4_piletrain_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-04,-0.0024334813801684535,0.0029356542984881155,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G1-05,0.0010545924222395049,0.0032452333518662936,6,v4_piletrain_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G2-02,0.001088017435105416,0.0024035339494861163,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-01,0.004765147817748477,0.0012911828140108159,6,v4_piletrain_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-02,-0.0014005673350874076,0.005682794078492851,12,v4_piletrain_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-04,-0.001149119182576384,0.001220698945443525,6,v4_piletrain_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G3-05,0.006681231791696232,0.0018756691819202364,6,v4_piletrain_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G4-01,0.014348529364907317,0.009619588996637882,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+EleutherAI/pythia-70m,main,G4-02,0.0008075075350194213,0.004112226042156491,6,v4_piletrain_llama,,,,v4_piletrain_llama,matched,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-01,0.0008071910023034756,0.015734725526375355,6,(none declared),pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-02,-0.0053327501129031805,0.003688505895234121,6,(none declared),malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-03,-0.005040825063482006,0.01734658821433972,6,(none declared),asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-04,0.0035152053089418565,0.0015529901253640008,6,(none declared),cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-05,-0.03956768699457671,0.039640169032862514,6,(none declared),type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G2-02,-0.14419211848294314,0.16370023148083598,6,(none declared),prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-01,-0.0016661648608792083,0.01650066879203478,6,(none declared),pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-02,-0.005549962205196796,0.002690866332754434,12,(none declared),chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-04,-0.001447608548269493,0.0042072093622890225,6,(none declared),ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-05,-0.03902257279596796,0.020310310552823365,6,(none declared),autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G4-01,0.019243485108705053,0.024812799122205666,6,(none declared),,,,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G4-02,1.3877423219991209e-05,2.015822763367461e-05,6,(none declared),conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-01,0.0008071910023034756,0.015734725526375355,6,(none declared),pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-02,-0.0053327501129031805,0.003688505895234121,6,(none declared),malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-03,-0.005040825063482006,0.01734658821433972,6,(none declared),asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-04,0.0035152053089418565,0.0015529901253640008,6,(none declared),cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-05,-0.03956768699457671,0.039640169032862514,6,(none declared),type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G2-02,-0.14419211848294314,0.16370023148083598,6,(none declared),prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-01,-0.0016661648608792083,0.01650066879203478,6,(none declared),pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-02,-0.005549962205196796,0.002690866332754434,12,(none declared),chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-04,-0.001447608548269493,0.0042072093622890225,6,(none declared),ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-05,-0.03902257279596796,0.020310310552823365,6,(none declared),autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G4-01,0.019243485108705053,0.024812799122205666,6,(none declared),,,,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G4-02,1.3877423219991209e-05,2.015822763367461e-05,6,(none declared),conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-01,0.0008071910023034756,0.015734725526375355,6,(none declared),pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-02,-0.0053327501129031805,0.003688505895234121,6,(none declared),malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-03,-0.005040825063482006,0.01734658821433972,6,(none declared),asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-04,0.0035152053089418565,0.0015529901253640008,6,(none declared),,,,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G1-05,-0.03956768699457671,0.039640169032862514,6,(none declared),type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G2-02,-0.14419211848294314,0.16370023148083598,6,(none declared),,,,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-01,-0.0016661648608792083,0.01650066879203478,6,(none declared),pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-02,-0.005549962205196796,0.002690866332754434,12,(none declared),chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-04,-0.001447608548269493,0.0042072093622890225,6,(none declared),ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G3-05,-0.03902257279596796,0.020310310552823365,6,(none declared),autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G4-01,0.019243485108705053,0.024812799122205666,6,(none declared),,,,v4_piletrain_llama,unknown,18f637733ab522a1
+Qwen/Qwen3-8B,main,G4-02,1.3877423219991209e-05,2.015822763367461e-05,6,(none declared),,,,v4_piletrain_llama,unknown,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-01,0.0012377810719183303,0.006347365305092877,6,v4_olmo-mix-1124_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-02,0.0018075000792162437,0.0013586797843394393,6,v4_olmo-mix-1124_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-03,0.009600921482700383,0.02558142390966134,6,v4_olmo-mix-1124_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-04,-0.011775350187114167,0.0067629195268937995,6,v4_olmo-mix-1124_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-05,0.008525944736316918,0.004698715303507074,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G2-02,-0.08406317009248014,0.05109222920987634,6,v4_olmo-mix-1124_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-01,0.0016321889952203665,0.024757773722139564,6,v4_olmo-mix-1124_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-02,0.011927906103580964,0.015835186679272584,12,v4_olmo-mix-1124_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-04,-0.0028893538441080078,0.013477848593950374,6,v4_olmo-mix-1124_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-05,-0.009868564496721447,0.01675837090126514,6,v4_olmo-mix-1124_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G4-01,-0.023876493479431642,0.012119555522802172,6,v4_olmo-mix-1124_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G4-02,0.0003526074185457088,0.0003885537564628401,6,v4_olmo-mix-1124_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-01,0.0012377810719183303,0.006347365305092877,6,v4_olmo-mix-1124_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-02,0.0018075000792162437,0.0013586797843394393,6,v4_olmo-mix-1124_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-03,0.009600921482700383,0.02558142390966134,6,v4_olmo-mix-1124_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-04,-0.011775350187114167,0.0067629195268937995,6,v4_olmo-mix-1124_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-05,0.008525944736316918,0.004698715303507074,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G2-02,-0.08406317009248014,0.05109222920987634,6,v4_olmo-mix-1124_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-01,0.0016321889952203665,0.024757773722139564,6,v4_olmo-mix-1124_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-02,0.011927906103580964,0.015835186679272584,12,v4_olmo-mix-1124_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-04,-0.0028893538441080078,0.013477848593950374,6,v4_olmo-mix-1124_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-05,-0.009868564496721447,0.01675837090126514,6,v4_olmo-mix-1124_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G4-01,-0.023876493479431642,0.012119555522802172,6,v4_olmo-mix-1124_llama,,,,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G4-02,0.0003526074185457088,0.0003885537564628401,6,v4_olmo-mix-1124_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-01,0.0012377810719183303,0.006347365305092877,6,v4_olmo-mix-1124_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-02,0.0018075000792162437,0.0013586797843394393,6,v4_olmo-mix-1124_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-03,0.009600921482700383,0.02558142390966134,6,v4_olmo-mix-1124_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-04,-0.011775350187114167,0.0067629195268937995,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G1-05,0.008525944736316918,0.004698715303507074,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G2-02,-0.08406317009248014,0.05109222920987634,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-01,0.0016321889952203665,0.024757773722139564,6,v4_olmo-mix-1124_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-02,0.011927906103580964,0.015835186679272584,12,v4_olmo-mix-1124_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-04,-0.0028893538441080078,0.013477848593950374,6,v4_olmo-mix-1124_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G3-05,-0.009868564496721447,0.01675837090126514,6,v4_olmo-mix-1124_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G4-01,-0.023876493479431642,0.012119555522802172,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B,main,G4-02,0.0003526074185457088,0.0003885537564628401,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-01,0.00548455279444322,0.006436606591923467,6,v4_olmo-mix-1124_llama,pneumonia,0.9506146047319765,-0.12702245829246583,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-02,-0.003025134469355706,0.00963826443775695,6,v4_olmo-mix-1124_llama,malaria,0.1699582132700826,-0.9076788497543598,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-03,-0.0018744210146378244,0.0020049358769476,6,v4_olmo-mix-1124_llama,asthma,0.6266105342296371,-0.4510265287948052,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-04,-0.00025590825330761214,9.702311246596725e-05,6,v4_olmo-mix-1124_llama,cellulitis,0.588889011476918,-0.4887480515475243,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-05,-0.009841952470282168,0.025560189471688415,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.654950630913488,-0.42268643211095425,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G2-02,-0.10096499880583885,0.09313514536278425,6,v4_olmo-mix-1124_llama,prostate,-6.077047110433146,-7.1546841734575874,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-01,0.0020722781342898586,0.017356773086683465,6,v4_olmo-mix-1124_llama,pain,0.7824787976904,-0.2951582653340423,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-02,-0.0006597439098654905,0.024458990255860992,12,v4_olmo-mix-1124_llama,chest pain,0.0839907118536999,-0.9936463511707424,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-04,-0.010815285956097173,0.029827080397397766,6,v4_olmo-mix-1124_llama,ADHD,-0.2398745134860878,-1.31751157651053,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-05,-0.028710278425191176,0.06048013807016879,6,v4_olmo-mix-1124_llama,autism,-0.4765272434357452,-1.5541643064601876,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G4-01,-0.010681908648767361,0.007687204763753956,6,v4_olmo-mix-1124_llama,,,,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G4-02,6.6069942568819755e-06,8.081726915562587e-06,6,v4_olmo-mix-1124_llama,conjunctivitis,0.4827559903978938,-0.5948810726265485,v4_dclm-baseline_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-01,0.00548455279444322,0.006436606591923467,6,v4_olmo-mix-1124_llama,pneumonia,0.9504508698791876,-0.019401503750560378,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-02,-0.003025134469355706,0.00963826443775695,6,v4_olmo-mix-1124_llama,malaria,0.1707014815974742,-0.7991508920322737,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-03,-0.0018744210146378244,0.0020049358769476,6,v4_olmo-mix-1124_llama,asthma,0.6277805715170534,-0.3420718021126946,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-04,-0.00025590825330761214,9.702311246596725e-05,6,v4_olmo-mix-1124_llama,cellulitis,0.628025344638831,-0.341827028990917,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-05,-0.009841952470282168,0.025560189471688415,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.6598810692787147,-0.30997130435103326,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G2-02,-0.10096499880583885,0.09313514536278425,6,v4_olmo-mix-1124_llama,prostate,-6.069998017281678,-7.039850390911426,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-01,0.0020722781342898586,0.017356773086683465,6,v4_olmo-mix-1124_llama,pain,0.7937880504581146,-0.17606432317163334,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-02,-0.0006597439098654905,0.024458990255860992,12,v4_olmo-mix-1124_llama,chest pain,0.1110892365416081,-0.8587631370881399,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-04,-0.010815285956097173,0.029827080397397766,6,v4_olmo-mix-1124_llama,ADHD,-0.2396163526404187,-1.2094687262701667,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-05,-0.028710278425191176,0.06048013807016879,6,v4_olmo-mix-1124_llama,autism,-0.4752294999412303,-1.4450818735709783,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G4-01,-0.010681908648767361,0.007687204763753956,6,v4_olmo-mix-1124_llama,,,,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G4-02,6.6069942568819755e-06,8.081726915562587e-06,6,v4_olmo-mix-1124_llama,conjunctivitis,0.4967911210307841,-0.47306125259896387,v4_olmo-mix-1124_llama,matched,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-01,0.00548455279444322,0.006436606591923467,6,v4_olmo-mix-1124_llama,pneumonia,1.3276958405320696,0.36156204490081023,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-02,-0.003025134469355706,0.00963826443775695,6,v4_olmo-mix-1124_llama,malaria,0.244624907381219,-0.7215088882500403,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-03,-0.0018744210146378244,0.0020049358769476,6,v4_olmo-mix-1124_llama,asthma,0.6541004692061637,-0.3120333264250956,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-04,-0.00025590825330761214,9.702311246596725e-05,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G1-05,-0.009841952470282168,0.025560189471688415,6,v4_olmo-mix-1124_llama,type 2 diabetes,0.6027978634568615,-0.36333593217439786,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G2-02,-0.10096499880583885,0.09313514536278425,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-01,0.0020722781342898586,0.017356773086683465,6,v4_olmo-mix-1124_llama,pain,0.969688494045056,0.003554698413796631,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-02,-0.0006597439098654905,0.024458990255860992,12,v4_olmo-mix-1124_llama,chest pain,0.1062835816095461,-0.8598502140217132,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-04,-0.010815285956097173,0.029827080397397766,6,v4_olmo-mix-1124_llama,ADHD,-0.0201741693956213,-0.9863079650268807,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G3-05,-0.028710278425191176,0.06048013807016879,6,v4_olmo-mix-1124_llama,autism,-0.2687075093514712,-1.2348413049827305,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G4-01,-0.010681908648767361,0.007687204763753956,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,18f637733ab522a1
+allenai/OLMo-2-1124-7B-Instruct,main,G4-02,6.6069942568819755e-06,8.081726915562587e-06,6,v4_olmo-mix-1124_llama,,,,v4_piletrain_llama,crossed,18f637733ab522a1

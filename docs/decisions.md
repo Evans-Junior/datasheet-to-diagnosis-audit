@@ -4978,3 +4978,90 @@ overflow or overlap against the pre-change baseline, and a scan of the extracted
 slide text finds none of the nine stale figures outside that historical column.
 The JS Spearman added for `corpusAgreement` matches `scipy.stats.spearmanr` to
 four decimals (0.9762).
+
+## D096, the deck was being written to a directory nobody reads, and the build only ran on one machine
+
+**Context.** D095 wired nine slides to `results/tables` and fixed the build
+fault that had been truncating the deck at slide 37. The scoring run finished on
+2026-11-09 at 22:48, the pipeline rebuilt the deck as its last step, and the
+rebuild was checked against the live tables. Four further faults surfaced, two
+of them in the build rather than in any slide.
+
+**The build wrote the deck somewhere nobody reads.** `deck_src/build.js` set
+`OUT` to a bare filename, so the deck landed in whatever directory `node` was
+started from. The resume driver does `cd deck_src && node build.js`, so the file
+went to `deck_src/Datasheet_to_Diagnosis_Presentation.pptx` while the tracked
+copy at the repository root, which `README.md` and `deck_src/README.md` both
+point readers at, stayed as it was last written by hand. That root copy was
+dated 2026-11-08 02:01 against a build that had just succeeded at 22:48. The
+pipeline reported `built Datasheet_to_Diagnosis_Presentation.pptx` and was
+telling the truth about a file nobody would open.
+
+`OUT` is now `path.join(__dirname, "..", ...)`, which is the repository root
+whatever the working directory is, and `deck_src/` holds no `.pptx` at all. The
+lesson generalises past this build: a relative output path in a script that is
+run from more than one directory writes to more than one place, and the copy
+people read is the one that goes stale.
+
+**The build only ran on one machine.** `build.js` reached outside the
+repository for its theme helper, by absolute path, into a per-user tooling
+directory that `.gitignore` excludes. So the build worked here and nowhere else:
+a teammate or a marker cloning the repository could not produce the deck, which
+makes the deck unreproducible in exactly the sense this entire log exists to
+defend. `deck_src/theme.js` now does that job inside the
+repository, with the two guards that matter kept: a scheme colour handed to a
+hex-only option, and a dash value PowerPoint would refuse. Both throw before
+anything is written, so a failed build leaves the previous deck intact rather
+than replacing it with one that will not open.
+
+**Slide 27 had three more typed figures, and all three had drifted.**
+
+| Figure | Said | Repository says |
+|---|---|---|
+| prompts | 648 | 624, from `liveVignettes()` |
+| corpus queries | 1,504 | 8,877 cached requests |
+| cross-corpus replication | r = 0.931 | rho = 0.976 on 8 concepts |
+| logged decisions | 93 | 98, counted from this file |
+
+The corpus figure was the interesting one. 1,504 is the `n_templates` column of
+`rq1_corpus_skew_explicit.csv` summed, which counts template occurrences, not
+requests. The query count is the cache, because `src/corpus_counts.py` writes
+one file per distinct request keyed by its hash, so the cache is the query log.
+The slide was understating the corpus work by a factor of about six while
+appearing to overstate it, since 1,504 was a bigger number than any single
+table's row count. A figure with a plausible label and the wrong source is
+harder to catch than a figure that is simply out of date.
+
+**A model with no declared corpus was being plotted as a zero.** The RQ4 chart
+drew two series, a model against its own corpus and against the best corpus it
+never saw. Qwen3-8B does not disclose its training data, so its matched rho is
+`NaN`, and the chart was passing `isNaN(v) ? 0 : v`. That drew Qwen a
+zero-length bar in the "own corpus" series, which reads as "no relationship
+with its own data" when what is true is that there is no such measurement. The
+series now passes `null`, which leaves the category empty, and the series name
+names the models whose corpus is not disclosed. Substituting zero for missing is
+the same error as substituting zero for a failed query, which `corpus_counts.py`
+already has a note about.
+
+**What the rescore moved.** Three conclusions the slides assert were
+conditional on the data, and two of them changed when the full roster landed:
+
+- RQ2c. The base OLMo's identity merging was inside its own noise floor before
+  the rescore and is now 6.2 times it, so "post-training alone accounts for it"
+  no longer holds in either direction. The slide now says both stages
+  contribute, which is what the table supports.
+- The Pythia chance range. Within a level the seven sizes span 0.364 to 0.635,
+  and the widest swing is pythia-2.8b at 0.271, not pythia-1b at 0.304. The
+  claim is the same and the model carrying it is not.
+- RQ3. Spearman rho went from +0.857 to +0.881, with the gap against size at
+  +0.948 and the floor against size at +0.353, so the trend is still carried by
+  the gap and not by the instrument.
+
+Group 2 now runs at k = 3 as D092 intended, and the resolution limit on the
+slide reads 0.125 from the table rather than from the anticipation of a change.
+
+**Verification.** 56 slides, `validate.py` passes, geometry QA holds at the
+20 overflow and 7 overlap baseline, and a scan of the extracted slide text finds
+no stale figure outside the two columns that record what October reported. A
+visual render pass is still owed and is blocked on tooling: this machine has
+neither `soffice` nor `pdftoppm`.

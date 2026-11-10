@@ -451,10 +451,63 @@ function corpusDisagreement() {
            nAboveHalfLog2: d.filter(v => v > 0.5).length };
 }
 
+// How many distinct corpus queries the study actually issued, and how many of
+// them failed. Slide 27 said "1,504 corpus queries", which is the n_templates
+// column of rq1_corpus_skew_explicit.csv summed: a count of template
+// occurrences, not of requests. The real figure is the cache, because
+// src/corpus_counts.py writes one file per distinct request keyed by its hash,
+// so the cache IS the query log. It is roughly six times larger.
+//
+// `failed` is read from the skew tables rather than the cache, because a query
+// that failed is still cached (D-note in corpus_counts.py: a blocked query once
+// came back as a cached 0), so the cache cannot tell success from failure.
+function corpusQueries() {
+  const dir = path.join(__dirname, "..", "data", "cache", "infinigram");
+  let cached = NaN;
+  try {
+    cached = fs.readdirSync(dir).filter(f => f.endsWith(".json")).length;
+  } catch {
+    throw new Error("figures.js: no corpus query cache at " + dir +
+                    ". Run `python -m src.corpus_counts` before building.");
+  }
+  const mpath = path.join(__dirname, "..", "data", "cache", "manifest.json");
+  let indexes = [];
+  try {
+    indexes = JSON.parse(fs.readFileSync(mpath, "utf8")).indexes || [];
+  } catch { /* the manifest is provenance, not a requirement */ }
+
+  // Every rq1 table carries failed_queries. Sum across all of them, so a
+  // failure in the probe or the explicit set cannot hide behind the main one.
+  let failed = 0;
+  for (const name of ["rq1_corpus_skew.csv", "rq1_corpus_skew_explicit.csv",
+                      "rq1_corpus_skew_probe.csv",
+                      "rq1_corpus_skew_decision.csv",
+                      "rq1_corpus_skew_probe_decision.csv"]) {
+    let rows;
+    try { rows = table(name); } catch { continue; }
+    for (const r of rows) {
+      const v = num(r.failed_queries);
+      if (!isNaN(v)) failed += v;
+    }
+  }
+  return { cached, failed, nIndexes: indexes.length, indexes };
+}
+
+// The decision count on slide 27 was typed (93) and the log has moved past it
+// four times. docs/decisions.md is the register; one "## D" heading per entry.
+function decisionCount() {
+  const f = path.join(__dirname, "..", "docs", "decisions.md");
+  const text = fs.readFileSync(f, "utf8");
+  const n = (text.match(/^## D/gm) || []).length;
+  if (n < 50) throw new Error("figures.js: docs/decisions.md parsed to only " +
+                              n + " decisions, which cannot be right");
+  return n;
+}
+
 module.exports = {
   CURRENT, KEY, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
   reportable, liveVignettes, positiveControl, floorComparison, gateRerun,
   rq3Spearman, rq4Linkage, corpusDisagreement, chanceRange,
-  corpusAgreement,
+  corpusAgreement, corpusQueries, decisionCount,
   f4, f3, fx, p, ci, SHORT, num,
 };

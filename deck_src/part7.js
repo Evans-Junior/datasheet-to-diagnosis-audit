@@ -82,12 +82,27 @@ s.addText([
 // D090: counts derived, so this slide cannot be the one still saying 384.
 const _nRows = F.table("rq2_deltas.csv").length;
 const _nModels = F.gateTable().length;
-const _nDec = 93;
+// D095 follow-up. Every number in this row is now read from the repo. Three of
+// the five were typed and all three had drifted: the prompt count was 648 from
+// before G2-01 was retired, the "corpus queries" figure was the n_templates
+// column summed (a count of template occurrences, about a sixth of the real
+// request count), and the decision count was 93 against a log of 98. The
+// replication r was 0.931 from an earlier concept set.
+const _LV = F.liveVignettes();
+const _CQ = F.corpusQueries();
+const _CA = F.corpusAgreement();
+const _nDec = F.decisionCount();
+const _notLive = _LV.total - _LV.live;
 const nums = [
   { n: String(_nModels), l: "models scored", s: "7 Pythia sizes, OLMo 2 base and Instruct, Qwen3-8B", c: TEAL },
-  { n: "648", l: "prompts", s: "From 26 live guideline-sourced templates; 2 rejected on review", c: TEAL },
+  { n: _LV.livePrompts.toLocaleString("en-US"), l: "prompts",
+    s: `From ${_LV.live} of ${_LV.total} templates; 2 rejected, 1 superseded`,
+    c: TEAL },
   { n: _nRows.toLocaleString("en-US"), l: "matched contrast rows", s: "Across both outcomes, 24 arms per vignette", c: TEAL },
-  { n: "1,504", l: "corpus queries", s: "Zero failed. Replicates across both corpora at r = 0.931", c: PASS },
+  { n: _CQ.cached.toLocaleString("en-US"), l: "corpus queries",
+    s: `${_CQ.failed === 0 ? "Zero" : _CQ.failed} failed. The two overlapping `
+     + `corpora agree: rho = ${_CA.rho.toFixed(3)}`,
+    c: PASS },
   { n: String(_nDec), l: "logged decisions", s: "Each with a date, a reason, and reversals recorded", c: BERRY },
 ];
 nums.forEach((v, i) => {
@@ -99,6 +114,6 @@ nums.forEach((v, i) => {
 card(s, { x: 0.55, y: 4.84, w: 12.2, h: 1.56, fill: INK, kicker: "WHY THE REPORTING RULE HAS TWO TIERS", kickerColor: "7FD4C8", name: "why" });
 s.addText("The original rule was all-or-nothing: clinician verification or nothing reportable. It conflated two different claims. That 7 of 10 models fail our own positive control, and that k = 4 clusters cap an exact test at p = 0.0625, are facts about the apparatus \u2014 clinician review cannot make them more or less true. What needs a clinician is whether a vignette's findings force its answer. So reporting was split into two tiers, in a dated amendment with a pre-committed test that would show the split was wrong: if clinical review overturns a direction or a gate verdict, tier 1 was too weak a bar.",
   { x: 0.77, y: 5.38, w: 11.76, h: 0.9, fontSize: 12, color: PAPER, lineSpacing: 15.5, margin: 0, isTextBox: true });
-note(s, "Say 'pending clinical validation' out loud every time you give one of these figures. If asked why the rule changed: because the old one made the honest label and the useless label the same label. The amendment is dated, it is in the preregistration as section 10, and it names in advance what would prove it wrong.");
+note(s, `Say 'pending clinical validation' out loud every time you give one of these figures. If asked why the rule changed: because the old one made the honest label and the useless label the same label. The amendment is dated, it is in the preregistration as section 10, and it names in advance what would prove it wrong.\n\nDetail behind the cards, if asked. The ${_CQ.cached.toLocaleString("en-US")} corpus queries ran across ${_CQ.nIndexes} Infini-gram indexes (${_CQ.indexes.join(", ")}), none failed, and every response is cached by a hash of its request, so the counts reproduce without re-querying. The rho of ${_CA.rho.toFixed(3)} is Spearman between the two overlapping corpora on the ${_CA.n} concepts both of them power; it says the two corpora RANK the concepts alike, not that they agree on magnitude, and slide 22 shows where they do not. The ${_notLive} held-out templates are G2-03 and G4-03, rejected by clinical review, and G2-01, retired as superseded under D092.`);
 
 module.exports = {};
