@@ -1015,3 +1015,125 @@ the instrument's own noise floor, with the sex parameter held fixed.** The
 model responding to *gender identity* from a model correctly responding to
 *clinical sex*, and it is why the HL7 SPCU distinction is in the design rather
 than in the discussion.
+
+---
+
+## 20. Is the architecture new, and how is it defended?
+
+**The honest claim.** The pipeline is new code: about 7,000 lines of Python in
+`src/` and `scripts/`, and the dependency list in `requirements.txt` contains no
+evaluation framework at all. There is no lm-evaluation-harness, no HELM, no
+Inspect. The only external evaluation service is the infini-gram API.
+
+So the architecture is ours. The *design* is not unprecedented, and saying so is
+the stronger position, because an audit design nobody has used before is an audit
+design nobody has checked. The claim to make is: **new implementation, assembled
+from documented precedents, with four choices that are ours.**
+
+### 20.1 What is borrowed, and from whom
+
+| Layer | Precedent |
+|---|---|
+| Study design: 2x2 of documented bias by clinical relevance, paired prompts | Chang et al. 2025, *PLOS Digit Health*. Called "our template" in §2 |
+| Corpus measurement instrument | Infini-gram, Liu et al. 2024. A real external dependency, not an influence |
+| Corpus-auditing precedent | *What's In My Big Data?*, Elazar et al. 2024 |
+| The corpus to model to downstream-harm chain, end to end | Feng et al. 2023, ACL best paper. Already named in `model_selection.md` §9 as the closest methodological relative |
+| Sex and gender separated operationally | HL7 Gender Harmony, McClure et al. 2021 |
+| Documentation analysis for RQ6 | Gebru et al., *Datasheets for Datasets* |
+| One vignette with inherited clinician validation | Q-Pain, Logé et al. 2021. G3-01 only |
+
+### 20.2 What is ours
+
+1. **SPCU held fixed while gender identity varies, with a sex-specific positive
+   control group.** The control group is the part that matters: without it, a
+   model that ignores gender is indistinguishable from a model that ignores the
+   prompt. It is what turns the invariance rule from an assertion into a test.
+2. **A nuisance floor measured per model and per option geometry**, with the
+   floor-relative gap as the reported quantity rather than the raw gap.
+3. **The resolution limit reported beside every p-value.** With k clusters no
+   one-sided p below 2^-k exists, so a p at that value means "as extreme as the
+   design permits", not "significant".
+4. **Corpus independence tested with the same n-gram instrument** that measures
+   skew, which found that two of the three largest open corpora are not separate.
+
+### 20.3 Independent convergence, which is the actual defence
+
+Three pieces of work arrived at this design's two most unusual choices without
+any contact with it. This is better evidence than an argument from first
+principles, and it should be cited rather than argued.
+
+**Yoo H. When Demographic Sensitivity Isn't What It Seems: Baseline-Aware
+Counterfactual Audits for Clinical NLP.** *Proceedings of the 25th Workshop on
+Biomedical Language Processing (BioNLP 2026)*, ACL, pp 141-155.
+https://aclanthology.org/2026.bionlp-1.14.pdf
+
+Peer-reviewed, and the closest thing to an external review of our method that
+exists. It argues that counterfactual clinical audits are misleading in
+isolation, because non-demographic control perturbations such as paraphrases
+induce output variability comparable to or greater than demographic edits. It
+measures an intrinsic instability it calls a **noise floor** at 0.46 to 0.71
+Jaccard instability, and it scopes its framework to decision contexts where
+demographic attributes are not expected to alter the outcome. That is Group 4,
+the paraphrase control, and the invariance rule, derived independently. It also
+reports that age perturbations produce larger effects than sex perturbations,
+which is a reason to be unsurprised by our small effect sizes.
+
+**Use it like this:** it converts "we invented a floor" into "we implemented what
+the field has since concluded is required, and we did it before publication."
+Cite it in Methods beside the Group 4 definition, not only in Related Work.
+
+**Gupta V. `cftriage`: counterfactual demographic testing of LLM emergency
+triage, with noise-aware statistics.** 2026, PolyForm Noncommercial 1.0.0.
+https://github.com/batcarrot/cftriage
+
+Independently built our statistical stack. Its primary test is a case-level
+**sign-flip permutation** on per-case shifts; it reports a noise floor from
+resampling the identical prompt; and it adds Wilcoxon signed-rank, a sign test,
+clustered bootstrap intervals and Benjamini-Hochberg correction across
+contrasts. Treat as convergent evidence on the statistics, with the caveat that
+it is an unstarred solo repository, so it supports our choices rather than
+validating them.
+
+**MedEqualQA.** arXiv:2510.12818, 9 Oct 2025. (Author list not yet
+checked at source; confirm before citing.)
+Perturbs he/him, she/her **and they/them** while holding critical symptoms and
+conditions fixed, across roughly 69,000 items.
+
+**This obliges a correction to §2.1.** The claim that our non-binary arm is novel
+ground is now too strong: a counterfactual clinical benchmark with a they/them
+arm exists. What survives, and should replace it: we are the only design with a
+non-binary arm **and** a sex-specific control group **and** SPCU separated from
+gender identity. MedEqualQA does not separate sex from identity, has no control
+group and no floor, and compares reasoning traces by semantic similarity rather
+than scoring a reference answer.
+
+### 20.4 The external comparison worth running, and the ones to refuse
+
+**Run this one: CrowS-Pairs and WinoBias through `lm-evaluation-harness`, on the
+same ten models.** Highest value per hour available to this project, for one
+reason: the **Pythia paper ran exactly these two as its own gender-bias case
+study**, so published reference numbers already exist for seven of our ten
+models. If our models reproduce that published curve, the scoring layer is
+externally validated by a third party, and the interesting sentence becomes
+available: those benchmarks find a clear gender-bias effect across scale on these
+same checkpoints, while our clinical instrument finds a gap that grows with scale
+but sits mostly inside its own noise floor. That contrast is a finding about what
+stereotype benchmarks do and do not predict about clinical behaviour, and it
+costs a pip install, two task configs and the GPU hours, with every model already
+on disk. Note the Pythia authors modified both benchmarks for autoregressive
+models, using only the pro-stereotypical WinoBias subset framed as multiple
+choice and only the English CrowS-Pairs; match that or the comparison is not one.
+
+**Also cheap: re-express the headline as a pre-registered flip rate against a
+stated threshold**, which is what both EQUITRIAGE and `cftriage` report. We have
+everything needed to compute it, and it puts our numbers in units two external
+audits already use instead of in units only this project uses.
+
+**Refuse these, and say why in Limitations.** EquityMedQA (Pfohl et al. 2024,
+arXiv:2403.12025) is 4,619 adversarial open-ended questions scored by human
+expert raters, a different measurement model whose cost is the reason later work
+calls it hard to scale. MedQA-Demog, AMQA/FairMedQA and DiversityMedQA all build
+counterfactuals on MedQA-USMLE items. Adopting any of them means replacing
+guideline-anchored reference answers with exam items, which discards the
+invariance rule that makes our bias claims testable. The right move is to cite
+them as the benchmark-based alternative and state the trade-off, not to adopt one.
