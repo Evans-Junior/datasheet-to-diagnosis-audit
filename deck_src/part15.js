@@ -1,4 +1,5 @@
 const K = require("./part1.js");
+const F = require("./figures.js");   // D096: the stimulus-set counts
 const { pres, S, card, stat, badge, box, arrow, note,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
@@ -8,7 +9,7 @@ K.mark("remaining");
 s.addText("Ordered by the critical path. Item 1 blocks every reportable number in the project.",
   { x: 0.55, y: 1.2, w: 12.2, h: 0.3, fontSize: 13.5, color: INK, margin: 0, isTextBox: true });
 const todo = [
-  { n: 1, h: "Clinician review of all 25 live vignettes", b: "Outreach is sent and the response is outstanding. Nothing becomes reportable until this returns.", st: "Blocking", c: FAIL },
+  { n: 1, h: `Clinician review of all ${F.liveVignettes().live} live vignettes`, b: "Outreach is sent and the response is outstanding. Nothing becomes reportable until this returns.", st: "Blocking", c: FAIL },
   { n: 2, h: "Write more Group 4 vignettes", b: "The highest-value build step. Fixes the two-cluster floor, the degenerate bootstrap and the H3 circularity at once, and depends on nothing unresolved.", st: "Ready to start", c: PASS },
   { n: 3, h: "Re-run the audit on verified items", b: "Same pipeline, corrected items, and a full before-and-after table. The only route to a reportable number.", st: "After item 1", c: WARN },
   { n: 4, h: "RQ6 independent coding", b: "Both authors code the 136 candidate passages against the written codebook, and inter-coder agreement is reported whatever it is.", st: "Ready to start", c: PASS },

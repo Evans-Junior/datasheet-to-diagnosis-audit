@@ -535,10 +535,112 @@ function i3Grid(order = ["70m", "160m", "410m", "1b", "1.4b", "2.8b", "6.9b"]) {
   return { order, configs, series, nSignFlips, nModels: order.length, passes };
 }
 
+// Per-group counts of the live vignettes, and the Group 4 option-count split
+// the floor is stratified on. The vignette ledger slide typed all of these, and
+// its title typed the number of held-out rows as two when three are held out:
+// two clinical rejections plus one retirement under D092. The slide's own body
+// listed all three, so the slide contradicted itself.
+function vignetteGroups() {
+  const f = path.join(__dirname, "..", "data", "vignettes", "vignettes.csv");
+  if (!fs.existsSync(f)) throw new Error("figures.js: no vignettes.csv");
+  const rows = parseCSV(fs.readFileSync(f, "utf8"));
+  const seen = new Map();
+  for (const r of rows) {
+    if (!seen.has(r.vignette_id)) seen.set(r.vignette_id, r);
+  }
+  const all = [...seen.values()];
+  const isLive = r => String(r.analysis_ready).trim() === "True"
+                   && !String(r.blocked_on || "").trim();
+  const live = all.filter(isLive);
+  const held = all.filter(r => !isLive(r));
+
+  const groups = {};
+  for (const r of live) {
+    const g = (r.vignette_id.match(/^G(\d)/) || [])[1];
+    if (!g) continue;
+    (groups[g] = groups[g] || []).push(r.vignette_id);
+  }
+  for (const g of Object.keys(groups)) groups[g].sort();
+
+  // The floor is stratified by option count, so the Group 4 split matters.
+  const g4 = live.filter(r => r.vignette_id.startsWith("G4"));
+  const nOpts = r => String(r.answer_options || "").split("|").filter(Boolean).length;
+  const g4Binary = g4.filter(r => nOpts(r) === 2).length;
+
+  return {
+    nLive: live.length, nTotal: all.length, nHeld: held.length,
+    heldIds: held.map(r => r.vignette_id).sort(),
+    // A retirement is not a clinical rejection, and the slide says so.
+    nRejected: held.filter(r => /REJECTED/i.test(r.blocked_on || "")).length,
+    nRetired: held.filter(r => /RETIRED/i.test(r.blocked_on || "")).length,
+    groups,
+    n: g => (groups[String(g)] || []).length,
+    g4Binary, g4Multi: g4.length - g4Binary, g4Total: g4.length,
+  };
+}
+
+// RQ5's corpus probe counts, read back out of the query cache.
+//
+// WHY THIS IS NOT JUST READ FROM A TABLE. These counts are not produced by the
+// scoring pipeline and no results table holds them; they are single Infini-gram
+// count queries. src/corpus_counts.py caches every response under
+// sha256(json.dumps(payload, sort_keys=True))[:24], so the cache can be read as
+// a lookup table if the key is recomputed the same way. Python's json.dumps
+// uses ", " and ": " separators, which JSON.stringify does not, so the payload
+// is serialised by hand below. The hash is a self-check: a key that does not
+// resolve means the probe was never run with that exact payload, and this
+// throws rather than guessing.
+//
+// It exists because the slide had the two corpora the wrong way round. It
+// credited the Pile with 646,440 occurrences of "the woman has" and OLMo-mix
+// with 20,142, while the cache says the opposite, and the same inversion was
+// repeated in prose as "over 1.3 million mentions in the Pile".
+const INDEX = { pile: "v4_piletrain_llama",
+                olmo: "v4_olmo-mix-1124_llama",
+                dclm: "v4_dclm-baseline_llama" };
+
+function corpusProbe(term, which) {
+  const index = INDEX[which];
+  if (!index) throw new Error(`figures.js: unknown corpus "${which}"`);
+  // Must match Python's json.dumps(..., sort_keys=True) byte for byte.
+  const payload = '{"index": ' + JSON.stringify(index)
+                + ', "query": ' + JSON.stringify(term)
+                + ', "query_type": "count"}';
+  const key = require("crypto").createHash("sha256")
+                .update(payload).digest("hex").slice(0, 24);
+  const f = path.join(__dirname, "..", "data", "cache", "infinigram", key + ".json");
+  if (!fs.existsSync(f)) {
+    throw new Error(`figures.js: no cached corpus probe for ${JSON.stringify(term)} `
+                  + `in ${index}. Run \`python -m src.corpus_counts\` or correct the term.`);
+  }
+  const j = JSON.parse(fs.readFileSync(f, "utf8"));
+  if (j.error) throw new Error(`figures.js: cached probe for ${term}/${index} is an error`);
+  return Number(j.count);
+}
+
+// The three rows of the RQ5 table, with both corpora, formatted.
+function rq5Probe() {
+  const terms = ['the woman has', 'non-binary', 'the non-binary patient'];
+  const rows = terms.map(t => ({
+    term: t, pile: corpusProbe(t, "pile"), olmo: corpusProbe(t, "olmo"),
+  }));
+  const bare = rows.find(r => r.term === "non-binary");
+  const biggest = Math.max(bare.pile, bare.olmo);
+  return {
+    rows,
+    // Which corpus carries the headline "over N million" claim, so the prose
+    // cannot name the wrong one again.
+    bareMaxCorpus: bare.olmo >= bare.pile ? "OLMo-mix" : "the Pile",
+    bareMaxMillions: (biggest / 1e6).toFixed(2).replace(/0$/, ""),
+    subjectZero: rows.find(r => r.term === "the non-binary patient"),
+  };
+}
+
 module.exports = {
   CURRENT, KEY, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
   reportable, liveVignettes, positiveControl, floorComparison, gateRerun,
   rq3Spearman, rq4Linkage, corpusDisagreement, chanceRange,
-  corpusAgreement, corpusQueries, decisionCount, i3Grid,
+  corpusAgreement, corpusQueries, decisionCount, i3Grid, vignetteGroups,
+  corpusProbe, rq5Probe,
   f4, f3, fx, p, ci, SHORT, num,
 };

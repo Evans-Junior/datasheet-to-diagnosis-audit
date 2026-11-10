@@ -34,7 +34,10 @@ s.addTable(rows, { x: 0.55, y: 3.0, w: 12.2, colW: [0.9, 9.2, 2.1], rowH: 0.42,
 card(s, { x: 0.55, y: 5.72, w: 12.2, h: 0.82, fill: "FDF3E3",
   head: "RQ4 changed status on 3 November. It is now reported as a measured non-identifiability result rather than a provenance estimate.",
   headColor: INK, headSize: 12.5, headH: 0.5, name: "rqnote" });
-note(s, "Three of six research questions are final. RQ2 and RQ3 are tier 1 -- reportable for this submission, pending clinical validation, and not publishable until tier 2. RQ4's status change is the most significant revision since the interim report, and slide 24 explains it.");
+// D096. This note said "slide 24", which is the statistics slide; RQ4 is on
+// 34. It is a forward reference, so no number can be resolved while this
+// slide is being built. Naming the slide removes the class of bug.
+note(s, "Three of six research questions are final. RQ2 and RQ3 are tier 1 -- reportable for this submission, pending clinical validation, and not publishable until tier 2. RQ4's status change is the most significant revision since the interim report, and the RQ4 results slide explains it.");
 
 // ============ SECTION: LITERATURE ================================ //
 pres.addSection({ title: "Related work" });

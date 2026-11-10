@@ -5112,11 +5112,59 @@ scan of the extracted slide text finds no stale figure outside the two columns
 that record what October reported. Every slide was looked at as a rendered
 image, and the nine that changed were looked at again after each fix.
 
+**A full audit of every typed number, after the render pass.** Every numeric
+token appearing inside slide text was extracted and classified. Most are
+properly static: citation markers, years, journal volumes, guideline
+identifiers, and criteria fixed before the run such as the 25 percent floor-move
+threshold and the 10,000 bootstrap resamples. Five live figures were still
+typed, and two of them were wrong.
+
+*The vignette ledger contradicted itself.* Its title read "The 25 live
+vignettes, and why two are not" while its own body listed three: G2-03 and
+G4-03 rejected on clinical review, and G2-01 retired as superseded. Three are
+held out. The title, the per-group counts and the held-out identifiers now come
+from `vignettes.csv`, and the count of rejections is kept separate from the
+count of retirements, because a retirement is not a clinical rejection.
+
+*RQ5 had the two corpora the wrong way round.* The slide credited the Pile with
+646,440 occurrences of "the woman has" and 1,350,944 of the bare term
+"non-binary", and OLMo-mix with 20,142 and 66,269. The cache says the opposite,
+and so do `PROJECT_STATUS.md`, `paper_notes.md` and `codebook.md`. The prose
+beneath it repeated the inversion as "over 1.3 million mentions in the Pile",
+and so did the conclusions slide. This is the finding the notes say to lead the
+ethics section with, and it named the wrong corpus in three places.
+
+These counts come from no results table: they are single Infini-gram count
+queries. `src/corpus_counts.py` caches each response under
+`sha256(json.dumps(payload, sort_keys=True))[:24]`, so `figures.js` now
+recomputes that key and reads the count back out of the cache. The hash is the
+check: a key that does not resolve means the probe was never run with that exact
+payload, and the build stops rather than guessing. Python's `json.dumps` uses
+`", "` and `": "` separators, which `JSON.stringify` does not, so the payload is
+serialised by hand to match byte for byte.
+
+*The stimulus-set counts were typed in four more places,* on the opening
+summary, the methodology overview, the prompt-arithmetic slide and the
+remaining-work slide. The arithmetic slide also typed its own product: the
+chain reads templates times 3 times 2 times 4, and the footnote adds the extra
+arms for G3-02, which crosses a psychologizing cue with the identity grid. Both
+the product and the remainder are now computed, so the chain cannot disagree
+with its own total.
+
+*Two more slide numbers quoted at other slides were wrong,* beyond the three
+already fixed: a speaker note pointed at 24 for RQ4, which is on 34, and a note
+written during this very round pointed at 22 for the corpus disagreement, which
+is also on 34. Both are forward references, so no number can be resolved while
+those slides are being built. They name the slide instead. A cross-reference by
+number is only safe backwards, where `slideNo` can resolve it.
+
 **The general lesson, which is the reason this entry is long.** Three rounds of
 checking agreed the deck was correct. The schema validator passed, the geometry
 check passed, the text scan found nothing, and every figure traced to a table.
 The deck still had a chart with four wrong numbers, an axis label reading
 6.93889390390723E-18, six buried model names, a clipped word, a line of text
-drawn across another, and three wrong self-references. A checker only finds what
-it was built to look for, and none of these were. Render the artefact and look
-at it.
+drawn across another, five wrong self-references, a slide whose title
+contradicted its own body, and the two corpora of the headline ethics finding
+swapped. A checker only finds what it was built to look for, and none of these
+were. Render the artefact, look at it, and then audit every number on it by
+hand against its source.

@@ -12,11 +12,15 @@ const nbRows = [[
   { text: "The Pile", options: { bold: true, color: PAPER, fill: { color: "1C4E59" }, fontSize: 12, align: "right" } },
   { text: "olmo-mix", options: { bold: true, color: PAPER, fill: { color: "1C4E59" }, fontSize: 12, align: "right" } },
 ]];
-[
-  ['"the woman has"', "646,440", "20,142", "D6E6E9"],
-  ['"non-binary"  (bare)', "1,350,944", "66,269", "D6E6E9"],
-  ['"the non-binary patient"', "0", "0", "E9A79C"],
-].forEach((r, i) => nbRows.push([
+// D096. These six counts were typed, and the two columns were the wrong way
+// round: 646,440 and 1,350,944 are OLMo-mix's figures, not the Pile's. The
+// cache, which is the query log, says the Pile returns 20,142 and 66,269.
+// They are now read back out of it by recomputed cache key.
+const _R5 = F.rq5Probe();
+const _n = v => v.toLocaleString("en-US");
+_R5.rows.map((r, i) => [`"${r.term}"${r.term === "non-binary" ? "  (bare)" : ""}`,
+                        _n(r.pile), _n(r.olmo), i === 2 ? "E9A79C" : "D6E6E9"])
+.forEach((r, i) => nbRows.push([
   { text: r[0], options: { color: r[3], fontSize: 13, fontFace: "Courier New", bold: i === 2, fill: { color: i === 2 ? "3A1F24" : (i % 2 ? "133F49" : INK) } } },
   { text: r[1], options: { color: r[3], fontSize: 13, align: "right", bold: i === 2, fontFace: "Courier New", fill: { color: i === 2 ? "3A1F24" : (i % 2 ? "133F49" : INK) } } },
   { text: r[2], options: { color: r[3], fontSize: 13, align: "right", bold: i === 2, fontFace: "Courier New", fill: { color: i === 2 ? "3A1F24" : (i % 2 ? "133F49" : INK) } } },
@@ -25,7 +29,7 @@ s.addTable(nbRows, { x: 0.55, y: 1.3, w: 7.3, colW: [3.9, 1.7, 1.7], rowH: 0.56,
   border: { type: "solid", color: "2A5E6A", pt: 0.75 }, valign: "middle",
   margin: [0.06, 0.14, 0.06, 0.14], fontFace: "Calibri", autoPage: false });
 
-s.addText("Non-binary people are well represented in these corpora, with over 1.3 million mentions in the Pile. They never occupy the clinical subject position.",
+s.addText(`Non-binary people are well represented in these corpora, with over ${_R5.bareMaxMillions} million mentions in ${_R5.bareMaxCorpus}. They never occupy the clinical subject position.`,
   { x: 0.55, y: 3.6, w: 7.3, h: 0.66, fontSize: 13, color: PAPER, lineSpacing: 17, margin: 0, isTextBox: true });
 s.addText("This is a presence and absence pattern, not a scarcity pattern. The distinction matters: a scarcity argument invites more data as the remedy, while an absence in one specific grammatical position points at how the data was collected and what it was collected for.",
   { x: 0.55, y: 4.3, w: 7.3, h: 0.86, fontSize: 12, color: "BCD3D8", lineSpacing: 15.5, margin: 0, isTextBox: true });

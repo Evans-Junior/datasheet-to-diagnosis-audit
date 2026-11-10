@@ -1,4 +1,5 @@
 const K = require("./part1.js");
+const F = require("./figures.js");   // D096: the stimulus-set counts
 const { pres, S, card, stat, badge, box, arrow, note,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
@@ -22,7 +23,7 @@ card(s, { x: 0.55, y: 1.25, w: 12.2, h: 1.0, fill: INK,
   headColor: PAPER, headSize: 15.5, headH: 0.62, name: "sum-top" });
 const sum = [
   { n: 1, h: "The opening", b: "Pythia and OLMo 2 publish their full training corpora, queryable by exact n-gram. For these models the data and the behaviour can be put side by side." },
-  { n: 2, h: "The instrument", b: "25 guideline-sourced clinical vignettes expanded to 624 prompts, a measured noise floor per model, and a pre-registered analysis plan frozen before scoring." },
+  { n: 2, h: "The instrument", b: `${F.liveVignettes().live} guideline-sourced clinical vignettes expanded to ${F.liveVignettes().livePrompts} prompts, a measured noise floor per model, and a pre-registered analysis plan frozen before scoring.` },
   { n: 3, h: "The result", b: "The chain can be completed, but not yet closed. Three of ten models can do the clinical task. Corpus provenance turns out not to be identifiable between these two corpora." },
   { n: 4, h: "The contribution", b: "A working instrument, a pre-registered null, and a measured account of exactly where the datasheet to diagnosis chain breaks." },
 ];
@@ -76,6 +77,7 @@ s.addText("Why an audit that can only see outputs cannot support an intervention
 
 // ============ 4. THE PROBLEM, with diagram ======================= //
 s = S("CONTENT", "Problem and objective", "Existing audits stop at the model boundary");
+K.mark("relatedWork");
 s.addText("Gender bias in clinical LLM output is a settled empirical question. Zack et al. [24] showed GPT-4 reproduces racial and gender patterns in clinical vignettes. Chang et al. [3] found anti-LGBTQIA+ bias across four models. Two 2026 emergency-triage audits [9, 23] replicate it at scale.",
   { x: 0.55, y: 1.25, w: 12.2, h: 0.72, fontSize: 14, color: INK, lineSpacing: 18, margin: 0, isTextBox: true });
 

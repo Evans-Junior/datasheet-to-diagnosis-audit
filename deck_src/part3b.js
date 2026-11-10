@@ -16,7 +16,7 @@ const MOVES = [
     c: TEAL },
   { n: "2", claim: "Audits almost all stop at the model boundary.",
     detail: "They measure outputs and infer the cause. The training data stays a black box, so “where did this come from” is never answered.",
-    src: "Our gap claim — surveyed in slide 5",
+    src: `Our gap claim — surveyed in slide ${K.slideNo("relatedWork")}`,
     c: TEAL },
   { n: "3", claim: "“Sex” and “gender” are not one field, and a standard already says so.",
     detail: "HL7 splits them into gender identity, recorded sex, and the Sex Parameter for Clinical Use. That split IS our manipulation: hold SPCU, vary identity.",

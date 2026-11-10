@@ -13,7 +13,7 @@ s = S("CONTENT", "Methodology", "What is being designed is an instrument, not a 
 s.addText("The deliverable is an audit instrument with four parts, in one reproducible repository.",
   { x: 0.55, y: 1.25, w: 12.2, h: 0.56, fontSize: 14, color: INK, margin: 0, isTextBox: true });
 const inst = [
-  { n: 1, h: "A clinical stimulus set", b: "25 live vignette templates expanded to 624 prompts. Each carries a correct answer quoted from a named guideline and a confidence tier." },
+  { n: 1, h: "A clinical stimulus set", b: `${F.liveVignettes().live} live vignette templates expanded to ${F.liveVignettes().livePrompts} prompts. Each carries a correct answer quoted from a named guideline and a confidence tier.` },
   { n: 2, h: "A scoring pipeline", b: "Deterministic log-probability scoring of fixed options, with a four-test validation suite and a measured noise floor per model." },
   { n: 3, h: "A corpus measurement tool", b: "Exact templated n-gram counts over the Pile and the OLMo mix, base-rate normalised and centred." },
   { n: 4, h: "A pre-registered analysis plan", b: "Four directional hypotheses, a positive and a negative control, and a multiple-comparison correction, frozen before any model was scored." },
@@ -84,13 +84,24 @@ s.addText("Group 2 is where the guideline answer genuinely does depend on the se
 note(s, "Groups 1 and 4 both predict no effect but for different reasons: Group 1 is a clinical claim, Group 4 is an instrument baseline. Keeping them separate is what lets us measure the noise floor without contaminating the hypothesis test. That distinction became important on 3 November.");
 
 // ============ 13. TEMPLATE EXPANSION, diagram ==================== //
-s = S("CONTENT", "Methodology", "How 25 templates become 624 prompts");
+const _LV5 = F.liveVignettes();
+s = S("CONTENT", "Methodology",
+      `How ${_LV5.live} templates become ${_LV5.livePrompts} prompts`);
 s.addText("Every slot in a template is identity. The clinical text is identical across every arm of a vignette, so only the identity marking changes.",
   { x: 0.55, y: 1.22, w: 12.2, h: 0.56, fontSize: 14, color: INK, margin: 0, isTextBox: true });
 
 // the multiplication chain
+// D096. The chain, its product and the footnote were all typed. The product is
+// 24 arms times the templates that carry one grid; G3-02 carries two, because
+// it crosses a psychologizing cue with the identity grid, so the total is not
+// simply templates times 24. Both numbers are computed from the prompt rows,
+// and the footnote names however many rows are actually held out.
+const _ARMS = 24;
+const _base = _LV5.live * _ARMS;
+const _extra = _LV5.livePrompts - _base;
+const _VG5 = F.vignetteGroups();
 const chain = [
-  { t: "25", l: "live templates", c: INK },
+  { t: String(_LV5.live), l: "live templates", c: INK },
   { t: "3", l: "paraphrases", c: TEAL },
   { t: "2", l: "sex parameter\nvalues", c: WARN },
   { t: "4", l: "arms: woman, man,\nnon-binary, blinded", c: BERRY },
@@ -109,11 +120,11 @@ chain.forEach((c, i) => {
 arrow(s, { x: 10.1, y: 2.28, w: 0.5, h: 0.22, color: INK, name: "cheq" });
 s.addShape(pres.ShapeType.roundRect, { x: 10.8, y: 1.78, w: 1.95, h: 1.2, rectRadius: 0.07,
   fill: { color: INK }, line: { color: INK, width: 0 }, objectName: "chtot" });
-s.addText("600", { x: 10.8, y: 1.86, w: 1.95, h: 0.6, fontSize: 30, bold: true, color: PAPER,
+s.addText(String(_base), { x: 10.8, y: 1.86, w: 1.95, h: 0.6, fontSize: 30, bold: true, color: PAPER,
   align: "center", fontFace: "Cambria", margin: 0, isTextBox: true });
 s.addText("prompts", { x: 10.8, y: 2.42, w: 1.95, h: 0.3, fontSize: 10, color: "BCD3D8",
   align: "center", margin: 0, isTextBox: true });
-s.addText("plus 24 for G3-02, which carries a second crossed condition: a psychologizing cue, present and absent.  Total 624 analysis-ready.  Three more rows exist on disk and score nothing: two rejected on clinical review, one retired as superseded.",
+s.addText(`plus ${_extra} for G3-02, which carries a second crossed condition: a psychologizing cue, present and absent.  Total ${_LV5.livePrompts} analysis-ready.  ${_VG5.nHeld} more rows exist on disk and score nothing: ${_VG5.nRejected} rejected on clinical review, ${_VG5.nRetired} retired as superseded.`,
   { x: 0.75, y: 3.08, w: 12.0, h: 0.3, fontSize: 11.5, italic: true, color: MUT, margin: 0, isTextBox: true });
 
 card(s, { x: 0.55, y: 3.52, w: 4.0, h: 2.9, fill: TINT, kicker: "WHY THREE PARAPHRASES", kickerColor: TEAL, name: "wp" });
@@ -125,6 +136,6 @@ s.addText("A name carries ethnicity and class signal alongside gender, so a name
 card(s, { x: 8.95, y: 3.52, w: 3.8, h: 2.9, fill: "FDF3E3", kicker: "THE BLINDED ARM", kickerColor: WARN, name: "wb" });
 s.addText("A fourth arm with identity removed but the sex parameter kept. It is a reference point, not a fourth gender, and every row carries a flag so the statistics cannot pool it into the three-way comparison. The identity clause is nearly empty of meaning there, so pooling it would quietly contaminate the contrast.",
   { x: 9.17, y: 4.06, w: 3.36, h: 2.2, fontSize: 11.5, color: INK, lineSpacing: 14.5, margin: 0, isTextBox: true });
-note(s, "The arithmetic is 25 times 3 times 2 times 4 equals 600, plus 24 for the one vignette that carries a crossed cue, giving 624. Every prompt has a matched partner identical in template, paraphrase, sex parameter and clinical text, differing only in identity marking. Those matched pairs are the unit the whole analysis is built on.");
+note(s, `The arithmetic is ${_LV5.live} times 3 times 2 times 4 equals ${_base}, plus ${_extra} for the one vignette that carries a crossed cue, giving ${_LV5.livePrompts}. Every prompt has a matched partner identical in template, paraphrase, sex parameter and clinical text, differing only in identity marking. Those matched pairs are the unit the whole analysis is built on.`);
 
 module.exports = {};

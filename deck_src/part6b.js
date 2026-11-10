@@ -2,6 +2,7 @@
 // the vignette ledger. Added 2026-11-09 because the design was being explained
 // in prose on slides that should have been showing it.
 const K = require("./part1.js");
+const F = require("./figures.js");   // D096: the ledger counts
 const { pres, S, card, stat, badge, box, arrow, note, tierBanner,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
@@ -73,7 +74,7 @@ const r1 = [
   { t: "Vignette\ntemplate\n+ options", c: BERRY },
   { t: "Author review\nvs the quote", c: WARN },
   { t: "Expand\n24 arms", c: TEAL },
-  { t: "624\nprompts", c: TEAL },
+  { t: `${F.liveVignettes().livePrompts}\nprompts`, c: TEAL },
 ];
 r1.forEach((b, i) => {
   const x = 0.55 + i * 2.52;
@@ -119,12 +120,20 @@ refs.forEach((r, i) => {
 note(s, "The point of this slide is that the refusals are not hygiene, they are findings. Each one exists because the thing it now blocks happened: the floor really was built from a rejected vignette, the hash really was blind to an option rewrite, and a table really was eleven days stale while being read as current.");
 
 // ============ M-C. THE VIGNETTE LEDGER ========================== //
-s = S("CONTENT", "Methodology", "The 25 live vignettes, and why two are not");
+// D096. The title said "why two are not" while the body of this same slide
+// lists three: G2-03 and G4-03 rejected on clinical review, and G2-01 retired
+// as superseded under D092. The slide contradicted itself. The counts in the
+// table were typed too, so all of it now comes from vignettes.csv.
+const VG = F.vignetteGroups();
+const _word = n => ["zero", "one", "two", "three", "four", "five", "six",
+                    "seven", "eight", "nine", "ten"][n] || String(n);
+s = S("CONTENT", "Methodology",
+      `The ${VG.nLive} live vignettes, and why ${_word(VG.nHeld)} are not`);
 const LEDGER = [
-  ["1", "Sex-neutral conditions", "5", "G1-01 … G1-05", "Carries H3: no gap should appear here", TEAL],
-  ["2", "Sex-specific, SPCU-dependent", "3", "G2-01b, G2-02, G2-03b", "Positive control: the gate. A model that cannot move here cannot be read anywhere", WARN],
-  ["3", "Historically biased conditions", "6", "G3-01, -02, -04, -05, -07, -08", "Carries H1 and H2", BERRY],
-  ["4", "Noise baseline", "11", "G4-01 … G4-11", "Builds the nuisance floor every delta is judged against", MUT],
+  ["1", "Sex-neutral conditions", String(VG.n(1)), "G1-01 … G1-05", "Carries H3: no gap should appear here", TEAL],
+  ["2", "Sex-specific, SPCU-dependent", String(VG.n(2)), VG.groups["2"].join(", "), "Positive control: the gate. A model that cannot move here cannot be read anywhere", WARN],
+  ["3", "Historically biased conditions", String(VG.n(3)), "G3-01, -02, -04, -05, -07, -08", "Carries H1 and H2", BERRY],
+  ["4", "Noise baseline", String(VG.n(4)), "G4-01 … G4-11", "Builds the nuisance floor every delta is judged against", MUT],
 ];
 const lRows = [[
   { text: "Group", options: { bold: true, color: PAPER, fill: { color: INK }, fontSize: 10.5 } },
@@ -144,7 +153,7 @@ s.addTable(lRows, { x: 0.55, y: 1.2, w: 12.2, colW: [0.8, 2.9, 0.5, 2.9, 5.1], r
   margin: [0.04, 0.1, 0.04, 0.1], fontFace: "Calibri", autoPage: false });
 
 const out = [
-  { k: "REJECTED ON CLINICAL REVIEW", c: FAIL, h: "G2-03  ·  G4-03",
+  { k: "REJECTED ON CLINICAL REVIEW", c: FAIL, h: VG.heldIds.filter(i => !/^G2-01$/.test(i)).join("  \u00B7  "),
     b: "G2-03's history presupposed anatomy, so the SPCU-male arm was incoherent rather than merely wrong. G4-03 had two defensible answers: FeverPAIN scored 4 of 5, where NICE permits an immediate antibiotic, so a floor item carried a real alternative. Both replaced by G2-03b and G4-03b, built to the same construct." },
   { k: "RETIRED AS SUPERSEDED", c: WARN, h: "G2-01",
     b: "Not a clinical rejection — it passed review. Withdrawn because G2-01b tests the same construct from a better source, and keeping both let the cluster bootstrap count one construct twice. Group 2 now runs at k = 3, which costs resolution (2⁻³ = 0.125) and buys a correct independence claim." },

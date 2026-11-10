@@ -1,4 +1,5 @@
 const K = require("./part1.js");
+const F = require("./figures.js");   // D096: the RQ5 probe counts
 const { pres, S, card, stat, badge, box, arrow, note,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
@@ -38,7 +39,7 @@ const conc = [
   { n: 1, h: "The chain can be built, and it does not yet close", b: "A datasheet, a corpus measurement, a validated instrument and a pre-registered analysis can be connected end to end in one repository. The link that fails is provenance attribution, and it fails for a measurable reason rather than a practical one.", c: TEAL },
   { n: 2, h: "Open training data is necessary but not sufficient", b: "This is uncomfortable for the simple version of our own policy argument, and it is the honest result. The corpora are inspectable and the models trained on them are too insensitive to audit by this method, while the model that passes the gate most convincingly is the one whose data nobody can inspect.", c: BERRY },
   { n: 3, h: "The instrument was the binding constraint, not the models", b: "A noise floor measured on the wrong stimulus was deciding our headline result. Finding that changed the gate from one model to three, reversed one published conclusion and turned one null into a trend. The lesson generalises: an audit that does not measure its own floor on matched geometry cannot tell a null from a blindness.", c: WARN },
-  { n: 4, h: "The clearest ethics finding needs no statistics at all", b: "Non-binary people appear over 1.3 million times in the Pile and never once in the clinical subject position, while two of our source guidelines require care for them by name. The clinical guidance is more inclusive than the training data can support.", c: FAIL },
+  { n: 4, h: "The clearest ethics finding needs no statistics at all", b: `Non-binary people appear over ${F.rq5Probe().bareMaxMillions} million times in ${F.rq5Probe().bareMaxCorpus} and never once in the clinical subject position, while two of our source guidelines require care for them by name. The clinical guidance is more inclusive than the training data can support.`, c: FAIL },
 ];
 conc.forEach((c, i) => {
   const y = 1.26 + i * 1.33;
