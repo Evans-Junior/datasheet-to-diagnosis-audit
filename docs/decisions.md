@@ -5200,3 +5200,48 @@ contradicted its own body, and the two corpora of the headline ethics finding
 swapped. A checker only finds what it was built to look for, and none of these
 were. Render the artefact, look at it, and then audit every number on it by
 hand against its source.
+
+## D097, four validity tables declared their own reporting tier, and declared the superseded one
+
+**What was wrong.** D091 split `verification_status` into two reporting tiers and
+put the load-bearing clause in one sentence: the tier is *derived, not declared*,
+computed from the rows at analysis time so that no table can be promoted by
+anyone's intention or by a forgotten flag. That held for every table
+`src/stats.py` writes, because the derivation sat inside its `main()`. It did not
+hold anywhere else. `scripts/permutation_null.py` and
+`scripts/paraphrase_consistency.py` each wrote the string
+`"PROVISIONAL__unverified_ai_drafted"` into their output as a literal, twice
+apiece, across four tables.
+
+**Why it mattered more than a stale string usually does.** The literal was the
+pre-D091 vocabulary, which no longer names a tier at all. So the two permutation
+nulls and the two paraphrase stability tables announced that they were not
+citable at any tier, while the RQ2 and RQ3 results they exist to support
+announced tier 1. Those four tables are not decoration. The permutation null is
+the assumption-free null behind every confirmatory p-value, and the paraphrase
+check is the only evidence that a floor-clearing effect is a property of the
+vignette rather than of one sentence's wording. A validity check that disclaims
+itself cannot validate anything, and the reviewer who noticed the mismatch would
+have been right to ask which of the two labels to believe.
+
+**The fix, and why it is a function rather than three corrected strings.** The
+derivation moved out of `main()` into `stats.derive_verification_status(raw)`,
+which returns the status, the tier and the counts behind them. `main()` calls it,
+and so do both scripts, which already import `src.stats` and already load the
+same raw frame. Correcting the four literals by hand would have produced the same
+tables today and the same divergence at the next amendment. There are now four
+tables that cannot disagree with the result they support, because nothing
+restates the rule.
+
+**Verified.** All four tables rebuilt and now carry
+`REPORTABLE_TIER1__pending_clinical_validation`. `src/stats.py` re-run, with
+every number unchanged: Spearman rho +0.881, decomposed +0.948 against size and
++0.353 against the floor, and the same H1 to H4 outcomes. The only remaining
+occurrences of the old string in the codebase are the tier 0 branch, where it
+belongs, and the comments explaining this entry.
+
+**The general shape of this mistake.** D091 wrote the rule down and enforced it
+in exactly one place, so compliance depended on every future script remembering
+it. A rule enforced at one call site is a convention, not a mechanism. This is
+the same failure as D095's guard on a build that could not run, and it will
+recur wherever the project states a policy in prose and implements it once.

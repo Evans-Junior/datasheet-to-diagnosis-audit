@@ -949,6 +949,69 @@ def mixed_effects(deltas: pd.DataFrame) -> pd.DataFrame:
 
 # --------------------------------------------------------------------------- #
 
+def derive_verification_status(raw: pd.DataFrame) -> tuple[str, int, dict]:
+    """Derive the reporting tier from the rows, never from a caller's claim.
+
+    D043 required every table to carry its verification state. D091 split that
+    state into two reporting tiers and said, in the clause that does the work,
+    that the tier is **derived, not declared**: computed from the rows at
+    analysis time so that no table can be promoted by anyone's intention or by
+    a forgotten flag.
+
+    WHY THIS IS A FUNCTION (D097). The derivation originally lived inline in
+    `main()`, so only the tables `src/stats.py` wrote could inherit it. Four
+    validity tables are written by other scripts, and all four hard-coded the
+    string `"PROVISIONAL__unverified_ai_drafted"` as a literal. A hard-coded
+    status is a declared one, which is exactly what D091 forbade, and it had
+    already gone wrong in the direction that is easy to miss: the literal was
+    the PRE-D091 vocabulary, so the permutation nulls and the paraphrase
+    stability check -- the evidence that backs the RQ2 and RQ3 inferences --
+    read as "not citable at any tier" while the results they support read as
+    tier 1. A validity check that disclaims itself cannot support anything.
+
+    Deriving it in one place means the four tables move with the tier instead
+    of needing to be remembered, and a future amendment changes one function.
+
+    Returns `(status, tier, detail)`. Tier 0 is not reportable at any tier.
+    """
+    REPORTABLE = {"ai_drafted_clinician_verified",
+                  "ai_drafted_clinician_corrected", "clinician_authored"}
+    # D064, AMENDED BY D091 (2026-11-09). Author review against a first-hand
+    # guideline quote used to be PROVISIONAL and not reportable at all. It is now
+    # the bar for ONE of two reporting tiers, and the tiers are named, because
+    # "reportable" was never a single thing:
+    #
+    #   TIER 1  coursework / internal  -- every row author-reviewed against a
+    #           quoted, first-hand guideline. Numbers ARE reported as results,
+    #           carrying "pending clinical validation". This is the tier the
+    #           ECSE-557 submission is made at.
+    #   TIER 2  public / archival      -- clinician verification on every row.
+    #           Required before any number goes into a public paper.
+    #
+    # What did NOT change: a row that was never reviewed by anyone is not
+    # reportable at either tier. The amendment moves author review up a tier; it
+    # does not make unreviewed text citable. That distinction is the only reason
+    # the mechanism still means anything, so the mixed cases below stay blocked.
+    AUTHOR_REVIEWED = {"author_reviewed_against_quoted_guideline"}
+    seen = set(raw.get("verification", pd.Series(dtype=str)).dropna().unique())
+    n_ok = int(raw["verification"].isin(REPORTABLE).sum()) if seen else 0
+    n_auth = int(raw["verification"].isin(AUTHOR_REVIEWED).sum()) if seen else 0
+    if not seen or not (seen & (REPORTABLE | AUTHOR_REVIEWED)):
+        status, tier = "PROVISIONAL__unverified_ai_drafted", 0
+    elif not (seen & REPORTABLE) and not (seen - AUTHOR_REVIEWED):
+        status, tier = "REPORTABLE_TIER1__pending_clinical_validation", 1
+    elif not (seen & REPORTABLE):
+        status, tier = "PROVISIONAL__mixed_author_reviewed_and_unverified", 0
+    elif seen - REPORTABLE:
+        status, tier = "MIXED__some_items_unverified", 0
+    else:
+        status, tier = "REPORTABLE_TIER2__clinician_verified", 2
+    return status, tier, {"n_clinician_passed": n_ok,
+                          "n_author_reviewed": n_auth,
+                          "n_rows": len(raw),
+                          "values_present": sorted(seen)}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--no-mixed", action="store_true",
@@ -980,44 +1043,12 @@ def main() -> None:
     # D043: the audit runs before clinical verification, so every table says so.
     # Derived from the rows themselves rather than from a command-line flag: a
     # flag can be forgotten, and a table separated from its provenance is the
-    # one way running early becomes dishonest.
-    REPORTABLE = {"ai_drafted_clinician_verified",
-                  "ai_drafted_clinician_corrected", "clinician_authored"}
-    # D064, AMENDED BY D091 (2026-11-09). Author review against a first-hand
-    # guideline quote used to be PROVISIONAL and not reportable at all. It is now
-    # the bar for ONE of two reporting tiers, and the tiers are named, because
-    # "reportable" was never a single thing:
-    #
-    #   TIER 1  coursework / internal  -- every row author-reviewed against a
-    #           quoted, first-hand guideline. Numbers ARE reported as results,
-    #           carrying "pending clinical validation". This is the tier the
-    #           ECSE-557 submission is made at.
-    #   TIER 2  public / archival      -- clinician verification on every row.
-    #           Required before any number goes into a public paper.
-    #
-    # What did NOT change: a row that was never reviewed by anyone is not
-    # reportable at either tier. The amendment moves author review up a tier; it
-    # does not make unreviewed text citable. That distinction is the only reason
-    # the mechanism still means anything, so the mixed cases below stay blocked.
-    AUTHOR_REVIEWED = {"author_reviewed_against_quoted_guideline"}
-    seen = set(raw.get("verification", pd.Series(dtype=str)).dropna().unique())
-    n_ok = int(raw["verification"].isin(REPORTABLE).sum()) if seen else 0
-    n_auth = int(raw["verification"].isin(AUTHOR_REVIEWED).sum()) if seen else 0
-    if not seen or not (seen & (REPORTABLE | AUTHOR_REVIEWED)):
-        verification_status = "PROVISIONAL__unverified_ai_drafted"
-        tier = 0
-    elif not (seen & REPORTABLE) and not (seen - AUTHOR_REVIEWED):
-        verification_status = "REPORTABLE_TIER1__pending_clinical_validation"
-        tier = 1
-    elif not (seen & REPORTABLE):
-        verification_status = "PROVISIONAL__mixed_author_reviewed_and_unverified"
-        tier = 0
-    elif seen - REPORTABLE:
-        verification_status = "MIXED__some_items_unverified"
-        tier = 0
-    else:
-        verification_status = "REPORTABLE_TIER2__clinician_verified"
-        tier = 2
+    # one way running early becomes dishonest. The derivation is a module-level
+    # function so the validity scripts share it rather than restating it (D097).
+    verification_status, tier, _vdetail = derive_verification_status(raw)
+    n_ok = _vdetail["n_clinician_passed"]
+    n_auth = _vdetail["n_author_reviewed"]
+    seen = _vdetail["values_present"]
     print(f"verification: {verification_status}  "
           f"({n_ok:,}/{len(raw):,} option rows from clinician-passed items, "
           f"{n_auth:,} author-reviewed; "

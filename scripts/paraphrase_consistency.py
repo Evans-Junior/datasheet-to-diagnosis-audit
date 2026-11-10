@@ -75,6 +75,13 @@ def main() -> None:
     args = ap.parse_args()
 
     raw = S.load_raw()
+    # D097: the reporting tier is DERIVED from the rows, in the one place
+    # that derives it. This used to be the hard-coded literal
+    # "PROVISIONAL__unverified_ai_drafted", which was both a declared tier
+    # (forbidden by D091) and the superseded pre-D091 vocabulary, so this
+    # validity check disclaimed itself while the result it validates was
+    # reported at tier 1.
+    _VSTATUS, _VTIER, _ = S.derive_verification_status(raw)
     targets = S.load_target_options()
     rows = S.outcome_rows(raw, args.outcome, targets)
     deltas = S.all_contrasts(rows)
@@ -110,7 +117,7 @@ def main() -> None:
             "swamped_by_wording": sd > abs(m),
             "floor": floor,
             "clears_floor": (abs(m) > floor) if floor else None,
-            "verification_status": "PROVISIONAL__unverified_ai_drafted",
+            "verification_status": _VSTATUS,
         })
         cells.append(rec)
 
@@ -146,7 +153,7 @@ def main() -> None:
             "n_clears_floor": len(f),
             "pct_unanimous_given_clears": f.unanimous.mean() if len(f) else None,
             "median_sd_across_paraphrase": g.sd_across_paraphrase.median(),
-            "verification_status": "PROVISIONAL__unverified_ai_drafted",
+            "verification_status": _VSTATUS,
         })
     sd_ = pd.DataFrame(rowsum).sort_values(["group", "model_id"])
     write_table(sd_, OUT_SUM)

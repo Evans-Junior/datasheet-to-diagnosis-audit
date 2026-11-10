@@ -114,6 +114,13 @@ def main() -> None:
     rng = np.random.default_rng(20261107)
 
     raw = S.load_raw()
+    # D097: the reporting tier is DERIVED from the rows, in the one place
+    # that derives it. This used to be the hard-coded literal
+    # "PROVISIONAL__unverified_ai_drafted", which was both a declared tier
+    # (forbidden by D091) and the superseded pre-D091 vocabulary, so this
+    # validity check disclaimed itself while the result it validates was
+    # reported at tier 1.
+    _VSTATUS, _VTIER, _ = S.derive_verification_status(raw)
     targets = S.load_target_options()
     rows = S.outcome_rows(raw, args.outcome, targets)
     deltas = S.all_contrasts(rows)
@@ -173,7 +180,7 @@ def main() -> None:
             "ratio_perm_over_floor": (perm_floor / floor) if floor else None,
             "exceeds_group4_floor": (abs(T) > floor) if floor else None,
             "exceeds_perm_floor": abs(T) > perm_floor,
-            "verification_status": "PROVISIONAL__unverified_ai_drafted",
+            "verification_status": _VSTATUS,
         })
 
     df = pd.DataFrame(out).sort_values(
@@ -255,7 +262,7 @@ def main() -> None:
             "n_models": len(g), "rho": rho_obs,
             "p_parametric": p_param, "p_permutation": p_perm,
             "n_mc": args.n_mc,
-            "verification_status": "PROVISIONAL__unverified_ai_drafted",
+            "verification_status": _VSTATUS,
         })
         print(f"  g{grp} {contrast:24s} n={len(g)} rho={rho_obs:+.3f} "
               f"p_param={p_param:.4f}  p_perm={p_perm:.4f}")
