@@ -12,7 +12,7 @@ s.addText("Evans Kumi  and  Aymen Boustani", { x: 0.9, y: 5.55, w: 11.5, h: 0.3,
   fontSize: 14, bold: true, color: PAPER, margin: 0, isTextBox: true });
 s.addText("McGill University  ·  MSc Intelligent Systems  ·  ECSE-557 Ethics in Artificial Intelligence",
   { x: 0.9, y: 5.88, w: 11.5, h: 0.3, fontSize: 11.5, color: "8EB0B8", margin: 0, isTextBox: true });
-s.addText("Living document  ·  last updated 4 November 2026", { x: 0.9, y: 6.4, w: 11.5, h: 0.3,
+s.addText(`Living document  ·  last updated ${F.lastUpdated().long}`, { x: 0.9, y: 6.4, w: 11.5, h: 0.3,
   fontSize: 10.5, italic: true, color: WARN, margin: 0, isTextBox: true });
 note(s, "This deck is the running record of the project. It is updated whenever something critical changes, and every slide carries the date of the run it reports. All model-side numbers remain provisional until a clinician passes the vignettes.");
 

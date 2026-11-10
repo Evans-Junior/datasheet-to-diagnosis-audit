@@ -636,11 +636,71 @@ function rq5Probe() {
   };
 }
 
+// The "last updated" line on the title slide. It said 4 November while the
+// decision log had moved five days past it, which is the one date on the deck
+// an examiner can check against the repository in one step. A living document
+// that reports a stale date undercuts the claim it is making about itself.
+//
+// The newest ISO date anywhere in docs/decisions.md is used, not the build
+// clock: rebuilding the deck changes nothing about the work, so a build-time
+// date would advance on its own and mean nothing.
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December"];
+function lastUpdated() {
+  const f = path.join(__dirname, "..", "docs", "decisions.md");
+  const text = fs.readFileSync(f, "utf8");
+  const all = text.match(/\b(20\d{2})-(\d{2})-(\d{2})\b/g) || [];
+  if (!all.length) throw new Error("figures.js: no ISO date in docs/decisions.md");
+  const newest = all.sort().at(-1);
+  const [y, m, d] = newest.split("-").map(Number);
+  return { iso: newest, long: `${d} ${MONTHS[m - 1]} ${y}` };
+}
+
+// RQ1's cross-corpus replication: does the SKEW MEASURE reproduce when the
+// same concepts are counted in an independently built corpus?
+//
+// This is NOT corpusAgreement(). The two are easy to confuse and were confused
+// once already. corpusAgreement() is the RQ4 non-identifiability figure: rho
+// over the 8 concepts of common support in i4_corpus_disagreement.csv, and it
+// answers "can provenance be attributed to one corpus rather than the other?".
+// This one is a validation claim over the 15 concepts powered in both corpora
+// of a pair, and it answers "is the measurement an artefact of one corpus?".
+// Different n, different filter, different question. Report each where it
+// belongs and never substitute one for the other.
+function corpusReplication(a = "v4_olmo-mix-1124_llama", b = "v4_piletrain_llama") {
+  const rows = table("rq1_corpus_skew.csv")
+    .filter(r => String(r.powered).trim() === "True");
+  const by = {};
+  for (const r of rows) {
+    (by[r.concept] = by[r.concept] || {})[r.index] = num(r.skew_log2);
+  }
+  const xs = [], ys = [], diffs = [];
+  for (const c of Object.keys(by)) {
+    const va = by[c][a], vb = by[c][b];
+    if (va == null || vb == null || isNaN(va) || isNaN(vb)) continue;
+    xs.push(va); ys.push(vb); diffs.push(Math.abs(va - vb));
+  }
+  if (xs.length < 3) throw new Error("figures.js: too few concepts powered in both corpora");
+  diffs.sort((p, q) => p - q);
+  const mid = diffs.length % 2 ? diffs[(diffs.length - 1) / 2]
+                               : (diffs[diffs.length / 2 - 1] + diffs[diffs.length / 2]) / 2;
+  // Pearson on the raw values, beside the Spearman the project also reports.
+  const mean = v => v.reduce((t, x) => t + x, 0) / v.length;
+  const mx = mean(xs), my = mean(ys);
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < xs.length; i++) {
+    const dx = xs[i] - mx, dy = ys[i] - my;
+    sxy += dx * dy; sxx += dx * dx; syy += dy * dy;
+  }
+  return { n: xs.length, r: sxy / Math.sqrt(sxx * syy), rho: _spearman(xs, ys),
+           maxDiff: diffs[diffs.length - 1], medianDiff: mid };
+}
+
 module.exports = {
   CURRENT, KEY, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
   reportable, liveVignettes, positiveControl, floorComparison, gateRerun,
   rq3Spearman, rq4Linkage, corpusDisagreement, chanceRange,
   corpusAgreement, corpusQueries, decisionCount, i3Grid, vignetteGroups,
-  corpusProbe, rq5Probe,
+  corpusProbe, rq5Probe, lastUpdated, corpusReplication,
   f4, f3, fx, p, ci, SHORT, num,
 };

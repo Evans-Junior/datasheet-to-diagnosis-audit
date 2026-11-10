@@ -5158,6 +5158,38 @@ is also on 34. Both are forward references, so no number can be resolved while
 those slides are being built. They name the slide instead. A cross-reference by
 number is only safe backwards, where `slideNo` can resolve it.
 
+**The title slide was reporting a stale date, and I swapped two statistics
+that are not the same statistic.** Two more, found by the author reading the
+rebuilt deck.
+
+*The date.* The title slide said "last updated 4 November" while the decision
+log had moved five days past it. That is the one date on the deck an examiner
+can check against the repository in a single step, and a living document that
+misreports its own currency undercuts the claim it is making about itself. It
+now takes the newest ISO date in this file, not the build clock: rebuilding the
+deck changes nothing about the work, so a build-time date would advance on its
+own and mean nothing.
+
+*The two cross-corpus numbers.* While wiring the corpus card I replaced RQ1's
+replication figure, r = 0.931, with the RQ4 figure, rho = 0.976, on the grounds
+that it was newer. It is not newer; it is a different measurement answering a
+different question, and r = 0.931 had been correct all along.
+
+| | RQ1 replication | RQ4 non-identifiability |
+|---|---|---|
+| statistic | r = 0.931, rho = 0.936 | rho = 0.976 |
+| concepts | 15, powered in both corpora | 8, common support |
+| source | `rq1_corpus_skew.csv` | `i4_corpus_disagreement.csv` |
+| question | is the skew measure an artefact of one corpus? | can provenance be attributed to one corpus rather than the other? |
+
+Both are now accessors with the distinction written into the comment on each,
+and the speaker note states both and says which answers which. The failure mode
+here is worth naming because it is the opposite of the one the rest of this
+entry is about: not a stale number left alone, but a correct number replaced by
+a wrong one during a correctness sweep. A sweep that substitutes figures
+without checking they measure the same thing introduces errors at the same rate
+it removes them.
+
 **The general lesson, which is the reason this entry is long.** Three rounds of
 checking agreed the deck was correct. The schema validator passed, the geometry
 check passed, the text scan found nothing, and every figure traced to a table.
