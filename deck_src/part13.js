@@ -1,4 +1,6 @@
 const K = require("./part1.js");
+const F = require("./figures.js");
+const _ch = F.chanceRange();
 const { pres, S, card, stat, badge, box, arrow, note,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
@@ -42,7 +44,22 @@ card(s, { x: 0.55, y: 5.86, w: 12.2, h: 0.56, fill: INK, name: "sf4" });
 s.addText([{ text: "The uncomfortable corollary, which we state rather than work around:  ", options: { bold: true, color: WARN } },
   { text: "the models that ship the corpora this project's argument depends on are the models this method cannot measure.", options: { color: PAPER } }],
   { x: 0.77, y: 5.98, w: 11.76, h: 0.34, fontSize: 12.5, margin: 0, isTextBox: true });
-note(s, "Pythia probabilities sit at 0.497 to 0.501, exactly uniform over two options, so the model is not treating the input as a question. It is a base model with no instruction tuning. Three formats were tried; a chat template, a longer prefix and a generation-based readout remain untested, so this is a limit on what we have shown, not a proof of impossibility.");
+// D095. This note said the probabilities are "exactly uniform over two
+// options", which is the same error slide 28 carried: the pooled figure is
+// held at 0.5 by the design, because Group 2 flips the correct answer with the
+// sex parameter. Within a level the models move a long way. Saying "uniform"
+// out loud invites the obvious question and has no answer.
+note(s, `Pooled over the sex parameter, Pythia probabilities sit at `
+  + `${_ch.pooledLo.toFixed(3)} to ${_ch.pooledHi.toFixed(3)} over two options. `
+  + "Do not call that uniform: Group 2 flips the correct answer with the sex "
+  + `parameter, so within a level the same models span `
+  + `${_ch.withinLo.toFixed(3)} to ${_ch.withinHi.toFixed(3)} and `
+  + `${_ch.widestModel} swings ${_ch.maxSwing.toFixed(2)}. They respond to the `
+  + "input; the response does not track correctness, which is what a signed "
+  + "margin catches and a distance from 0.5 does not. It is a base model with "
+  + "no instruction tuning. Three formats were tried; a chat template, a longer "
+  + "prefix and a generation-based readout remain untested, so this is a limit "
+  + "on what we have shown, not a proof of impossibility.");
 
 // ============ SECTION: FIX ROUND 2 (STIMULI) ==================== //
 pres.addSection({ title: "Fix round 2" });

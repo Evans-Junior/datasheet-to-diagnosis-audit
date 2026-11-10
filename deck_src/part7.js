@@ -70,7 +70,12 @@ card(s, { x: 0.55, y: 1.22, w: 12.2, h: 1.3, fill: "FDF4E3", kicker: "READ THIS 
   kickerColor: WARN, name: "prov" });
 s.addText([
   { text: "These are tier 1 results. ", options: { bold: true, color: INK } },
-  { text: "All 26 live vignettes are author-reviewed against a guideline passage we quoted at first hand, which is the bar fixed for this submission (prereg \u00A710). That bar earned the tier: author review rejected two vignettes outright, corrected a third, and caught three citation errors no validator saw. ", options: { color: MUT } },
+  { text: `All ${F.liveVignettes().live} live vignettes are author-reviewed `
+        + "against a guideline passage we quoted at first hand, which is the "
+        + "bar fixed for this submission (prereg \u00A710). That bar earned the "
+        + "tier: author review rejected two vignettes outright, corrected a "
+        + "third, and caught three citation errors no validator saw. ",
+    options: { color: MUT } },
   { text: "It is not clinician verification. ", options: { bold: true, color: WARN } },
   { text: "Clinical review is scheduled; the public paper waits for it, and we report its effect either way.", options: { color: MUT } },
 ], { x: 0.77, y: 1.68, w: 11.76, h: 0.8, fontSize: 11.5, lineSpacing: 14.5, margin: 0, isTextBox: true });

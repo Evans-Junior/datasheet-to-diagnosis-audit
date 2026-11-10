@@ -155,12 +155,16 @@ function tierBanner(s, o) {
   const head = t2 ? "TIER 2 \u2014 CLINICIAN-VERIFIED"
             : (t1 ? "TIER 1 RESULT \u2014 PENDING CLINICAL VALIDATION"
                   : "NOT REPORTABLE AT ANY TIER");
+  // D095: the vignette count was typed. It said 26; the set holds 25 live of
+  // 28. This banner is drawn on every results slide, so that one stale number
+  // was repeated more often than any other figure in the deck.
+  const lv = F.liveVignettes();
   const body = t2
     ? "Every vignette carries a clinician ruling."
-    : (t1 ? "Every one of the 26 live vignettes is author-reviewed against a "
-          + "quoted, first-hand guideline passage \u2014 the bar fixed for this "
-          + "submission (prereg \u00A710, D091). Clinical review is scheduled; "
-          + "the public paper waits for it."
+    : (t1 ? `Every one of the ${lv.live} live vignettes is author-reviewed `
+          + "against a quoted, first-hand guideline passage \u2014 the bar "
+          + "fixed for this submission (prereg \u00A710, D091). Clinical "
+          + "review is scheduled; the public paper waits for it."
           : "At least one vignette has never been checked against a guideline "
           + "quote, so nothing here is citable.");
   s.addShape(pres.ShapeType.roundRect, {

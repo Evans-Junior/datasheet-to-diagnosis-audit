@@ -1,6 +1,22 @@
 const K = require("./part1.js");
+const F = require("./figures.js");
 const { pres, S, card, stat, badge, box, arrow, note,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
+
+// D095. Every figure on these two slides was typed in. All of them had gone
+// stale: the gate chart showed Qwen at 0.0506 against a table saying 0.0819,
+// the pass ratios read 3.86x/2.24x/1.88x against 4.62x/1.60x/4.65x, and the
+// floor slide said the old floor was 8.5x too high with a median ratio of
+// 0.118 when the table said 6.1x and 0.164. Nothing checked any of it.
+const GT = F.gateTable().slice().sort((a, b) => b.margin - a.margin);
+const GR = F.gateRerun();
+const FC = F.floorComparison();
+const CH = F.chanceRange();
+const passes = GT.filter(g => g.gate === "SENSITIVE");
+const fails = GT.filter(g => g.gate !== "SENSITIVE");
+const LBL = m => m.replace("OLMo-2-7B-Instruct", "OLMo-2-7B\nInstruct")
+                  .replace(/^OLMo-2-7B$/, "OLMo-2-7B\nbase");
+const r2 = v => (isNaN(v) ? "n/a" : v.toFixed(2) + "x");
 
 const AX = { catAxisLabelColor: MUT, valAxisLabelColor: MUT,
   catAxisLabelFontSize: 10, valAxisLabelFontSize: 10,
@@ -12,11 +28,10 @@ let s = S("CONTENT", "Results", "The gate: can the instrument see a real differe
 s.addText("The gate flips only the sex parameter and holds every word of clinical text fixed, so a model that understands the task must show a positive margin. A margin inside the model's own noise floor means it does not.",
   { x: 0.55, y: 1.2, w: 12.2, h: 0.4, fontSize: 13.5, color: INK, lineSpacing: 17, margin: 0, isTextBox: true });
 
+const gLabels = GT.map(g => LBL(g.model));
 s.addChart(pres.ChartType.bar, [
-  { name: "Gate margin", labels: ["Qwen3-8B", "OLMo-2-7B\nInstruct", "OLMo-2-7B\nbase", "pythia-410m", "pythia-1b", "pythia-2.8b", "pythia-6.9b", "pythia-1.4b", "pythia-70m", "pythia-160m"],
-    values: [0.0506, 0.0199, 0.0175, 0.0015, -0.0007, -0.0005, -0.0019, -0.0035, -0.0035, -0.0063] },
-  { name: "Matched noise floor", labels: ["Qwen3-8B", "OLMo-2-7B\nInstruct", "OLMo-2-7B\nbase", "pythia-410m", "pythia-1b", "pythia-2.8b", "pythia-6.9b", "pythia-1.4b", "pythia-70m", "pythia-160m"],
-    values: [0.0131, 0.0106, 0.0078, 0.0037, 0.0059, 0.0109, 0.0025, 0.0116, 0.0049, 0.0122] },
+  { name: "Gate margin", labels: gLabels, values: GT.map(g => g.margin) },
+  { name: "Matched noise floor", labels: gLabels, values: GT.map(g => g.floor) },
 ], { x: 0.55, y: 1.68, w: 7.5, h: 4.6, barDir: "col", barGrouping: "clustered",
   chartColors: [TEAL, WARN], showTitle: true, title: "Gate margin against each model's own noise floor",
   titleColor: INK, titleFontSize: 12, titleFontFace: "+mn-lt",
@@ -24,23 +39,45 @@ s.addChart(pres.ChartType.bar, [
   showValue: false, barGapWidthPct: 40, ...AX });
 
 card(s, { x: 8.3, y: 1.68, w: 4.45, h: 1.46, fill: "E6F5F2", name: "gpass" });
-s.addText("3 of 10", { x: 8.52, y: 1.8, w: 4.0, h: 0.56, fontSize: 30, bold: true, color: PASS,
+s.addText(`${passes.length} of ${GT.length}`, { x: 8.52, y: 1.8, w: 4.0, h: 0.56,
+  fontSize: 30, bold: true, color: passes.length ? PASS : FAIL,
   fontFace: "Cambria", margin: 0, isTextBox: true });
 s.addText("models clear their own floor", { x: 8.52, y: 2.34, w: 4.0, h: 0.26, fontSize: 12,
   bold: true, color: INK, margin: 0, isTextBox: true });
-s.addText("Qwen 3.86x,  OLMo base 2.24x,  OLMo Instruct 1.88x", { x: 8.52, y: 2.62, w: 4.0, h: 0.4,
-  fontSize: 10.5, color: MUT, lineSpacing: 13, margin: 0, isTextBox: true });
+s.addText(passes.map(g => `${g.model} ${r2((GR.byModel[g.model] || {}).timesFloor)}`)
+            .join(",  ") || "none",
+  { x: 8.52, y: 2.62, w: 4.0, h: 0.4,
+    fontSize: 10.5, color: MUT, lineSpacing: 13, margin: 0, isTextBox: true });
 
-card(s, { x: 8.3, y: 3.26, w: 4.45, h: 1.5, fill: "FBEEEC", kicker: "THE PYTHIA LADDER IS AT CHANCE",
-  kickerColor: FAIL, name: "gpyth" });
-s.addText("Mean probability on the correct option, against two options: 0.497 to 0.501 across all seven sizes. A hundredfold increase in parameters produces no movement off chance.",
-  { x: 8.52, y: 3.8, w: 4.0, h: 0.88, fontSize: 11.5, color: INK, lineSpacing: 14.5, margin: 0, isTextBox: true });
+// D095. This card used to say the ladder shows "no movement off chance",
+// citing the pooled probability alone. The pooled figure is 0.5 BY DESIGN here
+// -- Group 2 flips the correct answer with the sex parameter -- so it cannot
+// distinguish a model with no preference from one with a fixed preference.
+// Within each level the same models span 0.347 to 0.652. They move; the
+// movement just does not track the correct answer. That is a sharper finding
+// than the one the slide used to claim, and it is the reason the gate is
+// defined on a signed margin.
+card(s, { x: 8.3, y: 3.26, w: 4.45, h: 1.5, fill: "FBEEEC",
+  kicker: "THE PYTHIA LADDER IS AT CHANCE", kickerColor: FAIL, name: "gpyth" });
+s.addText([
+  { text: `Pooled over the sex parameter, all ${CH.nModels} sizes sit at `
+        + `${CH.pooledLo.toFixed(3)} to ${CH.pooledHi.toFixed(3)} on the correct `
+        + "option, against two. ", options: { color: INK } },
+  { text: `But within a level they span ${CH.withinLo.toFixed(3)} to `
+        + `${CH.withinHi.toFixed(3)}: ${CH.widestModel} swings `
+        + `${CH.maxSwing.toFixed(2)} while pooling to `
+        + `${CH.widestPooled.toFixed(3)}. They respond; the response does not `
+        + "track correctness.", options: { color: FAIL, bold: true } },
+], { x: 8.52, y: 3.8, w: 4.0, h: 0.88, fontSize: 9.5, lineSpacing: 11.5,
+     margin: 0, isTextBox: true });
 
 card(s, { x: 8.3, y: 4.88, w: 4.45, h: 1.4, fill: INK, name: "gsay" });
-s.addText("For the seven models that fail, every null elsewhere is a property of the instrument, not of the model's gender behaviour, and we report them that way.",
+s.addText(`For the ${fails.length} models that fail, every null elsewhere is a `
+  + "property of the instrument, not of the model's gender behaviour, and we "
+  + "report them that way.",
   { x: 8.52, y: 5.04, w: 4.0, h: 1.0, fontSize: 12, bold: true, color: PAPER, lineSpacing: 15.5,
     margin: 0, isTextBox: true, valign: "middle" });
-note(s, "This result changed on 3 November. It was 1 of 10 until the noise floor was corrected. The margins have not changed at all: only the floor they are compared against. The next slide explains why.");
+note(s, `This result changed on 3 November. It was ${GR.oldPasses} of ${GR.n} until the noise floor was corrected. The margins have not changed at all: only the floor they are compared against. The next slide explains why.`);
 
 // ============ 21. WHY THE FLOOR MOVED, diagram ================== //
 s = S("CONTENT", "Results", "Why the floor moved: the wrong stimulus");
@@ -77,10 +114,14 @@ s.addText([
 
 // before/after floor stats
 const fl = [
-  { n: "8.5x", l: "too high", s: "The old floor, on the primary score key", c: FAIL },
-  { n: "10 of 10", l: "models moved", s: "Every model's floor changed by more than 25 percent", c: WARN },
-  { n: "0.118", l: "median ratio", s: "New floor divided by old floor", c: PASS },
-  { n: "1 to 3", l: "gate passes", s: "The only outcome that changed for the models", c: PASS },
+  { n: r2(FC.timesTooHigh), l: "too high",
+    s: `The old floor, on the ${F.KEY} key. Median over ${FC.n} models.`, c: FAIL },
+  { n: `${FC.nMoved} of ${FC.n}`, l: "models moved",
+    s: "Floors that changed by more than 25 percent", c: WARN },
+  { n: FC.medianRatio.toFixed(3), l: "median ratio",
+    s: "New floor divided by old floor", c: PASS },
+  { n: `${GR.oldPasses} to ${GR.newPasses}`, l: "gate passes",
+    s: `The only outcome that changed, over ${GR.n} models`, c: PASS },
 ];
 fl.forEach((v, i) => {
   const x = 0.55 + i * 3.1;

@@ -4856,7 +4856,7 @@ reproducibility but means an interrupted 10-model run restarts from model 1.
 Not changed, the alternative is a resume path that reintroduces exactly the
 mixed-provenance risk rejected above.
 
-## D094 — A model that dies overnight would have shrunk the roster silently, so the pipeline now gates on it
+## D094, a model that dies overnight would have shrunk the roster silently, so the pipeline now gates on it
 
 **Date:** 2026-11-09
 
@@ -4906,3 +4906,75 @@ right split: a long run should finish what it can, and nothing should be allowed
 to report from a partial result. The fifth variant of the staleness family
 (D052, D090, D092, D093, D094), and the first one caught before it produced a
 wrong number rather than after.
+
+## D095, the deck was still typing in its own numbers, and the build had been broken for a day
+
+**Context.** D090 made the deck read `results/tables` at build time, and
+`deck_src/figures.js` refuses to build on a stale or never-scored prompt set.
+That guard works. What it does not do is notice a number that was never wired
+to a table in the first place, and nine slides still had those.
+
+**What was actually wrong.** Every figure below was on a slide, and every one
+of them disagreed with the tables on disk:
+
+| Slide | Said | Tables said |
+|---|---|---|
+| Gate chart, 10 models | Qwen margin 0.0506 | 0.0819 |
+| Gate pass ratios | 3.86x / 2.24x / 1.88x | 4.62x / 1.60x / 4.65x |
+| Floor correction | 8.5x too high, median 0.118 | 6.11x, median 0.164 |
+| RQ2c | 0.38x old, 2.88x new, k=3, limit 0.125 | 1.11x, 7.98x, k=4, limit 0.0625 |
+| RQ3 trend | rho +0.693, p = 0.026 | rho +0.857, p = 0.0015 |
+| RQ4 linkage | five bars, two corpora | three corpora, values absent entirely |
+| Tier banner | 26 live vignettes | 25 live of 28 |
+| I1 row, fix table | median ratio 0.118 | 0.164 |
+| H3 row, fix table | margin 8.5x the effect | 251x |
+
+**Two of these were worse than stale.**
+
+*The build was broken.* `part11.js` assembled a table into `mb` and then passed
+`mbRows`, which is not defined, so `node build.js` threw on slide 37 and every
+slide after it was never generated. The row also carried eight entries against
+seven columns, the eighth being a colour rather than a cell. Nobody noticed
+because the `.pptx` on disk predated the bug: the deck looked fine because it
+was old. A build that cannot run is not a guard, and the guard in `figures.js`
+had been protecting a file nothing could produce.
+
+*A claim was false, not just out of date.* The gate slide said the Pythia
+ladder shows "no movement off chance", citing a pooled probability of 0.497 to
+0.501 on the correct option. Group 2 flips the correct answer with the sex
+parameter, so a pooled mean is held at 0.5 **by construction**. A model with a
+fixed option preference lands there exactly as one with no preference. Within a
+level the same seven models span 0.347 to 0.652, and pythia-1b swings 0.304
+while pooling to 0.4994. They respond to the input; the response does not track
+correctness. The slide and a speaker note both now say that, which is a sharper
+finding than the one being claimed and is the reason the gate is defined on a
+signed margin rather than a distance from 0.5.
+
+**Decision.** Nine slides now read every figure from the tables, through new
+accessors in `figures.js`: `liveVignettes`, `positiveControl`,
+`floorComparison`, `gateRerun`, `rq3Spearman`, `rq4Linkage`,
+`corpusDisagreement`, `corpusAgreement`, `chanceRange`. Where a slide stated a
+conclusion that depends on a number, such as "inside the noise", "the
+conclusion reversed", or "the models trained on neither corpus correlate
+best", the
+conclusion is computed from the data and the slide renders whichever case
+holds, because on the current tables two of those three had flipped.
+
+**`src/stats.py` now persists the RQ3 Spearman.** It lived in `trend.attrs`:
+printed to stdout, then lost. It is the one number the deck explicitly tells
+the audience to distrust, and it was therefore the one number that had to be
+transcribed by hand. It now writes `rq3_size_trend_stats.json` beside the
+table, stamped, with the gap-vs-size and floor-vs-size decomposition that is
+the actual defence of the result. The slide shows all three.
+
+**Kept as typed text, deliberately.** The "with the old floor" column of the
+fix-round table is a historical record of what the October run reported. It is
+not a claim about the current data and recomputing it would erase the thing the
+slide exists to show. Three figures live there: `0.38x`, `rho -0.030`, and
+`margin 68x`.
+
+**Verified.** 56 slides build, `validate.py` passes, geometry QA shows no new
+overflow or overlap against the pre-change baseline, and a scan of the extracted
+slide text finds none of the nine stale figures outside that historical column.
+The JS Spearman added for `corpusAgreement` matches `scipy.stats.spearmanr` to
+four decimals (0.9762).

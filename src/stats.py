@@ -51,7 +51,7 @@ import pandas as pd
 import yaml
 from scipy import stats as sps
 from statsmodels.stats.multitest import multipletests
-from src.provenance import write_table   # D090: stamps prompt_hash
+from src.provenance import write_table, prompt_hash_now   # D090: stamps prompt_hash
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -1175,6 +1175,28 @@ def main() -> None:
         if "o1" in frames else pd.DataFrame()
     if not trend.empty:
         write_table(stamp(trend), TABLES / "rq3_size_trend.csv")
+        # D095. The Spearman rho for RQ3 lived in trend.attrs, which means it
+        # was printed to stdout and then lost. It is the most distrusted number
+        # in the deck -- a null that became a trend after an instrument change
+        # we made ourselves -- and the slide that presents it was therefore
+        # hand-typed, so it still showed rho +0.693 from an earlier round while
+        # the run was producing +0.857. A figure nobody can read from disk is a
+        # figure that will be transcribed, and a transcribed figure goes stale
+        # silently. Persist it, stamped, next to the table it describes.
+        if "spearman_rho" in trend.attrs:
+            import json as _json
+            a = trend.attrs
+            keys = ("spearman_rho", "spearman_p", "spearman_rho_gap",
+                    "spearman_p_gap", "spearman_rho_floor", "spearman_p_floor")
+            side = {k: float(a[k]) for k in keys if k in a}
+            side["n_models"] = int(len(trend))
+            side["carried_by_floor"] = bool(
+                abs(a.get("spearman_rho_floor", 0.0))
+                > abs(a.get("spearman_rho_gap", 0.0)))
+            side["verification_status"] = verification_status
+            side["prompt_hash"] = prompt_hash_now()
+            (TABLES / "rq3_size_trend_stats.json").write_text(
+                _json.dumps(side, indent=2) + "\n", encoding="utf-8")
 
     if not args.no_mixed and "o1" in frames:
         me = mixed_effects(frames["o1"])

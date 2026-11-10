@@ -149,6 +149,11 @@ function merging() {
     above: String(r.exceeds_floor) === "True",
     allSameSign: String(r.all_same_sign) === "True",
     nPositive: num(r.n_positive),
+    // D095: the slide said "with three vignettes the finest resolvable p is
+    // 0.125". Both halves of that are now read from the table, because the
+    // contrast runs over more vignettes than it did and understating k
+    // overstates what the design can resolve.
+    nVignettes: num(r.n_vignettes), pResolution: num(r.p_resolution_limit),
   })).sort((a, b) => b.mean - a.mean);
 }
 
@@ -161,6 +166,12 @@ function postTraining() {
     timesFloor: num(r.times_combined_floor),
     baseInsideOwnFloor: String(r.base_inside_own_floor) === "True",
     tunedExceedsOwnFloor: String(r.tuned_exceeds_own_floor) === "True",
+    // D095: the slide needs these too. The resolution limit in particular was
+    // typed as 0.125 (k=3) and the contrast now runs over 4 vignettes, so the
+    // true limit is 1/2^4. A hand-typed resolution limit is the worst kind of
+    // stale number: it understates how little the design can resolve.
+    floorBase: num(r.floor_base), floorTuned: num(r.floor_tuned),
+    nVignettes: num(r.n_vignettes), pResolution: num(r.p_resolution_limit),
   };
 }
 
@@ -173,7 +184,277 @@ function reportable() {
                                  && !s.startsWith("unverified")) };
 }
 
+// ---- D095: figures that were hand-typed onto slides -----------------------
+// Everything below exists because a slide was carrying a number no build step
+// could check. Each one was WRONG on the deck as it stood:
+//   floorComparison  slide said 0.118 / 8.5x, the table said 0.164 / 6.1x
+//   rq3Spearman      slide said rho +0.693 p 0.026, the run printed +0.857
+//   liveVignettes    the tier banner said 26, the set holds 25
+// The fix is not to retype them. It is to stop typing them.
+
+// The primary score key for every reported result (configs/models.yaml,
+// --score-key pmi). The i1_* tables hold one row per model PER KEY, so a
+// helper that forgets to filter silently averages three instruments.
+const KEY = "pmi";
+
+// Live vignettes: DISTINCT vignette_id among rows that are analysis_ready and
+// not blocked. The live/blocked predicate mirrors src/provenance.py exactly --
+// if that changes, this must change with it.
+//
+// vignettes.csv is the PROMPT csv: one row per prompt, 696 rows over 28
+// vignettes. Counting its rows gives 624/696, which is the prompt count, not
+// the vignette count. The deck says "vignettes", so it must count vignettes.
+function liveVignettes() {
+  const f = path.join(__dirname, "..", "data", "vignettes", "vignettes.csv");
+  if (!fs.existsSync(f)) throw new Error("figures.js: no vignettes.csv");
+  const rows = parseCSV(fs.readFileSync(f, "utf8"));
+  const live = rows.filter(r =>
+    String(r.analysis_ready).trim() === "True" &&
+    String(r.blocked_on || "").trim() === "");
+  const uniq = a => new Set(a.map(r => r.vignette_id)).size;
+  return { live: uniq(live), total: uniq(rows),
+           livePrompts: live.length, totalPrompts: rows.length };
+}
+
+// The positive-control gate, per model, on the primary key.
+function positiveControl() {
+  return table("rq0_positive_control.csv").map(r => ({
+    model: SHORT(r.model_id), margin: num(r.mean_margin),
+    floor: num(r.nuisance_floor), overFloor: num(r.margin_over_floor),
+    gate: r.gate, nVignettes: num(r.n_vignettes), nPairs: num(r.n_pairs),
+  }));
+}
+
+// I1: the floor as first built against the floor as rebuilt.
+function floorComparison() {
+  const rows = table("i1_floor_comparison.csv").filter(r => r.score_key === KEY);
+  if (!rows.length) throw new Error(`figures.js: no ${KEY} rows in i1_floor_comparison.csv`);
+  const ratios = rows.map(r => num(r.ratio_new_over_old)).filter(v => !isNaN(v))
+                     .sort((a, b) => a - b);
+  const mid = ratios.length % 2
+    ? ratios[(ratios.length - 1) / 2]
+    : (ratios[ratios.length / 2 - 1] + ratios[ratios.length / 2]) / 2;
+  return {
+    n: rows.length,
+    medianRatio: mid,
+    // "The old floor was N times too high" is the reciprocal of the median
+    // ratio, not a separate measurement. Deriving it here keeps the two
+    // numbers on the slide from disagreeing, which they did.
+    timesTooHigh: 1 / mid,
+    nMoved: rows.filter(r => Math.abs(num(r.ratio_new_over_old) - 1) > 0.25).length,
+    oldFloorLo: Math.min(...rows.map(r => num(r.old_floor))),
+    oldFloorHi: Math.max(...rows.map(r => num(r.old_floor))),
+    byModel: Object.fromEntries(rows.map(r =>
+      [SHORT(r.model_id), { oldFloor: num(r.old_floor),
+                            newFloor: num(r.floor_max_abs_vignette),
+                            ratio: num(r.ratio_new_over_old) }])),
+  };
+}
+
+// I1: how many models passed the gate before and after the floor correction.
+function gateRerun() {
+  const rows = table("i1_gate_rerun.csv").filter(r => r.score_key === KEY);
+  if (!rows.length) throw new Error(`figures.js: no ${KEY} rows in i1_gate_rerun.csv`);
+  const pass = v => v === "SENSITIVE";
+  return {
+    n: rows.length,
+    oldPasses: rows.filter(r => pass(r.old_gate)).length,
+    newPasses: rows.filter(r => pass(r.new_gate)).length,
+    byModel: Object.fromEntries(rows.map(r =>
+      [SHORT(r.model_id), { margin: num(r.mean_margin),
+                            oldFloor: num(r.old_floor),
+                            newFloor: num(r.matched_floor),
+                            timesFloor: num(r.times_matched_floor),
+                            oldGate: r.old_gate, newGate: r.new_gate }])),
+  };
+}
+
+// RQ3: the Spearman rho and its decomposition. D095 made src/stats.py persist
+// this; before that it was printed to stdout and then lost, which is why the
+// slide drifted.
+function rq3Spearman() {
+  const f = path.join(T, "rq3_size_trend_stats.json");
+  if (!fs.existsSync(f)) {
+    throw new Error(
+      "figures.js: results/tables/rq3_size_trend_stats.json is missing.\n" +
+      "  It is written by src/stats.py (D095). Run:  .venv/bin/python -m src.stats");
+  }
+  const j = JSON.parse(fs.readFileSync(f, "utf8"));
+  if (j.prompt_hash !== CURRENT) {
+    throw new Error(
+      `figures.js: rq3_size_trend_stats.json was written for prompt set ` +
+      `${j.prompt_hash}, but the current set is ${CURRENT}.\n` +
+      "  Refusing to put a stale correlation on the slide that exists to be " +
+      "distrusted.");
+  }
+  return j;
+}
+
+// RQ4: the corpus-linkage correlations, on the pre-registered variant.
+// One row per model PER SKEW INDEX, so each model has one `matched` corpus
+// (the one it was trained on) and the rest `crossed`. Qwen declares no
+// corpus, so every row for it is `unknown` -- that is the negative control.
+function rq4Linkage(variant = "centred", support = "common") {
+  const rows = table("rq4_linkage.csv")
+    .filter(r => r.skew_variant === variant && r.support === support);
+  if (!rows.length) throw new Error(`figures.js: no rq4 rows for ${variant}/${support}`);
+  const corpus = s => String(s).replace(/^v4_/, "").replace(/_llama$/, "");
+  const by = {};
+  for (const r of rows) {
+    const m = SHORT(r.model_id);
+    (by[m] = by[m] || { model: m, rows: [] }).rows.push({
+      corpus: corpus(r.skew_index), pairing: r.pairing,
+      rho: num(r.spearman_rho), p: num(r.p_one_sided),
+      nVignettes: num(r.n_vignettes), propConcordant: num(r.prop_concordant),
+    });
+  }
+  for (const m of Object.values(by)) {
+    m.matched = m.rows.find(x => x.pairing === "matched") || null;
+    m.crossed = m.rows.filter(x => x.pairing === "crossed");
+    m.unknown = m.rows.filter(x => x.pairing === "unknown");
+    const pool = m.crossed.length ? m.crossed : m.unknown;
+    m.bestCrossed = pool.length
+      ? pool.reduce((a, b) => (b.rho > a.rho ? b : a)) : null;
+    m.declaresCorpus = m.matched !== null;
+  }
+  const all = Object.values(by);
+  const best = all.flatMap(m => m.rows).reduce((a, b) => (b.rho > a.rho ? b : a));
+  const bestOwner = all.find(m => m.rows.includes(best));
+  return {
+    models: all, variant, support,
+    // The claim on the slide used to be typed: "the models trained on neither
+    // corpus correlate best with both". Whether that is still true is a fact
+    // about the table, so compute it instead of asserting it.
+    strongest: { model: bestOwner.model, ...best },
+    strongestIsUndeclared: !bestOwner.declaresCorpus,
+    strongestIsMatched: best.pairing === "matched",
+  };
+}
+
+// Mean probability on the target option on the positive-control group, both
+// POOLED over the sex parameter and WITHIN each level. Both are needed, and
+// reporting only the first is how the slide came to say something false.
+//
+// Group 2 arms pair complementary conditions: the correct answer flips with
+// the sex parameter. So a model that ignores the clinical text and always
+// favours the same option lands at a pooled 0.5 exactly as a model that has
+// no preference at all. Pooled 0.5 is therefore necessary for "at chance" and
+// nowhere near sufficient.
+//
+// Measured: the Pythia ladder pools to 0.495-0.501, which is chance. Within a
+// level the same models span 0.347-0.652, and pythia-1b swings 0.304 between
+// the two. They are not failing to respond; they are responding in a direction
+// that does not track the correct answer. That is what the gate margin, which
+// is signed, correctly reports as null -- and it is why the gate cannot be
+// replaced by "is it near 0.5".
+function chanceRange(match = /pythia/) {
+  const rows = table("rq2_deltas.csv").filter(r =>
+    r.outcome === "o1" && r.score_key === KEY &&
+    String(r.vignette_id).startsWith("G2-") &&
+    r.man !== "" && r.woman !== "");
+  if (!rows.length) throw new Error("figures.js: no G2 o1 rows in rq2_deltas.csv");
+  const cells = {};                       // model -> spcu -> [p, ...]
+  for (const r of rows) {
+    const m = SHORT(r.model_id);
+    const v = (num(r.man) + num(r.woman)) / 2;
+    if (isNaN(v)) continue;
+    cells[m] = cells[m] || {};
+    (cells[m][r.spcu] = cells[m][r.spcu] || []).push(v);
+  }
+  const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+  const byModel = {};
+  for (const [m, bySpcu] of Object.entries(cells)) {
+    const lv = Object.fromEntries(
+      Object.entries(bySpcu).map(([k, v]) => [k, mean(v)]));
+    const vals = Object.values(lv);
+    byModel[m] = {
+      levels: lv,
+      pooled: mean(vals),
+      // |female - male|. Zero means the model treats the two levels alike;
+      // large means it responds strongly, whatever the direction.
+      swing: vals.length === 2 ? Math.abs(vals[0] - vals[1]) : NaN,
+    };
+  }
+  const hit = Object.entries(byModel).filter(([m]) => match.test(m));
+  if (!hit.length) throw new Error(`figures.js: chanceRange matched no model: ${match}`);
+  const pooled = hit.map(([, v]) => v.pooled);
+  const within = hit.flatMap(([, v]) => Object.values(v.levels));
+  const swings = hit.map(([, v]) => v.swing).filter(v => !isNaN(v));
+  const widest = hit.reduce((a, b) => (b[1].swing > a[1].swing ? b : a));
+  return {
+    byModel, nModels: hit.length,
+    pooledLo: Math.min(...pooled), pooledHi: Math.max(...pooled),
+    withinLo: Math.min(...within), withinHi: Math.max(...within),
+    maxSwing: Math.max(...swings),
+    widestModel: widest[0], widestPooled: widest[1].pooled,
+  };
+}
+
+// Spearman's rho: Pearson on ranks, with ties averaged. Implemented here
+// because the deck has no scientific-computing dependency and should not grow
+// one to avoid typing a number in by hand.
+function _spearman(xs, ys) {
+  const rank = a => {
+    const idx = a.map((v, i) => [v, i]).sort((p, q) => p[0] - q[0]);
+    const r = new Array(a.length);
+    for (let i = 0; i < idx.length;) {
+      let j = i;
+      while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++;
+      const avg = (i + j) / 2 + 1;              // 1-based, ties averaged
+      for (let k = i; k <= j; k++) r[idx[k][1]] = avg;
+      i = j + 1;
+    }
+    return r;
+  };
+  const rx = rank(xs), ry = rank(ys), n = xs.length;
+  const mx = rx.reduce((a, b) => a + b, 0) / n;
+  const my = ry.reduce((a, b) => a + b, 0) / n;
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = rx[i] - mx, dy = ry[i] - my;
+    sxy += dx * dy; sxx += dx * dx; syy += dy * dy;
+  }
+  return sxy / Math.sqrt(sxx * syy);
+}
+
+// How closely the two corpora agree on the concepts where both have support.
+// This is the bound RQ4 is reported as: two measurements this close cannot be
+// told apart by skew correlation, so provenance is not identifiable.
+function corpusAgreement() {
+  const rows = table("i4_corpus_disagreement.csv")
+    .filter(r => String(r.common_support).trim() === "True");
+  if (rows.length < 3) throw new Error("figures.js: too few common-support concepts");
+  const a = rows.map(r => num(r["olmo-mix-1124"]));
+  const b = rows.map(r => num(r.piletrain));
+  return { rho: _spearman(a, b), n: rows.length };
+}
+
+// I4: how far apart the two corpora are on the audited concepts. Not prompt-
+// derived (it probes corpora, not the prompt set), so it carries no hash.
+function corpusDisagreement() {
+  const rows = table("i4_corpus_disagreement.csv");
+  // `disagreement` is SIGNED: it is one corpus's log2 skew minus the other's,
+  // so pneumonia is -0.377. The pre-registered criterion ("six concepts above
+  // 0.5 log2") and the slide both mean magnitude. Taking the raw max returns
+  // the largest POSITIVE disagreement, which here is 0.057 -- a sixth of the
+  // real largest -- and the raw median comes out negative, which reads as
+  // nonsense for a distance.
+  const d = rows.map(r => Math.abs(num(r.disagreement))).filter(v => !isNaN(v))
+                .sort((a, b) => a - b);
+  const mid = d.length % 2 ? d[(d.length - 1) / 2]
+                           : (d[d.length / 2 - 1] + d[d.length / 2]) / 2;
+  const common = rows.filter(r => String(r.common_support).trim() === "True");
+  return { n: rows.length, nCommonSupport: common.length,
+           maxDisagreement: d.length ? d[d.length - 1] : NaN,
+           medianDisagreement: mid,
+           // Pre-registered criterion: >= 6 concepts above 0.5 log2.
+           nAboveHalfLog2: d.filter(v => v > 0.5).length };
+}
+
 module.exports = {
-  CURRENT, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
-  reportable, f4, f3, fx, p, ci, SHORT, num,
+  CURRENT, KEY, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
+  reportable, liveVignettes, positiveControl, floorComparison, gateRerun,
+  rq3Spearman, rq4Linkage, corpusDisagreement, chanceRange,
+  corpusAgreement,
+  f4, f3, fx, p, ci, SHORT, num,
 };

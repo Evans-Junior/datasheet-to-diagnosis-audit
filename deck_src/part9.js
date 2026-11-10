@@ -3,6 +3,9 @@ const { pres, S, card, stat, badge, box, arrow, note,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 // D090: read from results/tables/rq2_hypothesis_tests.csv at build time.
 const F = require("./figures.js");
+// D095: k and the resolution limit for the exploratory merging finding
+// were typed as "three vignettes" and 0.125. Both come from the table.
+const _mg0 = F.merging()[0];
 
 const AX = { catAxisLabelColor: MUT, valAxisLabelColor: MUT,
   catAxisLabelFontSize: 10, valAxisLabelFontSize: 10,
@@ -120,7 +123,10 @@ s.addText("The three models that exceed their floor are exactly the three that c
 card(s, { x: 0.55, y: 5.44, w: 12.2, h: 1.0, fill: "1C4E59", name: "ex3" });
 s.addText([
   { text: "Reported as exploratory. ", options: { bold: true, color: WARN } },
-  { text: "It came out of implementing the control, not out of testing H1 to H4, so it sits outside the Holm family with no p value claimed. With three vignettes the finest resolvable p is 0.125. ", options: { color: "D6E6E9" } },
+  { text: "It came out of implementing the control, not out of testing H1 to "
+        + "H4, so it sits outside the Holm family with no p value claimed. "
+        + `With ${_mg0.nVignettes} vignettes the finest resolvable p is `
+        + `${_mg0.pResolution}. `, options: { color: "D6E6E9" } },
   { text: "A by-product of a control promoted to a confirmatory hypothesis after the fact is exactly what pre-registration exists to prevent, so we do not promote it.", options: { bold: true, color: PAPER } },
 ], { x: 0.77, y: 5.62, w: 11.76, h: 0.68, fontSize: 12, lineSpacing: 15.5, margin: 0, isTextBox: true });
 note(s, "This is the project's most interesting result and the one most likely to be over-read. Be scrupulous about the exploratory label. The Gender Harmony Model is what made it visible, because without separating identity from the sex parameter the two could not have been made to disagree.");
@@ -130,17 +136,57 @@ s = S("CONTENT", "Results", "Data or post-training? A contrast that isolates tun
 s.addText("Post-training was a live alternative explanation, because the effect is largest in instruction-tuned models. OLMo-2-7B and its Instruct sibling share a corpus exactly and differ only in post-training, so their difference isolates tuning.",
   { x: 0.55, y: 1.2, w: 12.2, h: 0.44, fontSize: 13.5, color: INK, lineSpacing: 17, margin: 0, isTextBox: true });
 
-box(s, { x: 0.55, y: 1.86, w: 3.1, h: 1.0, t: "OLMo-2-7B base\nmerging  0.0638", fill: PAPER, line: TEAL, fs: 12, name: "rc1" });
+// D095. Every number on this slide was typed, and the slide was still
+// presenting the 0.38x / 2.88x framing from D049 with a 3-vignette resolution
+// limit. The contrast now runs over 4 vignettes, so the limit is 1/2^4, and
+// both floors have moved. The old-floor column is kept because the reversal
+// is the point of the slide -- but it is now COMPUTED from the recorded old
+// floors in quadrature, the same way the current one is, instead of being a
+// remembered pair of numbers.
+const PT = F.postTraining();
+const _fc = F.floorComparison();
+const _oldBase = (_fc.byModel[PT.base] || {}).oldFloor;
+const _oldTuned = (_fc.byModel[PT.tuned] || {}).oldFloor;
+const _oldCombined = Math.sqrt(_oldBase * _oldBase + _oldTuned * _oldTuned);
+const _timesOld = PT.delta / _oldCombined;
+const _r4 = v => v.toFixed(4);
+const _rx = v => v.toFixed(2) + "x";
+
+box(s, { x: 0.55, y: 1.86, w: 3.1, h: 1.0,
+  t: `${PT.base}\nmerging  ${_r4(PT.mergingBase)}`, fill: PAPER, line: TEAL, fs: 12, name: "rc1" });
 arrow(s, { x: 3.78, y: 2.26, w: 0.6, h: 0.2, color: TEAL, name: "rca" });
 s.addText("post-training only", { x: 3.5, y: 2.5, w: 1.2, h: 0.24, fontSize: 9, italic: true,
   color: MUT, align: "center", margin: 0, isTextBox: true });
-box(s, { x: 4.5, y: 1.86, w: 3.1, h: 1.0, t: "OLMo-2-7B Instruct\nmerging  0.1017", fill: PAPER, line: TEAL, fs: 12, name: "rc2" });
+box(s, { x: 4.5, y: 1.86, w: 3.1, h: 1.0,
+  t: `${PT.tuned}\nmerging  ${_r4(PT.mergingTuned)}`, fill: PAPER, line: TEAL, fs: 12, name: "rc2" });
 arrow(s, { x: 7.73, y: 2.26, w: 0.6, h: 0.2, color: INK, name: "rcb" });
-box(s, { x: 8.45, y: 1.86, w: 4.3, h: 1.0, t: "difference  +0.0379", fill: INK, line: INK, tc: PAPER, fs: 14, name: "rc3" });
+box(s, { x: 8.45, y: 1.86, w: 4.3, h: 1.0,
+  t: `difference  ${F.f4(PT.delta)}`, fill: INK, line: INK, tc: PAPER, fs: 14, name: "rc3" });
 
+// D095. "Inside the noise" was typed as a fact. Whether the contrast sits
+// inside the OLD floor depends on a delta that has since grown, so it has to
+// be read off the ratio. On the current tables the delta clears even the old
+// floor, which means D049's conclusion now fails for two independent reasons
+// rather than one -- a stronger statement, and the opposite of what the
+// hand-typed card claimed.
+const _oldInside = _timesOld < 1;
 const rq2c = [
-  { h: "Against the old floor", n: "0.38x", s: "Combined floor 0.0998. Inside the noise, so D049 concluded that tuning adds nothing this instrument can resolve.", c: FAIL },
-  { h: "Against the corrected floor", n: "2.88x", s: "Combined floor 0.0132. Exceeds it, so post-training does increase the merging.", c: PASS },
+  { h: "Against the old floor", n: _rx(_timesOld),
+    s: `Combined floor ${_r4(_oldCombined)}. `
+     + (_oldInside
+         ? "Inside the noise, so D049 concluded that tuning adds nothing this "
+           + "instrument can resolve."
+         : "D049 read this as inside the noise on a smaller delta. On the "
+           + "current set it clears even the inflated floor, so that reading "
+           + "no longer holds on its own terms either."),
+    c: _oldInside ? FAIL : WARN },
+  { h: "Against the corrected floor", n: _rx(PT.timesFloor),
+    s: `Combined floor ${_r4(PT.floorCombined)}. `
+     + (PT.timesFloor > 1
+         ? "Exceeds it, so post-training does increase the merging."
+         : "Does not exceed it, so this instrument cannot resolve a "
+           + "post-training effect."),
+    c: PT.timesFloor > 1 ? PASS : FAIL },
 ];
 rq2c.forEach((c, i) => {
   const x = 0.55 + i * 6.25;
@@ -152,9 +198,22 @@ rq2c.forEach((c, i) => {
   s.addText(c.s, { x: x + 2.1, y: 3.56, w: 3.72, h: 0.9, fontSize: 11, color: INK,
     lineSpacing: 13.5, margin: 0, isTextBox: true, objectName: "rqs" + i });
 });
-card(s, { x: 0.55, y: 4.8, w: 12.2, h: 1.6, fill: INK, kicker: "THE CONCLUSION REVERSED, AND WE MARKED IT SUPERSEDED RATHER THAN EDITING IT",
+card(s, { x: 0.55, y: 4.8, w: 12.2, h: 1.6, fill: INK,
+  kicker: (_oldInside
+    ? "THE CONCLUSION REVERSED, AND WE MARKED IT SUPERSEDED RATHER THAN EDITING IT"
+    : "THE CONCLUSION IS WITHDRAWN TWICE OVER, AND MARKED SUPERSEDED RATHER THAN EDITED"),
   kickerColor: WARN, name: "rqrev" });
-s.addText("The effect never changed. Only the floor did. Note that the base model also clears its own floor, 0.0638 against 0.0078, so the honest reading is that both stages contribute, not that tuning alone does. The claim that tuning adds nothing was an artefact of the inflated floor and is withdrawn. What survives is the limitation: one model pair, three vignettes, resolution limit 0.125, no p value claimed.",
+s.addText("The effect never changed. Only the floor did. "
+  + (PT.baseInsideOwnFloor
+      ? `Note that the base model stays inside its own floor, `
+        + `${_r4(PT.mergingBase)} against ${_r4(PT.floorBase)}, so on this `
+        + "instrument the increase is attributable to post-training."
+      : `Note that the base model also clears its own floor, `
+        + `${_r4(PT.mergingBase)} against ${_r4(PT.floorBase)}, so the honest `
+        + "reading is that both stages contribute, not that tuning alone does.")
+  + " The claim that tuning adds nothing was an artefact of the inflated floor "
+  + "and is withdrawn. What survives is the limitation: one model pair, "
+  + `${PT.nVignettes} vignettes, resolution limit ${PT.pResolution}, no p value claimed.`,
   { x: 0.77, y: 5.34, w: 11.76, h: 0.98, fontSize: 12.5, color: PAPER, lineSpacing: 16, margin: 0, isTextBox: true });
 note(s, "Reversing one of our own published conclusions is a credibility asset if we present it ourselves. The decision log keeps D049 in place with a superseded banner rather than rewriting it, so the reversal is auditable.");
 

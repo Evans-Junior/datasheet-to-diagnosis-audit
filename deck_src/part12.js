@@ -1,6 +1,29 @@
 const K = require("./part1.js");
+const F = require("./figures.js");
 const { pres, S, card, stat, badge, box, arrow, note,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
+
+// D095. These two tables are a BEFORE and AFTER of the floor correction, so
+// they are not symmetric and must not be treated as such:
+//
+//   the "with the old floor" column is a HISTORICAL RECORD of what the October
+//   run reported. It is deliberately left as typed text. Recomputing it would
+//   erase the thing the slide exists to show.
+//
+//   the "with the matched floor" column is a CLAIM ABOUT THE CURRENT DATA, so
+//   every figure in it is read from the tables. All four were stale: the median
+//   ratio, the H3 margin multiple, the RQ2c ratios and the RQ3 rho.
+const _fc = F.floorComparison();
+const _gr = F.gateRerun();
+const _h3 = F.hypothesis("H3");
+const _pt = F.postTraining();
+const _sp = F.rq3Spearman();
+const _ob = (_fc.byModel[_pt.base] || {}).oldFloor;
+const _ot = (_fc.byModel[_pt.tuned] || {}).oldFloor;
+const _ptOldTimes = _pt.delta / Math.sqrt(_ob * _ob + _ot * _ot);
+const _h3Times = _h3.margin / Math.abs(_h3.delta);
+const _rho = v => (v >= 0 ? "+" : "\u2212") + Math.abs(v).toFixed(3);
+const _pv = v => (v < 0.001 ? "p < 0.001" : "p = " + v.toFixed(3));
 
 // ============ SECTION: FIX ROUND ================================ //
 pres.addSection({ title: "Fix round 1" });
@@ -50,7 +73,9 @@ const iRows = [[
   { text: "Outcome", options: { bold: true, color: PAPER, fill: { color: INK }, fontSize: 11 } },
 ]];
 [
-  ["I1", "Matched-geometry noise floor", "correctness", "Floor moves more than 25 percent for a majority of 10 models", "PASS   10 of 10, median ratio 0.118", PASS],
+  ["I1", "Matched-geometry noise floor", "correctness",
+   `Floor moves more than 25 percent for a majority of ${_fc.n} models`,
+   `PASS   ${_fc.nMoved} of ${_fc.n}, median ratio ${_fc.medianRatio.toFixed(3)}`, PASS],
   ["I2", "Score-key collapse", "correctness", "Sum and mean floors differ by less than 1e-9 on the binary stratum", "PASS   difference exactly 0", PASS],
   ["I3", "Pythia elicitation", "tuning", "At least 2 of 7 Pythia models above their own matched floor", "FAIL   0 of 7, 1 of 7, 1 of 7", FAIL],
   ["I4", "RQ4 identifiability", "diagnostic", "At least 6 concepts disagreeing by more than 0.5 log2", "NOT IDENTIFIABLE   0 qualify", FAIL],
@@ -86,10 +111,17 @@ const dRows = [[
   { text: "Reading", options: { bold: true, color: PAPER, fill: { color: "1C4E59" }, fontSize: 12 } },
 ]];
 [
-  ["Gate, Group 2", "1 of 10 models pass", "3 of 10 models pass", "Opens the open-data family", PASS],
-  ["H3 equivalence", "supported, margin 68x the effect", "supported, margin 8.5x the effect", "Same verdict, real margin", PASS],
-  ["RQ2c post-training", "0.38x, inside the floor", "2.88x, exceeds the floor", "Conclusion reverses", WARN],
-  ["RQ3 size trend", "rho -0.030, p = 0.93", "rho +0.693, p = 0.026", "Null becomes a trend, in our favour", FAIL],
+  ["Gate, Group 2", `${_gr.oldPasses} of ${_gr.n} models pass`,
+   `${_gr.newPasses} of ${_gr.n} models pass`, "Opens the open-data family", PASS],
+  ["H3 equivalence", "supported, margin 68x the effect",
+   `${_h3.tost ? "supported" : "NOT supported"}, margin `
+   + `${_h3Times.toFixed(0)}x the effect`, "Same verdict, real margin", PASS],
+  ["RQ2c post-training", "0.38x, inside the floor",
+   `${_ptOldTimes.toFixed(2)}x old floor, ${_pt.timesFloor.toFixed(2)}x matched`,
+   _ptOldTimes < 1 ? "Conclusion reverses" : "Withdrawn twice over", WARN],
+  ["RQ3 size trend", "rho -0.030, p = 0.93",
+   `rho ${_rho(_sp.spearman_rho)}, ${_pv(_sp.spearman_p)}`,
+   "Null becomes a trend, in our favour", FAIL],
 ].forEach((r, i) => dRows.push([
   { text: r[0], options: { bold: true, color: PAPER, fontSize: 11.5, fill: { color: i % 2 ? "133F49" : INK } } },
   { text: r[1], options: { color: "C8B4AE", fontSize: 11.5, fill: { color: i % 2 ? "133F49" : INK } } },
