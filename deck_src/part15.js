@@ -4,6 +4,7 @@ const { pres, S, card, stat, badge, box, arrow, note,
 
 // ============ 36. WHAT IS LEFT TO DO ============================ //
 let s = S("CONTENT", "Limitations and conclusions", "What is left to do");
+K.mark("remaining");
 s.addText("Ordered by the critical path. Item 1 blocks every reportable number in the project.",
   { x: 0.55, y: 1.2, w: 12.2, h: 0.3, fontSize: 13.5, color: INK, margin: 0, isTextBox: true });
 const todo = [
@@ -84,9 +85,9 @@ s = S("TITLE_DARK", "Limitations and conclusions", "A living document");
 s.addText("This deck is the running record of the project. Update it whenever something critical changes.",
   { placeholder: "body" });
 const upd = [
-  { h: "When a run completes", b: "Update the results section and the date on slide 1." },
-  { h: "When a decision is logged", b: "The decision count on slide 18 and the log in the repository." },
-  { h: "When the clinician replies", b: "The status column on slide 5 and the whole of the remaining work slide." },
+  { h: "When a run completes", b: `Update the results section and the date on slide ${K.slideNo("scale")}.` },
+  { h: "When a decision is logged", b: `The decision count on slide ${K.slideNo("scale")} and the log in the repository.` },
+  { h: "When the clinician replies", b: `The status column on slide ${K.slideNo("remaining")} and the whole of that slide.` },
 ];
 upd.forEach((u, i) => {
   const x = 0.9 + i * 3.9;

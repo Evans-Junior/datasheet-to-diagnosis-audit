@@ -9,14 +9,18 @@ let s = S("CONTENT", "Fix round 1", "The finding that came out of the failed int
 s.addText("I3 tried three prompt formats on all seven Pythia models to see whether the problem was elicitation rather than capability. It failed its criterion, and in failing it produced the most consequential result of the round.",
   { x: 0.55, y: 1.2, w: 12.2, h: 0.4, fontSize: 13.5, color: INK, lineSpacing: 17, margin: 0, isTextBox: true });
 
-s.addChart(pres.ChartType.bar, [
-  { name: "Question and answer format", labels: ["70m", "160m", "410m", "1b", "1.4b", "2.8b", "6.9b"],
-    values: [-0.0035, -0.0063, 0.0015, -0.0007, -0.0035, -0.0005, -0.0019] },
-  { name: "Cloze format", labels: ["70m", "160m", "410m", "1b", "1.4b", "2.8b", "6.9b"],
-    values: [-0.0044, -0.0062, 0.0071, -0.0009, -0.0099, 0.0214, -0.0058] },
-  { name: "Few-shot format", labels: ["70m", "160m", "410m", "1b", "1.4b", "2.8b", "6.9b"],
-    values: [0.0000, 0.0109, -0.0021, 0.0007, 0.0050, 0.0046, 0.0051] },
-], { x: 0.55, y: 1.7, w: 7.6, h: 4.0, barDir: "col", barGrouping: "clustered",
+// D096. All 21 margins were typed into three arrays. They were still correct,
+// because the seven Pythia models were not rescored in this round, but a typed
+// array that is right by luck fails silently the first time one of them is.
+// The "7 of 7" claim beside the chart is counted from the same rows.
+const _I3 = F.i3Grid();
+const _I3NAME = { baseline: "Question and answer format", cloze: "Cloze format",
+                  fewshot: "Few-shot format" };
+s.addChart(pres.ChartType.bar,
+  _I3.configs.map(c => ({ name: _I3NAME[c] || c, labels: _I3.order,
+                          values: _I3.series[c] })),
+  { x: 0.55, y: 1.7, w: 7.6, h: 4.0, barDir: "col", barGrouping: "clustered",
+  catAxisLabelPos: "low", valAxisLabelFormatCode: "0.000",
   chartColors: ["9BB3BA", BERRY, TEAL], showTitle: true,
   title: "Group 2 margin by prompt format. Every model crosses zero",
   titleColor: INK, titleFontSize: 12, titleFontFace: "+mn-lt",
@@ -27,7 +31,7 @@ s.addChart(pres.ChartType.bar, [
   valGridLine: { color: "E4EDEE", size: 0.75 }, catGridLine: { style: "none" } });
 
 card(s, { x: 8.4, y: 1.7, w: 4.35, h: 1.5, fill: "FBEEEC", name: "sf1" });
-s.addText("7 of 7", { x: 8.62, y: 1.84, w: 3.9, h: 0.56, fontSize: 30, bold: true, color: FAIL,
+s.addText(`${_I3.nSignFlips} of ${_I3.nModels}`, { x: 8.62, y: 1.84, w: 3.9, h: 0.56, fontSize: 30, bold: true, color: FAIL,
   fontFace: "Cambria", margin: 0, isTextBox: true });
 s.addText("models change the SIGN of their effect across prompt formats",
   { x: 8.62, y: 2.38, w: 3.9, h: 0.68, fontSize: 12, bold: true, color: INK, lineSpacing: 15, margin: 0, isTextBox: true });

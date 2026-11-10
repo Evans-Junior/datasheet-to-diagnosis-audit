@@ -63,8 +63,14 @@ lims.forEach((l, i) => {
   s.addText(l.b, { x: x + 0.66, y: y + 0.38, w: 5.19, h: 0.62, fontSize: 9, color: MUT,
     lineSpacing: 13, margin: 0, isTextBox: true, objectName: "lmbb" + i });
 });
+// D096. This line ran the full width at y 6.66, but the last row of cards
+// starts at 5.86 and its body text box ends at 6.86, so the line was drawn
+// across the third line of item 9 and both were unreadable. There are nine
+// items in a two-column grid, so the last row has an empty right-hand slot.
+// The summary goes there, which removes the collision and fills the gap.
 s.addText("Items 1 and 2 are existential for the current claims. Items 3 to 6 are measurement limits with known fixes. Items 7 and 8 are scope boundaries we accept.",
-  { x: 0.55, y: 6.66, w: 12.2, h: 0.3, fontSize: 11.5, italic: true, color: MUT, margin: 0, isTextBox: true });
+  { x: 6.80, y: 5.98, w: 6.05, h: 0.8, fontSize: 11.5, italic: true, color: MUT,
+    lineSpacing: 16, margin: 0, isTextBox: true, valign: "middle" });
 note(s, "Order matters here. If asked which limitation worries us most, the answer is the clinician verification, because it is the only one that could invalidate the stimulus set entirely rather than merely limit what we can resolve.");
 
 module.exports = {};

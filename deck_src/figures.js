@@ -504,10 +504,41 @@ function decisionCount() {
   return n;
 }
 
+// The I3 elicitation grid: 7 Pythia models x 3 prompt formats, on the scored
+// key. Slide 43 carried all 21 margins as three typed arrays. They happened to
+// still be right, because the small Pythia models were not rescored, but a
+// typed array that is right by luck is a figure waiting to go wrong quietly.
+// `sign` is what the slide's "7 of 7" claim rests on, so it is counted here
+// rather than asserted.
+function i3Grid(order = ["70m", "160m", "410m", "1b", "1.4b", "2.8b", "6.9b"]) {
+  const rows = table("i3_gate_by_config.csv").filter(r => r.score_key === KEY);
+  if (!rows.length) throw new Error("figures.js: i3_gate_by_config.csv has no " + KEY + " rows");
+  const short = m => SHORT(m).replace(/^pythia-/, "");
+  const configs = [...new Set(rows.map(r => r.config))];
+  const series = {};
+  for (const c of configs) {
+    series[c] = order.map(lbl => {
+      const hit = rows.find(r => r.config === c && short(r.model_id) === lbl);
+      if (!hit) throw new Error(`figures.js: no ${KEY}/${c} row for pythia-${lbl}`);
+      return num(hit.margin);
+    });
+  }
+  // How many models change the sign of their margin across the formats.
+  const nSignFlips = order.filter((_, i) => {
+    const vs = configs.map(c => series[c][i]);
+    return vs.some(v => v > 0) && vs.some(v => v < 0);
+  }).length;
+  const passes = {};
+  for (const c of configs) {
+    passes[c] = rows.filter(r => r.config === c && num(r.times_floor) > 1).length;
+  }
+  return { order, configs, series, nSignFlips, nModels: order.length, passes };
+}
+
 module.exports = {
   CURRENT, KEY, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
   reportable, liveVignettes, positiveControl, floorComparison, gateRerun,
   rq3Spearman, rq4Linkage, corpusDisagreement, chanceRange,
-  corpusAgreement, corpusQueries, decisionCount,
+  corpusAgreement, corpusQueries, decisionCount, i3Grid,
   f4, f3, fx, p, ci, SHORT, num,
 };

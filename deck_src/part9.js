@@ -7,9 +7,17 @@ const F = require("./figures.js");
 // were typed as "three vignettes" and 0.125. Both come from the table.
 const _mg0 = F.merging()[0];
 
+// D096. catAxisLabelPos "low" pins the category labels to the edge of the plot
+// area. The default puts them at the value axis crossing, so on any chart with
+// negative values they are drawn over the bars that run the other way, which is
+// what buried six of the ten model names on the RQ4 chart.
+// valAxisLabelFormatCode exists because the zero tick was rendering as
+// 6.93889390390723E-18: the axis steps accumulate float error, and with no
+// format the renderer prints the result verbatim.
 const AX = { catAxisLabelColor: MUT, valAxisLabelColor: MUT,
   catAxisLabelFontSize: 10, valAxisLabelFontSize: 10,
   catAxisLabelFontFace: "+mn-lt", valAxisLabelFontFace: "+mn-lt",
+  catAxisLabelPos: "low", valAxisLabelFormatCode: "0.00",
   valGridLine: { color: "E4EDEE", size: 0.75 }, catGridLine: { style: "none" } };
 
 // ============ 22. THE HYPOTHESES ================================ //
@@ -93,11 +101,27 @@ s = S("CONTENT_DARK", "Results", "An exploratory finding the hypotheses did not 
 s.addText("The same Group 2 items, used the other way round. Hold the sex parameter fixed and vary only the identity label, so the correct answer is identical within every pair and any difference is unwarranted by construction.",
   { x: 0.55, y: 1.2, w: 12.2, h: 0.4, fontSize: 13.5, color: "BCD3D8", lineSpacing: 17, margin: 0, isTextBox: true });
 
+// D096. These four bars were typed, and all four had moved: the chart still
+// read 16.5 / 9.6 / 8.1 / 0.4 from an earlier roster, and the order was wrong
+// as well, because OLMo-2-7B-Instruct has overtaken Qwen3-8B. D095 missed this
+// one because it is a values array rather than a string, so the stale-text scan
+// could not see it. The Pythia bar is the LARGEST of the seven, not their mean:
+// a bar that fails on its best member is a claim about all seven, while a mean
+// could hide a single size that clears its floor.
+const _MG = F.merging();
+const _mgTop = _MG.filter(m => !/pythia/.test(m.model))
+                  .sort((a, b) => b.timesFloor - a.timesFloor);
+const _mgPy = _MG.filter(m => /pythia/.test(m.model))
+                 .sort((a, b) => b.timesFloor - a.timesFloor);
+const _mgLbl = m => m.replace("OLMo-2-7B-Instruct", "OLMo-2-7B Instruct")
+                     .replace(/^OLMo-2-7B$/, "OLMo-2-7B base");
 s.addChart(pres.ChartType.bar, [
   { name: "Interaction, times the model's own floor",
-    labels: ["Qwen3-8B", "OLMo-2-7B Instruct", "OLMo-2-7B base", "all 7 Pythia sizes"],
-    values: [16.5, 9.6, 8.1, 0.4] },
-], { x: 0.55, y: 1.74, w: 6.6, h: 3.5, barDir: "bar",
+    labels: [..._mgTop.map(m => _mgLbl(m.model)),
+             `best of ${_mgPy.length} Pythia sizes`],
+    values: [..._mgTop.map(m => Number(m.timesFloor.toFixed(1))),
+             Number(_mgPy[0].timesFloor.toFixed(1))] },
+], { x: 0.55, y: 1.74, w: 6.6, h: 3.5, barDir: "bar", catAxisLabelPos: "low",
   chartColors: [PASS], showTitle: true,
   title: "Identity read as the sex parameter, relative to each model's noise floor",
   titleColor: PAPER, titleFontSize: 11.5, titleFontFace: "+mn-lt",
@@ -155,7 +179,12 @@ const _rx = v => v.toFixed(2) + "x";
 box(s, { x: 0.55, y: 1.86, w: 3.1, h: 1.0,
   t: `${PT.base}\nmerging  ${_r4(PT.mergingBase)}`, fill: PAPER, line: TEAL, fs: 12, name: "rc1" });
 arrow(s, { x: 3.78, y: 2.26, w: 0.6, h: 0.2, color: TEAL, name: "rca" });
-s.addText("post-training only", { x: 3.5, y: 2.5, w: 1.2, h: 0.24, fontSize: 9, italic: true,
+// D096. This label sat in a box from x 3.5 to 4.7 while the card beside it
+// starts at 4.5, so "only" was drawn underneath the card and the reader saw
+// "post-training onl". Confined to the 0.85in gap between the two cards and
+// wrapped over two lines.
+s.addText("post-training\nonly", { x: 3.65, y: 2.46, w: 0.85, h: 0.36, fontSize: 8,
+  italic: true, lineSpacing: 9.5,
   color: MUT, align: "center", margin: 0, isTextBox: true });
 box(s, { x: 4.5, y: 1.86, w: 3.1, h: 1.0,
   t: `${PT.tuned}\nmerging  ${_r4(PT.mergingTuned)}`, fill: PAPER, line: TEAL, fs: 12, name: "rc2" });

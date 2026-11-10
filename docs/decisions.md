@@ -5060,8 +5060,63 @@ conditional on the data, and two of them changed when the full roster landed:
 Group 2 now runs at k = 3 as D092 intended, and the resolution limit on the
 slide reads 0.125 from the table rather than from the anticipation of a change.
 
-**Verification.** 56 slides, `validate.py` passes, geometry QA holds at the
-20 overflow and 7 overlap baseline, and a scan of the extracted slide text finds
-no stale figure outside the two columns that record what October reported. A
-visual render pass is still owed and is blocked on tooling: this machine has
-neither `soffice` nor `pdftoppm`.
+**What the visual render found that nothing else could.** LibreOffice and
+poppler were installed and the deck was rendered to images. Six defects came out
+of it, and not one of them was visible to `validate.py`, to the geometry check,
+or to a scan of the extracted text. Every one is a thing a marker would see in
+the first second of looking at the slide.
+
+*Two more charts were typed.* The exploratory merging chart on slide 31 carried
+four bars as a literal array, 16.5 / 9.6 / 8.1 / 0.4, against current values of
+21.5 / 19.7 / 6.2 / 0.9, and the order was wrong as well, because
+OLMo-2-7B-Instruct has overtaken Qwen3-8B. The I3 elicitation chart on slide 43
+carried all 21 margins the same way. Those 21 happened to still be correct,
+because the seven Pythia models were not rescored in this round, but a typed
+array that is right by luck fails silently the first time one of them is. D095
+missed both because a values array is not a string, so the stale-text scan could
+not see them. Both now read their tables, and the "7 of 7 models change sign"
+claim beside the second one is counted from the same rows rather than asserted.
+
+*The zero tick was printing as 6.93889390390723E-18.* The value axis steps
+accumulate floating point error, and with no number format the renderer prints
+the result verbatim. It appeared on two charts. Fixed with an explicit
+`valAxisLabelFormatCode`.
+
+*Six of the ten model names on the RQ4 chart were unreadable.* The default
+category label position is the value axis crossing, so on a chart with negative
+values the labels are drawn over the bars running the other way. Fixed with
+`catAxisLabelPos: "low"`, applied to every chart rather than the one that showed
+it, because the next chart with a negative value would have done the same.
+
+*A label was being drawn underneath the card beside it.* On slide 32 the
+"post-training only" annotation sat in a box from x 3.5 to 4.7 while the next
+card starts at 4.5, so the reader saw "post-training onl". Confined to the gap
+and wrapped.
+
+*The limitations summary was drawn across limitation 9.* The line ran the full
+width at y 6.66 while the last row of cards ends at 6.90. There are nine items
+in a two-column grid, so the last row has an empty right-hand slot; the summary
+moved there, which removes the collision and fills the gap.
+
+*Every slide number the deck quotes at itself was wrong.* The closing slide
+tells a maintainer which slides to update and named 18 for the decision count,
+which is on 27, and 5 for the status column, which is on 54. A slide number
+typed into another slide goes stale the first time anything is inserted before
+it, and nothing checks it. `part1.js` now records each slide's number as it is
+built and the closing slide reads them back, through an accessor that throws
+rather than printing "undefined" if a slide was never marked.
+
+**Verification.** 56 slides, `validate.py` passes, and the geometry check
+improved on its own baseline, from 20 overflows and 7 overlaps to 19 and 6. A
+scan of the extracted slide text finds no stale figure outside the two columns
+that record what October reported. Every slide was looked at as a rendered
+image, and the nine that changed were looked at again after each fix.
+
+**The general lesson, which is the reason this entry is long.** Three rounds of
+checking agreed the deck was correct. The schema validator passed, the geometry
+check passed, the text scan found nothing, and every figure traced to a table.
+The deck still had a chart with four wrong numbers, an axis label reading
+6.93889390390723E-18, six buried model names, a clipped word, a line of text
+drawn across another, and three wrong self-references. A checker only finds what
+it was built to look for, and none of these were. Render the artefact and look
+at it.

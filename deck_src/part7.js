@@ -66,6 +66,7 @@ s.addText("Tier 1 results: every vignette author-reviewed against a quoted guide
 
 // ============ 19. PROVISIONAL WARNING + SCALE OF RUN ============ //
 s = S("CONTENT", "Results", "The scale of the run, and one standing caveat");
+K.mark("scale");
 card(s, { x: 0.55, y: 1.22, w: 12.2, h: 1.3, fill: "FDF4E3", kicker: "READ THIS BEFORE QUOTING ANY NUMBER",
   kickerColor: WARN, name: "prov" });
 s.addText([

@@ -78,6 +78,23 @@ function S(master, section, title) {
   return s;
 }
 
+// D096. Slide 56 tells a future maintainer which slides to update, by number,
+// and all three numbers were wrong: it pointed at 18 for the decision count
+// (which is on the scale slide) and at 5 for the status column (which is on
+// the remaining-work slide). A slide number typed into another slide goes
+// stale the first time anything is inserted before it, and nothing checks it.
+// NO records the number as the slide is built; pres.slides.length is that
+// slide's own 1-based number immediately after addSlide.
+const NO = {};
+const mark = key => (NO[key] = pres.slides.length);
+// Reading a number that was never marked would silently print "undefined" on
+// the slide, so ask for it through this.
+const slideNo = key => {
+  if (!NO[key]) throw new Error(`part1.js: no slide marked "${key}". ` +
+    `Marked so far: ${Object.keys(NO).join(", ") || "(none)"}.`);
+  return NO[key];
+};
+
 function card(s, o) {
   s.addShape(pres.ShapeType.roundRect, {
     x: o.x, y: o.y, w: o.w, h: o.h, rectRadius: 0.06,
@@ -182,4 +199,5 @@ function tierBanner(s, o) {
 function note(s, t) { s.addNotes(t); }
 
 module.exports = { pres, THEME, S, card, stat, badge, box, arrow, note, tierBanner,
+  NO, mark, slideNo,
   INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY };

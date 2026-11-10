@@ -15,9 +15,17 @@ const pf = v => (v < 0.001 ? "p < 0.001" : "p = " + v.toFixed(3));
 const LBL = m => m.replace("pythia-", "").replace("OLMo-2-7B-Instruct", "OLMo Inst")
                   .replace(/^OLMo-2-7B$/, "OLMo base").replace("Qwen3-8B", "Qwen 8B");
 
+// D096. catAxisLabelPos "low" pins the category labels to the edge of the plot
+// area. The default puts them at the value axis crossing, so on any chart with
+// negative values they are drawn over the bars that run the other way, which is
+// what buried six of the ten model names on the RQ4 chart.
+// valAxisLabelFormatCode exists because the zero tick was rendering as
+// 6.93889390390723E-18: the axis steps accumulate float error, and with no
+// format the renderer prints the result verbatim.
 const AX = { catAxisLabelColor: MUT, valAxisLabelColor: MUT,
   catAxisLabelFontSize: 10, valAxisLabelFontSize: 10,
   catAxisLabelFontFace: "+mn-lt", valAxisLabelFontFace: "+mn-lt",
+  catAxisLabelPos: "low", valAxisLabelFormatCode: "0.00",
   valGridLine: { color: "E4EDEE", size: 0.75 }, catGridLine: { style: "none" } };
 
 // ============ 25. RQ3 SCALE ===================================== //
