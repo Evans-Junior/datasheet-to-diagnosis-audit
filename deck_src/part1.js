@@ -196,8 +196,26 @@ function tierBanner(s, o) {
        valign: "middle", isTextBox: true });
 }
 
+// D101. A source line for the foot of a content slide, built from reference
+// IDs rather than typed. figures.js throws on an unknown id, so a mistyped
+// attribution stops the build instead of printing a blank where a credit
+// belongs. Sits above the footer band, which starts at y 7.0.
+function srcLine(s, ids, o) {
+  const F = require("./figures.js");
+  const txt = "Sources: " + ids.map(F.citeShort).join("  ·  ");
+  s.addText(txt, {
+    x: (o && o.x) !== undefined ? o.x : 0.55,
+    y: (o && o.y) !== undefined ? o.y : 6.74,
+    w: (o && o.w) !== undefined ? o.w : 12.2,
+    h: 0.24, fontSize: (o && o.fs) || 8.5,
+    color: (o && o.color) || "9BB3BA", italic: true, margin: 0,
+    isTextBox: true, objectName: (o && o.name) || "src",
+  });
+}
+
 function note(s, t) { s.addNotes(t); }
 
 module.exports = { pres, THEME, S, card, stat, badge, box, arrow, note, tierBanner,
+  srcLine,
   NO, mark, slideNo,
   INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY };

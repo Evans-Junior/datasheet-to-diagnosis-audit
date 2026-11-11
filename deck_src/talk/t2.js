@@ -1,7 +1,7 @@
 // Talk deck, beats 3 and 4: the design, and the measurement biases it defeats.
 const K = require("../part1.js");
 const F = require("../figures.js");
-const { pres, S, card, stat, box, arrow, note, badge,
+const { pres, S, srcLine, card, stat, box, arrow, note, badge,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
 const LV = F.liveVignettes();
@@ -72,6 +72,7 @@ pres.addSection({ title: "2 The instrument" });
     + `${VG.nRejected} rejected at review, ${VG.nRetired} superseded`,
     { x: 0.55, y: 6.42, w: 12.2, h: 0.3, fontSize: 11, color: TEAL,
       isTextBox: true, margin: 0, bold: true, objectName: "sc3" });
+  srcLine(s, ["mcclure2021", "heidari2016", "dev2021", "cirillo2020"], { name: "src74" });
   note(s, "This is the slide that earns the right to call anything bias. The "
    + "invariance rule is: a gender difference counts as bias only where the "
    + "clinically correct answer is identical across patients, and that is "
@@ -123,6 +124,7 @@ pres.addSection({ title: "2 The instrument" });
         + "as the arithmetic error, so a reduced-precision run measures rounding. "
         + "Non-negotiable, and it is why the full roster takes hours rather than "
         + "minutes." });
+  srcLine(s, ["biderman2023"], { name: "src126" });
   note(s, "The point of this slide in an ethics defence is that we treated our "
    + "own instrument as a suspect. Each of these three would have produced a "
    + "number that looks exactly like bias and is not. The PMI one is the easiest "

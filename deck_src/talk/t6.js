@@ -3,7 +3,7 @@
 // instead of promising to look it up.
 const K = require("../part1.js");
 const F = require("../figures.js");
-const { pres, S, card, stat, note, tierBanner,
+const { pres, S, srcLine, card, stat, note, tierBanner,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
 const PC = F.positiveControl();
@@ -56,6 +56,7 @@ pres.addSection({ title: "Appendix" });
     { x: 0.55, y: 5.86, w: 12.2, h: 0.4, fontSize: 11, color: MUT,
       isTextBox: true, margin: 0, objectName: "a1c" });
   tierBanner(s, { x: 0.55, y: 6.38, w: 12.2, h: 0.44, name: "tba1" });
+  srcLine(s, ["biderman2023"], { name: "src58" });
   note(s, "If anyone asks why the headline is +0.948 and not +0.881, this is the "
    + "slide. The all-model number confounds three things at once.");
 }
@@ -99,6 +100,7 @@ pres.addSection({ title: "Appendix" });
         + "reported for every effect rather than assumed. It is also the reason "
         + "the Pythia nulls are described as uninterpretable rather than as "
         + "evidence of fairness." });
+  srcLine(s, ["yoo2026"], { name: "src102" });
   note(s, "Volunteer this one. An examiner who finds it themselves will weight it "
    + "far more heavily than one who is handed it.");
 }
@@ -140,6 +142,7 @@ pres.addSection({ title: "Appendix" });
         + `over ${CA.n} concepts answers "can provenance be attributed to one corpus `
         + `rather than the other?" and the answer is also no. They are different `
         + `questions over different concept sets and must not be swapped.` });
+  srcLine(s, ["liu2024", "li2024", "elazar2024"], { name: "src144" });
   note(s, "This table is the answer to the hardest question we are likely to get, "
    + "which is 'if the corpora are interchangeable, what was the point of using "
    + "open data?' The answer: open data is what let us discover that they are "

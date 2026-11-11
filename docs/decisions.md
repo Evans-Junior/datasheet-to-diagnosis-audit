@@ -5493,3 +5493,68 @@ warnings which matches the long deck's baseline, every slide looked at as a
 rendered image. Built with
 `cd deck_src && NODE_PATH="$PWD/node_modules" node talk/build.js`, writing to
 the repository root for the reason in D096.
+
+## D101, citations render from one file, and the gap in them is shown rather than hidden
+
+**What was missing.** The talk deck named a few works in passing and had no
+reference list at all. For a graded ethics project that is a defect on its own,
+and the obvious fix, typing a bibliography onto two slides, would have created
+the problem this repository has logged five times already: a derived artefact
+with nothing tying it to its source.
+
+**So `docs/references.json` is the single source.** Every citation either deck
+renders comes from it, through `figures.js` accessors `cite`, `citeShort`,
+`guidelines` and `guidelineCoverage`. `cite(id)` THROWS on an unknown id, for
+the reason every other accessor throws: a mistyped attribution must stop the
+build rather than print a blank where a credit belongs. `srcLine()` draws the
+in-text sources at the foot of a content slide from a list of ids, so the
+marker on a slide and the entry in the reference list cannot disagree about who
+or when.
+
+Each entry records **where the citation itself came from**: `source_of_record`
+names the project document that verified it, so a reference on a slide traces
+to `docs/paper_notes.md §2`, `docs/model_selection.md §9`,
+`docs/vignette_sources.md` or `results/tables/doi_verification.json`, and not
+to whoever typed the slide.
+
+**The gap, which is the part worth defending.** Only **15 of the 25 live
+vignettes have a formal citation of record.** Three more have a named guideline
+identifier (NICE NG226, NG153, NG240/NG91) and no written citation, and seven
+have neither. All ten carry their governing passage quoted at first hand in
+`docs/vignettes_compendium.md` and are author-reviewed against that quote, so
+they are **sourced but not cited**: what is missing is bookkeeping, not
+evidence. G3-07 is the one real exception and is flagged in the compendium
+already, because its Class I status was found asserted in review articles rather
+than quoted from the primary text.
+
+The references slide states this on the slide, naming all ten vignettes. A
+reference list that silently drops ten of twenty-five reads as a complete one,
+which is the same failure as a datasheet that answers a distribution question
+with a presence claim. Having just made that criticism of the Pile datasheet in
+RQ6, the deck could not commit it.
+
+**`scripts/check_references.py` gates the file.** It refuses a mismatch between
+the reference list and the live vignette set in either direction: a live
+vignette in no entry, an entry naming a retired vignette, a vignette cited
+twice, a status outside the closed vocabulary, or an entry claiming `verified`
+with neither a DOI nor a named guideline identifier. It does **not** demand that
+every vignette be formally cited; it demands that none be silently absent. It
+caught one entry on the first run, GINA asthma, which has no DOI by its
+publisher's own practice and needed the acronym in the citation to be traceable.
+
+**Two bugs the render caught, both in the citation shortener.**
+
+- `citeShort` matched the first four digits it found, so `arXiv:2101.00027`
+  produced **"Gao et al. 2101"**. Identifiers are now stripped before the year
+  is read.
+- It added "et al." only where the string contained those words, so
+  "Bender EM, Gebru T, McMillan-Major A, Shmitchell S" rendered as
+  "Bender 2021". It now counts the authors in the head of the citation. Yoo
+  2026, genuinely single-author, correctly keeps no "et al.".
+
+`t7.js` also refuses to build if a work sits in `references.json` and on no
+slide, which would be a citation the audience never sees.
+
+**State.** 19 slides: the 10-beat talk, 3 appendix, 3 reference slides, title.
+validate passes, 0 out of bounds, 0 overlaps, every slide looked at as a
+rendered image.

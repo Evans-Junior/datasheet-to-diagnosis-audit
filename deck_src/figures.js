@@ -789,6 +789,71 @@ function rq6Status() {
            coded: fs.existsSync(relPath) };
 }
 
+// --------------------------------------------------------------------------
+// D101. Citations come from docs/references.json, never from a slide literal.
+// `cite(id)` throws on an unknown id for the same reason every other accessor
+// throws: a typo must stop the build, not print a blank where an attribution
+// belongs. Attribution is the one thing on a slide that cannot be allowed to
+// fail quietly.
+const _REFS = (() => {
+  const f = path.join(__dirname, "..", "docs", "references.json");
+  if (!fs.existsSync(f)) {
+    throw new Error("figures.js: docs/references.json is missing. It is the "
+      + "single source for every citation the decks render (D101).");
+  }
+  return JSON.parse(fs.readFileSync(f, "utf8"));
+})();
+
+function refs() { return _REFS; }
+
+function cite(id) {
+  const e = _REFS.literature.find(x => x.id === id);
+  if (!e) {
+    throw new Error(`figures.js: no reference with id "${id}". `
+      + `Known: ${_REFS.literature.map(x => x.id).join(", ")}`);
+  }
+  return e;
+}
+
+// A short in-text marker: "Chang et al. 2025" from the full citation, so the
+// slide and the reference list cannot disagree about who or when.
+function citeShort(id) {
+  // Strip identifiers BEFORE looking for a year: "arXiv:2101.00027" contains
+  // "2101", which a bare four-digit match reads as the publication year and
+  // prints "Gao et al. 2101" onto a slide. Same hazard in a DOI.
+  const c = cite(id).cite;
+  const plain = c.replace(/arXiv:\S+/gi, " ").replace(/doi:\S+/gi, " ")
+                 .replace(/https?:\/\/\S+/gi, " ");
+  const year = (plain.match(/\b(19|20)\d{2}\b/) || [])[0] || "";
+  const first = c.split(/[,.]/)[0].trim();
+  // "et al." either literally, or because the author list names more than one
+  // person: "Bender EM, Gebru T, McMillan-Major A, Shmitchell S" has no
+  // "et al." in it but is still not a single-author work.
+  const head = plain.split(/\.\s+[A-Z]/)[0] || plain.slice(0, 140);
+  const nAuthors = (head.match(/[A-Z][A-Za-z'\u2019-]+\s+[A-Z]{1,3}\b/g) || []).length;
+  const etal = /\bet al\./.test(c) || nAuthors > 1;
+  const name = first.replace(/\s+[A-Z]{1,3}$/, "");
+  return `${name}${etal ? " et al." : ""} ${year}`.trim();
+}
+
+// Guideline citations, grouped for the reference slide. `verified` entries are
+// the ones with a formal citation of record; the rest are reported as pending
+// rather than dropped, because a reference list that silently omits ten of
+// twenty-five vignettes reads as a complete one.
+function guidelines(status) {
+  const g = _REFS.guidelines;
+  return status ? g.filter(x => x.status === status) : g;
+}
+
+function guidelineCoverage() {
+  const g = _REFS.guidelines;
+  const n = s => g.filter(x => x.status === s)
+                  .reduce((a, x) => a + x.vignettes.length, 0);
+  return { verified: n("verified"), identifierOnly: n("identifier_only"),
+           pending: n("pending"),
+           total: g.reduce((a, x) => a + x.vignettes.length, 0) };
+}
+
 module.exports = {
   CURRENT, KEY, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
   reportable, liveVignettes, positiveControl, floorComparison, gateRerun,
@@ -796,5 +861,6 @@ module.exports = {
   corpusAgreement, corpusQueries, decisionCount, i3Grid, vignetteGroups,
   corpusProbe, rq5Probe, lastUpdated, corpusReplication,
   rq4Control, rq4Trend, paraphrase, contamination, rq6Status,
+  refs, cite, citeShort, guidelines, guidelineCoverage,
   f4, f3, fx, p, ci, SHORT, num,
 };

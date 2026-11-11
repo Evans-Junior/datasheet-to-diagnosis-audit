@@ -9,7 +9,7 @@
 // built from the SAME accessors in figures.js, so a number cannot differ
 // between them; only the selection and the ordering differ.
 const K = require("../part1.js");
-["./t1.js", "./t2.js", "./t3.js", "./t4.js", "./t5.js", "./t6.js"]
+["./t1.js", "./t2.js", "./t3.js", "./t4.js", "./t5.js", "./t6.js", "./t7.js"]
   .forEach(f => require(f));
 
 const path = require("path");

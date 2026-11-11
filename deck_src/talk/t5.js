@@ -2,7 +2,7 @@
 // is left behind.
 const K = require("../part1.js");
 const F = require("../figures.js");
-const { pres, S, card, stat, box, note, badge, arrow,
+const { pres, S, srcLine, card, stat, box, note, badge, arrow,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
 const PC = F.positiveControl();
@@ -73,6 +73,7 @@ pres.addSection({ title: "6 Ethics" });
         + `questions, so a conscientious author can answer both and still never `
         + `state the risk this study measured.`,
     bodyColor: "B9D2D7", bodySize: 11.5 });
+  srcLine(s, ["carel2014", "samulowitz2018", "bender2021", "dev2021"], { name: "src75" });
   note(s, "This is the ethics core, so slow down and do not read the cards out. "
    + "Pick the second one and dwell on it, because it is the counterintuitive "
    + "result and it is the one a marker will remember: the set of models that "
@@ -148,6 +149,7 @@ pres.addSection({ title: "7 Close" });
   });
   s.addShape(pres.ShapeType.line, { x: 6.72, y: 1.28, w: 0, h: 5.3,
     line: { color: "D7E4E7", width: 1 }, objectName: "div" });
+  srcLine(s, ["yoo2026", "loge2021"], { name: "src151" });
   note(s, "Say the limitations yourself, in your own words, before the questions. "
    + "The strongest of them is the resolution limit, because it is a limit we "
    + "proved rather than suspected: with four vignettes no p below 0.0625 exists, "
@@ -189,8 +191,9 @@ pres.addSection({ title: "7 Close" });
   s.addText("Repository, decision log and the full 56-slide reference deck are "
     + "available; every figure in this talk is read from its results table at "
     + "build time rather than typed.",
-    { x: 0.55, y: 6.7, w: 12.2, h: 0.3, fontSize: 10.5, color: MUT, italic: true,
+    { x: 0.55, y: 6.42, w: 12.2, h: 0.3, fontSize: 10.5, color: MUT, italic: true,
       isTextBox: true, margin: 0, objectName: "repo" });
+  srcLine(s, ["biderman2023", "elazar2024"], { name: "src195" });
   note(s, "Close on item 1. It is concrete, it is cheap, and it shows we know "
    + "which single number is binding on the headline hypothesis.");
 }

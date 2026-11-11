@@ -2,7 +2,7 @@
 // what the documentation said about it.
 const K = require("../part1.js");
 const F = require("../figures.js");
-const { pres, S, card, stat, box, note, badge, tierBanner,
+const { pres, S, srcLine, card, stat, box, note, badge, tierBanner,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
 const PC = F.positiveControl();
@@ -71,20 +71,21 @@ pres.addSection({ title: "5 Findings" });
       d: `Inside a margin of ${H3.margin.toFixed(4)}, at k = ${H3.k} the test could have reached p = ${H3.pResolution.toFixed(4)}. It had the power to reject and did not.`, c: PASS },
   ];
   hyp.forEach((h, i) => {
-    const y = 4.96 + i * 0.84;
-    card(s, { x: 0.55, y, w: 12.2, h: 0.76, fill: TINT, name: "hy" + i });
-    badge(s, { x: 0.74, y: y + 0.18, n: h.n, d: 0.4, fs: 11, color: h.c, name: "hb" + i });
-    s.addText(h.t, { x: 1.26, y: y + 0.08, w: 3.5, h: 0.6, fontSize: 11.5,
+    const y = 4.86 + i * 0.80;
+    card(s, { x: 0.55, y, w: 12.2, h: 0.72, fill: TINT, name: "hy" + i });
+    badge(s, { x: 0.74, y: y + 0.16, n: h.n, d: 0.4, fs: 11, color: h.c, name: "hb" + i });
+    s.addText(h.t, { x: 1.26, y: y + 0.06, w: 3.5, h: 0.6, fontSize: 11.5,
       bold: true, color: INK, isTextBox: true, margin: 0, valign: "middle",
       lineSpacing: 13, objectName: "hyt" + i });
-    s.addText(h.v, { x: 4.84, y: y + 0.08, w: 3.3, h: 0.6, fontSize: 11.5,
+    s.addText(h.v, { x: 4.84, y: y + 0.06, w: 3.3, h: 0.6, fontSize: 11.5,
       bold: true, color: h.c, isTextBox: true, margin: 0, valign: "middle",
       lineSpacing: 13, objectName: "hyv" + i });
-    s.addText(h.d, { x: 8.24, y: y + 0.08, w: 4.3, h: 0.6, fontSize: 10.5,
+    s.addText(h.d, { x: 8.24, y: y + 0.06, w: 4.3, h: 0.6, fontSize: 10.5,
       color: MUT, isTextBox: true, margin: 0, valign: "middle", lineSpacing: 12.5,
       objectName: "hyd" + i });
   });
-  tierBanner(s, { x: 0.55, y: 6.58, w: 12.2, h: 0.42, name: "tb7" });
+  tierBanner(s, { x: 0.55, y: 6.62, w: 12.2, h: 0.40, name: "tb7" });
+  srcLine(s, ["mcclure2021", "hoffmann2001", "chen2008"], { y: 6.34, name: "src8" });
   note(s, "The merging result is the project's strongest single finding and it is "
    + "an ethics finding, not a benchmark score. Read the chart with the gate "
    + "slide: the three models that pass the gate are the three that merge. So "
@@ -141,7 +142,7 @@ pres.addSection({ title: "5 Findings" });
       labels: lab,
       values: R4T.rows.map(r => r.family === "olmo" ? r.rho : null) },
   ], {
-    x: 0.55, y: 4.1, w: 8.4, h: 2.46,
+    x: 0.55, y: 4.1, w: 8.4, h: 2.18,
     barDir: "col", chartColors: ["9BB3BA", PASS],
     showLegend: true, legendPos: "b", legendFontSize: 9.5, legendColor: INK,
     showValue: true, dataLabelPosition: "outEnd", dataLabelFormatCode: "0.00",
@@ -156,17 +157,17 @@ pres.addSection({ title: "5 Findings" });
     titleFontSize: 11, titleColor: INK, titleFontFace: "+mn-lt",
   });
 
-  card(s, { x: 9.18, y: 4.1, w: 3.6, h: 2.46, fill: "E6F6F2", name: "l4",
+  card(s, { x: 9.18, y: 4.1, w: 3.6, h: 2.18, fill: "E6F6F2", name: "l4",
     kicker: "READ THE TWO TOGETHER", kickerColor: PASS,
     head: `+${R4T.postTrainingDelta.toFixed(3)} from alignment alone`,
     headH: 0.52, headSize: 14,
-    body: `The Pythia ladder spans a hundredfold in parameters with the corpus `
-        + `held constant and shows no linkage: \u03C1 = ${R4T.pyRho.toFixed(3)}, `
-        + `${R4T.nNegative} of ${R4T.pythia.length} sizes NEGATIVE.\n\n`
-        + `OLMo base ${R4T.base.rho.toFixed(3)} against Instruct `
-        + `${R4T.inst.rho.toFixed(3)} (p = ${R4T.inst.p.toFixed(4)}): same size, `
-        + `same corpus, same pretraining.` });
-  tierBanner(s, { x: 0.55, y: 6.58, w: 12.2, h: 0.42, name: "tb8" });
+    body: `A hundredfold in parameters with the corpus held constant gives no `
+        + `linkage: \u03C1 = ${R4T.pyRho.toFixed(3)}, ${R4T.nNegative} of `
+        + `${R4T.pythia.length} sizes NEGATIVE. Base ${R4T.base.rho.toFixed(3)} `
+        + `against Instruct ${R4T.inst.rho.toFixed(3)} is the same size, corpus `
+        + `and pretraining.` });
+  tierBanner(s, { x: 0.55, y: 6.62, w: 12.2, h: 0.40, name: "tb8" });
+  srcLine(s, ["liu2024", "feng2023", "gao2020", "olmo2025", "li2024"], { y: 6.34, name: "src9" });
   note(s, "This is where the project answers its own title question, and the "
    + "answer has two halves that must not be merged. Yes, corpus skew predicts "
    + "the output gap, but in exactly one model of nine, and that model is the "
@@ -237,6 +238,7 @@ pres.addSection({ title: "5 Findings" });
     + "report and card as a closed-data comparator.",
     { x: 0.55, y: 6.3, w: 12.2, h: 0.44, fontSize: 10.5, color: MUT,
       isTextBox: true, margin: 0, lineSpacing: 12.5, objectName: "d6l" });
+  srcLine(s, ["gebru2021", "gao2020", "biderman2022", "soldaini2024", "qwen2025"], { name: "src241" });
   note(s, "Be scrupulous here, because this is the slide most open to a fair "
    + "objection. Do not say the documentation ignores gender: the Pile paper "
    + "measures it, and saying otherwise is a factual error a reviewer who knows "

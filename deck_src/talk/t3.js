@@ -1,7 +1,7 @@
 // Talk deck, beats 5 and 6: calibrating the instrument, then trying to break it.
 const K = require("../part1.js");
 const F = require("../figures.js");
-const { pres, S, card, stat, box, note, badge, tierBanner,
+const { pres, S, srcLine, card, stat, box, note, badge, tierBanner,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
 const VG = F.vignetteGroups();
@@ -62,6 +62,7 @@ pres.addSection({ title: "3 Calibration" });
     { x: 0.55, y: 5.96, w: 12.2, h: 0.3, fontSize: 11, color: MUT,
       isTextBox: true, margin: 0, objectName: "gc" });
   tierBanner(s, { x: 0.55, y: 6.34, w: 12.2, h: 0.46, name: "tb5" });
+  srcLine(s, ["yoo2026"], { name: "src64" });
   note(s, "This is a gate, not a result, and the distinction matters for the "
    + "ethics argument. If a model shows no gender effect on the sex-neutral "
    + "vignettes, there are two explanations: it is fair, or it cannot read "
@@ -116,6 +117,7 @@ pres.addSection({ title: "4 Validation" });
     + `anywhere, and that is why stability is measured rather than assumed.`,
     { x: 0.55, y: 6.04, w: 12.2, h: 0.62, fontSize: 11.5, color: "7FD4C8",
       isTextBox: true, margin: 0, lineSpacing: 14, objectName: "i3" });
+  srcLine(s, ["yoo2026", "liu2024"], { name: "src119" });
   note(s, "This is the slide that should win the defence, so do not rush it. The "
    + "argument is not 'we ran an audit'. It is 'we ran an audit, then spent "
    + "longer trying to falsify it than running it'. Each box changed a number we "

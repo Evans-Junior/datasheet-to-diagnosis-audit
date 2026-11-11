@@ -1,7 +1,7 @@
 // Talk deck, beats 1 and 2. See talk/build.js for why this deck exists.
 const K = require("../part1.js");
 const F = require("../figures.js");
-const { pres, S, card, stat, box, arrow, note, tierBanner,
+const { pres, S, srcLine, card, stat, box, arrow, note, tierBanner,
         INK, MUT, PASS, FAIL, WARN, TEAL, PAPER, TINT, BERRY } = K;
 
 const LV = F.liveVignettes();
@@ -89,6 +89,7 @@ pres.addSection({ title: "1 The problem" });
       isTextBox: true, margin: 0, lineSpacing: 13, objectName: "zc" });
 
   tierBanner(s, { x: 0.55, y: 6.42, w: 12.2, h: 0.46, name: "tb1" });
+  srcLine(s, ["mcclure2021", "dev2021", "liu2024"], { name: "src91" });
   note(s, "Open on the vignette, not on the method. The audience has to feel the "
    + "problem before they will sit through how it was measured. Say the sex "
    + "parameter is held fixed twice, because that is the move everything else "
@@ -155,6 +156,7 @@ pres.addSection({ title: "1 The problem" });
     + "model whose data is closed, RQ6 reads what the documentation disclosed.",
     { x: 0.55, y: 6.06, w: 12.2, h: 0.46, fontSize: 11, color: MUT,
       isTextBox: true, margin: 0, lineSpacing: 13, objectName: "sc" });
+  srcLine(s, ["equitriage2026", "guerra2025", "chang2025", "zack2024", "feng2023", "elazar2024"], { name: "src158" });
   note(s, "Two things to land. First, concede the ground: output-level gender "
    + "bias in clinical LLMs is already established, by studies far larger than "
    + "ours, and EQUITRIAGE overlaps one of our vignettes directly at a thousand "

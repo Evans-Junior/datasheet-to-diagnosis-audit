@@ -1,0 +1,397 @@
+{
+  "_comment": [
+    "Single source of truth for every citation the decks render (D101).",
+    "Each entry records where the citation itself comes from, so a reference on",
+    "a slide can be traced to the project record that verified it rather than to",
+    "whoever typed the slide. `status` is the honest part: `verified` means the",
+    "citation was checked at source (CrossRef, or the document's own title page);",
+    "`identifier_only` means the governing passage is quoted at first hand in",
+    "docs/vignettes_compendium.md but no formal citation has been written yet.",
+    "scripts/check_references.py refuses a deck build if a live vignette has",
+    "neither."
+  ],
+  "literature": [
+    {
+      "id": "chang2025",
+      "role": "Closest prior design: 2x2 of documented bias by clinical relevance, paired prompts. This study's template.",
+      "cite": "Chang CT, et al. Evaluating anti-LGBTQIA+ medical bias in large language models. PLOS Digit Health. 2025;4(9):e0001001.",
+      "doi": "10.1371/journal.pdig.0001001",
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §2"
+    },
+    {
+      "id": "zack2024",
+      "role": "Precedent for vignette-based gender and race audit in clinical LLMs.",
+      "cite": "Zack T, et al. Assessing the potential of GPT-4 to perpetuate racial and gender biases in health care. Lancet Digit Health. 2024;6(1):e12-e22.",
+      "doi": "10.1016/S2589-7500(23)00225-X",
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §2"
+    },
+    {
+      "id": "mcclure2021",
+      "role": "Sex and gender separated operationally. SPCU. The study's position rests on this.",
+      "cite": "McClure RC, et al. Gender Harmony: improved standards to support affirmative care of gender-marginalized people through inclusive gender and sex representation. JAMIA. 2021;29(2):354-363.",
+      "doi": "10.1093/jamia/ocab196",
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §2"
+    },
+    {
+      "id": "cirillo2020",
+      "role": "Sex and gender bias framing specific to health AI.",
+      "cite": "Cirillo D, et al. Sex and gender differences and biases in artificial intelligence for biomedicine and healthcare. npj Digit Med. 2020;3:81.",
+      "doi": "10.1038/s41746-020-0288-5",
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §2"
+    },
+    {
+      "id": "heidari2016",
+      "role": "Reporting standard obliging explicit sex and gender treatment.",
+      "cite": "Heidari S, et al. Sex and Gender Equity in Research: rationale for the SAGER guidelines. Res Integr Peer Rev. 2016;1:2.",
+      "doi": "10.1186/s41073-016-0007-6",
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §2"
+    },
+    {
+      "id": "dev2021",
+      "role": "Why binary-only gender treatment is itself a harm. Grounds the non-binary arm.",
+      "cite": "Dev S, et al. Harms of gender exclusivity and challenges in non-binary representation in language technologies. EMNLP 2021:1968-1994.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §2"
+    },
+    {
+      "id": "loge2021",
+      "role": "Pain-management vignettes. The source of G3-01.",
+      "cite": "Loge C, Ross E, Dadey DYA, et al. Q-Pain: A Question Answering Dataset to Measure Social Bias in Pain Management. NeurIPS Datasets & Benchmarks, 2021. arXiv:2108.01764.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/vignette_sources.md G3-01"
+    },
+    {
+      "id": "gebru2021",
+      "role": "The documentation standard the corpora are held to. The 'datasheet' in the title.",
+      "cite": "Gebru T, et al. Datasheets for Datasets. Commun ACM. 2021;64(12):86-92.",
+      "doi": "10.1145/3458723",
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "gao2020",
+      "role": "Corpus 1. Pythia's training data.",
+      "cite": "Gao L, et al. The Pile: An 800GB Dataset of Diverse Text for Language Modeling. arXiv:2101.00027, 2020.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "biderman2022",
+      "role": "The datasheet read for RQ6.",
+      "cite": "Biderman S, Bicheno K, Gao L. Datasheet for the Pile. arXiv:2201.07311, 2022.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "biderman2023",
+      "role": "The model family. Seven sizes on identical data in identical order.",
+      "cite": "Biderman S, et al. Pythia: A Suite for Analyzing Large Language Models Across Training and Scaling. ICML 2023, PMLR 202:2397-2430. arXiv:2304.01373.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "olmo2025",
+      "role": "Corpus 2 and the base/instruct pair.",
+      "cite": "OLMo Team. 2 OLMo 2 Furious. arXiv:2501.00656, 2025.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "soldaini2024",
+      "role": "Documentation lineage of olmo-mix. Read for RQ6.",
+      "cite": "Soldaini L, et al. Dolma: an Open Corpus of Three Trillion Tokens for Language Model Pretraining Research. ACL 2024. arXiv:2402.00159.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "liu2024",
+      "role": "The corpus instrument. Exact-substring counting at corpus scale.",
+      "cite": "Liu J, et al. Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens. COLM 2024. arXiv:2401.17377.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "elazar2024",
+      "role": "Precedent for corpus-level auditing.",
+      "cite": "Elazar Y, et al. What's In My Big Data? ICLR 2024. arXiv:2310.20707.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "feng2023",
+      "role": "The closest methodological relative: corpus property to model property to downstream unfairness.",
+      "cite": "Feng S, et al. From Pretraining Data to Language Models to Downstream Tasks. ACL 2023 (best paper). arXiv:2305.08283.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "li2024",
+      "role": "DCLM-baseline, the third corpus in the independence test.",
+      "cite": "Li J, et al. DataComp-LM: In Search of the Next Generation of Training Sets for Language Models. NeurIPS 2024. arXiv:2406.11794.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "bender2021",
+      "role": "Scale versus curation. Why corpus size does not imply representativeness.",
+      "cite": "Bender EM, Gebru T, McMillan-Major A, Shmitchell S. On the Dangers of Stochastic Parrots. FAccT 2021:610-623.",
+      "doi": "10.1145/3442188.3445922",
+      "status": "verified",
+      "source_of_record": "docs/model_selection.md §9"
+    },
+    {
+      "id": "qwen2025",
+      "role": "The weights-only contrast model (RQ5), and the closed-data comparator for RQ6.",
+      "cite": "Qwen Team. Qwen3 Technical Report. arXiv:2505.09388, 2025.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "data/raw/rq6/manifest.json"
+    },
+    {
+      "id": "yoo2026",
+      "role": "Independent peer-reviewed convergence on the noise floor and the non-demographic control baseline.",
+      "cite": "Yoo H. When Demographic Sensitivity Isn't What It Seems: Baseline-Aware Counterfactual Audits for Clinical NLP. BioNLP 2026 (ACL):141-155.",
+      "doi": null,
+      "url": "https://aclanthology.org/2026.bionlp-1.14.pdf",
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §20"
+    },
+    {
+      "id": "equitriage2026",
+      "role": "Largest prior gender audit of LLM ED triage. Output-level only.",
+      "cite": "Young RJ, Matthews AM. EQUITRIAGE: A Fairness Audit of Gender Bias in LLM-Based Emergency Department Triage. arXiv:2605.03998, 2026. Preprint, not peer reviewed.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §2.1"
+    },
+    {
+      "id": "guerra2025",
+      "role": "Sex disparity in triage from hospital records. No corpus access.",
+      "cite": "Guerra-Adames A, et al. Auditing Sex/Gender Disparities in Emergency Triage with LLM-based Paired Comparisons. arXiv:2511.17124, 2025. Preprint.",
+      "doi": null,
+      "status": "verified",
+      "source_of_record": "docs/paper_notes.md §2.1"
+    },
+    {
+      "id": "hoffmann2001",
+      "role": "Documented undertreatment of women's pain. Grounds H1's direction.",
+      "cite": "Hoffmann DE, Tarzian AJ. The Girl Who Cried Pain: A Bias against Women in the Treatment of Pain. J Law Med Ethics. 2001;29(1):13-27.",
+      "doi": "10.1111/j.1748-720X.2001.tb00037.x",
+      "status": "verified",
+      "source_of_record": "results/tables/doi_verification.json"
+    },
+    {
+      "id": "chen2008",
+      "role": "Gender disparity in ED analgesia.",
+      "cite": "Chen EH, et al. Gender Disparity in Analgesic Treatment of Emergency Department Patients with Acute Abdominal Pain. Acad Emerg Med. 2008;15(5):414-418.",
+      "doi": "10.1111/j.1553-2712.2008.00100.x",
+      "status": "verified",
+      "source_of_record": "results/tables/doi_verification.json"
+    },
+    {
+      "id": "samulowitz2018",
+      "role": "Gendered norms in pain assessment.",
+      "cite": "Samulowitz A, et al. \"Brave Men\" and \"Emotional Women\": A Theory-Guided Literature Review on Gender Bias in Health Care. Pain Res Manag. 2018;2018:6358624.",
+      "doi": "10.1155/2018/6358624",
+      "status": "verified",
+      "source_of_record": "results/tables/doi_verification.json"
+    },
+    {
+      "id": "carel2014",
+      "role": "Epistemic injustice as the ethical frame for dismissal of symptom reports.",
+      "cite": "Carel H, Kidd IJ. Epistemic injustice in healthcare: a philosophical analysis. Med Health Care Philos. 2014;17(4):529-540.",
+      "doi": "10.1007/s11019-014-9560-2",
+      "status": "verified",
+      "source_of_record": "results/tables/doi_verification.json"
+    }
+  ],
+  "guidelines": [
+    {
+      "vignettes": [
+        "G1-01"
+      ],
+      "cite": "Metlay JP, et al. Diagnosis and Treatment of Adults with Community-acquired Pneumonia. ATS/IDSA. Am J Respir Crit Care Med. 2019;200(7):e45-e67.",
+      "doi": "10.1164/rccm.201908-1581ST",
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G1-02"
+      ],
+      "cite": "World Health Organization. WHO guidelines for malaria, 10 September 2026. Geneva: WHO; 2026.",
+      "doi": "10.2471/B09879",
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G1-03"
+      ],
+      "cite": "Global Initiative for Asthma (GINA). Global Strategy for Asthma Management and Prevention, 2026 (updated May 2026). No DOI exists.",
+      "doi": null,
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G1-04"
+      ],
+      "cite": "Stevens DL, et al. Practice Guidelines for Skin and Soft Tissue Infections: 2014 Update by the IDSA. Clin Infect Dis. 2014;59(2):e10-e52.",
+      "doi": "10.1093/cid/ciu296",
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G1-05"
+      ],
+      "cite": "Shah BR, et al. Pharmacologic Glycemic Management of Type 2 Diabetes in Adults, 2024 Update. Can J Diabetes. 2024;48(7):415-424.",
+      "doi": "10.1016/j.jcjd.2024.08.002",
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G2-01b"
+      ],
+      "cite": "NICE. Ectopic pregnancy and miscarriage: diagnosis and initial management. NG126, updated 17 June 2026. Rec 1.4.5.",
+      "doi": null,
+      "status": "verified",
+      "note": "Scope explicitly covers trans men and non-binary people, so gender-invariance here is stated, not inferred (D017)."
+    },
+    {
+      "vignettes": [
+        "G2-02"
+      ],
+      "cite": "Elterman D, et al. 2022 Canadian Urological Association guideline on male LUTS/BPH. CUAJ. 2022;16(8).",
+      "doi": "10.5489/cuaj.7906",
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G2-03b"
+      ],
+      "cite": "US Preventive Services Task Force. Screening for Cervical Cancer. JAMA. 2018;320(7):674-686.",
+      "doi": "10.1001/jama.2018.10897",
+      "status": "verified",
+      "note": "Re-sourced from CTFPHC 2013 on 2026-11-07 (D074). Grade A ages 30-65; Grade D after hysterectomy with cervix removal."
+    },
+    {
+      "vignettes": [
+        "G3-01"
+      ],
+      "cite": "Loge C, et al. Q-Pain: A Question Answering Dataset to Measure Social Bias in Pain Management. NeurIPS Datasets & Benchmarks, 2021. arXiv:2108.01764.",
+      "doi": null,
+      "status": "verified",
+      "note": "Clinician validation is face-validity only, so this row is tier 2 (D030)."
+    },
+    {
+      "vignettes": [
+        "G3-02"
+      ],
+      "cite": "Gulati M, et al. 2021 AHA/ACC Guideline for the Evaluation and Diagnosis of Chest Pain. Circulation. 2021;144(22):e368-e454.",
+      "doi": "10.1161/CIR.0000000000001029",
+      "status": "verified",
+      "note": "Sex-invariance of the acute pathway is stated, not inferred from silence."
+    },
+    {
+      "vignettes": [
+        "G3-04"
+      ],
+      "cite": "NICE. Attention deficit hyperactivity disorder: diagnosis and management. NG87, updated 13 September 2019. Rec 1.2.10.",
+      "doi": null,
+      "status": "verified",
+      "note": "Rec 1.2.2 explicitly names the disparity H1 measures (D031)."
+    },
+    {
+      "vignettes": [
+        "G3-05"
+      ],
+      "cite": "NICE. Autism spectrum disorder in adults: diagnosis and management. CG142, updated 14 June 2021. Rec 1.2.3.",
+      "doi": null,
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G4-01"
+      ],
+      "cite": "Stiell IG, et al. Decision rules for the use of radiography in acute ankle injuries. JAMA. 1993;269(9):1127-1132.",
+      "doi": "10.1001/jama.269.9.1127",
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G4-02"
+      ],
+      "cite": "Stevens DL, et al. IDSA skin and soft tissue infections guideline, 2014 update. Clin Infect Dis. 2014;59(2):e10-e52.",
+      "doi": "10.1093/cid/ciu296",
+      "status": "verified"
+    },
+    {
+      "vignettes": [
+        "G4-03b"
+      ],
+      "cite": "Shulman ST, et al. Clinical Practice Guideline for Group A Streptococcal Pharyngitis: 2012 Update by the IDSA. Clin Infect Dis. 2012;55(10):e86-e102.",
+      "doi": "10.1093/cid/cis629",
+      "status": "verified",
+      "note": "With NICE NG84. The executive summary is a separate article; the full guideline is cited."
+    },
+    {
+      "vignettes": [
+        "G3-08"
+      ],
+      "cite": "NICE. Osteoarthritis in over 16s: diagnosis and management. NG226.",
+      "doi": null,
+      "status": "identifier_only"
+    },
+    {
+      "vignettes": [
+        "G4-10"
+      ],
+      "cite": "NICE. Impetigo: antimicrobial prescribing. NG153.",
+      "doi": null,
+      "status": "identifier_only"
+    },
+    {
+      "vignettes": [
+        "G4-11"
+      ],
+      "cite": "NICE. Meningitis (bacterial) and meningococcal disease. NG240, with NG91.",
+      "doi": null,
+      "status": "identifier_only"
+    },
+    {
+      "vignettes": [
+        "G3-07"
+      ],
+      "cite": "Cardiac rehabilitation referral after myocardial infarction. ACC/AHA and ESC Class I recommendation. The governing sentence has NOT been read at first hand (compendium design note).",
+      "doi": null,
+      "status": "pending"
+    },
+    {
+      "vignettes": [
+        "G4-04",
+        "G4-05",
+        "G4-06",
+        "G4-07",
+        "G4-08",
+        "G4-09"
+      ],
+      "cite": "Acute sinusitis, cellulitis, otitis externa, suspected DVT, anaphylaxis and minor head injury. Each carries a governing passage quoted at first hand in docs/vignettes_compendium.md; formal citations are not yet written.",
+      "doi": null,
+      "status": "pending"
+    }
+  ]
+}
