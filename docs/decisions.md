@@ -5245,3 +5245,94 @@ in exactly one place, so compliance depended on every future script remembering
 it. A rule enforced at one call site is a convention, not a mechanism. This is
 the same failure as D095's guard on a build that could not run, and it will
 recur wherever the project states a policy in prose and implements it once.
+
+## D098, RQ6 was unstarted, and the way to start it was not to code it
+
+**Where it stood.** `docs/rq6_coding_sheet.csv` held 80 rows, ten documents by
+eight dimensions, and zero codes in either coder's column.
+`results/tables/rq6_codes.csv` and `rq6_reliability.csv` did not exist. What did
+exist was the instrument: the codebook, the retrieved documents, the thirty-term
+search counts and 136 extracted candidate passages. So RQ6 was not a partial
+result, it was an instrument with nothing run through it, and it was the largest
+gap in the project.
+
+**The decision, and the thing I was asked to do but did not.** Asked to do RQ6,
+I built the evidence base and a labelled machine draft, and left both human
+columns empty. Codebook §6 defines RQ6's reliability as Cohen's kappa over two
+independent human passes on the pre-adjudication codes. A machine filling one of
+those columns does not produce that statistic. It produces agreement between a
+human and a machine, reported under a name that claims something else, and the
+threshold of 0.70 would then be clearing a bar nobody set. The κ is the only
+thing separating "we read ten documents" from "we measured ten documents", so
+the one move that cannot be automated is the one that was asked for.
+
+**What was built instead.**
+
+- `scripts/rq6_dossier.py` and `docs/rq6_dossier.md`: per document and
+  dimension, the passages bearing on the code, verbatim with locators, plus the
+  call a coder has to make. It cuts the coding task from reading 1.1 MB of
+  source to judging quotations, which is the actual bottleneck.
+- `ai_draft_code`, `ai_draft_rationale`, `ai_draft_boundary` columns on the
+  sheet. Same pattern as D038: machine drafting behind a human gate, in columns
+  where it cannot be mistaken for human work. The draft also has a second use,
+  as a third rater: agreement between it and the two humans is a result about
+  machine coding, reported separately and carrying no weight in the reliability
+  claim.
+- `scripts/rq6_reliability.py`, which refuses two things. It will not compute κ
+  from a partial sheet, and it will not substitute the draft for a missing
+  coder. Both refusals print the reason.
+- A guard in the dossier builder that compares the human columns before and
+  after and aborts the write if it changed one. The rule is only as good as its
+  enforcement; D097 was logged three entries ago for exactly this.
+
+**Four findings the coding pass produced that the search counts could not.**
+
+1. **D4 is empty across the entire set.** The dimension RQ6 exists for scores 0
+   in nine of ten documents. Tested rather than eyeballed: a sliding window
+   found no passage in eight of the ten documents where a demographic term and
+   a health term occur within 400 characters of each other. The nine apparent
+   hits in the Pile paper are all artefacts, being the author-contribution list,
+   the axis labels of Figure 13, and the appendix topic tables.
+2. **The one real join runs the opposite way to the expected finding.** The Pile
+   datasheet says of each medical subset that "Many medical papers identify
+   subpopulations in the course of their studies. We have confirmed the presence
+   of papers that study race, gender, ability, nation of origin, religion, and
+   sexual orientation." That joins health content to gender and asserts
+   adequacy, not risk.
+3. **The Gebru distribution question was asked twice and answered neither
+   time.** It asks for subpopulations "and what is their distribution". At the
+   instance-level question the distribution clause is passed over for a note on
+   text cleaning; at the dedicated question the answer gives the *presence* of
+   papers that study gender. Presence is not distribution. This is the finding
+   that pairs with RQ1, which measured the distribution the datasheet was asked
+   for and did not supply.
+4. **The headline has to change, and it changes for the better.** The Pile paper
+   does measure gender in the corpus, in §6.4.1, by pronoun co-occurrence with a
+   stated method. So RQ6's claim cannot be that nobody looked at gender. It is
+   that gender was measured, medical content was described and advertised
+   ("We included PMC in the hopes that it will benefit potential downstream
+   applications to the medical domain"), and the two were never joined. That is
+   a harder claim to attack than an absence claim, and it is the one the
+   evidence supports.
+
+**Three false-presence traps recorded, because the search table is published as
+evidence.** Read alone it overstates disclosure. The OLMo 2 report's four "bias"
+hits are all the architectural bias term and its three "health" hits are
+embedding norms and GPU health checks; the Qwen3 report's one "man" and four
+"men" are the contributors Man Yuan and Rui Men; the Pile datasheet's single
+"trans " is the title "Big bird: Transformers for longer sequences". The search
+script's word-boundary matching was verified sound, so it is the reading of a raw
+count that fails, not the count. The dossier carries this table.
+
+**What the simulated run showed about κ, which belongs in the limitations.**
+Running the reliability script against a planted sheet reproduced the pathology
+the codebook predicted: on D5, where nine of ten documents are 0, a single
+disagreement gives κ = 0.000 at 90% raw agreement. And where both coders use one
+value throughout, expected agreement is 1 and κ is 0/0, undefined. Both are
+handled and labelled rather than printed as zeros, because an undefined κ read as
+a low κ would retire a dimension that in fact agreed perfectly.
+
+**Still owed, and it is human work.** Calibration on document 2, the four
+adjudications listed at the top of the dossier, the two independent passes, and
+the ANCHOR lines in the codebook, which §6.1 requires be filled from passages
+the two coders agreed on and which therefore stay empty here.

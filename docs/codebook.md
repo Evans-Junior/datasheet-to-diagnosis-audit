@@ -310,6 +310,8 @@ support a claim about documentation practice in general.
 | `results/tables/rq6_codes.csv` | one row per (document × dimension): code, D7, D8, quotation, locator, coder |
 | `results/tables/rq6_reliability.csv` | per dimension: κ, raw agreement, n disagreements |
 | `results/tables/rq6_search_counts.csv` | per document × term: hit count from §4 step 2 |
+| `docs/rq6_dossier.md` | per document × dimension: the passages bearing on the code, verbatim with locators, and the call a coder has to make. Built by `scripts/rq6_dossier.py` (D098) |
+| `docs/rq6_coding_sheet.csv`, `ai_draft_*` columns | a labelled machine proposal per cell. **Not a coder.** Copying one into `evans_code` or `aymen_code` voids the κ below |
 
 The search-count table is published as a result in its own right. It is the
 evidence behind every level-0 code, and it lets a reader check an absence claim
@@ -338,6 +340,13 @@ breadth of the documentation sample.
 `scripts/rq6_worksheet.py`, each tagged with the dimensions it *may* bear on.
 `docs/rq6_coding_sheet.csv` is the blank sheet: 10 documents × 8 dimensions = 80
 rows, with separate columns per coder.
+
+Read `docs/rq6_dossier.md` first. It collects those passages per document
+and dimension, so a code is decided against quotations rather than against
+1.1 MB of source, and it lists the four calls that have to be settled during
+calibration before anything else is coded. Reliability is computed by
+`scripts/rq6_reliability.py`, which refuses to run on a partially coded sheet
+and refuses to stand the machine draft in for a missing coder.
 
 **The candidate tags are not codes and the extraction is over-inclusive on
 purpose.** A tag means "a human must look at this", nothing more. Reading a false
