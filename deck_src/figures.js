@@ -139,6 +139,11 @@ function sizeTrend() {
     above: Math.abs(num(r.floor_relative_gap)) < 1e-4
              ? "at floor" : (String(r.exceeds_floor) === "True" ? "yes" : "no"),
     nPairs: num(r.n_pairs),
+    // D045: the placebo check says whether this model's null can be read at
+    // all. Without it on the object, a slide that wanted the count silently
+    // filtered on an undefined field and printed "0 of 10".
+    nullInterpretable: String(r.null_is_interpretable) === "True",
+    t2Recovered: String(r.t2_pmi_recovered) === "True",
   })).sort((a, b) => a.params - b.params);
 }
 
@@ -696,11 +701,100 @@ function corpusReplication(a = "v4_olmo-mix-1124_llama", b = "v4_piletrain_llama
            maxDiff: diffs[diffs.length - 1], medianDiff: mid };
 }
 
+// --------------------------------------------------------------------------
+// D099. RQ4 run as H4 was preregistered: open-data models only, and the
+// cross-pairing treated as the negative control the prereg said it was rather
+// than as a column beside the matched one. Two separate claims come out, and
+// the deck must not merge them: skew predicts the gap in exactly one model,
+// and WHICH corpus cannot be recovered.
+function rq4Control() {
+  const rows = table("rq4_matched_vs_crossed.csv").map(r => ({
+    model: r.model, family: r.family, size: num(r.n_params_b),
+    tuned: String(r.instruction_tuned) === "True",
+    ownCorpus: r.own_corpus, n: num(r.n_concepts),
+    matched: num(r.rho_matched), crossedMax: num(r.rho_crossed_max),
+    matchedWins: String(r.matched_beats_crossed) === "True",
+  }));
+  const wins = rows.filter(r => r.matchedWins).length;
+  return { rows, wins, n: rows.length };
+}
+
+function rq4Trend() {
+  const rows = table("rq4_linkage_trend.csv").map(r => ({
+    model: r.model, family: r.family, size: num(r.n_params_b),
+    tuned: String(r.instruction_tuned) === "True",
+    n: num(r.n_concepts), rho: num(r.rho_matched), p: num(r.p_one_sided),
+  })).sort((a, b) => a.size - b.size || Number(a.tuned) - Number(b.tuned));
+  const py = rows.filter(r => r.family === "pythia").sort((a, b) => a.size - b.size);
+  const base = rows.find(r => r.family === "olmo" && !r.tuned);
+  const inst = rows.find(r => r.family === "olmo" && r.tuned);
+  if (!base || !inst) throw new Error("figures.js: rq4Trend needs an OLMo base/Instruct pair");
+  // Spearman over the Pythia ladder only, which is the row that holds training
+  // data constant and therefore the only one that speaks to scale.
+  const pyRho = _spearman(py.map(r => r.size), py.map(r => r.rho));
+  return { rows, pythia: py, pyRho, base, inst,
+           postTrainingDelta: inst.rho - base.rho,
+           nNegative: py.filter(r => r.rho < 0).length };
+}
+
+// Validation C (D061). The headline is not the mean delta, it is what fraction
+// of the effects big enough to be reported keep their sign under all three
+// paraphrasings. An audit that omits it reports wording sensitivity as bias.
+function paraphrase() {
+  const rows = table("v_c_paraphrase_cells.csv");
+  const clears = rows.filter(r => String(r.clears_floor) === "True");
+  const unan = clears.filter(r => String(r.unanimous) === "True").length;
+  return { nCells: rows.length, nClears: clears.length, nUnanimous: unan,
+           pctUnanimous: clears.length ? unan / clears.length : 0,
+           nNotUnanimous: clears.length - unan };
+}
+
+// Validation D. If a model were reciting the guideline it would be answering
+// from memory, not from the corpus statistics the linkage claim is about.
+function contamination() {
+  const rows = table("v_d_contamination.csv");
+  const isCtrl = r => /NEGATIVE_CONTROL/.test(String(r.vignette));
+  const grp = r => String(r.vignette).slice(0, 2);
+  // The claim a slide wants is about the TARGET vignettes, Groups 1 and 3. The
+  // deliberately generic negative-control span is SUPPOSED to be present, and
+  // Group 4 is the noise baseline, so folding either into one "long spans
+  // absent" headline would either overstate or understate the check. Counted
+  // separately, because a reviewer will ask which of the six hits mattered.
+  const long = rows.filter(r => r.span_kind === "long" && !isCtrl(r));
+  const short = rows.filter(r => r.span_kind === "short" && !isCtrl(r));
+  const tgtLong = long.filter(r => grp(r) === "G1" || grp(r) === "G3");
+  const present = a => a.filter(r => String(r.present) === "True").length;
+  const ctrl = rows.filter(isCtrl);
+  return { nSpans: rows.length,
+           nLong: long.length, longPresent: present(long),
+           nShort: short.length, shortPresent: present(short),
+           nTargetLong: tgtLong.length, targetLongPresent: present(tgtLong),
+           maxTargetLongCount: Math.max(0, ...tgtLong.map(r => num(r.count))),
+           nCtrl: ctrl.length, ctrlPresent: present(ctrl),
+           failed: rows.filter(r => String(r.query_failed) === "True").length };
+}
+
+// RQ6, and the distinction the slide has to keep. The term sweep and the
+// joint-window test are mechanical text facts and may be shown as results. The
+// graded D1-D8 codes are NOT: codebook section 6 needs two independent human
+// passes before any code is citable, and only the machine draft exists (D098).
+function rq6Status() {
+  const counts = table("rq6_search_counts.csv");
+  const docs = [...new Set(counts.map(r => r.document))];
+  const zeroDocs = docs.filter(d =>
+    counts.filter(r => r.document === d).every(r => num(r.hits) === 0));
+  const nTerms = new Set(counts.map(r => r.term)).size;
+  const relPath = path.join(T, "rq6_reliability.csv");
+  return { nDocs: docs.length, nTerms: nTerms, zeroDocs,
+           coded: fs.existsSync(relPath) };
+}
+
 module.exports = {
   CURRENT, KEY, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
   reportable, liveVignettes, positiveControl, floorComparison, gateRerun,
   rq3Spearman, rq4Linkage, corpusDisagreement, chanceRange,
   corpusAgreement, corpusQueries, decisionCount, i3Grid, vignetteGroups,
   corpusProbe, rq5Probe, lastUpdated, corpusReplication,
+  rq4Control, rq4Trend, paraphrase, contamination, rq6Status,
   f4, f3, fx, p, ci, SHORT, num,
 };

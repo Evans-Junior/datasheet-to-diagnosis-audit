@@ -5421,3 +5421,75 @@ decomposition and refuses to build a trend over a roster it cannot size. Tables
 for the control, because `all_powered` means a different concept set per corpus,
 8 powered in the Pile against 11 in olmo-mix, and a matched rho at n = 11 against
 a crossed rho at n = 8 is not a comparison.
+
+## D100, a second deck, because a reference document and a talk are different artefacts
+
+**The problem with presenting the 56-slide deck.** It is a living reference: it
+carries every decision, every validity check and every table, and that is the
+right shape for a reader working through the project at their own pace. It is
+the wrong shape to stand up and present, because a talk has to carry one
+argument through a small number of beats and a catalogue cannot do that.
+`Datasheet_to_Diagnosis_Talk.pptx`, 16 slides, is that talk. Both are built from
+the **same accessors in `deck_src/figures.js`**, so no number can differ between
+them; only the selection and the order do.
+
+**The structure, which came from a review the author brought in.** Ten beats:
+the clinical hook, the gap in the literature, the design, the apparatus and the
+measurement biases it had to defeat, calibration, **stress-testing**, three
+findings, the ethics argument, limits and contributions, and future work. The
+insertion that mattered was stress-testing. The validation layers were spread
+across the long deck where they read as housekeeping; gathered onto one slide
+they are the strongest thing the project has, because an audit that was not
+attacked by its own authors is just a set of numbers.
+
+**Six factual corrections made to that proposed structure before building it.**
+Recorded because each would have been said out loud in a defence.
+
+1. **The arm grid was wrong.** It read "2 SPCU x 3 gender identities = 6 gendered
+   arms + 1 blinded arm". The grid is 2 SPCU x **4** identity labels (woman, man,
+   non-binary, blinded) x **3 paraphrases = 24 arms**. Blinded is crossed with
+   both sex parameters, not run once, and dropping the paraphrase layer
+   understates the design threefold while removing the robustness check the
+   stress-test slide then claims.
+2. **"Model cards report macro gender frequencies"** is false. No document in
+   the set reports a gender frequency. The *Pile paper* measures gender
+   *association* by pronoun co-occurrence, and the olmo-mix dataset card scores
+   zero on all thirty search terms.
+3. **"Closed models perform better clinically, open models struggle"** does not
+   match the roster. OLMo 2 is open-data and passes the gate; Pythia is
+   open-data and fails it; Qwen3 is closed-data and both passes most strongly
+   and merges worst. The real pattern is that capability and identity/SPCU
+   merging arrive together regardless of data openness, which is a sharper
+   finding and the one now on the ethics slide.
+4. **"Extend Group 4 to k >= 11"** was proposed as future work. Group 4 already
+   holds 11 vignettes. The binding constraint is H1 at **k = 4**, whose
+   resolution limit of 0.0625 is why it cannot reach .05.
+5. **"k = 6"** as the stated limitation is Group 3's cluster count. H1's is 4.
+6. **The tier-1 condition was absent entirely.** D091 requires "pending clinical
+   validation" to travel with every number. `tierBanner` is now drawn on every
+   results slide of the talk deck as it is on the long one.
+
+**Four defects that only the render found, which is D096 repeating itself.**
+`validate.py` passed, the geometry check passed, and the deck still had:
+`${GR.before}` printing **"undefined of 10"** on the slide where the floor fix
+changed a gate verdict; `vignetteGroups().groups[4]` printing the eleven vignette
+IDs where a count was wanted; a filter on `nullInterpretable`, a field
+`sizeTrend()` never exposed, printing **"0 of 10 models"** where the true count
+is 6; and a stat card reading **"0 of 10 documents ... except one"**, which
+contradicts itself and should be 9 of 10.
+
+**So a fifth check now exists.** `deck_src/qa_tokens.py` fails any deck whose
+slide text or speaker notes contain `undefined`, `NaN`, `[object Object]`,
+`Infinity` or an unexpanded `${`. The first three defects above were all one
+bug: reading a field the accessor does not expose, which JavaScript answers with
+`undefined` rather than an error. `figures.js` already aborts on a missing or
+stale TABLE; nothing watched for a missing FIELD. The word "null" is
+deliberately not a trigger, since it is ordinary statistical English here.
+`sizeTrend()` now exposes `nullInterpretable` and `t2Recovered` so the number
+comes from the table rather than from a filter that silently matches nothing.
+
+**State.** 16 slides, validate passes, 0 out of bounds, 0 overlaps, 19 overflow
+warnings which matches the long deck's baseline, every slide looked at as a
+rendered image. Built with
+`cd deck_src && NODE_PATH="$PWD/node_modules" node talk/build.js`, writing to
+the repository root for the reason in D096.
