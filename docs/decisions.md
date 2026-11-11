@@ -5336,3 +5336,88 @@ a low κ would retire a dimension that in fact agreed perfectly.
 adjudications listed at the top of the dossier, the two independent passes, and
 the ANCHOR lines in the codebook, which §6.1 requires be filled from passages
 the two coders agreed on and which therefore stay empty here.
+
+## D099, RQ4 was judged on a placebo it was never supposed to include, and the trend inside it went unreported
+
+**Two errors in my own earlier verdict, both raised by the author.** I had called
+RQ4 "not ready as stated" and recommended reframing it as a purely negative
+methodological result. Two things were wrong with that.
+
+**Error 1, the population.** I used Qwen3-8B's cross-corpus correlation as a
+leading reason RQ4 fails. Preregistration §4 puts Qwen out of H4's scope in
+terms: "no corpus access, so no linkage." A model with no declared corpus is a
+post-hoc placebo with n = 1, and it cannot carry a verdict about the nine models
+that do have a declared corpus. The identifiability question has to be settled
+inside the open-data set or not at all.
+
+**Error 2, the unasked question.** I evaluated RQ4 against its preregistered
+headline claim, reported pass or fail, and stopped. I never asked what else the
+same table supports. It supports a trend, and the trend is the more interesting
+result.
+
+**What the preregistered control actually says, with Qwen removed.** H4 states
+that cross-pairings "are a negative control: they should link more weakly". That
+is a paired comparison across models and it had never been run; the crossed rows
+sat beside the matched rows in `rq4_linkage.csv` for a reader to eyeball. Run on
+**common support**, where every cell is n = 8 over the same concepts so that only
+the corpus varies, the matched pairing beats the best cross-pairing in **2 of 9
+models**, Wilcoxon one-sided W = 3.5, p = 0.992 against H4's direction. OLMo 2
+Instruct correlates with the Pile, which it never saw, at +0.833, slightly higher
+than with its own olmo-mix at +0.786.
+
+So the attributional claim fails, and it fails **without Qwen**. Dropping the
+weights-only model does not repair it, because the problem was never Qwen: it is
+that the two corpora are near-duplicates on the audited concepts, which I4
+already measured at rho +0.976 on common support. Qwen was corroborating
+evidence for a conclusion that the open-data models reach on their own. That is
+the honest statement, and it is stronger than the one I made, because it rests
+on a control the project committed to in advance rather than on a placebo added
+afterwards.
+
+**The trend, which is the part I should have given.** Decomposed, because "grows
+with scale" and "appears with post-training" are different claims:
+
+| | rho (matched) | p one-sided |
+|---|---|---|
+| Pythia ladder, size vs linkage, n = 7 | **+0.288** | 0.531 |
+| All nine open models, size vs linkage | +0.622 | 0.074 |
+| OLMo 2 7B base | +0.364 | 0.136 |
+| OLMo 2 7B **Instruct** | **+0.800** | **0.0016** |
+
+The Pythia ladder spans a hundredfold in parameters with training data held
+constant and shows no linkage and no trend. Six of its seven sizes are
+*negative*. The only positive is pythia-2.8b at +0.548, which is also the model
+with the widest within-level swing (D095), so it is better read as the ladder's
+anomaly than as its signal. The all-model correlation of +0.622 is larger only
+because the two models at the top of it differ from Pythia in family, corpus and
+post-training at once, which is the same confound D045 recorded for RQ3.
+
+What is left is a clean within-family contrast. OLMo 2 base and OLMo 2 Instruct
+have the same parameter count, the same corpus and the same pretraining, and
+differ by **+0.436** at all_powered, or **+0.548** at common support where both
+are n = 8. **Linkage is not a scale phenomenon. It is a post-training
+phenomenon**, and it appears in exactly one model of nine. This agrees with
+`rq2c_post_training_contrast.csv`, where the Instruct model's identity/SPCU
+merging exceeds the combined floor at 11.0x while the base model sits inside its
+own floor.
+
+**Revised verdict, and RQ4 is reportable.** Not as one claim but as two, which is
+what the evidence has.
+
+1. **Positive, and it is a finding.** Corpus skew predicts the direction of the
+   output gap in the instruction-tuned OLMo, rho +0.800, p = .0016, n = 11, and
+   in none of seven pretrained-only models across a hundredfold range of scale.
+2. **Negative, and preregistered.** *Which* corpus cannot be recovered. The
+   control fails 2 of 9, so no causal path to a named corpus may be claimed.
+
+Together: post-training is where corpus skew becomes behaviour, and provenance
+attribution needs corpora that actually differ on the audited concepts. The
+second half is a requirement for anyone running this design next, which is worth
+more than the weak positive I was going to report instead.
+
+**Built.** `scripts/rq4_matched_vs_crossed.py`, which runs the control and the
+decomposition and refuses to build a trend over a roster it cannot size. Tables
+`rq4_matched_vs_crossed.csv` and `rq4_linkage_trend.csv`. It uses common support
+for the control, because `all_powered` means a different concept set per corpus,
+8 powered in the Pile against 11 in olmo-mix, and a matched rho at n = 11 against
+a crossed rho at n = 8 is not a comparison.

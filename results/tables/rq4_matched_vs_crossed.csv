@@ -1,0 +1,10 @@
+model,family,n_params_b,instruction_tuned,own_corpus,n_concepts,rho_matched,rho_crossed_max,rho_crossed_mean,n_crossed_corpora,matched_beats_crossed,support,prompt_hash
+OLMo-2-1124-7B,olmo,7.0,False,olmo-mix-1124,8,0.2381,0.2619,0.25,2,False,common,18f637733ab522a1
+OLMo-2-1124-7B-Instruct,olmo,7.0,True,olmo-mix-1124,8,0.7857,0.8333,0.8095,2,False,common,18f637733ab522a1
+pythia-70m,pythia,0.07,False,piletrain,8,-0.4048,-0.3095,-0.3095,2,False,common,18f637733ab522a1
+pythia-160m,pythia,0.16,False,piletrain,8,-0.2381,-0.2619,-0.2619,2,True,common,18f637733ab522a1
+pythia-410m,pythia,0.41,False,piletrain,8,-0.2619,-0.1905,-0.1905,2,False,common,18f637733ab522a1
+pythia-1b,pythia,1.0,False,piletrain,8,-0.3571,-0.2619,-0.2619,2,False,common,18f637733ab522a1
+pythia-1.4b,pythia,1.4,False,piletrain,8,-0.3095,-0.2619,-0.2619,2,False,common,18f637733ab522a1
+pythia-2.8b,pythia,2.8,False,piletrain,8,0.5476,0.6429,0.6429,2,False,common,18f637733ab522a1
+pythia-6.9b,pythia,6.9,False,piletrain,8,-0.3095,-0.3333,-0.3333,2,True,common,18f637733ab522a1

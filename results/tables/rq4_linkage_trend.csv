@@ -1,0 +1,10 @@
+model,family,n_params_b,instruction_tuned,n_concepts,rho_matched,p_one_sided,n_concordant,n_signed,support,prompt_hash
+OLMo-2-1124-7B,olmo,7.0,False,11,0.3636,0.1358,4,11,all_powered,18f637733ab522a1
+OLMo-2-1124-7B-Instruct,olmo,7.0,True,11,0.8,0.0016,8,11,all_powered,18f637733ab522a1
+pythia-70m,pythia,0.07,False,8,-0.4048,0.8401,4,8,all_powered,18f637733ab522a1
+pythia-160m,pythia,0.16,False,8,-0.2381,0.7149,3,8,all_powered,18f637733ab522a1
+pythia-410m,pythia,0.41,False,8,-0.2619,0.7345,5,8,all_powered,18f637733ab522a1
+pythia-1b,pythia,1.0,False,8,-0.3571,0.8074,4,8,all_powered,18f637733ab522a1
+pythia-1.4b,pythia,1.4,False,8,-0.3095,0.7722,2,8,all_powered,18f637733ab522a1
+pythia-2.8b,pythia,2.8,False,8,0.5476,0.08,4,8,all_powered,18f637733ab522a1
+pythia-6.9b,pythia,6.9,False,8,-0.3095,0.7722,1,8,all_powered,18f637733ab522a1
