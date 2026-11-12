@@ -5558,3 +5558,90 @@ slide, which would be a citation the audience never sees.
 **State.** 19 slides: the 10-beat talk, 3 appendix, 3 reference slides, title.
 validate passes, 0 out of bounds, 0 overlaps, every slide looked at as a
 rendered image.
+
+## D102, the defence site was reporting the October instrument, and it had two statements of fact backwards
+
+The project has three presentation artefacts, and only two of them were being
+rebuilt from the tables. `Datasheet_to_Diagnosis_Presentation.pptx` and
+`Datasheet_to_Diagnosis_Talk.pptx` read every figure through accessors in
+`deck_src/figures.js`, so a rescore reaches them on the next build (D095, D100).
+The defence site is hand-written HTML published as an artifact, with no build
+step and nothing asserting its freshness. Between 11-03 and 11-11 the prompt set
+changed twice, the roster was rescored in full, and four research questions
+moved. The site reported none of it.
+
+**This is the same fault the last nine entries are about, one level up.** D090
+was a hash blind to the field it guarded; D093 was four models stale under a
+stamp that could not show it; D094 was a roster never checked; D097 was a tier
+declared rather than derived; D095 was a slide typing its own numbers. In every
+case a derived artefact had drifted from its source with nothing asserting the
+drift, and in every case the checks that existed passed. The site is the fifth
+instance and the only one with no guard available at all, because it is prose.
+
+**Two statements were not stale but wrong.**
+
+1. **The contamination table had G4-02 and G4-03 swapped on live status.** It
+   labelled G4-02 conjunctivitis "retired row, measurement kept as recorded" and
+   treated G4-03 pharyngitis as live, then built an argument on G4-03 being "one
+   of the two vignettes the binary floor is built from". The reverse is true.
+   G4-03 was rejected on clinical review for having two defensible answers
+   (D085) and replaced by G4-03b; G4-02 is live. So the page disclosed a
+   contamination risk to the floor that no longer exists, and omitted that the
+   one live contaminated item is a Group 4 noise-baseline row.
+2. **The score-key limitation named the wrong family.** The page said the gate's
+   verdict on Qwen is score-key dependent, sensitive under `pmi` and insensitive
+   under `mean_logprob`. On the current roster Qwen clears under both, 5.41x and
+   1.58x, and it is **both OLMo models** that flip to insensitive under
+   `mean_logprob`. The dependence had moved from the closed-data contrast model
+   to the open-data family the whole argument rests on, which is the more
+   damaging version of the same limitation, and the page was reporting the
+   milder one.
+
+**Two published claims reversed, both toward the project's favour, which is why
+they are recorded here rather than quietly corrected.**
+
+- **The permutation prediction.** I6 predicted `perm_floor < floor` on a
+  sqrt(k) argument and recorded the prediction as having failed: 147 of 240
+  cells went the other way, median ratio 1.413. On the full roster it is 96 of
+  240 and the median ratio is 0.805, so the prediction is mostly borne out. The
+  exception still binds in 40 cells where Group 4 passes and the permutation
+  null fails, and the rule that the larger threshold governs is unchanged. Eight
+  cells now disagree in the opposite direction, which did not occur before;
+  those are **not** promoted to findings, because a rule that loosens when it
+  is convenient is a preference.
+- **Group 3's reachability.** The site said no Group 3 result could reach
+  alpha = .05 whatever the models did, which was true at k = 4 and was the
+  finding that justified D066. Two vignettes were then sourced and added, so
+  k = 6 and the limit is 2/2^6 = 0.031. Four of the 60 Group 3 cells now fall
+  below .05, which was arithmetically impossible before. This is the one place
+  in the project where a requirement was costed, paid and then measured, and the
+  site was still printing the unpaid version.
+
+**What else changed, by section.** The decision count, 99 to 104. RQ2's
+hypothesis table, since H1 is now k = 4 with p_exact = 0.0625 sitting exactly on
+its own resolution limit, which makes it unresolvable rather than refuted, and
+H3's equivalence is supported at k = 8 where a rejection was available. RQ3's
+table, restructured so the matched floor has its own Pythia-only column: within
+the family the gap now rises with size at rho = +0.857, p = .014, while the
+corrected floor does not track size at all at -0.179. The merging tables, now on
+G2-01b and G2-03b, with Qwen at 19.7x its floor and OLMo-2-Instruct at 21.5x,
+so **the largest effect is the open-data model, not the closed one**. RQ2c, from
++0.0379 at 2.88x to +0.1533 at 11.0x. RQ4, rewritten to the preregistered
+control plus the two claims D099 left it with. The paraphrase table, 1,920 cells
+to 3,120, with floor-clearing unanimity up from 75.8% to 83.2%. The RQ6 section,
+given the three false-presence traps and the four coding findings. The sources
+section, given the 15-of-25 citation coverage note and G3-07 named.
+
+**One thing the site now states that nothing else did.** The placebo prompts are
+scored, 10 models by 252 prompts under their own set hash `768eed5620f7b584`,
+and **no analysis script exists**, so no result anywhere has been gated against
+the placebo floor. The criterion was fixed in D062 before scoring, the data is
+in, and the comparison is outstanding. The site said "built, scoring pending",
+which understated how far it had got and overstated how usable it is.
+
+**The standing problem this leaves.** Logging this entry takes the count to 105
+and makes the site stale again by one number, which is the drift in miniature.
+The count on the page is updated in the same pass as this entry. The real fix is
+that a hand-written artefact cannot be guarded, so either its numbers come from
+the tables or they are checked by hand on a schedule. Nothing here chooses
+between those yet.
