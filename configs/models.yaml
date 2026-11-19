@@ -75,6 +75,11 @@ audit:
     models:
       - {id: allenai/OLMo-2-1124-7B,          weights_gb: 14.2, role: base}
       - {id: allenai/OLMo-2-1124-7B-Instruct, weights_gb: 14.2, role: instruct}
+  marin:                      # RQ2/RQ3: stronger open-data model; no single infini-gram index for full mix
+    corpus_index: null
+    models:
+      - {id: marin-community/marin-8b-base,     weights_gb: 16.0, role: base}
+      - {id: marin-community/marin-8b-instruct, weights_gb: 16.0, role: instruct}
 
 # ---------------------------------------------------------------------------
 # WITHDRAWN 2026-11-07 — the `dclm:` family was added (D059), its rationale was

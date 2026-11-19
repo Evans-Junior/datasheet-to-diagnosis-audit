@@ -5200,3 +5200,17 @@ contradicted its own body, and the two corpora of the headline ethics finding
 swapped. A checker only finds what it was built to look for, and none of these
 were. Render the artefact, look at it, and then audit every number on it by
 hand against its source.
+
+## D097, add Marin 8B (base and instruct) and a CUDA scoring path
+
+**Date.** 2026-11-19.
+
+**Decision.** Added `marin-community/marin-8b-base` and `marin-community/marin-8b-instruct` to `configs/models.yaml` (bringing the roster from 10 to 12 models) and added a CUDA device path alongside MPS in `src/score_outputs.py`, `scripts/validate_instrument.py`, `scripts/bench_forward.py`, and `scripts/i3_elicitation.py`.
+
+**Reason.** To test whether a stronger open-data model family clears the Group 2 positive-control gate and to replicate the base-versus-instruct comparison alongside OLMo-2.
+
+**Runtime and validation.** Scored in `float32` on Colab NVIDIA A100-80GB CUDA, matching the `float32` precision fixed in D015. Both models passed T1 determinism (`0.0` drift). `marin-8b-instruct` passed T2 signal recovery across all three score keys; `marin-8b-base` failed T2 under `pmi` and passed under `mean_logprob` and `sum_logprob` (sensitivity tables refreshed per D042). Matched floors were measured on the same CUDA runtime.
+
+**Corpus linkage caveat (RQ4).** `corpus_index` is set to `null` (`unknown` pairing in `rq4_linkage.csv`) because no single `infini-gram` index covers Marin's full 12.7T-token training mix.
+
+**Result.** Both models pass the Group 2 gate as `SENSITIVE` across all three score keys (`pmi` margins: `marin-8b-base` `+0.0572` against a matched floor of `0.0248`; `marin-8b-instruct` `+0.0568` against a matched floor of `0.0086`).

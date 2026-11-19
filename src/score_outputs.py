@@ -225,7 +225,9 @@ def score_model(spec: ModelSpec, prompts: pd.DataFrame, device: str,
 
     del model, head
     gc.collect()
-    if device == "mps":
+    if device == "cuda":
+        torch.cuda.empty_cache()
+    elif device == "mps":
         torch.mps.empty_cache()
 
     out = pd.DataFrame(rows)
@@ -285,6 +287,12 @@ def build_specs(cfg: dict, smoke: bool, checkpoints: bool) -> list[ModelSpec]:
         specs.append(ModelSpec(m["id"], role=m.get("role", "audit"),
                                dtype=m.get("dtype", default_dtype),
                                corpus_index=olmo["corpus_index"]))
+    if "marin" in audit:
+        marin = audit["marin"]
+        for m in marin["models"]:
+            specs.append(ModelSpec(m["id"], role=m.get("role", "audit"),
+                                   dtype=m.get("dtype", default_dtype),
+                                   corpus_index=marin.get("corpus_index")))
     for m in cfg.get("contrast", []):
         specs.append(ModelSpec(m["id"], dtype=m.get("dtype", default_dtype),
                                role="contrast", corpus_index=None))
@@ -336,7 +344,7 @@ def main() -> None:
     cfg = yaml.safe_load((ROOT / args.config).read_text())
     seed = cfg.get("seed", 0)
     set_seeds(seed)
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
     prompt_path = (ROOT / args.prompts) if args.prompts else VIGNETTES
     prompts = pd.read_csv(prompt_path)

@@ -47,13 +47,17 @@ def bench(model_id: str, device: str) -> dict:
     with torch.no_grad():
         for _ in range(N_WARMUP):
             model(ids)
-        if device == "mps":
+        if device == "cuda":
+            torch.cuda.synchronize()
+        elif device == "mps":
             torch.mps.synchronize()
 
         t0 = time.perf_counter()
         for _ in range(N_TRIALS):
             model(ids)
-        if device == "mps":
+        if device == "cuda":
+            torch.cuda.synchronize()
+        elif device == "mps":
             torch.mps.synchronize()
         elapsed = time.perf_counter() - t0
 
@@ -61,7 +65,9 @@ def bench(model_id: str, device: str) -> dict:
 
     del model
     gc.collect()
-    if device == "mps":
+    if device == "cuda":
+        torch.cuda.empty_cache()
+    elif device == "mps":
         torch.mps.empty_cache()
 
     return {
@@ -79,7 +85,7 @@ def main() -> None:
     ap.add_argument("--out", default="results/tables/rq0_bench.json")
     args = ap.parse_args()
 
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
     print(f"device={device}  torch={torch.__version__}  "
           f"prompt_tokens={PROMPT_TOKENS}  trials={N_TRIALS}\n")
 

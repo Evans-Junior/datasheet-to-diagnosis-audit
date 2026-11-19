@@ -130,14 +130,16 @@ def run_model(model_id: str, prompts: pd.DataFrame, cfgs: list[str],
 
     del model, head
     gc.collect()
-    if device == "mps":
+    if device == "cuda":
+        torch.cuda.empty_cache()
+    elif device == "mps":
         torch.mps.empty_cache()
     return pd.DataFrame(rows)
 
 
 def main() -> None:
     only = sys.argv[1:] or MODELS
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
     v = pd.read_csv(ROOT / "data/vignettes/vignettes.csv")
     prompts = v[v["vignette_id"].isin(TUNING_VIGNETTES)].copy()
     print(f"device={device}  tuning prompts={len(prompts)}  models={len(only)}")
