@@ -6909,3 +6909,38 @@ Two stale static slide numbers, 20 and 21, now read 22 and 23.
 13 seconds, against a five minute slot. Cutting it is a decision about the talk
 rather than a defect, so it stays with the author. The three most expensive
 slides are 9 at 45s, 8 at 33s and 17 at 28s; slides 11 and 12 together are 52s.
+
+## D141, the defence site becomes a presenting aid, and its run of show gets a generator
+
+The site was a reference document: status, timeline, results, decisions, drills.
+Useful to read, useless to hold while standing up. Two sections are added at the
+top, before the existing material, which is untouched.
+
+**Run of show.** Every slide of the pitch with its budget, its cumulative start
+time and the line its notes open on, plus a timer that highlights the slide you
+should be on. It turns amber past five minutes and red past the deck's own
+target. The budget is stated plainly on the page rather than buried: 7:13
+against a 5:00 slot, with the six most expensive slides named.
+
+**Say it this way, not that way.** Ten pairs where a true sentence and a false
+one are one word apart, each of which was a real error in a draft, a slide or a
+conversation: the eleven is the rise and not the model, post-training produced
+it and not pretraining, a bigger multiple is not a bigger effect, margin over
+floor is a difference and not a ratio, 0 of 10 is not fairness, seven flat
+models are blind and not fair, RQ4 is a limit of identifiability, 0.976 and
+0.931 answer different questions, and the vignettes are author-reviewed rather
+than clinician-reviewed. Three sentences that were true once and are not now are
+listed separately, because they are in old drafts and in this page's own
+timeline and will surface from somebody's memory.
+
+**The run of show is generated, which is the point.** The site is the one
+presentation artefact with no build step, which is how it came to be reporting
+the October instrument in November (D102). A stale number on a reference page is
+bad; a stale list of timings is worse, because somebody stands up and follows
+it. `scripts/build_site_runsheet.py` reads the `[Ns]` markers straight out of
+the deck's speaker notes, which is the same source the deck's own budget check
+uses, so the two cannot disagree about how long the talk is. Regenerating it
+after a deck edit is the whole update procedure.
+
+The header's decision count moved from 124 to 143 in the same pass, which is the
+kind of hand-typed number this project has now been caught by four times.
