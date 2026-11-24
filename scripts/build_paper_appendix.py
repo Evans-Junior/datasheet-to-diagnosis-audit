@@ -26,7 +26,12 @@ cfg = yaml.safe_load(open("configs/placebo_arms.yaml"))
 reg = pd.read_csv("results/tables/i4_placebo_regate.csv")
 pv = pd.read_csv("results/tables/i4_placebo_per_vignette.csv")
 PH = reg["prompt_hash"].iloc[0]
-NDEC = len(re.findall(r"^## D", open("docs/decisions.md").read(), re.M))
+# Count DISTINCT numbered decisions, not heading lines. Two things break a raw
+# line count: follow-up entries carry a letter suffix (D017a confirms D017) and
+# at least one id is logged twice when a proposal is later adopted (D027). Both
+# are one decision, so the paper would otherwise overstate the count.
+NDEC = len({m.group(1) for m in re.finditer(
+    r"^## (D\d+)[a-z]?\b", open("docs/decisions.md").read(), re.M)})
 N_PLACEBO = sum(1 for _ in open("data/vignettes/placebo_prompts.csv")) - 1
 
 def short(c):
@@ -244,6 +249,13 @@ for _p in (OUT, OUT_ALSO):
         _t = "\n".join(o) + "\n"
         if _p is OUT_ALSO:                       # v2 carries the diagram in its body
             _t = re.sub(r"% <<<METHODFIG.*?% METHODFIG>>>\n", "", _t, flags=re.S)
+            # The silence-grade table is a numbered table in v1's body and part of
+            # the reference-standard section in v2's, so tab:silence exists only in
+            # v1 and sec:ref only in v2. Pointing both copies at one label prints a
+            # bare "Table ??" in whichever paper lacks it.
+            assert "\\ref{tab:silence}" in _t, "v1 label gone; re-check the v2 rewrite below"
+            _t = _t.replace(r"the grade from Table~\ref{tab:silence}",
+                            r"the silence grade defined in \S\ref{sec:ref}")
         io.open(_p, "w", encoding="utf8").write(_t)
         print("wrote", _p)
 print(f"wrote {OUT}: {len(o)} lines, {len(live)} vignettes, {len(reg)} models, "

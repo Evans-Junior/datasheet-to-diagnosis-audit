@@ -6944,3 +6944,62 @@ after a deck edit is the whole update procedure.
 
 The header's decision count moved from 124 to 143 in the same pass, which is the
 kind of hand-typed number this project has now been caught by four times.
+
+---
+
+## D142, v2 is checked for submission: the decision count is generated properly, and the review's own agreement goes into Limitations
+
+A submission check of `paper_overleaf_v2/` before handing it in. The page budget
+held and the references were clean, so what follows is what did not hold.
+
+**The decision count was 127 and the log held 141.** `appendix.tex` is
+generated, so this was not a hand-typed number in the usual sense; it was a
+generated number from a generator last run on 2026-11-21, before D135 to D141
+were written. Regenerating is the fix, and running
+`scripts/build_paper_appendix.py` is now part of finishing the paper rather than
+something done when the appendix content changes.
+
+**The generator was also counting wrong.** It counted lines matching `^## D`,
+which is 144, not 141. Two things break a raw line count: a follow-up entry
+carries a letter suffix and confirms rather than replaces its parent (D017a
+confirms D017, D028a confirms D028), and one id is logged twice because a
+proposal was later adopted (D027 PROPOSED, then D027 ADOPTED). All three are one
+decision each. The count is now the number of distinct `D\d+` ids, which was 141
+when this check was made and rises with this entry. The ids run contiguously from
+D001 with no gaps, so the figure can always be checked by reading the last
+heading in the file rather than trusting any number written down elsewhere. The
+site header, set to 143 in D141 from a count made the same loose way, is
+corrected to the generated count for the same reason.
+
+**Regenerating the appendix printed a bare "Table ??" in v2.** The silence-grade
+table is a numbered table in v1's body and part of the reference-standard section
+in v2's, so `tab:silence` exists only in v1 and `sec:ref` only in v2. The
+committed `appendix.tex` in v2 had been hand-edited to point at `sec:ref`,
+against the rule that the file is generated, and regenerating overwrote that fix.
+The v2 writer now rewrites the cross-reference itself, the same way it already
+strips the method figure, with an assertion that fails loudly if v1's label ever
+disappears. A hand fix to a generated file survives exactly until the next run,
+which is why it became a generator change and not another hand edit.
+
+**Limitations now carries the agreement between the two reviewers.** Three places
+in the paper rest tier 1 on the vignettes having been reviewed by the authors,
+and none of them said how well the two authors agreed. They agreed on 15 of the
+23 vignettes both graded, Cohen's kappa 0.264, and five of the live set carry one
+verdict only. A paper arguing that undocumented provenance is the problem cannot
+leave out its own reliability figure, and 0.264 is poor enough that omitting it
+would have been the more flattering choice. The sentence is deliberately short
+because the body is saturated: the first draft of it pushed the paper to an
+eleventh page, and two rounds of tightening brought it back to ten with
+References starting on sheet 12, verified by rebuilding.
+
+**The page check is reproducible.** Tectonic rebuilds the committed version to
+the same pagination it already had, 19 sheets with References on sheet 12, so
+"is it still ten pages" can be answered locally rather than by compiling on
+Overleaf and counting by eye.
+
+**Still open, and the author's call.** The repository URL is printed in the
+appendix beside the claim that every figure can be rebuilt from the tables, and
+the repository is private, so anyone who follows it gets a 404 and the
+reproducibility claim cannot be checked by a reader. Making it public is a
+separate decision, because `clinician_pack/` subdirectories and `papers/` are
+excluded for copyright and for carrying a named clinician's folder.
