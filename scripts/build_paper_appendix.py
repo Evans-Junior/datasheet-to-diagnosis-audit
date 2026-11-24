@@ -26,12 +26,12 @@ cfg = yaml.safe_load(open("configs/placebo_arms.yaml"))
 reg = pd.read_csv("results/tables/i4_placebo_regate.csv")
 pv = pd.read_csv("results/tables/i4_placebo_per_vignette.csv")
 PH = reg["prompt_hash"].iloc[0]
-# Count DISTINCT numbered decisions, not heading lines. Two things break a raw
-# line count: follow-up entries carry a letter suffix (D017a confirms D017) and
-# at least one id is logged twice when a proposal is later adopted (D027). Both
-# are one decision, so the paper would otherwise overstate the count.
-NDEC = len({m.group(1) for m in re.finditer(
-    r"^## (D\d+)[a-z]?\b", open("docs/decisions.md").read(), re.M)})
+# The paper no longer prints a decision count (D143). It was a number that had to
+# be right for no benefit to the reader, and it had been wrong twice: once from
+# a stale regeneration, once from counting heading lines, which overcounts because
+# follow-up entries carry a letter suffix (D017a confirms D017) and one id is
+# logged twice where a proposal was later adopted (D027). The log itself is the
+# record; the appendix now points at it instead of summarising it.
 N_PLACEBO = sum(1 for _ in open("data/vignettes/placebo_prompts.csv")) - 1
 
 def short(c):
@@ -105,9 +105,9 @@ every table stamps the prompt set it was built from. The scored prompt set for
 all results reported here is \texttt{{{PH}}}; a table built from any other set
 fails the pipeline's staleness gate before it can be written. The study comprises
 624 analysis-ready prompts over 25 live vignettes, scored across ten models for
-17,280 option rows, plus {N_PLACEBO} placebo prompts. {NDEC} numbered design
-decisions are recorded with their reasons in \texttt{{docs/decisions.md}},
-including the ones that reversed earlier conclusions. All scoring ran in 32-bit
+17,280 option rows, plus {N_PLACEBO} placebo prompts. Every design decision is
+recorded with its reasons in \texttt{{docs/decisions.md}}, including the ones that
+reversed earlier conclusions. All scoring ran in 32-bit
 precision on a single Apple M4 Pro with 48\,GB of unified memory.
 
 \smallskip

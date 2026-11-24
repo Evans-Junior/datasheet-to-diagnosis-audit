@@ -7003,3 +7003,47 @@ the repository is private, so anyone who follows it gets a 404 and the
 reproducibility claim cannot be checked by a reader. Making it public is a
 separate decision, because `clinician_pack/` subdirectories and `papers/` are
 excluded for copyright and for carrying a named clinician's folder.
+
+---
+
+## D143, the decision count comes out of the paper and the site, and the vignette review is reported as consensus
+
+Two changes at the author's direction, and one thing the files do not yet support.
+
+**No artefact prints a decision count any more.** The appendix now says that
+every design decision is recorded with its reasons in `docs/decisions.md`, and
+points there instead of summarising it; the site header's count is gone and the
+decision section no longer opens with one. The count was a number that had to be
+kept right for no benefit to any reader, and it had been wrong twice in three
+days: once from a generator last run before the newest entries existed, once
+from counting heading lines, which overcounts. `NDEC` is gone from
+`scripts/build_paper_appendix.py` rather than merely unused, so there is nothing
+left to go stale. The site's decision section also claimed D107 to D121 were the
+newest, dated 11-18 to 11-20, which had been untrue for four days.
+
+**The vignette review is now reported as consensus, not as a disagreement.** The
+authors state that they have since agreed on all 25 live vignettes. Limitations
+reports both halves, because only reporting the second would be the flattering
+half: they graded independently, agreed on 15 of the 23 graded by both (Cohen's
+kappa 0.264), and settled the rest by discussion, so all 25 carry a verdict both
+hold. Independent first-pass agreement is the figure that says something about
+the instrument; consensus after discussion is the figure that says what the
+reference standard now is. A paper that reported only the consensus would be
+claiming a reliability it never measured.
+
+**The workbook does not record this yet, and the repository is the thing the
+paper points at.** `Vignette_Review_Round2_for_Aymen.xlsx` is unchanged since
+2026-11-21 and its answer columns are empty, and
+`scripts/compare_vignette_reviews.py` still reports 2 opposed, 6 edit disputes
+and 5 vignettes with a single verdict. The agreement happened away from the
+files. Filling the round-two workbook is the authors' own work and nothing here
+will fill it, but until it is filled the paper asserts a consensus that the
+repository does not evidence, which is the same gap between claim and record
+that this project is about. It is logged here so that the gap is at least
+documented in the place a reader is sent to.
+
+**The repository is still private.** D142 left making it public with the author,
+who reports having done it; the GitHub API still returns `isPrivate: true` and an
+anonymous fetch of the URL printed in the appendix returns 404. The appendix
+claims every figure can be rebuilt and checked against the data it reports, so
+that claim remains uncheckable by a reader until the setting actually changes.
