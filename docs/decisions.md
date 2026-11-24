@@ -7047,3 +7047,52 @@ who reports having done it; the GitHub API still returns `isPrivate: true` and a
 anonymous fetch of the URL printed in the appendix returns 404. The appendix
 claims every figure can be rebuilt and checked against the data it reports, so
 that claim remains uncheckable by a reader until the setting actually changes.
+
+---
+
+## D144, the verbal round two is recorded as testimony, and the comparison stops reporting it as open
+
+Round two of the vignette review happened in conversation, not in the workbook.
+The 13 live vignettes that were open after round one are now recorded as
+resolved, so every one of the 25 live vignettes carries a verdict both authors
+hold, which is what the paper claims.
+
+**It is recorded as a dated record, not as cells in Aymen's columns.**
+`data/vignettes/review_consensus.csv` holds one row per resolution with the
+resolution, the basis (`verbal`), the date, who recorded it, each author's
+round-one verdict, and a note. The alternative was to type the outcome into the
+round-two workbook's `DO YOU NOW AGREE WITH ME?` and `YOUR ANSWER` columns, and
+that was refused: a verbal agreement entered under a column heading addressed to
+one reviewer reads afterwards as independent written coding, and nothing in the
+file would distinguish the two. The csv cannot be mistaken for coding, it is
+diffable, and it says on its face how the agreement was reached.
+
+**Kappa stays on round one, and is now explicitly protected.** The overlay never
+touches either reviewer's own cells, so the 0.264 on 23 vignettes is computed
+exactly as before. The Summary sheet now states that the resolutions do not
+enter that figure. Agreement reached by talking is not inter-rater reliability;
+the first-pass figure is the one that says anything about the instrument, which
+is why the paper reports both.
+
+**G4-11 is the one that reverses a written REJECT.** Aymen rejected it in round
+one and withdrew that in conversation. It is the single most consequential row
+in the file, because every other resolution closed a gap or an edit dispute
+rather than overturning a rejection, and the csv note says so in those words. A
+reader who checks one row will check this one.
+
+**Three vignettes are now reported as superseded rather than open.** G2-01,
+G2-03 and G4-03 were reviewed and then replaced by their `b` rows before the
+study ran, so the comparison was listing them as an opposed verdict, a missing
+verdict and an edit dispute that nobody could ever close. The script now reads
+`analysis_ready` from `data/vignettes/vignettes.csv`, which is the authority on
+what is in the study, and marks anything outside it superseded with the
+replacement named. It also refuses a consensus row for a vignette that is not
+live, or that neither review covers, so the file cannot drift from the study.
+
+**One real bug surfaced.** The `Cleared by both` sheet assumed both reviewers
+had a row for anything settled, which was true until a vignette could be settled
+with a written verdict from only one side. It now falls back to whichever side
+has one and says `(no written verdict)` when neither does.
+
+The comparison now reports 12 cleared in writing, 13 resolved after round one, 3
+superseded, and nothing open.

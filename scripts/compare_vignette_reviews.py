@@ -7,9 +7,19 @@ reads both and writes one workbook that answers the two questions worth asking:
 which vignettes both of us cleared, and which ones still need a decision.
 
 IT DECIDES NOTHING. Every judgment in the output is one of the two reviewers'
-own cells, copied. The adjudication columns are left empty on purpose: the
-point of two coders is that the resolution is theirs, and a script that filled
-it in would be inventing agreement that nobody reached.
+own cells, copied, or a resolution they recorded themselves in
+data/vignettes/review_consensus.csv. The script forms no opinion of its own:
+the point of two coders is that the resolution is theirs, and a script that
+filled it in would be inventing agreement that nobody reached.
+
+THE CONSENSUS FILE IS TESTIMONY, NOT CODING. Round two was settled in
+conversation rather than in the workbook, so the resolutions live in a dated
+csv that names who recorded them and what each reviewer had written in round
+one. They are deliberately NOT written into the reviewers' own columns, because
+a verbal agreement typed into a column headed "YOUR ANSWER" would read as
+independent written coding and could not be told apart from it afterwards.
+Kappa stays on round one alone for the same reason: it measures how far apart
+two people were before they talked, and talking cannot improve it.
 
 WHAT COUNTS AS NEEDING ATTENTION. Four things, in the order they are worth
 your time:
@@ -50,6 +60,9 @@ AYMEN = ROOT / "vignettes_aymen.xlsx"
 EVANS_EXTRA = [ROOT / "Vignette_Review_New_Rows_reviewed_evans.xlsx"]
 AYMEN_EXTRA: list[Path] = []
 OUT = ROOT / "Vignette_Review_Comparison.xlsx"
+# Resolutions the reviewers reached in conversation and recorded themselves.
+# Absent or empty is a valid state and means round two has not happened.
+CONSENSUS = ROOT / "data/vignettes/review_consensus.csv"
 
 # Styling follows build_review_workbook.py so the two feel like one artefact.
 HDR = PatternFill("solid", fgColor="0F3A44")
@@ -185,13 +198,72 @@ def classify(e: dict | None, a: dict | None) -> tuple[str, str]:
     return "AGREED, EDIT OWED", "both approve with edit, so the edit is still owed"
 
 
+def load_consensus(path: Path) -> dict[str, dict]:
+    """The reviewers' own round-two resolutions, keyed by vignette.
+
+    Returns {} when the file is missing, which is how this read before round
+    two happened and is still a valid state.
+    """
+    if not path.exists():
+        return {}
+    import csv as _csv
+    with path.open(newline="", encoding="utf8") as f:
+        got = {r["vignette_id"].strip(): r for r in _csv.DictReader(f)
+               if r.get("vignette_id", "").strip()}
+    for vid, r in got.items():
+        # A resolution with no basis or no date is not a record of anything.
+        for need in ("resolution", "basis", "resolved_on", "recorded_by"):
+            if not (r.get(need) or "").strip():
+                raise SystemExit(f"{path.name}: {vid} has no {need}")
+    return got
+
+
+RESOLVED = "RESOLVED AFTER ROUND ONE"
+SUPERSEDED = "SUPERSEDED, NOT IN THE STUDY"
+
+VIGNETTES = ROOT / "data/vignettes/vignettes.csv"
+
+
+def load_live(path: Path) -> set[str]:
+    """The vignettes actually in the study, from analysis_ready.
+
+    vignettes.csv is the authority on what is being analysed, not either review
+    workbook. Three vignettes went out for review and were then replaced by a
+    'b' row, so asking for a verdict on them would be asking about text that no
+    longer exists.
+    """
+    import csv as _csv
+    with path.open(newline="", encoding="utf8") as f:
+        return {r["vignette_id"].strip() for r in _csv.DictReader(f)
+                if (r.get("analysis_ready") or "").strip().lower()
+                in ("true", "1", "yes")}
+
+
+def apply_consensus(status: str, why: str, con: dict | None) -> tuple[str, str]:
+    """Overlay one recorded resolution on a round-one status.
+
+    The round-one position is kept in the text rather than overwritten, so the
+    sheet still shows what each reviewer wrote before they talked.
+    """
+    if not con:
+        return status, why
+    basis = con["basis"].strip()
+    return (RESOLVED,
+            f"{con['resolution'].strip()}, settled {basis}ly on "
+            f"{con['resolved_on'].strip()}, recorded by {con['recorded_by'].strip()}. "
+            f"Round one was {status}: {why} {con.get('note', '').strip()}".strip())
+
+
 # Most urgent first. The sheet is read top down and so is this.
 ORDER = ["OPPOSED", "NOT REVIEWED BY BOTH", "EDIT DISPUTED", "AGREED, ITEMS DIFFER",
-         "AGREED, REJECTED", "AGREED, EDIT OWED", "AGREED, CLEARED"]
-SETTLED = {"AGREED, CLEARED", "AGREED, EDIT OWED", "AGREED, REJECTED"}
+         "AGREED, REJECTED", "AGREED, EDIT OWED", RESOLVED, "AGREED, CLEARED",
+         SUPERSEDED]
+SETTLED = {"AGREED, CLEARED", "AGREED, EDIT OWED", "AGREED, REJECTED", RESOLVED,
+           SUPERSEDED}
 FILLS = {"OPPOSED": BAD, "NOT REVIEWED BY BOTH": BAD, "EDIT DISPUTED": EDIT,
          "AGREED, ITEMS DIFFER": EDIT, "AGREED, REJECTED": OK,
-         "AGREED, EDIT OWED": EDIT, "AGREED, CLEARED": OK}
+         "AGREED, EDIT OWED": EDIT, "AGREED, CLEARED": OK, RESOLVED: OK,
+         SUPERSEDED: ASKF}
 
 
 def kappa(pairs: list[tuple[str, str]]) -> float | None:
@@ -244,13 +316,45 @@ def main() -> int:
     print(f"Aymen : {args.aymen.name}")
     A = load_side(args.aymen, AYMEN_EXTRA)
 
+    CON = load_consensus(CONSENSUS)
+    print(f"Round two: {len(CON)} recorded resolution(s)"
+          + (f" from {CONSENSUS.name}" if CON else " (none yet)"))
+    LIVE = load_live(VIGNETTES)
+    print(f"In the study: {len(LIVE)} live vignette(s) per analysis_ready")
+
     ids = sorted(set(E) | set(A))
     rows = []
     for vid in ids:
         e, a = E.get(vid), A.get(vid)
         status, why = classify(e, a)
+        # Round one is kept for kappa; the overlays only change what is open.
+        r1 = status
+        if vid not in LIVE:
+            repl = f"{vid}b" if f"{vid}b" in LIVE else None
+            status, why = (SUPERSEDED,
+                           f"Replaced by {repl} after round one and not in the study, "
+                           if repl else
+                           "Not in the study per analysis_ready, ")
+            why += (f"so no verdict is owed on it. Round one was {r1}.")
+        else:
+            status, why = apply_consensus(status, why, CON.get(vid))
         rows.append({"id": vid, "e": e, "a": a, "status": status, "why": why,
-                     "condition": (e or a).get("condition", "")})
+                     "round_one": r1, "condition": (e or a).get("condition", "")})
+    stray = sorted(set(CON) - set(ids))
+    if stray:
+        raise SystemExit(f"{CONSENSUS.name} resolves vignettes that neither "
+                         f"review covers: {', '.join(stray)}")
+    dead = sorted(set(CON) - LIVE)
+    if dead:
+        raise SystemExit(f"{CONSENSUS.name} resolves vignettes that are not in "
+                         f"the study: {', '.join(dead)}")
+    # The point of the whole file: every live vignette has a verdict both
+    # reviewers hold, in writing or by a recorded resolution.
+    open_live = sorted(d["id"] for d in rows
+                       if d["id"] in LIVE and d["status"] not in SETTLED)
+    if open_live:
+        print(f"  {len(open_live)} live vignette(s) still open: "
+              f"{', '.join(open_live)}")
     rows.sort(key=lambda d: (ORDER.index(d["status"]), d["id"]))
 
     wb = Workbook()
@@ -268,6 +372,9 @@ def main() -> int:
     both = [d for d in rows if d["e"] and d["a"] and d["e"]["verdict"]
             and d["a"]["verdict"]]
     agreed = [d for d in both if d["e"]["verdict"] == d["a"]["verdict"]]
+    # Round one only, and deliberately so: these are the two reviewers' own
+    # independent cells, which the consensus overlay never touches. Agreement
+    # reached by talking is not inter-rater reliability.
     k = kappa([(d["e"]["verdict"], d["a"]["verdict"]) for d in both])
     for label, val, note in [
         ("Vignettes in either review", len(rows), "the union of both workbooks"),
@@ -277,6 +384,11 @@ def main() -> int:
          f"{(100 * len(agreed) / len(both)):.0f}% raw agreement" if both else ""),
         ("Cohen's kappa on the verdict", round(k, 3) if k is not None else "n/a",
          "chance-corrected; raw agreement flatters a sheet that is mostly APPROVE"),
+        ("Settled later by the reviewers", len(CON),
+         "recorded in review_consensus.csv; these do NOT enter the figures above, "
+         "which measure round one alone"),
+        ("Still open", sum(1 for d in rows if d["status"] not in SETTLED),
+         "nothing here has a resolution from both reviewers yet"),
     ]:
         ws.cell(r, 1, label).font = Font(bold=True, size=10)
         ws.cell(r, 2, val)
@@ -293,6 +405,10 @@ def main() -> int:
         "AGREED, REJECTED": "both reject. Out, unless it is replaced.",
         "AGREED, EDIT OWED": "both approve with edit. Nothing to settle, but the edit is still owed.",
         "AGREED, CLEARED": "both approve and every check matches. Done.",
+        RESOLVED: "open after round one, then settled by the reviewers themselves. "
+                  "The round-one position is kept in the reason column.",
+        SUPERSEDED: "reviewed, then replaced before the study was run. No verdict "
+                    "is owed on text that is no longer in it.",
     }
     for st in ORDER:
         n = sum(1 for d in rows if d["status"] == st)
@@ -309,8 +425,10 @@ def main() -> int:
     for line in [
         "This file is generated by scripts/compare_vignette_reviews.py. Do not edit it by hand:",
         "rerun the script when either review changes. Fill the adjudication columns on",
-        "'Needs attention' together, then record what you decided in docs/decisions.md.",
-        "Nothing here was decided by the script. Every judgment is one of your own cells.",
+        "'Needs attention' together, then record each resolution as a row in",
+        "data/vignettes/review_consensus.csv so the decision survives the conversation.",
+        "Nothing here was decided by the script. Every judgment is one of your own cells,",
+        "or a resolution you recorded yourselves. Kappa above is round one alone.",
     ]:
         ws.cell(r, 1, line).font = Font(size=9, color="5A7883")
         r += 1
@@ -346,8 +464,9 @@ def main() -> int:
         ws.row_dimensions[r].height = 58
         r += 1
     if r == 2:
-        ws.cell(2, 1, "Nothing outstanding: every vignette has the same verdict "
-                      "from both of you.")
+        ws.cell(2, 1, "Nothing outstanding: every live vignette is settled, either "
+                      "by the same verdict from both of you or by a resolution you "
+                      "recorded. See 'Cleared by both' for which is which.")
 
     # --------------------------------------------------------- 3. cleared
     ws = wb.create_sheet("Cleared by both")
@@ -357,9 +476,12 @@ def main() -> int:
     for d in rows:
         if d["status"] not in SETTLED:
             continue
-        e, a = d["e"], d["a"]
-        put(ws, r, [d["id"], d["condition"], e["verdict"], d["why"],
-                    e.get("comment", ""), a.get("comment", "")],
+        # A row resolved after round one can have no row at all on one side,
+        # which was impossible here before the consensus overlay existed.
+        e, a = d["e"] or {}, d["a"] or {}
+        put(ws, r, [d["id"], d["condition"],
+                    e.get("verdict") or a.get("verdict") or "(no written verdict)",
+                    d["why"], e.get("comment", ""), a.get("comment", "")],
             fill=FILLS[d["status"]], wrap_from=2)
         ws.row_dimensions[r].height = 42
         r += 1
