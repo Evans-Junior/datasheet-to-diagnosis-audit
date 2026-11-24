@@ -87,10 +87,42 @@ rejected:
 scope:
   arm: blinded              # no gender term present at all
   spcu: [female]            # one level; the placebo is about surface form
-  groups: [1, 3, 4]         # the vignettes whose results are being validated
+  groups: [1, 2, 3, 4]      # the vignettes whose results are being reported
   # Group 4 inclusion is the key comparison: on those SAME items we already
   # have a gender-flip floor, so placebo-vs-gender is measured on identical
   # stimuli with nothing else varying.
-  vignettes_exclude: [G4-04, G4-05, G4-06, G4-07, G4-08, G4-09, G4-10, G4-11]
-  # The eight new Group 4 items are excluded only until they are scored in the
-  # main run, so the placebo and gender floors stay measured on the same set.
+  vignettes_exclude: []
+  #
+  # SCOPE WIDENED 2026-11-14. Two exclusions were removed, both stale:
+  #
+  # 1. GROUP 2 WAS MISSING. The group list read [1, 3, 4] because Group 2 was
+  #    thought of as the positive control rather than as "a result being
+  #    validated". That stopped being true. The two findings this project leads
+  #    with -- the gate verdict and identity-SPCU merging -- are BOTH measured
+  #    on Group 2, so Group 2 is now the most load-bearing set in the study and
+  #    the one most in need of a placebo floor.
+  #
+  #    Without it the floor for those findings had to be proxied from the
+  #    two-option Group 3 and Group 4 items. That proxy was defensible, and it
+  #    is not the same thing as a measurement. With Group 2 in, the floor for
+  #    the gate and for merging is measured on the very vignettes those effects
+  #    come from.
+  #
+  #    Admissibility re-checked against the three conditions at the top of this
+  #    file. Eye colour, shirt colour and appointment slot are clinically inert
+  #    for a pregnancy test before CT, for a prostate differential and for
+  #    cervical screening; none is named in the governing guideline for any of
+  #    them; and none is socially salient as a basis of health disparity. The
+  #    placebo arm is gender-blinded with SPCU held at female, so the sex
+  #    parameter that drives the Group 2 answer is constant across the two
+  #    levels being contrasted.
+  #
+  # 2. THE EIGHT GROUP 4 ITEMS EXPIRED THEIR OWN EXCLUSION. They were held out
+  #    "only until they are scored in the main run". All eight are scored and
+  #    analysis-ready, so the condition is met. Leaving them out kept the
+  #    comparison this file calls "the key comparison" at 3 of 11 items.
+  #
+  # COST OF WIDENING, STATED PLAINLY. The floor is a MAX over vignettes, so
+  # adding vignettes can only raise it. This change makes the test stricter and
+  # may cost a borderline effect. That is the correct direction for a floor and
+  # it was accepted deliberately, not as a side effect.

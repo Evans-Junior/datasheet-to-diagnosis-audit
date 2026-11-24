@@ -634,6 +634,25 @@ def n_params(model_id: str) -> float:
     return v / 1000.0 if m.group(2) == "m" else v
 
 
+def model_family(model_id: str) -> str:
+    """Training family, from the model id.
+
+    Used to report the size trend WITHIN one family as well as across all ten.
+    Across the full set, size is confounded with family and with corpus: the
+    three largest models are OLMo and Qwen, trained on different data by
+    different recipes, so an all-model correlation answers "do bigger models
+    differ" and not "does scale do this".
+    """
+    m = model_id.lower()
+    if "pythia" in m:
+        return "pythia"
+    if "olmo" in m:
+        return "olmo"
+    if "qwen" in m:
+        return "qwen"
+    return model_id.split("/")[0].lower() or "unknown"
+
+
 def identity_spcu_merging(deltas: pd.DataFrame,
                              floors: dict[tuple[str, str], float]) -> pd.DataFrame:
     """Does the model read gender IDENTITY as the sex parameter? (exploratory)
@@ -879,6 +898,7 @@ def size_trend(deltas: pd.DataFrame,
         recovered = (t2_pmi or {}).get((mid, rev))
         rows.append({"model_id": mid, "revision": rev,
                      "n_params_b": n_params(mid),
+                     "family": model_family(mid),
                      "mean_abs_delta": mean_abs,
                      "nuisance_floor": floor,
                      "floor_relative_gap": mean_abs - floor,
@@ -899,10 +919,43 @@ def size_trend(deltas: pd.DataFrame,
         # things. Both components are reported beside it, because the composite
         # alone reads as "bias decreases with scale" when the truth may be
         # "the instrument gets noisier with scale".
-        for name, col in (("gap", "mean_abs_delta"), ("floor", "nuisance_floor")):
+        #
+        # NAMING (D103). The raw component used to be written as
+        # `spearman_rho_gap`. Every table in this project calls
+        # `floor_relative_gap` "the gap", so that key read as if it held the
+        # composite, and it was transcribed onto a slide and onto the defence
+        # site as "the floor-subtracted gap" when it is the raw one. The suffix
+        # is now `_raw_gap`, which cannot be misread. Nothing about the
+        # arithmetic changed; only the label did.
+        for name, col in (("raw_gap", "mean_abs_delta"),
+                          ("floor", "nuisance_floor")):
             rr = sps.spearmanr(out["n_params_b"], out[col])
             out.attrs[f"spearman_rho_{name}"] = float(rr.statistic)
             out.attrs[f"spearman_p_{name}"] = float(rr.pvalue)
+
+        # WITHIN-FAMILY TREND (D103). Pythia is the only controlled size series
+        # in the set: one corpus, one recipe, seven sizes from 0.07B to 6.9B.
+        # It is the honest answer to RQ3's question, because it is the only
+        # comparison where size is the thing that varies. It is reported BESIDE
+        # the all-model figure and never instead of it, since dropping the
+        # three largest models would also drop every model that passes the
+        # positive control. Four points is the floor for a rank correlation
+        # that means anything, so smaller families are skipped rather than
+        # reported with two.
+        fam = {}
+        for fname, gf in out.groupby("family"):
+            if len(gf) < 4 or gf["n_params_b"].nunique() < 4:
+                continue
+            e = {"n_models": int(len(gf))}
+            for name, col in (("composite", "floor_relative_gap"),
+                              ("raw_gap", "mean_abs_delta"),
+                              ("floor", "nuisance_floor")):
+                rr = sps.spearmanr(gf["n_params_b"], gf[col])
+                e[f"spearman_rho_{name}"] = float(rr.statistic)
+                e[f"spearman_p_{name}"] = float(rr.pvalue)
+            fam[str(fname)] = e
+        if fam:
+            out.attrs["by_family"] = fam
     return out
 
 
@@ -1217,13 +1270,35 @@ def main() -> None:
         if "spearman_rho" in trend.attrs:
             import json as _json
             a = trend.attrs
-            keys = ("spearman_rho", "spearman_p", "spearman_rho_gap",
-                    "spearman_p_gap", "spearman_rho_floor", "spearman_p_floor")
+            keys = ("spearman_rho", "spearman_p", "spearman_rho_raw_gap",
+                    "spearman_p_raw_gap", "spearman_rho_floor",
+                    "spearman_p_floor")
             side = {k: float(a[k]) for k in keys if k in a}
             side["n_models"] = int(len(trend))
+            # Which COMPONENT carries the composite: the raw gap, or the floor.
+            # Comparing the two components is the right test; comparing the
+            # floor against the composite would not be, since the composite
+            # contains the floor.
             side["carried_by_floor"] = bool(
                 abs(a.get("spearman_rho_floor", 0.0))
-                > abs(a.get("spearman_rho_gap", 0.0)))
+                > abs(a.get("spearman_rho_raw_gap", 0.0)))
+            if "by_family" in a:
+                side["by_family"] = a["by_family"]
+            # D103. These numbers get transcribed onto slides and onto the
+            # defence site, and one of them already was, under the wrong name.
+            # The file now says what each key holds.
+            side["_key_meanings"] = {
+                "spearman_rho":
+                    "COMPOSITE: (mean |delta| - that model's floor) vs size",
+                "spearman_rho_raw_gap":
+                    "COMPONENT: mean |delta| vs size, floor NOT subtracted",
+                "spearman_rho_floor":
+                    "COMPONENT: the nuisance floor itself vs size",
+                "by_family":
+                    "the same three within ONE family. Pythia is the only "
+                    "controlled size series (one corpus, one recipe, 7 sizes); "
+                    "across all ten, size is confounded with family and corpus",
+            }
             side["verification_status"] = verification_status
             side["prompt_hash"] = prompt_hash_now()
             (TABLES / "rq3_size_trend_stats.json").write_text(
@@ -1250,12 +1325,25 @@ def main() -> None:
             print(f"Spearman rho (floor-relative gap vs size) = "
                   f"{a['spearman_rho']:+.3f}, p = {a['spearman_p']:.4f} "
                   f"(exploratory)")
-            print(f"  decomposed:  gap vs size   rho = "
-                  f"{a['spearman_rho_gap']:+.3f}, p = {a['spearman_p_gap']:.4f}")
+            print(f"  decomposed:  RAW gap vs size rho = "
+                  f"{a['spearman_rho_raw_gap']:+.3f}, p = "
+                  f"{a['spearman_p_raw_gap']:.4f}  (floor NOT subtracted)")
             print(f"               floor vs size rho = "
                   f"{a['spearman_rho_floor']:+.3f}, p = "
                   f"{a['spearman_p_floor']:.4f}")
-            if abs(a["spearman_rho_floor"]) > abs(a["spearman_rho_gap"]):
+            for fname, e in sorted(a.get("by_family", {}).items()):
+                print(f"  within {fname} only ({e['n_models']} models, the "
+                      f"controlled size series):")
+                print(f"               composite rho = "
+                      f"{e['spearman_rho_composite']:+.3f}, p = "
+                      f"{e['spearman_p_composite']:.4f}")
+                print(f"               RAW gap   rho = "
+                      f"{e['spearman_rho_raw_gap']:+.3f}, p = "
+                      f"{e['spearman_p_raw_gap']:.4f}")
+                print(f"               floor     rho = "
+                      f"{e['spearman_rho_floor']:+.3f}, p = "
+                      f"{e['spearman_p_floor']:.4f}")
+            if abs(a["spearman_rho_floor"]) > abs(a["spearman_rho_raw_gap"]):
                 print("  The trend in the composite is carried by the FLOOR, "
                       "not by the gap. Do not report it as bias changing with "
                       "scale; the instrument is changing with scale.")

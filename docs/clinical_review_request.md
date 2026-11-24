@@ -4,7 +4,7 @@
 training-data pipelines into LLM health advice
 **Authors:** Evans Kumi, Aymen Boustani, MSc Intelligent Systems, McGill
 **Course:** Ethics in Artificial Intelligence
-**Estimated time:** 45–60 minutes, once
+**Estimated time:** 60–75 minutes, once (25 vignettes, 28 rows)
 
 ---
 
@@ -37,7 +37,7 @@ condition, our "bias" finding for that condition disappears.
 
 ## What we are asking you to do
 
-Fill in three columns of a table of roughly 15–20 conditions. We supply the
+Fill in three columns of a table of 25 conditions, 28 rows. We supply the
 condition, a one-line scenario, our proposed reference answer, and the guideline we
 took it from. You supply:
 

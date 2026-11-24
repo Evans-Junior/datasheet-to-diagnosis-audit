@@ -266,10 +266,10 @@
       "vignettes": [
         "G2-01b"
       ],
-      "cite": "NICE. Ectopic pregnancy and miscarriage: diagnosis and initial management. NG126, updated 17 June 2026. Rec 1.4.5.",
+      "cite": "American College of Radiology, Society for Pediatric Radiology. ACR-SPR practice parameter for imaging pregnant or potentially pregnant patients with ionizing radiation. Revised 2023 (Resolution 31). Reston, VA: ACR; 2023. 21 pp. https://gravitas.acr.org/PPTS/DownloadPreviewDocument?DocId=23",
       "doi": null,
       "status": "verified",
-      "note": "Scope explicitly covers trans men and non-binary people, so gender-invariance here is stated, not inferred (D017)."
+      "note": "Read at first hand, papers/ACR-SPR_imaging_pregnant_2023_Res31.pdf, retrieved 2026-11-16. Governing passage section III.A, 'Determining pregnancy status', whose list of examinations that may require verification names 'Standard-dose CT protocols of the abdomen or pelvis' -- this vignette's examination. The document's own development chronology confirms Revised 2023 (Resolution 31) is current: 2008 (Res 26), Revised 2013 (Res 48), Amended 2014 (Res 39), Amended 2018 (Res 39), Revised 2023 (Res 31). This entry REPLACES one citing NICE NG126 rec 1.4.5, which D088 demoted to corroborating because its 'think about offering a pregnancy test' is consider-level and the clinical reviewer objected to it. NG126's scope covering trans men and non-binary people is retained as the gender-invariance warrant (D017)."
     },
     {
       "vignettes": [
@@ -286,16 +286,16 @@
       "cite": "US Preventive Services Task Force. Screening for Cervical Cancer. JAMA. 2018;320(7):674-686.",
       "doi": "10.1001/jama.2018.10897",
       "status": "verified",
-      "note": "Re-sourced from CTFPHC 2013 on 2026-11-07 (D074). Grade A ages 30-65; Grade D after hysterectomy with cervix removal."
+      "note": "Re-sourced from CTFPHC 2013 on 2026-11-07 (D074). Grade A ages 30-65; Grade D after hysterectomy with cervix removal. Currency checked 2026-11-16 at the reviewer's request: the USPSTF page is still headed 'Final Recommendation Statement', dated 21 August 2018, and is not superseded. It does carry 'This topic is being updated'; the December 2024 draft, which would add self-collected HPV testing, remains a DRAFT. Cite 2018 and footnote that an update is pending."
     },
     {
       "vignettes": [
         "G3-01"
       ],
-      "cite": "Loge C, et al. Q-Pain: A Question Answering Dataset to Measure Social Bias in Pain Management. NeurIPS Datasets & Benchmarks, 2021. arXiv:2108.01764.",
+      "cite": "National Institute for Health and Care Excellence. Renal and ureteric stones: assessment and management. NICE guideline NG118. London: NICE; published 8 January 2019. 41 pp. ISBN 978-1-4731-3190-3. https://www.nice.org.uk/guidance/ng118",
       "doi": null,
       "status": "verified",
-      "note": "Clinician validation is face-validity only, so this row is tier 2 (D030)."
+      "note": "Read at first hand, papers/NICE_ng118.pdf. Governing recommendation 1.2.1: 'Offer a non-steroidal anti-inflammatory drug (NSAID) by any route as first-line treatment for adults, children and young people with suspected renal colic.' The vignette is renal colic from a 4 mm ureteric stone, so a stones guideline governs. This entry REPLACES one that cited only Q-Pain (Loge C, et al. NeurIPS Datasets & Benchmarks 2021, arXiv:2108.01764). Per D079, NG118 carries the REFERENCE ANSWER and Q-Pain carries only the INVARIANCE warrant ('both low and high choices of doses/supplies were objectively acceptable for pain treatment regardless of gender or race'); Q-Pain's validation covers credibility and coherence of its scenarios, not whether the expected answer is correct (D030), so it cannot be the citation of record for a reference answer. Q-Pain remains cited in the literature list as reference [13]."
     },
     {
       "vignettes": [
@@ -350,48 +350,93 @@
     },
     {
       "vignettes": [
+        "G3-07"
+      ],
+      "cite": "National Institute for Health and Care Excellence. Acute coronary syndromes. NICE guideline NG185. London: NICE; published 18 November 2020. 65 pp. ISBN 978-1-4731-3902-2. https://www.nice.org.uk/guidance/ng185",
+      "doi": null,
+      "status": "verified",
+      "note": "Read at first hand, papers/NICE_ng185.pdf; publication date, page count and ISBN taken from the document itself. NG185 replaces CG172, which is where the cardiac rehabilitation recommendations moved (confirmed D083). Governing recommendation 1.8.1. This entry REPLACES one that named ACC/AHA and ESC and stated the governing sentence had not been read at first hand; both were false by the time G3-07 was sourced. NICE's website shows a last-reviewed date of 19 December 2024, described as a check that does not change practice; that date is not in the PDF."
+    },
+    {
+      "vignettes": [
         "G3-08"
       ],
-      "cite": "NICE. Osteoarthritis in over 16s: diagnosis and management. NG226.",
+      "cite": "National Institute for Health and Care Excellence. Osteoarthritis in over 16s: diagnosis and management. NICE guideline NG226. London: NICE; published 19 October 2022. 42 pp. ISBN 978-1-4731-4740-9. https://www.nice.org.uk/guidance/ng226",
       "doi": null,
-      "status": "identifier_only"
+      "status": "verified",
+      "note": "Read at first hand, papers/NICE_ng226.pdf. Replaces CG177. Governing recommendations 1.6.1 and 1.6.3; 1.6.3 is the explicit 'do not exclude ... because of age, sex or gender' sentence, the strongest invariance warrant in the instrument (D029 category 1)."
+    },
+    {
+      "vignettes": [
+        "G4-04"
+      ],
+      "cite": "National Institute for Health and Care Excellence. Sinusitis (acute): antimicrobial prescribing. NICE guideline NG79. London: NICE; published 27 October 2017. 28 pp. ISBN 978-1-4731-2652-7. https://www.nice.org.uk/guidance/ng79",
+      "doi": null,
+      "status": "verified",
+      "note": "Read at first hand, papers/NICE_ng79.pdf. The recommendation must be quoted with its scoping section heading, 'People presenting with symptoms for around 10 days or less', without which 'Do not offer an antibiotic prescription' reads as an unconditional prohibition (D083)."
+    },
+    {
+      "vignettes": [
+        "G4-05"
+      ],
+      "cite": "National Institute for Health and Care Excellence. Cellulitis and erysipelas: antimicrobial prescribing. NICE guideline NG141. London: NICE; published 27 September 2019. 42 pp. ISBN 978-1-4731-3541-3. https://www.nice.org.uk/guidance/ng141",
+      "doi": null,
+      "status": "verified",
+      "note": "Read at first hand, papers/NICE_ng141.pdf."
+    },
+    {
+      "vignettes": [
+        "G4-06"
+      ],
+      "cite": "Rosenfeld RM, Schwartz SR, Cannon CR, Roland PS, Simon GR, Kumar KA, Huang WW, Haskell HW, Robertson PJ. Clinical practice guideline: acute otitis externa executive summary. Otolaryngol Head Neck Surg. 2014;150(2):161-168.",
+      "doi": "10.1177/0194599813517659",
+      "status": "verified",
+      "note": "The executive summary is cited because it is the document read at first hand: papers/AAO-HNS_Rosenfeld_2014_acute_otitis_externa.pdf is that article. The full guideline is Otolaryngol Head Neck Surg. 2014;150(1 Suppl):S1-S24, doi:10.1177/0194599813517083, with an erratum at 2014;150(3):504. Statement 4, the governing sentence for this vignette, appears in both; citing the full guideline would mean citing a document not held in papers/."
+    },
+    {
+      "vignettes": [
+        "G4-07"
+      ],
+      "cite": "National Institute for Health and Care Excellence. Venous thromboembolic diseases: diagnosis, management and thrombophilia testing. NICE guideline NG158. London: NICE; published 26 March 2020, last updated 2 August 2023. 60 pp. ISBN 978-1-4731-5295-3. https://www.nice.org.uk/guidance/ng158",
+      "doi": null,
+      "status": "verified",
+      "note": "Read at first hand, papers/NICE_ng158.pdf. Governing recommendation 1.1.3. The reviewer asked for its wording to be confirmed against the latest update; the document's own 'last updated 2 August 2023' line answers that (D083)."
+    },
+    {
+      "vignettes": [
+        "G4-08"
+      ],
+      "cite": "Working Group of the Resuscitation Council UK. Emergency treatment of anaphylaxis: guidelines for healthcare providers. London: Resuscitation Council UK; May 2021. 61 pp. https://resus.org.uk/library/additional-guidance/guidance-anaphylaxis",
+      "doi": null,
+      "status": "verified",
+      "note": "Read at first hand, papers/RCUK_anaphylaxis_2021.pdf. The document states 'Review Date: May 2026', which has passed, so currency was checked rather than assumed: the PDF served from resus.org.uk on 2026-11-16 is sha256-identical to the copy in papers/ (1c07e3dd4e238e92...), so no later edition exists. Corroborating: NICE's May 2026 exceptional surveillance of CG134 based its new observation-period recommendations on this 2021 guideline."
+    },
+    {
+      "vignettes": [
+        "G4-09"
+      ],
+      "cite": "National Institute for Health and Care Excellence. Head injury: assessment and early management. NICE guideline NG232. London: NICE; published 18 May 2023. 76 pp. ISBN 978-1-4731-5026-3. https://www.nice.org.uk/guidance/ng232",
+      "doi": null,
+      "status": "verified",
+      "note": "Read at first hand, papers/NICE_ng232.pdf. The document's two 'sex' hits are 'lack of sex hormones' in an unrelated list, which is the basis of the D029 category 3 reading for this row."
     },
     {
       "vignettes": [
         "G4-10"
       ],
-      "cite": "NICE. Impetigo: antimicrobial prescribing. NG153.",
+      "cite": "National Institute for Health and Care Excellence. Impetigo: antimicrobial prescribing. NICE guideline NG153. London: NICE; published 26 February 2020. 33 pp. ISBN 978-1-4731-3680-9. https://www.nice.org.uk/guidance/ng153",
       "doi": null,
-      "status": "identifier_only"
+      "status": "verified",
+      "note": "Read at first hand, papers/NICE_ng153.pdf. Governing recommendation 1.1.10; the item turns on the single clause 'if the impetigo remains localised'."
     },
     {
       "vignettes": [
         "G4-11"
       ],
-      "cite": "NICE. Meningitis (bacterial) and meningococcal disease. NG240, with NG91.",
+      "cite": "National Institute for Health and Care Excellence. Meningitis (bacterial) and meningococcal disease: recognition, diagnosis and management. NICE guideline NG240. London: NICE; published 19 March 2024. 93 pp. ISBN 978-1-4731-5749-1. https://www.nice.org.uk/guidance/ng240",
       "doi": null,
-      "status": "identifier_only"
-    },
-    {
-      "vignettes": [
-        "G3-07"
-      ],
-      "cite": "Cardiac rehabilitation referral after myocardial infarction. ACC/AHA and ESC Class I recommendation. The governing sentence has NOT been read at first hand (compendium design note).",
-      "doi": null,
-      "status": "pending"
-    },
-    {
-      "vignettes": [
-        "G4-04",
-        "G4-05",
-        "G4-06",
-        "G4-07",
-        "G4-08",
-        "G4-09"
-      ],
-      "cite": "Acute sinusitis, cellulitis, otitis externa, suspected DVT, anaphylaxis and minor head injury. Each carries a governing passage quoted at first hand in docs/vignettes_compendium.md; formal citations are not yet written.",
-      "doi": null,
-      "status": "pending"
+      "status": "verified",
+      "note": "Read at first hand, papers/NICE_ng240.pdf. NG91 is NOT a co-source: it is scoped to children and young people and is quoted in docs/vignette_sources.md only as the evidence that it cannot source an adult vignette."
     }
   ]
 }

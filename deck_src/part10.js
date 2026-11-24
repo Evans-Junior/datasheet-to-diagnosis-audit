@@ -56,7 +56,7 @@ s.addText([
   { text: `rho ${r3(SP.spearman_rho)},  ${pf(SP.spearman_p)}\n`,
     options: { bold: true, color: PASS, fontSize: 13, fontFace: "Courier New" } },
   { text: "Gap vs size:  ", options: { color: MUT, fontSize: 11 } },
-  { text: `rho ${r3(SP.spearman_rho_gap)},  ${pf(SP.spearman_p_gap)}\n`,
+  { text: `rho ${r3(SP.spearman_rho_raw_gap)},  ${pf(SP.spearman_p_raw_gap)}\n`,
     options: { bold: true, color: INK, fontSize: 11.5, fontFace: "Courier New" } },
   { text: "Floor vs size:  ", options: { color: MUT, fontSize: 11 } },
   { text: `rho ${r3(SP.spearman_rho_floor)},  ${pf(SP.spearman_p_floor)}`,
@@ -91,8 +91,8 @@ note(s, "Present this slide defensively. The number moved in our favour after "
   + "a change we made, so the burden is on us. The decomposition is the "
   + `defence: under the matched floor the floor correlates with size at `
   + `rho ${r3(SP.spearman_rho_floor)} (${pf(SP.spearman_p_floor)}) while the `
-  + `gap correlates at rho ${r3(SP.spearman_rho_gap)} `
-  + `(${pf(SP.spearman_p_gap)}). `
+  + `gap correlates at rho ${r3(SP.spearman_rho_raw_gap)} `
+  + `(${pf(SP.spearman_p_raw_gap)}). `
   + (SP.carried_by_floor
       ? "WARNING: the floor correlates MORE strongly than the gap, so the "
         + "composite trend is carried by the instrument. Do not present it as "

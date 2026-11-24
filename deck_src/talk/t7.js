@@ -85,20 +85,45 @@ if (unlisted.length) {
   const s = S("CONTENT", "References",
     "Clinical guidelines: one per vignette, quoted at first hand");
 
+  // THREE columns, not two. At 15 verified the two-column list ended at y 5.25
+  // and the gap card below it fitted. Every vignette now carries a citation, so
+  // the same code ran 25 entries down to y 7.5 on a 7.5in slide: three rows off
+  // the canvas and eight overlapping the card. The column count has to follow
+  // the data, because the data is what moved.
   const ver = F.guidelines("verified");
-  const perCol = Math.ceil(ver.length / 2);
+  const NCOL = 3, CW = 3.92, FS = 7.2, LS = 8.8, ROW = 0.524, TOP = 1.5;
+  const perCol = Math.ceil(ver.length / NCOL);
+
+  // Size the row against the LONGEST entry, not against a guess. The ACR-SPR
+  // parameter carries a full author list and runs to 300 characters, two and a
+  // half times the median, so a height that suits the median clips exactly one
+  // box on the slide and nothing says so.
+  const widest = ver.reduce((m, g) => Math.max(m,
+    (g.vignettes.join(", ") + "  " + g.cite +
+     (g.doi ? "  doi:" + g.doi : "")).length), 0);
+  const perLine = CW / (0.5 * FS / 72);
+  const needed = Math.ceil(widest / perLine) * (LS / 72);
+  if (needed > ROW - 0.02) throw new Error(
+    "t7.js: the longest citation is " + widest + " characters, which needs " +
+    needed.toFixed(2) + "in but the row gives " + (ROW - 0.02).toFixed(2) +
+    "in. Drop the font size or add a column.");
+
   ver.forEach((g, i) => {
     const col = Math.floor(i / perCol), row = i % perCol;
-    const x = 0.55 + col * 6.23;
-    const h = 0.50;
-    const y = 1.5 + row * h;
+    const x = 0.55 + col * 4.18;
+    const h = ROW;
+    const y = TOP + row * h;
     s.addText([
       { text: g.vignettes.join(", ") + "  ", options: { bold: true, color: TEAL } },
       { text: g.cite, options: { color: INK } },
       { text: g.doi ? `  doi:${g.doi}` : "", options: { color: MUT } },
-    ], { x, y, w: 5.97, h: h - 0.02, fontSize: 8, isTextBox: true, margin: 0,
-         lineSpacing: 9.8, valign: "top", objectName: "g" + i });
+    ], { x, y, w: CW, h: h - 0.02, fontSize: FS, isTextBox: true, margin: 0,
+         lineSpacing: LS, valign: "top", objectName: "g" + i });
   });
+  const listBottom = TOP + perCol * ROW;
+  if (listBottom > 6.3) throw new Error(
+    "t7.js: the guideline list ends at y " + listBottom.toFixed(2) +
+    ", which leaves no room for the citation-gap card. Add a column.");
 
   s.addText(`${COV.verified} of ${COV.total} live vignettes carry a formal citation of record`,
     { x: 0.55, y: 1.2, w: 12.2, h: 0.26, fontSize: 11, color: TEAL, bold: true,
@@ -108,25 +133,39 @@ if (unlisted.length) {
   // reads as a complete one, so the remainder is named rather than omitted.
   const rest = [...F.guidelines("identifier_only"), ...F.guidelines("pending")];
   const restVign = rest.reduce((a, g) => a.concat(g.vignettes), []);
-  card(s, { x: 0.55, y: 5.42, w: 12.2, h: 1.24, fill: "FDF4E3", name: "gap",
+  const nGap = COV.identifierOnly + COV.pending;
+  // The card stays on the slide when the gap closes. A reference list that
+  // quietly stops disclosing its own gap reads the same whether the gap is zero
+  // or merely unreported, so the zero is stated.
+  card(s, { x: 0.55, y: 6.32, w: 12.2, h: nGap ? 1.24 : 0.56, fill: "FDF4E3",
+    name: "gap",
     kicker: "WHAT IS NOT YET IN FORMAL CITATION FORM, STATED RATHER THAN OMITTED",
     kickerColor: WARN,
-    head: `${COV.identifierOnly + COV.pending} vignettes: ${restVign.join(", ")}`,
+    head: nGap
+      ? `${nGap} vignettes: ${restVign.join(", ")}`
+      : `None. All ${COV.total} carry a written citation of record.`,
     headH: 0.3, headSize: 11.5,
-    body: `Each carries its governing passage quoted at first hand in `
+    body: nGap
+      ? `Each carries its governing passage quoted at first hand in `
         + `docs/vignettes_compendium.md, and each is author-reviewed against `
         + `that quote. ${COV.identifierOnly} have a named guideline identifier `
         + `(NICE NG226, NG153, NG240/NG91) but no written citation; `
         + `${COV.pending} have neither yet. G3-07's governing sentence has not `
-        + `been read at first hand at all and is flagged in the compendium.`,
+        + `been read at first hand at all and is flagged in the compendium.`
+      : ``,
     bodySize: 10 });
-  note(s, "If asked why ten vignettes have no formal citation: they are the "
-   + "noise-baseline items added late, plus two Group 3 additions. Every one is "
-   + "author-reviewed against a passage quoted at first hand in the compendium, "
-   + "so they are sourced; what is missing is the written citation, which is "
-   + "bookkeeping rather than evidence. G3-07 is the exception and is the one to "
-   + "volunteer: its Class I status was found asserted in review articles rather "
-   + "than quoted from the primary text, and it is flagged as such.");
+  note(s, nGap
+    ? "If asked why some vignettes have no formal citation: they are the "
+    + "noise-baseline items added late, plus two Group 3 additions. Every one "
+    + "is author-reviewed against a passage quoted at first hand in the "
+    + "compendium, so they are sourced; what is missing is the written "
+    + "citation, which is bookkeeping rather than evidence."
+    : "The gap closed on 2026-11-17. Ten citations were written up, and three "
+    + "wrong attributions were corrected: G3-07 went to NICE NG185, whose PDF "
+    + "had been in papers/ the whole time; G3-01's reference answer to NG118, "
+    + "with Q-Pain keeping only the invariance warrant; G2-01b to the ACR-SPR "
+    + "parameter after D088. The gap was always bibliographic. Every reference "
+    + "answer was quoted at first hand throughout.");
 }
 
 module.exports = {};

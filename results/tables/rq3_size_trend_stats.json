@@ -1,12 +1,29 @@
 {
   "spearman_rho": 0.8814630383360937,
   "spearman_p": 0.0007468608372274918,
-  "spearman_rho_gap": 0.9483326481409007,
-  "spearman_p_gap": 2.9285883237761163e-05,
+  "spearman_rho_raw_gap": 0.9483326481409007,
+  "spearman_p_raw_gap": 2.9285883237761163e-05,
   "spearman_rho_floor": 0.3525852153344375,
   "spearman_p_floor": 0.3176623794209247,
   "n_models": 10,
   "carried_by_floor": false,
+  "by_family": {
+    "pythia": {
+      "n_models": 7,
+      "spearman_rho_composite": 0.7142857142857144,
+      "spearman_p_composite": 0.07134356146753763,
+      "spearman_rho_raw_gap": 0.8571428571428573,
+      "spearman_p_raw_gap": 0.013697326615325611,
+      "spearman_rho_floor": -0.1785714285714286,
+      "spearman_p_floor": 0.7016579425162728
+    }
+  },
+  "_key_meanings": {
+    "spearman_rho": "COMPOSITE: (mean |delta| - that model's floor) vs size",
+    "spearman_rho_raw_gap": "COMPONENT: mean |delta| vs size, floor NOT subtracted",
+    "spearman_rho_floor": "COMPONENT: the nuisance floor itself vs size",
+    "by_family": "the same three within ONE family. Pythia is the only controlled size series (one corpus, one recipe, 7 sizes); across all ten, size is confounded with family and corpus"
+  },
   "verification_status": "REPORTABLE_TIER1__pending_clinical_validation",
   "prompt_hash": "18f637733ab522a1"
 }

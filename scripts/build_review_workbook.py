@@ -23,6 +23,7 @@ import re
 import sys
 from pathlib import Path
 
+import pandas as pd
 import yaml
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
@@ -35,11 +36,13 @@ sys.path.insert(0, str(ROOT))
 from src.vignettes import load, expand  # noqa: E402
 
 SOURCES = ROOT / "docs/vignette_sources.md"
+STRAT = ROOT / "data/vignettes/sex_stratification_D029.csv"
 OUT = ROOT / "Vignette_Review_Datasheet_to_Diagnosis.xlsx"
 
 HDR = PatternFill("solid", fgColor="0F3A44")
 SRC = PatternFill("solid", fgColor="E8F2F1")      # source quote column
 ASK = PatternFill("solid", fgColor="FDF2D9")      # columns the reviewer fills
+AUTH = PatternFill("solid", fgColor="EAF3FA")     # authors' evidence, not to fill in
 WARN = PatternFill("solid", fgColor="FBE4E0")     # not quoted at source
 THIN = Side(style="thin", color="B8C4C4")
 BOX = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
@@ -158,9 +161,39 @@ def parse_sources() -> dict[str, dict]:
     return out
 
 
+def load_stratification() -> dict[str, str]:
+    """The D029/D031 gradient: does this guideline stratify by sex ANYWHERE?
+
+    D029 exists because guideline SILENCE on sex is not one thing. A document
+    that never mentions sex may simply not have considered it; one that
+    demonstrably stratifies by sex where it judges sex relevant, and does not do
+    so for our condition, is making an informative omission. The reviewer is
+    being asked to rule on that silence, so the gradient has to be IN FRONT OF
+    THEM -- D029's own words are that it "gives the clinical reviewer something
+    concrete to weigh rather than asking them to rule on silence in the
+    abstract". For three rounds it was recorded only on a form that was never
+    sent, which is the same as not recording it.
+
+    Kept in its own CSV rather than in templates.yaml ON PURPOSE. Nothing in
+    src/ reads this file. A new per-template field would flow into
+    vignettes.csv, change the prompt-set hash, and mark all ten scored models
+    stale (D093) to publish a column that no analysis consumes.
+    """
+    if not STRAT.exists():
+        return {}
+    df = pd.read_csv(STRAT)
+    out = {}
+    for _, r in df.iterrows():
+        prov = str(r.get("provenance", "") or "").strip()
+        tail = f"\n\n[{prov}]" if prov else ""
+        out[str(r["id"])] = f"{r['d029']} -- {r['basis']}{tail}"
+    return out
+
+
 def main() -> None:
     templates, arms = load()
     src = parse_sources()
+    strat = load_stratification()
 
     argv = sys.argv[1:]
     only: list[str] = []
@@ -176,6 +209,24 @@ def main() -> None:
             # quietly omits the row the reviewer was asked to look at.
             sys.exit(f"--only: no such vignette: {', '.join(missing)}")
         templates = [t for t in templates if t["id"] in only]
+
+    # --live-only: drop the rows that are NOT in the reported set, i.e. anything
+    # rejected on review or retired as superseded. Off by default, because for an
+    # AUTHOR reading the workbook as a record the dead rows are the point: each
+    # carries its own reject verdict in column F and shows what was thrown out.
+    # For a sheet going to an outside clinician they are three rows of work on
+    # vignettes no number depends on, and the retired one (G2-01) passed review
+    # already. This is a separate flag from --only so the cover sheet does not
+    # also announce itself as a FOCUSED sheet of newly added rows, which is what
+    # naming all 25 live ids through --only would have claimed.
+    live_only = "--live-only" in argv
+    if live_only:
+        dead = {t["id"] for t in templates
+                if t.get("verification") in ("rejected", "retired_superseded")}
+        templates = [t for t in templates if t["id"] not in dead]
+        print(f"  --live-only: dropped {len(dead)} row(s): "
+              f"{', '.join(sorted(dead)) or 'none'}")
+
     if "--out" in argv:
         out = ROOT / argv[argv.index("--out") + 1]
     elif only:
@@ -218,6 +269,15 @@ def main() -> None:
     wb = Workbook()
 
     # ------------------------------------------------------------------ #
+    # How many rows are NOT quoted at first hand, decided the same way the Review
+    # sheet decides it: a cross marker in the heading means sourcing was attempted
+    # and FAILED, and quote presence does not override the marker.
+    n_pink = sum(
+        1 for t in templates
+        if not (src.get(t["id"], {}).get("quotes") or [])
+        or "\u274c" in (src.get(t["id"], {}).get("status_line") or "")
+    )
+
     ws = wb.active
     ws.title = "Start here"
     ws.column_dimensions["A"].width = 112
@@ -230,38 +290,72 @@ def main() -> None:
          "the reference answer is the answer the quoted guideline actually gives.", 11, False),
         ("", 11, False),
         ("THE ONE QUESTION THAT MATTERS", 12, True),
-        ("Column H holds the clinical text. Column G holds the guideline quote. Read G, "
-         "then read H, and ask: could a clinician reading H reach the reference answer "
-         "in column K and no other answer? If a second answer is defensible, the item "
+        ("Column I holds the clinical text. Column G holds the guideline quote. Read G, "
+         "then read I, and ask: could a clinician reading I reach the reference answer "
+         "in column L and no other answer? If a second answer is defensible, the item "
          "will produce noise that cannot be attributed to gender.", 11, False),
         ("", 11, False),
         ("PLEASE REJECT RATHER THAN REPAIR", 12, True),
-        ("If an item is wrong, mark it Reject and say why in column R. Do not rewrite "
+        ("If an item is wrong, mark it Reject and say why in column S. Do not rewrite "
          "the clinical text in place. A rewritten item has no record of what changed, "
          "and the before/after comparison this project depends on needs that record.", 11, False),
         ("", 11, False),
-        ("READ THIS BEFORE YOU START — the sourcing caveat", 12, True),
-        ("Rows shaded PINK in column F are NOT YET QUOTED AT SOURCE. For those, the "
-         "guideline named is a candidate identified from a literature search, and the "
-         "wording in column G is either absent or taken from a secondary summary — "
-         "nobody has opened the primary document. Weight your confidence accordingly, "
-         "and treat 'the quote supports this answer' as unanswerable for those rows.", 11, False),
-        ("", 11, False),
-        ("WHAT YOUR APPROVAL DOES AND DOES NOT DO", 12, True),
-        ("Author review moves an item from 'unverified_ai_drafted' to "
-         "'author_reviewed_against_quoted_guideline'. It does NOT make any number "
-         "reportable: only a clinician can do that, and that step waits on REB "
-         "approval from McGill (D064). Every table and figure will still carry a "
-         "PROVISIONAL stamp after you finish, and the stamp will say which of the two "
-         "provisional states it came from.", 11, False),
+    ]
+    # THE PINK CAVEAT IS PRINTED ONLY IF A PINK ROW EXISTS. It warns that the
+    # named guideline is a literature-search candidate nobody has opened, and
+    # tells the reviewer to treat column P as unanswerable for those rows. Every
+    # row has been quoted at first hand since the round that closed G4-06 and
+    # G4-11, so on the current set the warning was telling a clinician to
+    # discount evidence that is in fact first-hand -- the most costly direction
+    # for an unconditional warning to be wrong in.
+    if n_pink:
+        lines += [
+            ("READ THIS BEFORE YOU START \u2014 the sourcing caveat", 12, True),
+            (f"{n_pink} row(s) shaded PINK in column F are NOT YET QUOTED AT SOURCE. "
+             "For those, the guideline named is a candidate identified from a "
+             "literature search, and the wording in column G is either absent or "
+             "taken from a secondary summary \u2014 nobody has opened the primary "
+             "document. Weight your confidence accordingly, and treat 'the quote "
+             "supports this answer' as unanswerable for those rows.", 11, False),
+            ("", 11, False),
+        ]
+    lines += [
+        ("WHAT YOUR REVIEW DOES", 12, True),
+        ("We have already reviewed these rows ourselves, against the same quoted "
+         "guidelines: 14 approve, 9 approve with edit, 2 reject. That is why two "
+         "vignettes were replaced before you ever see them, and why three quotes in "
+         "column G were added after the fact. But our own review cannot validate our "
+         "own work, so every table and figure in this project currently reads NOT "
+         "REPORTABLE, and will keep reading that until a clinician has signed off.", 11, False),
+        ("Your sign-off is the step that changes it. Concretely: a row you pass "
+         "enters the primary analysis; a row you mark uncertain moves to a "
+         "sensitivity analysis that we report separately; a row you reject is "
+         "reported as excluded, not quietly kept. We would rather lose an item than "
+         "carry one you could not confirm.", 11, False),
         ("", 11, False),
         ("COLUMNS YOU FILL IN", 12, True),
-        ("  M   Is the reference answer correct per the quoted guideline?", 11, False),
-        ("  N   Do the findings FORCE that answer, with every competing reason negated?", 11, False),
-        ("  O   Does the quote in column G actually support the answer? (n/a if not sourced)", 11, False),
-        ("  P   Is the text free of gendered words and anatomy outside the SPCU line?", 11, False),
-        ("  Q   APPROVE / APPROVE WITH EDIT / REJECT", 11, False),
-        ("  R   Your comment, and for a reject, what is wrong", 11, False),
+        ("  N   Is the reference answer correct per the quoted guideline?", 11, False),
+        ("  O   Do the findings FORCE that answer, with every competing reason negated?", 11, False),
+        ("  P   Does the quote in column G actually support the answer? (n/a if not sourced)", 11, False),
+        ("  Q   Is the text free of gendered words and anatomy outside the SPCU line?", 11, False),
+        ("  R   APPROVE / APPROVE WITH EDIT / REJECT", 11, False),
+        ("  S   Your comment, and for a reject, what is wrong", 11, False),
+        ("", 11, False),
+        ("HOW TO WEIGH THE GUIDELINE'S SILENCE \u2014 column H", 12, True),
+        ("Almost every guideline here states correct management and says NOTHING about "
+         "whether it varies by patient gender. We cannot read that silence for you, but "
+         "silence is not one thing, so column H (shaded BLUE, already filled in by us) "
+         "grades it for each row on a four-point scale:", 11, False),
+        ("  0   the guideline NAMES a gender disparity in this very outcome", 11, False),
+        ("  1   invariance is STATED outright (e.g. 'do not exclude ... because of sex "
+         "or gender')", 11, False),
+        ("  2   the document DOES stratify by sex elsewhere, where it judged sex "
+         "relevant, but not for this condition \u2014 an informative omission", 11, False),
+        ("  3   sex is never mentioned anywhere in the document \u2014 the weakest "
+         "evidence of invariance, because the question may simply never have been asked", 11, False),
+        ("Column H is OUR reading and our evidence, offered so you are not asked to rule "
+         "on silence in the abstract. Please contradict it where you disagree: that "
+         "disagreement is more valuable to us than agreement.", 11, False),
     ]
     if only:
         lines[1:1] = [
@@ -284,12 +378,13 @@ def main() -> None:
         ("A", "id", 9), ("B", "group", 7), ("C", "condition", 30),
         ("D", "tier", 6), ("E", "verification", 20),
         ("F", "source status", 20), ("G", "VERBATIM GUIDELINE QUOTE", 62),
-        ("H", "clinical text as the model sees it", 72),
-        ("I", "question", 34), ("J", "answer options", 26),
-        ("K", "reference answer", 18), ("L", "target option", 14),
-        ("M", "answer correct?", 15), ("N", "findings force it?", 16),
-        ("O", "quote supports it?", 16), ("P", "no gendered words?", 16),
-        ("Q", "APPROVE?", 20), ("R", "your comment", 46),
+        ("H", "does this guideline stratify by sex ANYWHERE? (authors, D029)", 40),
+        ("I", "clinical text as the model sees it", 72),
+        ("J", "question", 34), ("K", "answer options", 26),
+        ("L", "reference answer", 18), ("M", "target option", 14),
+        ("N", "answer correct?", 15), ("O", "findings force it?", 16),
+        ("P", "quote supports it?", 16), ("Q", "no gendered words?", 16),
+        ("R", "APPROVE?", 20), ("S", "your comment", 46),
     ]
     for letter, name, width in cols:
         rv.column_dimensions[letter].width = width
@@ -365,6 +460,7 @@ def main() -> None:
 
         vals = [vid, tpl["group"], tpl["condition"], tpl.get("tier"),
                 tpl.get("verification", "unverified"), status, quote_text,
+                strat.get(vid, "(not recorded)"),
                 rendered.get(vid, "(not rendered: clinical slot still empty)"),
                 tpl.get("question"),
                 " | ".join(tpl.get("answer_options") or []),
@@ -375,9 +471,11 @@ def main() -> None:
             c.border = BOX
             if j == 7:
                 c.fill = SRC
+            elif j == 8:
+                c.fill = AUTH
             elif j == 6 and (not quotes or disqualified):
                 c.fill = WARN
-            elif j >= 13:
+            elif j >= 14:
                 c.fill = ASK
         rv.row_dimensions[r].height = 150
         r += 1
@@ -389,12 +487,12 @@ def main() -> None:
                         allow_blank=True)
     rv.add_data_validation(yn)
     rv.add_data_validation(ap)
-    for col in ("M", "N", "O", "P"):
+    for col in ("N", "O", "P", "Q"):
         yn.add(f"{col}2:{col}{last}")
-    ap.add(f"Q2:Q{last}")
+    ap.add(f"R2:R{last}")
 
     rv.freeze_panes = "C2"
-    rv.auto_filter.ref = f"A1:R{last}"
+    rv.auto_filter.ref = f"A1:S{last}"
 
     # ------------------------------------------------------------------ #
     gl = wb.create_sheet("Full sources")
@@ -424,7 +522,7 @@ def main() -> None:
     print(f"  quoted at source : {len(order) - n_unsourced}")
     print(f"  NOT yet quoted   : {n_unsourced}  (shaded pink in column F)")
     print(f"  sheets           : Start here | Review | Full sources")
-    print(f"  dropdowns on     : M, N, O, P (Yes/No/Unsure/n-a) and Q (approve)")
+    print(f"  dropdowns on     : N, O, P, Q (Yes/No/Unsure/n-a) and R (approve)")
 
 
 if __name__ == "__main__":

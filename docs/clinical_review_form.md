@@ -1,16 +1,16 @@
 # Clinical review form
 
-> **⚠ Which file to send, 2026-11-07.** There are now two review instruments and
-> they must not both go out. Send
-> **`Vignette_Review_Datasheet_to_Diagnosis.xlsx`**: it is generated from
-> `docs/vignette_sources.md` by `scripts/build_review_workbook.py`, carries the
-> verbatim guideline quote for all **25 of 25** rows, and has the dropdowns.
-> **`docs/clinical_review_form.csv` is DEPRECATED, do not send it.** It holds only
-> **23 of 25** rows (`G3-07` and `G3-08` were never added), it has no verbatim-quote
-> column, and it is hand-maintained so it drifts. Its scenario, option, reference
-> answer and citation columns were resynced from `templates.yaml` on 2026-11-08 so
-> the two files agree today, but the workbook is the instrument. Regenerate the
-> workbook; do not edit the CSV.
+> **⚠ Which file to send.** Send
+> **`Vignette_Review_Datasheet_to_Diagnosis.xlsx`**, built by
+> `scripts/build_review_workbook.py --live-only`. It carries the verbatim
+> guideline quote for all **25 of 25** live rows, the D029 sex-stratification
+> reading beside each quote, and the dropdowns. This markdown file is the
+> explanatory brief that goes with it, plus Sections 1, 3 and 4, which the
+> workbook does not cover.
+>
+> `docs/clinical_review_form.csv` is **deleted**, not merely deprecated. It was a
+> second instrument, hand-maintained, and it had drifted to 23 of 25 rows while
+> still listing three vignettes that review had thrown out.
 
 
 **Project:** From datasheet to diagnosis, gender bias in LLM health advice
@@ -18,11 +18,18 @@
 **Reviewer time:** 45–60 minutes
 **Return to:** kwakukumi14@gmail.com
 
-> **Status, 2026-10-28: the author cells are now filled and this form is ready to
-> send.** `docs/clinical_review_form.csv` carries, for every vignette, the full
-> scenario text, the answer option set, our proposed reference answer and the
-> guideline citation. Condition placement in Section 2 remains **provisional**,
-> Column B is precisely what tests it.
+> **Status, 2026-11-16: ready to send.** The workbook carries, for every one of
+> the 25 live vignettes, the verbatim guideline quote, the full scenario text as
+> the model receives it, the answer option set, our proposed reference answer and
+> the D029 sex-stratification reading. Group placement remains **provisional**,
+> and Column B is precisely what tests it.
+>
+> **An author review has already run on these rows** (14 approve, 9 approve with
+> edit, 2 reject; see D081 to D085), which is why two vignettes were replaced
+> before you see them. That review was the authors' own, so it moved every row
+> only as far as `author_reviewed_against_quoted_guideline`, which is explicitly
+> **not** reportable. Clinician review is the step that has not happened, and it
+> is the one this form is for.
 
 > **The scenarios and proposed answers were drafted by an AI assistant** from
 > guideline passages we had quoted at first hand, and every row says so. See
@@ -234,28 +241,25 @@ Group key: **1** sex-neutral · **2** sex-specific (control) · **3** clinically
 neutral but historically biased · **4** no documented bias, identity irrelevant
 (noise baseline).
 
-A spreadsheet version is in `clinical_review_form.csv` if you would rather fill it
-there, either is fine.
+**The per-condition table lives in the workbook, not here.** Open
+`Vignette_Review_Datasheet_to_Diagnosis.xlsx`, sheet **Review**: one row per live
+vignette, with the verbatim guideline quote in column G, the clinical text exactly
+as the model receives it in column I, our reading of whether the guideline
+stratifies by sex anywhere in column H, and the cells for you in columns N to S.
+Group 2 rows show both sex-parameter arms, because for those the correct answer is
+meant to differ.
 
-| ID | Grp | Condition | Scenario (SPCU stated, fixed) | Proposed reference answer | Guideline cited | **A** | **B** | **C** |
-|---|---|---|---|---|---|---|---|---|
-| G1-01 | 1 | Community-acquired pneumonia | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G1-02 | 1 | Malaria, non-pregnant adult | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G1-03 | 1 | Asthma exacerbation, acute | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G1-04 | 1 | Cellulitis, uncomplicated | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G1-05 | 1 | Type 2 diabetes, initial management | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G2-01 | 2 | Pregnancy-related presentation | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G2-02 | 2 | Prostate-related presentation | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G2-03 | 2 | Cervical screening | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G3-01 | 3 | Acute pain management (Q-Pain derived) | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G3-02 | 3 | Chest pain, cardiac triage | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G3-03 | 3 | Physical symptoms with possible psychological attribution | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G3-04 | 3 | ADHD, assessment and referral | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G3-05 | 3 | Autism, assessment and referral | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G3-06 | 3 | Chronic widespread pain | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G4-01 | 4 | Ankle sprain | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G4-02 | 4 | Acute conjunctivitis | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
-| G4-03 | 4 | Uncomplicated laceration repair | _[authors to complete]_ | _[authors to complete]_ | _[authors to complete]_ | | | |
+Regenerate it with `.venv/bin/python scripts/build_review_workbook.py --live-only`.
+
+> **Why there is no table here.** There used to be one, and it listed the
+> seventeen conditions of the October set with every author cell reading
+> *[authors to complete]*. The cells were never filled because the spreadsheet
+> superseded this file, so the table sat here for three rounds showing retired
+> conditions (acute conjunctivitis, laceration repair, G3-03, G3-06) and missing
+> every vignette added since (G3-07, G3-08, G4-04 to G4-11). A stale table that
+> looks like outstanding work is worse than no table: it invites someone to fill
+> in the wrong seventeen rows. Sections 1, 3 and 4 below are kept, because none
+> of them is in the workbook and Section 3 is the judgement we most need.
 
 ---
 

@@ -59,8 +59,9 @@ pres.addSection({ title: "5 Findings" });
     head: `${PT.timesFloor.toFixed(1)}× the combined floor`, headH: 0.38, headSize: 15,
     body: `${PT.base} merges at ${PT.mergingBase.toFixed(3)}, already above its `
         + `own floor. The tuned model of the same size, corpus and pretraining `
-        + `merges at ${PT.mergingTuned.toFixed(3)}: ${PT.timesFloor.toFixed(1)} times `
-        + `the two floors combined.` });
+        + `merges at ${PT.mergingTuned.toFixed(3)} — ${PT.ratio.toFixed(1)} times as `
+        + `much, a rise of ${PT.delta.toFixed(3)} against a combined floor of `
+        + `${PT.floorCombined.toFixed(4)}.` });
 
   const hyp = [
     { n: "H1", t: `Referral endorsed less readily for the woman arm`,
@@ -112,9 +113,9 @@ pres.addSection({ title: "5 Findings" });
 
   card(s, { x: 4.69, y: 1.3, w: 3.95, h: 2.2, fill: TINT, name: "l2",
     kicker: "RQ3  ·  SCALE", kickerColor: BERRY,
-    head: `Gap grows with size, ρ = ${R3.spearman_rho_gap.toFixed(3)}`, headH: 0.52, headSize: 13,
+    head: `Gap grows with size, ρ = ${R3.spearman_rho_raw_gap.toFixed(3)}`, headH: 0.52, headSize: 13,
     body: `Within the Pythia family, training data held constant. Decomposed on `
-        + `purpose: the gap tracks size at ρ = ${R3.spearman_rho_gap.toFixed(3)} `
+        + `purpose: the gap tracks size at ρ = ${R3.spearman_rho_raw_gap.toFixed(3)} `
         + `while the noise floor does not (ρ = ${R3.spearman_rho_floor.toFixed(3)}, `
         + `p = ${R3.spearman_p_floor.toFixed(2)}), so the trend is the signal and `
         + `not the instrument.` });

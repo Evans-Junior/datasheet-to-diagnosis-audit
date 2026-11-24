@@ -25,7 +25,7 @@ pres.addSection({ title: "Appendix" });
      `ρ = +${R3.spearman_rho.toFixed(3)}, p = ${R3.spearman_p.toFixed(4)}`,
      `Varies family, corpus and instruction tuning alongside size. A between-family contrast, not a scaling result.`, MUT],
     [`Gap component vs size`,
-     `ρ = +${R3.spearman_rho_gap.toFixed(3)}, p = ${R3.spearman_p_gap.toFixed(5)}`,
+     `ρ = +${R3.spearman_rho_raw_gap.toFixed(3)}, p = ${R3.spearman_p_raw_gap.toFixed(5)}`,
      `The signal.`, PASS],
     [`Floor component vs size`,
      `ρ = +${R3.spearman_rho_floor.toFixed(3)}, p = ${R3.spearman_p_floor.toFixed(3)}`,

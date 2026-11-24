@@ -19,6 +19,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from src.provenance import (NOT_PROMPT_DERIVED, NOT_PROMPT_DERIVED_PREFIX,
+                            STAMP_COL, prompt_hash_now)   # D118
+
 ROOT = Path(__file__).resolve().parent.parent
 TABLES = ROOT / "results/tables"
 FIGS = ROOT / "results/figures"
@@ -30,6 +33,8 @@ FIGS = ROOT / "results/figures"
 BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
 INK, MUTED, GRID = "#1a1a19", "#5c5c58", "#e3e3e0"
 SURFACE = "#fcfcfb"
+
+_HASH: str | None = None   # set by main(), stamped by _footer
 
 plt.rcParams.update({
     "figure.facecolor": SURFACE, "axes.facecolor": SURFACE,
@@ -50,6 +55,54 @@ SHORT = {"EleutherAI/pythia-70m": "70m", "EleutherAI/pythia-160m": "160m",
 
 def _short(s: pd.Series) -> pd.Series:
     return s.map(lambda m: SHORT.get(m, m.split("/")[-1]))
+
+
+# Tables each figure is drawn from. The guard below reads them, so adding a
+# figure without adding its table here means that figure is ungated.
+SOURCES = (
+    "rq0_positive_control.csv",
+    "rq3_size_trend.csv",
+    "rq2_hypothesis_tests.csv",
+    "rq1_corpus_skew.csv",
+    "rq2b_identity_spcu_merging.csv",
+)
+
+
+def _assert_current() -> str:
+    """Refuse to draw from stale tables, and return the hash to stamp (D118).
+
+    This module is not in run_full_pipeline.sh, so a run that rebuilds every
+    table leaves these figures untouched. That is exactly what happened: the set
+    was drawn on 2026-11-02 and then sat through the 11-09 rescore still
+    carrying pre-floor-fix numbers under a PROVISIONAL banner the run had
+    already retired. Nothing read it, which is the only reason it did no harm.
+    A figure cannot be checked against its caption once it has been lifted into
+    a slide, so the check happens before the file is written.
+    """
+    cur = prompt_hash_now()
+    bad = []
+    for name in SOURCES:
+        if name in NOT_PROMPT_DERIVED or name.startswith(NOT_PROMPT_DERIVED_PREFIX):
+            continue
+        f = TABLES / name
+        if not f.exists():
+            bad.append(f"{name}: missing")
+            continue
+        d = pd.read_csv(f)
+        if STAMP_COL not in d.columns:
+            bad.append(f"{name}: unstamped")
+            continue
+        seen = sorted({str(v) for v in d[STAMP_COL].dropna()})
+        if seen != [cur]:
+            bad.append(f"{name}: {', '.join(seen) or 'no hash'}")
+    if bad:
+        raise SystemExit(
+            "refusing to draw figures from stale tables.\n"
+            f"  current prompt set: {cur}\n    "
+            + "\n    ".join(bad)
+            + "\n  rebuild the tables first: sh scripts/run_full_pipeline.sh --no-score"
+        )
+    return cur
 
 
 def _footer(fig, df: pd.DataFrame | None) -> None:
@@ -80,6 +133,11 @@ def _footer(fig, df: pd.DataFrame | None) -> None:
     elif status:
         fig.text(0.5, 0.005, f"verification: {status}", ha="center",
                  va="bottom", fontsize=7, color=MUTED)
+    if _HASH:
+        # The date a file was written says nothing about which prompt set it
+        # was written from, and the file date is what misled a reader once.
+        fig.text(0.995, 0.005, f"prompt set {_HASH[:8]}", ha="right",
+                 va="bottom", fontsize=6, color=MUTED)
 
 
 def _save(fig, name: str, pdf: bool = False) -> None:
@@ -301,8 +359,10 @@ def fig_merging() -> None:
 
 
 def main() -> None:
+    global _HASH
+    _HASH = _assert_current()
     FIGS.mkdir(parents=True, exist_ok=True)
-    print(f"writing figures to {FIGS.relative_to(ROOT)}")
+    print(f"writing figures to {FIGS.relative_to(ROOT)}  (prompt set {_HASH})")
     fig_positive_control()
     fig_size_trend()
     fig_hypotheses()

@@ -39,6 +39,31 @@ VIGNETTES = ROOT / "data/vignettes/vignettes.csv"
 STATUSES = {"verified", "identifier_only", "pending"}
 
 
+# Guideline-issuing bodies that do not mint DOIs. A clinical guideline is often
+# the primary source for a vignette and still has no DOI: NICE numbers its
+# guidance NGxxx and gives an ISBN, the ACR numbers practice parameters by
+# Council resolution, Resuscitation Council UK dates its editions. For those the
+# citation of record is "named body + document identifier + date", which is
+# traceable, so the gate accepts it in place of a DOI.
+#
+# THIS LIST IS THE RULE, so adding to it is a decision, not a formality. It was
+# a hard-coded chain of four `or`s until 2026-11-17, when writing the last ten
+# citations of record failed the gate on the ACR-SPR practice parameter and the
+# Resuscitation Council UK anaphylaxis guideline -- two sources that ARE read at
+# first hand and held in papers/, rejected only because nobody had thought of
+# their publishers. A whitelist that silently equates "issuer I did not list"
+# with "citation not verified" pushes correct entries back to `pending`, which
+# is the opposite of what this gate is for.
+ISSUERS_WITHOUT_DOI = (
+    "NICE",                      # NGxxx + ISBN
+    "GINA",                      # annual strategy report
+    "arXiv",                     # preprint identifier
+    "USPSTF",                    # final recommendation statement
+    "American College of Radiology",   # ACR-SPR practice parameters, by resolution
+    "Resuscitation Council",     # RCUK, by edition date
+)
+
+
 def main() -> int:
     refs = json.loads(REFS.read_text(encoding="utf-8"))
     lit, gls = refs["literature"], refs["guidelines"]
@@ -72,10 +97,9 @@ def main() -> int:
         if g.get("status") not in STATUSES:
             problems.append(f"guideline entry {g['vignettes']} has status "
                             f"{g.get('status')!r}; allowed: {sorted(STATUSES)}")
-        if g.get("status") == "verified" and not (g.get("doi") or "NICE" in g["cite"]
-                                                  or "GINA" in g["cite"]
-                                                  or "arXiv" in g["cite"]
-                                                  or "USPSTF" in g["cite"]):
+        if g.get("status") == "verified" and not (
+                g.get("doi")
+                or any(iss in g["cite"] for iss in ISSUERS_WITHOUT_DOI)):
             problems.append(f"guideline entry {g['vignettes']} claims 'verified' "
                             f"with no DOI and no named guideline identifier")
     for e in lit:

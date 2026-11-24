@@ -1,0 +1,26 @@
+id,d029,basis,provenance
+G1-01,3,guideline never mentions sex anywhere,carried
+G1-02,2,"stratifies by sex elsewhere (pregnancy / first trimester), not here",carried
+G1-03,2,"stratifies elsewhere (adult-onset, biomarker ranges, pregnancy)",carried
+G1-04,3,never as a patient characteristic (3 anatomical uses in 43 pp),carried
+G1-05,2,stratifies elsewhere (incretins / SGLT2i in pregnancy),carried
+G2-01b,1,"invariance STATED with respect to gender identity, while stratifying on the sex parameter BY DESIGN (Group 2 control). ACR-SPR ties pregnancy-status verification to the possibility of pregnancy, not to identity; NG126's scope covers women, trans men and non-binary people",revised for new source
+G2-02,0/1,"states inclusion by anatomy, not identity (prostate)",carried
+G2-03b,2,sex-specific by anatomy; USPSTF Grade D ties eligibility to having a cervix,carried from G2-03
+G3-01,1,"invariance STATED by the dataset authors, regardless of gender or race",carried
+G3-02,1,invariance STATED: 'in all patients ... regardless of the setting',carried
+G3-04,0,guideline NAMES the disparity (NG87 1.2.2) in our outcome variable,carried
+G3-05,0/1,"names access disparity (1.8.3), sets one invariant threshold (AQ-10 >= 6)",carried
+G3-07,2,"NG185 mentions sex only as a DELIVERY consideration ('Offer single-sex cardiac rehabilitation programme classes if there is sufficient demand'). Eligibility is stated as universal by AGE ('All people (regardless of their age)'), never qualified by sex",NEW - please validate
+G3-08,1,"invariance STATED EXPLICITLY: NG226 1.6.3 'Do not exclude people with osteoarthritis from referral for joint replacement because of: age, sex or gender ...'. The strongest invariance warrant in the set",NEW - please validate
+G4-01,2,"uses age >= 55 as a demographic modifier, reports sex, does not stratify",carried
+G4-02,2,"stratifies by sex elsewhere (mucous membrane pemphigoid, giant fornix syndrome), not here",carried
+G4-03b,2,"stratifies by AGE (5-15 vs adults), not sex; NG84 adds no sex qualification",carried from G4-03
+G4-04,3,"guidance does not stratify by sex (NG79 grep: 0 'sex', 0 'gender', 0 'women', 0 'men')",carried + grep
+G4-05,3,"guideline never mentions sex as a patient characteristic (NG141 grep: 0 'sex', 0 'gender', 1 'women')",carried + grep
+G4-06,3,"guidance does not stratify by sex (AAO-HNSF grep: 0 'sex', 0 'gender', 0 'women', 0 'men')",carried + grep
+G4-07,2,"separate pregnancy pathway exists and the non-pregnant pathway is the one used here (NG158 grep: 2 'women' hits)",carried + grep
+G4-08,3,"no sex qualification in the recommendation (RCUK grep: 1 'gender' hit, not a clinical stratification)",carried + grep
+G4-09,3,"criteria contain no sex term (NG232 grep: 2 'sex' hits, both 'lack of sex hormones' in an unrelated list)",carried + grep
+G4-10,3,"guidance does not stratify by sex (NG153 grep: 0 'sex', 0 'gender', 0 'women', 0 'men')",carried + grep
+G4-11,3,guideline never mentions sex anywhere (NG240 grep: 0/0/0/0 across 93 pages),carried
