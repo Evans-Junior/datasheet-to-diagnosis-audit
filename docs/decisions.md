@@ -5645,3 +5645,1267 @@ The count on the page is updated in the same pass as this entry. The real fix is
 that a hand-written artefact cannot be guarded, so either its numbers come from
 the tables or they are checked by hand on a schedule. Nothing here chooses
 between those yet.
+
+---
+
+## D103, the placebo floor is aggregated as the maximum, and that choice was fixed before the numbers were seen
+
+**Date:** 2026-11-17. **Status:** adopted; run, tables written.
+**Files:** `scripts/placebo_floor.py`, `results/tables/i4_placebo_floor.csv`,
+`results/tables/i4_placebo_regate.csv`, `results/tables/i4_placebo_per_vignette.csv`.
+
+D062 committed to the placebo arm and explained why it is not the Group 4 floor:
+Group 4 is the right manipulation on the wrong stimulus, the placebo is the right
+stimulus with the wrong manipulation. D062 built the prompts. It did not say how
+to turn three attributes, two levels each, into one number per model, and that
+is the whole result.
+
+**The decision.** Per model, take the **maximum** absolute per-vignette movement
+across the two patient-descriptive attributes, eye colour and shirt colour.
+Appointment slot is held out of the headline, as D062 flagged, because it
+describes the encounter rather than the patient. The aggregation was written into
+the script's docstring before the script was run.
+
+**Why the maximum, and not the mean or the median.** Three reasons, and the
+second is the one that matters.
+
+1. **The gender floor is already a maximum.** `matched_floor.py` reports
+   `floor_max_abs_vignette`. Comparing a mean placebo against a max gender floor
+   would be an asymmetry chosen after the fact.
+2. **The median cannot fail.** Under the median the gate returns 3 of 10, which
+   is exactly the pre-placebo answer, under both definitions of the median that
+   were tried. A test whose only available outcome is the one you already had is
+   not a test. The maximum can return 3 of 10 and does not.
+3. **A floor is a worst-case claim.** OLMo-2-1124-7B-Instruct's placebo movement
+   spans 0.0042 to 0.1290 across its Group 2 vignettes. Reporting the middle of
+   that range as "the noise" would license an effect smaller than movement the
+   instrument has actually been observed to produce.
+
+**The sensitivity table, reported rather than buried.**
+
+| aggregation | gate |
+|---|---|
+| max over the two patient-descriptive attributes, **reported** | 0 of 10 |
+| mean over the same two | 1 of 10 |
+| max over all three, including appointment slot | 0 of 10 |
+| worst binary vignette anywhere, the wrong stimulus | 0 of 10 |
+| median, either definition | 3 of 10 |
+
+**The result.** The gate goes from **3 of 10 to 0 of 10**. Placebo floors against
+Group 2 margins: Qwen3-8B 0.1028 against 0.0959; OLMo-2-1124-7B-Instruct 0.1290
+against 0.0610; OLMo-2-1124-7B base 0.0526 against 0.0153. Every model that
+cleared its gender floor fails its placebo floor.
+
+**One fault found and fixed while running it.** The first run took the worst
+binary vignette anywhere in the set, which reintroduced exactly the
+wrong-stimulus mismatch the placebo exists to remove. The floor is now measured
+on the group it gates. The verdict did not move, but it was right by accident
+for a run and a half.
+
+**A second fault, in the reading rather than the arithmetic.** Four Pythia models
+printed ratios of 1.0 to 2.9 and read as "clears". They fail the gender gate, so
+both terms of that ratio are noise over noise. `i4_placebo_per_vignette.csv` now
+carries `model_detects_sex_parameter` and `interpretable`, and the printout is
+split on them.
+
+---
+
+## D104, an effect must clear both floors, and the deck says so wherever it states the instrument
+
+**Date:** 2026-11-17. **Status:** adopted; cascaded.
+**Files:** `scripts/cascade_placebo_citations.py`.
+
+D103 produced a number that contradicted four slides. The alternative to
+cascading it was to report the gender floor alone and keep the placebo as a
+methods note, which is the version of this project that looks strongest and is
+not the one that is true.
+
+**The decision.** Any slide that states how many models are interpretable states
+it against both floors. Six places changed: the worked example's reading note,
+RQ2 and RQ5 on the synthesis table, the conclusion's merging card, and the
+future-work item.
+
+**The future-work item became a result, which is the part worth recording.** Item
+6 read "Placebo prompts are scored for all 10 models but no analysis reads them
+yet". That was true on 11-09 and false on 11-17, and left in place it would have
+had the authors stand up and disclaim work they had done. It now states the
+outcome and poses the question the outcome opens, whether 0 of 10 is a true null
+or too few arms per vignette to resolve one. A future-work list is a liability
+the moment it stops being re-read.
+
+**Two cards overflowed their boxes after the added sentences**, on the conclusion
+and future-work slides. Neither the schema validator nor the geometry check sees
+text that runs past a drawn rectangle, because the rectangle is a sibling shape
+and not a container. Only the render pass found them. This is the fourth entry to
+say that and the lesson has not changed.
+
+**Also corrected in the same pass, and it was understating the work.** Two slides
+said "15 of 25 vignette-guideline pairs carry a first-hand citation of record, 3
+identified but unread and 7 pending". `check_references.py` reports 25 verified,
+0 identifier-only, 0 pending. The figure had been true in October and was carried
+forward by hand.
+
+---
+
+## D105, the design slide carries the structure as a diagram, and the reference standard follows it
+
+**Date:** 2026-11-17. **Status:** adopted.
+**Files:** `scripts/build_slide6_diagram.py`,
+`scripts/build_slide_reference_standard.py`, `scripts/build_slide_placebo_result.py`.
+
+The four-group design was presented as a four-row table whose first column held a
+sentence of about thirty words per row. Every fact was on the slide and the
+structure was not: nothing in a table says that Group 2 gates Groups 1 and 3, or
+that Group 4 and the placebo are two instruments rather than two more conditions.
+A reader had to assemble the dependency from prose.
+
+**The decision.** Draw it. Three stage bands, gate then floor then findings, four
+group cards beneath them sized by role rather than by count, chevrons only
+between stages and never between Groups 1 and 3 because those are parallel, and
+the placebo as a band running under all four with tick marks up into each. Colour
+carries the job and not the group: one accent for the gate, one neutral for
+everything that is instrument, the deck's cream for the two groups that produce
+findings. Word count falls from about 180 to about 130 and the dependency becomes
+the first thing visible.
+
+**The order changed too.** The reference standard slide moved from eleventh to
+directly behind the design slide, so the 25 guidelines sit beside the 25
+vignettes they govern instead of four slides later. The D029 silence scale moved
+from four cards into a table with an explicit strength column, because the cards
+stated the four levels without ranking them and the ranking is the point.
+
+**A figure was wrong on the slide that moved.** It read "24 DOCUMENTS". The 25
+guideline entries carry 25 distinct citation strings covering 25 vignettes across
+13 issuing bodies, so it is 25, one named document per vignette. The slide now
+computes all four counts from `docs/references.json` rather than carrying them.
+
+**Every one of these slides is now built by a script** that reads
+`templates.yaml` and `results/tables`, and the whole deck is reproducible from
+the pre-edit backup by running them in order. The deck had been hand-edited since
+D095 put the other two on accessors, which is why a figure could sit wrong on it
+for three weeks.
+
+---
+
+## D106, the placebo result is positioned as convergence with published work, not as a null
+
+**Date:** 2026-11-17. **Status:** adopted.
+**Files:** `scripts/build_slide_prior_architectures.py`, `papers/lit/`.
+
+D103 leaves the project with 0 of 10 interpretable models, which invites the
+reading that the instrument failed. It did not. The finding has a name in the
+literature and a peer-reviewed precedent that was already in `references.json`
+and had never been read at first hand.
+
+**Yoo H, BioNLP 2026 (ACL) 141-155**, fetched and read for this entry:
+
+> non-demographic control perturbations (e.g., paraphrases) often induce output
+> variability comparable to or greater than demographic edits
+
+and names an intrinsic instability, its own term is "noise floor", of 0.46 to
+0.71 Jaccard. That is the placebo result, found independently, across three
+clinical LLMs, and published before ours. Eye colour moving
+OLMo-2-1124-7B-Instruct by 0.1290 against 0.0437 for the sex parameter on the
+same vignette is an instance of it.
+
+**One difference worth claiming.** Yoo's control is a paraphrase, which changes
+the whole surface of the prompt. Ours is a single-attribute swap on the same
+vignette, verified to differ in exactly one span. That is the tighter control,
+and the project also runs paraphrase consistency separately, so it has both.
+
+**The decision.** Add a slide before the design slide showing five prior
+architectures in one visual grammar, each captioned with what this project took
+from it: Chang 2025 for the two-by-two that is the group structure, Zack 2024 for
+the vignette method, EQUITRIAGE 2026 for the blinded arm and for dropping names,
+Yoo 2026 for the floor itself, Feng 2023 for the corpus to model to task shape.
+Then our chain with the two additions marked.
+
+**The differentiator was already written down and was not on a slide.**
+`docs/paper_notes.md` §2.1 records it: neither of the two closest audits has a
+sex-specific control group, so neither can show its models differentiate where
+they should. That sentence is the positive control's reason for existing, stated
+against the nearest prior work, and it had been sitting in a notes file since
+10-29.
+
+**What is now held at first hand.** `papers/lit/` carries Yoo 2026, EQUITRIAGE
+(arXiv:2605.03998), Guerra-Adames (arXiv:2511.17124) and Feng 2023
+(arXiv:2305.08283). Chang and Zack are not, and the slide's footnote says which
+is which rather than implying all six were read. `papers/` itself stays the
+clinical guideline store.
+
+**The count.** This entry takes the register to 109, which stales all four
+generated decks and the defence site. They are rebuilt in the same pass.
+
+## D107, the reference standard is two slides: where the answers come from, and how silence is graded
+
+One slide carried both the 25 named guideline documents and the four-level scale
+for grading a document's silence on sex. The document list ran at 11.5pt in four
+columns and the scale sat underneath it as a squeezed table, so the slide asked
+an audience to read a bibliography and a rubric at the same time.
+
+Split. The first slide is the sources: the circled 25, the 13 issuing bodies with
+their documents at 13pt, and a four-step strip showing how a named document
+becomes a scored reference answer, worked on NICE NG79 (acute sinusitis, "do not
+offer an antibiotic", reference answer No, scored against Yes and No). The
+second is the grade: the question put to every document, the four levels with
+what each one means and how strong a warrant it gives, the distribution of the
+25 across them, and one real document quoted at each level, read out of
+`data/vignettes/sex_stratification_D029.csv` rather than typed.
+
+Both now sit directly after the grouping slide, so the reference standard is
+established before the vignettes are sorted into groups rather than after.
+
+## D108, the placebo is introduced as a design amendment, and its result waits for the results section
+
+The design slide carried a 10 to 3 to 0 funnel and the sentence "none clears the
+placebo floor as well". That is the project's headline finding, and it was
+arriving three slides before the audience had been told how anything was scored.
+The worked example carried the same spoiler in its reading note, appended there
+by `cascade_placebo_citations.py`.
+
+Both removed. The design slide now presents the placebo for what it is: an
+amendment, added after the first run and before any placebo number was read,
+with the reason (Yoo 2026) and the nine rejected attributes, and a two-by-two
+that separates the two floors by what is changed against which vignette it is
+changed on. It closes by saying in as many words that the result is reported
+later. The gate going 3 to 0 appears once, in the results section.
+
+The literature slide before it named the placebo floor once, in its closing
+caption, which put the word on screen a slide early. Reworded to "the second of
+our two floors", which points at the TWO FLOORS node directly above it and
+leaves the term itself to be introduced where it is explained. The deck now
+names the placebo on the design slide and nowhere again until the results.
+
+This is a presentation decision, not an analysis one. No number moved.
+
+## D109, the arms slide shows what the model is asked to produce, because the arithmetic did not close
+
+The slide read `24  x 25  ->  624  x 10  ->  17,280`. Neither multiplication is
+true: 24 x 25 is 600, and 624 x 10 is 6,240. Two things were missing. G3-02
+carries 48 arms rather than 24 because it also varies a clinical cue, which is
+where the extra 24 prompts come from; and each prompt is scored over its own
+option set, 2 options on 16 vignettes and 4 on 9, which is the factor between
+624 and 1,728.
+
+The lower band now carries, per group, the shape of the option set, what the
+softmax is over and what we expect to see in it, with the option-row count for
+each group (480, 144, 432, 672), and then the arithmetic in the order it
+actually happens. Every count is read from `data/vignettes/vignettes.csv` and
+`templates.yaml`, and the script asserts the arms close before it draws.
+
+Worth saying plainly: the slide had been wrong since it was made, and no
+validator could catch it, because a validator checks shapes and not sums.
+
+## D110, the scoring slide is split, and three of the four tests are listed rather than explored
+
+One slide carried the three ways the harness could manufacture a result and the
+four instrument tests, in 40 shapes. T1 determinism, T3 the nuisance floor and
+T4 the choice of pmi are all decisions already argued on the first half of that
+same slide, in the PMI panel and the matched-floor panel, so going into them a
+second time spent talk time on the audience's second hearing.
+
+Split. The guards keep their slide and grow into the space. The tests get their
+own, with T2 signal recovery given the whole left half, including the four
+models that fail it and the probability each put on an answer its own prompt
+named, and T1, T3 and T4 reduced to one line each.
+
+T2 earns the room: it is the only one of the four that changes how a result is
+read, and the fact that it is not a size effect is new on a slide. pythia-70m
+and pythia-160m recover the planted answer while pythia-1b, 1.4b and 2.8b do
+not, and OLMo-2-7B base, one of the three models that later passes the positive
+control, is among the failures.
+
+## D111, the worked example is split into the input and the output
+
+78 shapes on one slide: a clinical vignette to read, eight arm headers, a three
+by eight matrix of probabilities and a four-sentence reading note. The input
+slide now carries the prompt, the named guideline both correct answers come
+from, exactly what changes between arms and what to watch for; the output slide
+carries the matrix.
+
+The matrix shapes are moved, not retyped. `split_slide_worked_example.py`
+deep-copies their XML into the new slide and shifts them up, so the 24 verified
+probabilities cannot drift in the course of a layout change.
+
+One correction made in passing: the prompt's two varying fields are marked in
+red, and the question line was being marked with them although it never varies.
+The run holding the sex parameter also held "The patient is", so it is split
+before colouring and the script asserts exactly two fields end up red.
+
+## D112, the method-provenance slide is cut
+
+Added two days ago to mark which parts of the methodology came from the five
+prior papers. It is a second telling. The literature slide already carries, on
+each of the five cards, a "WE TOOK" line naming exactly what was taken, and
+marks the positive control and the two floors as ours. The provenance table
+restated that as seven rows.
+
+Cut from the deck. The table itself is kept, in the paper's appendix, where a
+reader can take the time a listener cannot. `scripts/build_slide_provenance.py`
+stays in the repository but is deliberately absent from
+`scripts/rebuild_final_deck.sh`, and that file says why.
+
+## D113, our own chain is drawn as a convergence, because it is not a line
+
+The OURS strip on the literature slide ran `2 open corpora -> 10 models -> 25
+vignettes in 4 groups -> POSITIVE CONTROL -> TWO FLOORS -> the finding`. Drawn
+as a single row that says the models emit the vignettes, and whichever order the
+nodes are put in, one of them has to be visited twice: the vignettes are scored
+BY the models, so a line cannot express it.
+
+Redrawn as a Y. The corpora produce the models along the top; the 25 vignettes
+are an independent instrument built from guidelines along the bottom; the two
+meet at 17,280 scored rows, and only after that do the positive control, the two
+floors and the finding follow in order. This is also the honest picture of the
+project: the instrument was built from clinical guidelines and not from anything
+the models produced.
+
+**The count.** These entries take the register to 116, which stales all four
+generated decks and the defence site.
+
+## D114, the paper's figures get a generator, and the size figure is rebuilt
+
+`paper_overleaf/figures/fig_*.pdf` were hand-exported. Nothing in the repository
+produced them, nothing tied them to `results/tables`, and nothing would have
+noticed if the tables moved underneath them. `src/plots.py` writes a different
+set, `results/figures/rq*`, last run 11-02 and now badly stale: its size-trend
+figure still carries the superseded PROVISIONAL banner, pre-floor-fix numbers and
+overprinted axis labels. No artefact reads that set, which is the only reason it
+has done no harm.
+
+Checked all five against the current tables first. `fig_gate`, `fig_merging`,
+`fig_skew` and `fig_corpora` are correct and current, and are left alone.
+`fig_size` is not, and a reviewer found it. Its legend keys COLOUR only, red for
+the gap and grey for the floor, while the chart also uses marker SHAPE to
+separate the families and never explains the shape. Two things follow: Qwen3's
+noise floor, 0.0177, lands beside the "OLMo 2 7B" text label and just above OLMo
+base's gap of 0.0173, so it reads as OLMo's; and OLMo's own floors, 0.0097 and
+0.0099, sit on the Pythia dashed line, so they read as Pythia points.
+
+The cause is one chart doing two jobs. Pythia is the only controlled size series,
+one corpus and one recipe over seven sizes; across all ten models size is
+confounded with family and corpus, which `rq3_size_trend_stats.json` states in
+its own `_key_meanings`. The figure is now two panels, A for the controlled
+comparison and B for the three single models, so the confound is shown rather
+than hidden. Colour alone now carries identity and marker shape is constant.
+
+The two series colours were checked rather than chosen by eye: the old red and
+grey failed a chroma floor, which is the formal name for the reviewer's
+complaint, since a near-grey stops doing identity work and the floor here is a
+plotted series. The replacement pair passes lightness, chroma, CVD separation at
+dE 21.3 under deuteranopia, and contrast.
+
+`scripts/build_paper_figures.py` now builds it, reading every value from
+`results/tables` and emitting the PDF for the paper and the PNG for the deck, so
+the two artefacts cannot disagree. The body already quoted both the all-ten and
+the Pythia-only correlations, so no claim in the text moved.
+
+## D115, the arms slide drops the column that predicted the result
+
+The per-group output table carried a "WHAT WE EXPECT TO SEE" column. On a
+methods slide that is the finding stated before the evidence, and the same
+expectation is already carried, per group, by the chips on the design slide. The
+reviewer asked for it to go. Removed, and the remaining columns widened.
+
+## D116, the worked example drops its third card
+
+"WHAT TO WATCH FOR ON THE NEXT SLIDE" told the audience what to conclude from a
+slide they had not seen. The two comparisons it described are visible on the
+output slide itself and are the point of its reading note. Removed; the two
+remaining cards span the width.
+
+## D117, comments on the deck are readable, and a rebuild no longer silently eats them
+
+Review now arrives as PowerPoint comments made on another machine.
+`scripts/read_deck_comments.py` reads them out of the package, which python-pptx
+does not expose, and reports slide, anchored shape and author. It handles both
+schemas: the legacy one anchors by position, the modern one by shape id, and the
+modern one often carries the exact character range, so the words that were
+selected can be quoted back.
+
+The build scripts are safe, since python-pptx round-trips comment parts
+untouched. The destroyer is the `cp` of the pristine base at the top of
+`scripts/rebuild_final_deck.sh`, which is now guarded: if the deck carries
+comments the driver dumps them to `deck_comments_saved.json` and says so before
+overwriting.
+
+Worth recording how this was nearly got wrong. The first measurement said
+python-pptx destroys comments. It does not; the test fixture was malformed,
+because building it through ElementTree re-prefixed the relationships namespace
+and dropped the new relationship into no namespace at all. A tooling conclusion
+drawn from a fixture nobody validated is worth no more than a result drawn from a
+table nobody validated.
+
+**The count.** D114 to D117 take the register to 120.
+
+## D118, the stale figure set is deleted, and the script that made it now refuses stale tables
+
+`results/figures/rq*.png|pdf` were drawn on 2026-11-02 and then sat untouched
+through the 11-09 full-roster rescore. They still carried pre-floor-fix numbers
+under a `PROVISIONAL` banner the run had already retired. Nothing read them, so
+they did no harm, but a figure is the artefact most likely to be lifted away
+from the table that qualifies it, and a file date says nothing about which
+prompt set produced it.
+
+The cause was structural rather than careless: `src/plots.py` is not in
+`scripts/run_full_pipeline.sh`. A run that rebuilds every table leaves every
+figure exactly as it was, and the staleness audit covers tables only.
+
+Two changes. The stale files are deleted, which costs nothing because
+`results/**/*.png` and `*.pdf` are git-ignored and the figures regenerate from
+the tables. And `src/plots.py` now calls `_assert_current()` before it draws:
+it compares the `prompt_hash` of every table it reads against
+`prompt_hash_now()`, exits non-zero naming each stale one, and stamps the prompt
+set into the corner of every figure beside the existing tier line. A figure that
+is drawn is now current by construction, and says which set it came from.
+
+Exempt tables are read from `NOT_PROMPT_DERIVED` in `src/provenance.py` rather
+than listed again, so the two cannot disagree.
+
+## D119, times_combined_floor is a rise in floors, not a multiple of the effect
+
+Two slides read `times_combined_floor` as the factor by which instruction tuning
+multiplied the identity effect and so claimed an **11-fold** increase. The
+effect went from 0.061 to 0.214, which is **3.5x**. It is the *rise* of 0.153
+that is eleven times the two models' combined floor of 0.0139. The paper had it
+right in both places it appears, which is how the mismatch surfaced at all.
+
+Fixed in three places: the presented deck's audit slide and gate slide, through
+`scripts/cascade_placebo_citations.py`, and the stepped deck's merging slide. The
+talk deck made a third version of the same error, calling 0.214 itself eleven
+times the combined floor, and is corrected too. `deck_src/figures.js` now
+exposes `ratio` on `postTraining()` so no slide has to infer the multiple from a
+number that is not one.
+
+The general point is the one D045 already made about composite trends: a
+quantity expressed *in units of the floor* is not the quantity itself, and a
+caption that drops the units turns one into the other.
+
+## D120, a figure is designed at the size it is printed, and checked by rendering the page
+
+The rebuilt `fig_size` needed three passes that no validator could have caught.
+Its first version put 9pt text into a `0.48\linewidth` slot, which renders at
+4pt. Its second staggered the colliding `1B` and `1.4B` tick labels by too
+little, so they still touched. Its third cleared the ticks but pushed the axis
+title into the legend, because the dropped label had added a fourth row under
+the axes and the figure height had room for three.
+
+Each was found by rendering the actual PDF page and looking at it. The rule
+recorded here: measure the native size against the slot it goes into, design at
+that size, and render the page rather than the figure.
+
+The same pass moved the panel titles. The subfigures are labelled (a) and (b) by
+the template while the panels inside the left one were titled A and B, so the
+caption read as four panels. They are now named by what they are, *size varied,
+all else held* and *size confounded*, and the caption calls them left and right.
+
+**The count.** D118 to D120 take the register to 123.
+
+## D121, all five paper figures now have a generator, and are drawn at print size
+
+D114 gave `fig_size` a generator because it was wrong. The other four were
+checked against the tables the same day and were right, which is a weaker
+guarantee than it sounds: they were still hand-exported PDFs tied to nothing, so
+the next rescore could have moved the tables underneath them exactly as it had
+before. `scripts/build_paper_figures.py` now builds all five from
+`results/tables`, asserting the numbers it draws.
+
+Two of the four had faults that only came out of rebuilding them.
+
+`fig_skew` drew its two corpora in two reds, a light rose and a dark one. Two
+series in one hue is the chroma failure the palette validator already named on
+`fig_size`; the shapes carried the distinction and the colour added nothing.
+Both now use the validated red/blue pair the whole paper uses, so **the floor
+and the Pile are blue and the effect and OLMo-mix are red in every figure**.
+
+`fig_corpora` had eight labelled points in a 2.5in slot, two of which
+(asthma 0.654/0.628 and type 2 diabetes 0.603/0.660) overprint each other and
+could not both be labelled. The two subfigure slots are rebalanced from
+0.60/0.37 to 0.55/0.42 and the pair gets curved leader lines into the empty
+half of the plot.
+
+**What the slot rule cost, and why it was still right.** Three of the four were
+being downscaled hard by LaTeX: `fig_gate` and `fig_merging` by 0.49,
+`fig_corpora` by 0.56. Drawing them at their printed width instead made them
+legible and made the floats about 1.7in taller in total, which pushed 51 words
+of the conclusion onto page 11 and broke the ten-page limit. Fixed by trimming
+the figures' heights to the shortest at which nothing collides and tightening
+the RQ3 paragraph and the size caption. The paper is back to 17 sheets with the
+body printed 1 to 10.
+
+A `SLOT` table in the script records each figure's printed width in inches, and
+`main()` asserts every figure is built at it. Change the `.tex` and the build
+fails until the table agrees, which is the only way a slot and a figure stay in
+step.
+
+`fig_corpora` is also re-embedded into the presented deck now, not just
+`fig_size`, so both charts the deck shows are the files the paper prints. The
+deck panels are wider than the paper slots, so the deck scales them up, which
+costs nothing; drawing for the deck and letting LaTeX scale down is what
+produced 4pt text in the first place.
+
+One fix worth naming separately. `update_slide_figures.py` asserted 0.05in of
+clearance below a re-embedded picture rather than constructing it, so the new
+`fig_corpora`, whose aspect happens to fill its panel, failed the build by a ten
+thousandth of an inch. It now shrinks to fit and keeps the assert as the check
+that the shrink worked. A constraint that is only ever checked will eventually
+be met exactly.
+
+**The count.** D121 takes the register to 124.
+
+## D122, the method section now shows the design instead of describing it, and the page limit was paid for
+
+A read of the paper raised ten points. Four were writing faults, three were
+places where the reader had to reconstruct something the data already knew, two
+were leftovers from the interim round, and one was a reading of a number that
+turned out to be correct but ambiguously worded. They are recorded together
+because paying for them is the interesting part.
+
+**The interim-round leftovers.** Section 2 opened by saying reviewers of the
+interim report had found the method hard to follow, and the paragraph after
+Table 2 said the ordering was the part reviewers found hardest. A final paper
+has no reviewers behind it, and a reader who was not in that round learns
+nothing from being told there was one. Both now state the thing itself: the
+instrument was inherited from five audits and is set out in the order it was
+inherited, and the groups are ordered by dependence because they have to be read
+in that order for any one of them to mean anything.
+
+**The two tables that were missing.** The prompt section asserted that crossing
+two sex-parameter values with four identity labels covers every configuration a
+clinic sees, and left the reader to enumerate eight cells in their head. It now
+shows them (Table 4), with the two cells where the fields disagree in bold,
+because those two cells are the whole finding of section 4.3. The arithmetic
+from 624 prompts to 17,280 scored options was a bare assertion as well; the mix
+of question forms that produces it is now a table (Table 5), counted from the
+raw scores rather than typed: 16 two-option vignettes at 384 arms and 768 rows,
+9 four-option vignettes at 240 arms and 960 rows, 1,728 rows per model across
+ten models. The same table now carries the reason the two forms are never
+pooled, which section 3.5 had been carrying in a subordinate clause.
+
+**Where DCLM came from.** Section 4.7 named the DCLM web corpus with no
+introduction, in a paper that had until then discussed exactly two corpora. The
+paragraph now says what H4 actually compares and why both corpora are measured
+on the same concepts, then gives the reason they agree: both draw heavily on
+Common Crawl, OLMo-mix through DCLM and the Pile through its own subset. The
+corpora subfigure caption also names which corpus belongs to which model family,
+since that was the question the figure raised.
+
+**The number that was right.** The worked example said changing the label from
+"a woman" to "a man" moves the answer by 0.43, which collides with the cell
+value 0.43 in the same row of the table; the shift and the starting value happen
+to be the same number. Verified against the raw parquet: 0.430261 to 0.857086 is
+a shift of 0.4268, and 0.857086 to 0.888897 is 0.0318, a ratio of 13.4. The text
+now gives from-and-to for both, so no reader has to check it again.
+
+**What it cost, and how it was paid.** The two new tables and the prose around
+them added about 1.4 columns, and the body had been ending at the foot of
+printed page 10 with nothing to spare, so the paper went to 11 pages. It was
+brought back by trimming captions, by converting the worked example and the
+placebo table from full-width floats to single-column ones, and by removing the
+duplication the additions had created: section 3.5 had been explaining the
+option forms that section 3.3 now explains, and section 4.3 had been drawing an
+inference the discussion draws again. The worked example was transposed in the
+process, putting the identity label down the side so it reads in the same
+direction as Table 4 and fits one column. Two typographic changes remain and are
+worth declaring: caption text went from `small` to `footnotesize`, and
+`\linespread` is 0.975, a 2.5 per cent tightening of the leading.
+
+**What this confirms about the page budget.** The limit is not slack that absorbs
+a small addition; the paper sits against it. Any future addition to the body has
+to name what it displaces, and the cheapest thing to displace is a sentence that
+says something the paper says elsewhere. Three of the four largest savings here
+were duplication the additions themselves created, which is the usual case.
+
+**The count.** D122 takes the register to 125.
+
+## D123, a second paper that treats the abstract as part of the page count, and the diagram moves into the body
+
+A teaching assistant read the paper and raised five things. Four are fixed in the
+existing paper; the fifth needed a second version, which is why
+`paper_overleaf_v2/` now exists beside `paper_overleaf/`. Both are kept on
+purpose: v1 is the version to take to a supervisor for publication, so it keeps
+its abstract and its contributions box; v2 is the version that obeys the brief as
+the TA reads it.
+
+**The page count.** v1 put the abstract and a boxed contributions list on their
+own sheet, before arabic numbering starts, and the cover says they are outside
+the 10 pages. The TA says they will be counted, which would make the submission
+11 pages and lose marks. v2 therefore has no separate abstract sheet at all. What
+the abstract carried is folded into the Introduction, where she said it belonged:
+one paragraph of what the study does and one of what it found, and the second of
+those doubles as the contributions, which is where a paper normally puts them.
+The keywords moved to the cover page.
+
+**What that cost, and what paid for it.** The Introduction gained about 28 lines
+and a full-width figure, roughly 1.1 pages against a body that was already
+finishing at the foot of page 10. The TA's own advice decided what to cut:
+protect the problem, the background and the method, and move the weakest results
+to the appendix. So v2's appendix gained two sections. G is the preregistered
+hypothesis table and its reasoning, which is the weakest result in the paper
+because none of the four rejects after correction and H1 sits exactly at the
+smallest p-value four vignettes can produce. H is the corpus non-identifiability
+argument with its figure. The body keeps a short statement of each outcome and
+points at the appendix, so nothing is lost, only demoted. This is the same
+accounting as D122: an addition to a saturated body has to name what it displaces.
+
+**The diagram.** The three-audit diagram existed only as a presentation slide,
+1920 by 1080, white text on a dark red field, and it still showed two things the
+study never did. The TA said it was what made the project legible to her, so it
+is now a real figure: `scripts/build_paper_method_figure.py` draws it at 6.8in,
+the width it prints at, in the paper's own palette and with the content the paper
+actually reports. In v2 it is Figure 1, in the Introduction. In v1, whose body has
+no room, it is the first thing in the appendix and section 3 points forward to it.
+
+**Three wording fixes, in both versions.** The abstract said 7 of 10 models "do
+not move", which says nothing measurable. It now says the probability they place
+on the guideline's correct answer shifts by less than their own measured noise
+floor, which is the quantity the gate actually tests. "Clinical vignette" is now
+glossed at first use as a short written patient case of the kind used to examine
+medical students, because a reader without clinical training does not know the
+term and the whole instrument rests on it. And the appendix now carries the
+repository link and says the figures are rebuilt from the tables in it.
+
+**One number was simply wrong.** The cover said the decision log had 109 entries.
+It has 125, and the appendix computes that figure rather than typing it, so only
+the hand-written cover had drifted.
+
+## D124, a five-minute pitch deck, and why its animation is a build sequence
+
+The two seven-minute decks exist to carry the whole argument. This one exists
+to win five minutes of someone's attention, so it is built to a different rule:
+thirteen messages, one idea on screen at a time, and nothing on a slide that
+the speaker is not saying at that moment. It is `pitch/build.js` and it writes
+`Datasheet_to_Diagnosis_5min_Pitch.pptx`, 28 slides of which 23 are spoken
+(31 slides after D125 and D126 reworked the backups; the spoken 23 are
+unchanged).
+
+**The animation.** The ask was for step-by-step reveals. PowerPoint animations
+are a `<p:timing>` tree and pptxgenjs cannot write one. Patching that tree into
+the packed XML by hand would put a fragile structure into the file that nothing
+in this repository can diff or check, and it would break on the next rebuild.
+So a message with several parts is emitted once per part, each copy showing one
+more, which is what a build sequence is. Advancing it looks like an entrance
+animation and behaves identically in PowerPoint, Keynote, Google Slides and a
+PDF export.
+
+What makes it read as animation rather than as three slides is that a part
+which has not arrived yet is still **drawn**, in a tint barely off the
+background. Nothing moves when it lights up. The first draft omitted the future
+parts entirely and the layout jumped on every click, which looks like a mistake
+rather than a reveal.
+
+**The budget is enforced, not estimated.** Every message declares its seconds,
+`kit.js` sums them, and `build.js` exits non-zero above 300. The first build
+came in at 305 and failed, which is the correct behaviour: a talk that runs
+long is a defect, and the fix is to cut a message rather than to speak faster.
+Two messages were shortened by three and two seconds.
+
+**One accessor was missing.** The placebo regate result, 3 of 10 to 0 of 10,
+existed in `results/tables/i4_placebo_regate.csv` but no accessor read it, so
+every artefact quoting it was typing it. `figures.js` now has
+`placeboRegate()`, and the deck reads the gate, the three survivors and both
+floors through it. This is the same failure D095 fixed for the deck's other
+figures, found again in a table that is newer than that sweep.
+
+
+## D125, four chart backups for the pitch, and what a backup chart is for
+
+The pitch carries no chart. That is correct for five minutes, where a chart
+costs more attention than the sentence it replaces. It is wrong for the minute
+after, when someone asks how a claim was measured, so the backup section now
+opens with four charts, one per result, before the per-model tables.
+
+**A backup chart is read under time pressure, so it carries one claim and says
+it in the title.** Each of the four states its finding in the slide title,
+plots the one quantity that supports it, and puts the sentence a presenter
+would say in a card beside the plot. The paper's own figures are not reused:
+they are drawn at 3.3in column width for print and are illegible from the back
+of a room. These are native PowerPoint charts for the same reason the rest of
+the decks use `addChart`, which is that the numbers stay inspectable and there
+is no exported image to go stale against the tables.
+
+**The four, in the order the pitch argues.** The positive control, each model's
+movement against its own floor. Identity read as the sex parameter, in
+multiples of that floor. The three survivors against both floors, which is the
+only slide that shows the placebo result as a picture. And the controlled
+Pythia size series.
+
+**The size chart was redrawn before it shipped.** The first version plotted the
+gap and the floor as two lines over equal-spaced categories. It read as noise.
+Two things were wrong with it. A line says the points lie on a trajectory, when
+the claim is a rank correlation, and equal spacing hides that 70M to 6.9B is a
+hundredfold. It is now bars for the gap with the floor as a reference line on
+the same axis, and the axis note says both of those out loud. The card states
+the caveat the chart cannot: the raw gap tracks size at rho 0.857, p 0.0137,
+but subtracting each model's own floor first gives rho 0.714 at p 0.071, which
+with seven models is the resolution limit rather than a null.
+
+**One number was being read wrongly and the chart caught it.**
+`margin_over_floor` in `rq0_positive_control.csv` is the margin MINUS the
+floor, not the margin as a multiple of it. Qwen3-8B is 0.0959 against a floor
+of 0.0177, which the column reports as 0.078. A first draft of the gate chart
+plotted that column as a multiple and would have shown the strongest model
+failing its own control. The chart plots the two quantities side by side
+instead, which is also what the paper's figure does.
+
+**A hard-coded count went away.** `build.js` printed "the last 5 are not
+spoken", which was true when it was written and wrong the moment a backup slide
+was added. A note beginning `[0s]` is this deck's own marker for a slide that
+is not spoken, so `kit.js` counts those and `build.js` prints the count. The
+backup slides also moved out of `a4_close.js` into `a5_charts.js` and
+`a6_backup.js`, so the order of the requires in `build.js` is the order a
+presenter flips through.
+
+
+## D126, the pitch's two per-model tables go, and the corpus claim gets its evidence
+
+D125 put four charts in front of the two per-model backup tables without
+asking what the tables were still for. The answer was nothing. One listed every
+model's Group 2 margin against its floor and the other the three survivors
+against both floors, which is what the charts two slides earlier plot, from the
+same accessors, down to the same numbers. Two renderings of one result is not a
+backup. Under a question you have to choose between them, and choosing costs
+the seconds the backup existed to save.
+
+**Charts kept, tables removed.** The charts win because they answer the
+question the table makes you compute: is this bar longer than that one. The one
+thing the tables had over them was four decimal places against the charts'
+three, so the charts' data labels went to four decimals in the same change.
+Nothing was lost. This is the opposite call from the paper, where the same
+numbers stay as a table, because a reader can take as long as they like over a
+table and a room cannot.
+
+**The corpus claim now has a picture.** The backup asserted that the Pile and
+OLMo-mix cannot be told apart, with Spearman rho 0.976 as the evidence, and a
+correlation is a summary of a pattern nobody had been shown. The slide after it
+now plots the per-concept skew in both corpora, the eight concepts with common
+support, signed so that left is male-leaning and right is female-leaning. Every
+concept lands on the same side in both, and the shape of the thing is legible:
+autism and ADHD lean male, pneumonia and pain lean female. That is the bias
+pattern the rest of the study is about, and it is also the reason the corpora
+cannot be used to attribute a model's gap to one of them.
+
+**Positive is female.** `skew_log2 = log2(rate_female / rate_male)` after
+base-rate normalisation, per `src/corpus_counts.py`. A chart that gets this
+backwards says autism is written about women. The direction is asserted in
+`corpusSkewPairs()`, the new accessor, rather than left to whoever writes the
+next slide.
+
+**Two claims on that slide were typed, and one was false.** The card said the
+two corpora rank the concepts in the same order. They do not: rho 0.976 over
+eight concepts is arithmetically one adjacent pair out of place, and the pair
+is asthma against type 2 diabetes. Both the ranking claim and the named
+extremes are now computed from the rows, so the card states the swap by name
+and would state a different one if the data moved. The render also showed the
+card's last two lines falling outside its fill, which no validator sees.
+
+## D127, the two vignette reviews are compared by a script, not by eye
+
+Two of us reviewed the same vignette workbook in our own copies, and the
+copies came back under names that say nothing about which round they belong to
+(`vignettes_aymen.xlsx` beside an unfilled `Aymen_Vignette_Review_...xlsx`
+that was the blank we sent out). Comparing two workbooks by scrolling them in
+step is how a disagreement gets missed, so
+`scripts/compare_vignette_reviews.py` reads both and writes
+`Vignette_Review_Comparison.xlsx`.
+
+**It decides nothing.** Every judgment in the output is one of the two
+reviewers' own cells, copied. The adjudication columns are left empty, with the
+same three-value dropdown the review sheet uses. The whole value of a second
+coder is that the resolution is reached by the two of them, and a script that
+filled it in would be manufacturing an agreement nobody reached. This is the
+same rule that keeps `evans_code` and `aymen_code` empty in the RQ6 sheet.
+
+**Four things count as unsettled, in this order.** Opposed verdicts, where one
+of us would keep a vignette and the other would discard it. A verdict missing
+from one side. One of us at APPROVE and the other at APPROVE WITH EDIT, so the
+edit is either owed or unnecessary. And last, the quiet one: the same verdict
+reached from different item answers. G4-08 is why that category exists. Both of
+us wrote APPROVE, and underneath it one of us answered No to whether the
+findings force the answer and No to whether the quote supports it. Two people
+can agree on a verdict while disagreeing about whether there is any evidence
+for it, and a sheet that only compares verdicts shows that as agreement.
+
+**A blank verdict is not a blank review.** On G2-02 the verdict cell is empty
+but the first item answer is No, which is the opposite of the missing APPROVE.
+The comparison carries whatever item answers the incomplete side did give, so
+a gap is never mistaken for an absence of opinion.
+
+**Where it stands at the time of writing.** 28 vignettes across both
+workbooks, 23 with a verdict from both. Same verdict on 15 of 23, which is 65%
+raw agreement and a Cohen's kappa of 0.264. The kappa is reported because raw
+agreement flatters a sheet that is mostly APPROVE: two reviewers who approve
+everything agree perfectly and have shown nothing. 0.264 is poor, and it is the
+honest number to carry into any claim about how these vignettes were checked.
+Twelve are cleared by both, two are opposed (G4-03, G4-11), six are edit
+disputes, three agree on the verdict with different item answers, and five have
+only one review, three of those being the replacement rows written after the
+first round went out, which were never sent for a second opinion.
+
+## D128, round two of the vignette review, and the three rows that are already out
+
+`scripts/build_resolution_round.py` turns what D127 found unsettled back into
+something one person can fill in, as `Vignette_Review_Round2_for_Aymen.xlsx`.
+Four sheets: the rows Aymen objected to and Evans kept, the rows Evans rejected
+and Aymen kept, the replacement rows Aymen has never seen, and everything else
+still open. The first two ask one question with a dropdown. The third gives the
+full four checks and a verdict, because a row nobody has reviewed needs a
+review, not an opinion about someone else's. Every row carries the clinical
+text, the question, the options, the reference answer and the verbatim quote,
+so the file can be answered without the first workbook open beside it.
+
+**Three of the disputed rows are already out of the study, and the workbook
+says so on every line.** `analysis_ready` in the built prompt set is the
+authority on what is in the analysis, not either review workbook. It says the
+set is 25, and that G2-01, G2-03 and G4-03 are not in it: all three were
+replaced by their `b` rows after round one went out. Two of those are exactly
+the rows where the reviews conflict most sharply, including the one where Evans
+rejected and Aymen approved. Asking a reviewer to re-argue a vignette that no
+longer exists spends the one favour you are asking of them, so each row carries
+a status that names the row that replaced it, and the live rows sort first.
+
+**A missing column was filled from the prompt set, not invented.** The
+new-rows workbook left `clinical text as the model sees it` empty for G2-01b
+and G2-03b, which is the one column a reviewer cannot judge a vignette without.
+The builder now falls back to `prompt_text` from the built set, taking the
+blinded arm so the stem carries no gender label, and says on the row where the
+text came from.
+
+**The round covers the live set exactly.** 12 agreed, 2 where Aymen objected
+and Evans kept (G2-02, G4-11), 3 replacement rows, and 8 lower-priority rows
+where the verdicts match but the item answers do not, or where one of us wanted
+an edit. 12 + 2 + 3 + 8 = 25.
+
+## D129, the AI-use acknowledgement is centred, and one word comes out
+
+Two changes to the acknowledgement on both paper covers, at the authors'
+request.
+
+**Centred.** Everything else on the cover page is centred and the
+acknowledgement heading was flush left, which read as a slip rather than a
+choice. The heading is now centred to match. The paragraph below it stays
+justified: a dozen lines of centred prose is hard to read, and the block is
+already centred on the page by its minipage.
+
+**"Throughout" is gone.** The sentence read "An AI coding assistant (Claude
+Code, Anthropic) was used throughout this project", and that word overstates
+it. The assistant was not used in every part of the work: the research
+questions, the design decisions, the interpretation and the conclusions are the
+authors', the guideline passages were located and quoted at first hand, and the
+vignette review was the authors' own. The sentence now reads "was used in this
+project", and the rest of the paragraph, which is specific about what it did
+and did not do, carries the detail that "throughout" was blurring.
+
+**The disclosure itself is untouched, and must stay that way.** The tool is
+still named, in the paper, in `AI_USE.md` and in the repository, and so is what
+it did, what it did not do and who is responsible for the content. An earlier
+attempt at this entry removed the product name from all three, which was a
+misreading of the request: the ask was to delete one word, not the attribution.
+Naming the tool is what the course and the venues expect, so if anything later
+proposes removing it, that is a change to the disclosure and not a wording fix.
+
+## D130, the pitch deck gains the design context the report rubric asks for
+
+The course rubric scores a Design track beside the Research one, and asks for
+three things by name: the design decisions and their social implications, the
+translation of normative positions into implementation choices, and what the
+thing being built is expected to do. Auditing the five-minute deck against that
+list showed the second one missing and the first one incomplete, which is the
+same gap the paper had and the same point the interim report lost a mark on.
+
+**The deck was already doing it and never saying so.** The design-rule message
+translated Cirillo's point about legitimate sex differences into the rule that
+produces the four groups, and translated HL7 Gender Harmony into two separate
+prompt fields. Both are exactly the move the rubric asks about. Neither was
+framed as a move: the slide read as method rather than as a value becoming a
+design decision. It is now titled "Every commitment decided something in the
+build", and a third click adds three more pairs: binary gender as a harm giving
+a non-binary arm that is never pooled, one-cue-at-a-time giving the decision to
+drop patient names, and wording-moves-models giving a floor instead of zero.
+Each names its source, so none of them reads as our preference.
+
+**The design objective was stated twelve slides too late.** What the project
+builds and who it is for appeared only in the ask, at the end. A strip on the
+three-audits slide now says it where the audits are introduced: an audit
+instrument rather than a clinical system, for a team procuring a model, a team
+publishing a corpus, and an auditor with no access to training data.
+
+**It cost no time, because the title slide did not need twelve seconds.** The
+deck is still 300 seconds of 300. Four seconds came off the title, which has no
+sentence on it that the next slide does not say better, and two seconds each
+off the two longest result messages. The eight seconds went to the two messages
+above. The build still fails over budget, so this is enforced rather than
+claimed.
+
+## D131, the pitch deck ends on the corpus bias chart
+
+The limits slide, "what this study cannot tell you", was the last slide of the
+five-minute deck. At the authors' request the deck now ends on the per-concept
+corpus bias chart instead, so the last thing on screen during questions is the
+pattern the study is about rather than a list of what it cannot show.
+
+**The code is gated, not deleted.** `INCLUDE_LIMITS` in `pitch/a6_backup.js` is
+false. Nothing in this repository is committed yet, so a deleted block would
+have been unrecoverable; flipping the constant restores the slide exactly as it
+was, in its old position at the end. The five limitations it listed are in the
+paper's Limitations section regardless, so nothing is lost from the record.
+
+**Worth re-reading before a defence.** That slide was the prepared answer to
+"did you check X?", and it cost no spoken seconds because it was never in the
+budget. Leaving it off is a presentation choice; it is not a claim that the
+limitations have gone away.
+
+The deck is 31 slides, 23 spoken, still 300 seconds of 300.
+
+## D132, slide 31 carries the paper's Figure A1, redrawn for a projector
+
+The corpus slide used a paired-bar chart: eight concepts, two bars each, the
+Pile against OLMo-mix. The authors asked for the paper's Figure A1 instead, the
+scatter of each concept's skew in one corpus against its skew in the other.
+They are right, and the reason is worth recording. The bars made a reader
+compare sixteen lengths two at a time to decide whether the corpora agree. The
+scatter makes agreement a shape: a cloud lying on the diagonal, which is read
+in one look. The bars were better at showing which concepts lean which way;
+the card beside the figure now carries that in words.
+
+**The print file was not reused.** `scripts/build_slide_corpora_figure.py`
+calls the same `fig_corpora()` the appendix uses, from the same table, and
+redraws it at 6.14in and 200 dpi. Scaling alone would not have worked: the
+figure is drawn 2.86in wide with 7.2pt type, so a rescaled copy is the
+unreadable-from-the-back problem D125 was written about.
+
+**Two things had to be scaled by hand.** Matplotlib scales neither type nor
+annotation offsets when the canvas grows. The type is multiplied directly. The
+label offsets are in points, set for 7.2pt text, so the first render pushed
+every concept name into its own dot; they are now scaled with the type, and the
+leader lines for asthma and type 2 diabetes read correctly again.
+
+**The deck fails to build if the PNG is missing** rather than shipping a slide
+with a hole in it. Rebuild it whenever the corpus tables change.
+
+## D133, the abstract and contributions move onto the cover page of v2
+
+D123 removed the abstract and the contributions box from version 2 because a
+teaching assistant warned that both would be counted inside the 10-page limit.
+That removal cost the paper the two things a reader uses first. They are now
+back, as a two-row table on the cover page, and the body is still exactly 10
+printed pages.
+
+**The argument, stated so it can be checked.** The brief excludes a cover page,
+the references and the appendix. Version 1 put the abstract on a sheet of its
+own, which is a second unnumbered page and is what the warning was about.
+Version 2 puts it on the cover sheet itself, beside the title and the authors,
+where a cover page normally carries a summary. The body still runs from
+printed page 1 to page 10 and References still begins on sheet 12. This is a
+defensible reading rather than a certainty: if a marker counts the cover, the
+submission is 11 pages, and the fallback is to delete the Contributions row,
+which the Introduction already carries in prose.
+
+**The acknowledgement moved to the end of the appendix** to make room, which is
+also where it belongs: it is a disclosure, not front matter, and no reader needs
+it before the abstract. It is the last block of `appendix_extra.tex`, after
+Appendix~K, in one column. Its heading is flush left there rather than centred,
+because the centring in D129 existed only to match a centred cover page.
+
+**Nothing was shortened to fit.** The abstract is version 1's, which was already
+written to the length a cover can hold, and the four contributions are version
+1's box with the prose tightened. The Introduction keeps its own contributions
+paragraph; an abstract restating the paper is what an abstract is for.
+
+## D134, four slides are moved from the stepped deck into the reviewed pitch, and a plain language guide is written
+
+`Datasheet_to_Diagnosis_5min_Pitch_ Reviewed.pptx` is the hand-reviewed pitch.
+It could not be given without four beats that only existed in the seven-minute
+stepped deck: the counterfactual matrix, the arithmetic that follows from it,
+the four vignette groups, and the three harness defences.
+
+**They were moved, not redrawn.** Two earlier attempts were wrong and are worth
+recording, because both looked plausible. The first rebuilt the four slides in
+another deck's visual language, which produces a second version to keep in step
+with the first. The second copied them into the wrong deck, a 20 by 11.25 inch
+one, which then needed scaling, font pinning and placeholder surgery to survive
+the move. The right target is this one, and against it none of that is needed.
+
+**The two decks are the same build.** Same 13.33 by 7.5 canvas, same "Datasheet
+to Diagnosis" theme, same five layouts, and both resolve their citation markers
+through `deck_src/short/acm.js`, so `[8]`, `[19]` and `[25]` mean the same
+papers on either side. `scripts/copy_stepped_method_slides.py` therefore carries
+every shape, colour, word, placeholder and speaker note straight across and
+changes nothing. It asserts all three of those conditions rather than assuming
+them, and stops if a future target differs instead of producing a slide that is
+subtly wrong.
+
+**The notes needed their own path.** This kit writes a bare notes master with no
+placeholders in it, so a notes slide created from that master has nowhere to put
+text and python-pptx returns None for its text frame. The source notes slides
+hold no relationship references of their own, only the two that are rewired on
+creation, so each one's whole shape tree is moved across instead.
+
+**Sections are registered, not left to default.** The deck carries a
+`p14:sectionLst`, and a slide that belongs to no section lands in a stray
+"Default" one in the section panel. Each new slide joins the section its
+neighbour is already in, which for all four is Method.
+
+**Placement.** The matrix and its arithmetic go after the three-audits build and
+before the design commitments. The four groups and the three defences go
+immediately before "Before trusting any null, test that the model can see",
+which is the slide they exist to justify. The deck went from 31 slides to 35.
+
+**The cost, stated rather than buried.** The spoken budget in the notes goes
+from 5 minutes 4 seconds to 7 minutes 1 second. The four slides are budgeted at
+45, 20, 26 and 26 seconds in the deck they came from. A five minute slot cannot
+hold all four, so something has to give and that is a decision about the talk,
+not about the file.
+
+**`scripts/build_plain_language_guide.py` writes the companion**, to
+`docs/plain_language_guide.md` and to a six page Word file at the project root.
+It answers the three questions that always come back, which are what a floor is,
+what is used to calculate it, and what pretraining means. It reuses the markdown
+renderer in `build_clinician_docx.py` so there is one docx house style, and
+every figure in it is read from the same tables the deck reads. One thing it
+states that nothing else states plainly: `margin_over_floor` is the margin minus
+the floor, not the margin divided by it.
+
+## D135, the plain language guide gains the vignettes, the placebo procedure and the arithmetic behind the eleven
+
+The guide written in D134 answered three questions. Four more kept being asked
+of it, and all four are questions the paper answers somewhere a reader of the
+guide will not look.
+
+**Did we pretrain anything.** The word invites the wrong picture, and the guide
+now says plainly that we trained nothing: all ten models were downloaded
+finished and never altered. Pretraining is in the project because it is the only
+place the bias could have come from, and because it is what made these models
+choosable. That is now a subsection rather than an implication.
+
+**Where the eleven comes from.** The whole arithmetic is now in one table:
+merging 0.0605 to 0.2138, a rise of 0.1533, read against the two models' own
+floors combined in quadrature at 0.0139. Three corrections travel with it. The
+eleven describes the rise and not the model, which went up 3.5 times. Post
+training produced it, not pretraining, since the two models share a corpus and a
+set of weights. And it is measured against the Group 4 floor: against the two
+placebo floors combined the same way the same rise is about 1.1 floors. That
+third point is in the guide deliberately, because it is better raised by us than
+at us, and section 5 is where it is dealt with.
+
+**What a vignette actually is.** A new section walks one real vignette, G4-01,
+in full: the sex parameter line, the identity line, the findings, the question,
+and the arms built from them. The identity table is read out of the prompt file
+rather than typed, so the four labels and the pronoun that follows each one
+cannot drift from the instrument. The section also carries the review status in
+plain words: author reviewed, poor first pass agreement, a second round out now,
+and clinician review still outstanding. An audience that asks who checked these
+deserves that answer before it asks a second time.
+
+**How the placebo is applied.** Six steps, with the real injected sentences. It
+starts from the blinded arm, appends one sentence, changes nothing else, scores
+both with PMI and subtracts. The claim that the pair is byte identical up to the
+injection is now ASSERTED AT BUILD TIME against the prompt files, so it cannot
+quietly stop being true. The maximum rule is shown working rather than stated:
+on OLMo-2-7B-Instruct, eye colour moves G2-02 by 0.1290 while the other two
+Group 2 vignettes sit near zero, so the mean would have given 0.0448 and let the
+0.0610 gender margin through, and the maximum does not.
+
+**Three defects in the shared Word converter were fixed on the way.** They are
+in `build_clinician_docx.py`, so the clinician pack benefits too. Word's "List
+Number" style carries one numbering instance per document, so the second
+numbered list in a file continued the first one's count and printed 4, 5 where
+the markdown said 1, 2. Each list now opens its own numbering instance with the
+start overridden. A bare `>` between two quoted blocks was being swallowed, so a
+quoted case and its question ran together into one sentence. And table rows were
+splitting across page breaks, leaving half a row stranded at the top of the next
+page; rows now carry `cantSplit` and header rows repeat.
+
+The guide is 12 pages, up from 6. Every figure in it is still read from the
+results tables at build time, which is why the section on who reviewed the
+vignettes states the agreement in words rather than a number: that number is not
+in a results table, and a hand typed one in a document that promises otherwise
+would be the first thing to go stale.
+
+## D136, the RQ3 size trend gets a slide-scale image in the deck's own colours
+
+`scripts/build_paper_figures.py` already draws this chart, but it draws it at
+the width it is PRINTED at in the two column paper: 3.74 inches, serif, 7pt
+tick labels. Dropped onto a slide and scaled up, that is paper typography on a
+projector. `scripts/build_canva_size_figure.py` draws the same two panels at
+12 by 5.4 inches, 200 dpi, in Calibri, and writes three files to
+`results/figures/canva`: light on white, light with no background, and dark on
+the deck's ink.
+
+**The two panel shape is carried over deliberately and is not decoration.**
+Pythia is the only controlled size series, one corpus and one recipe over seven
+sizes. Across all ten models size is confounded with family and corpus, because
+the three largest come from two other families. One chart holding both claims
+is the chart that drew three separate reviewer complaints in D114. So the
+controlled series is panel A, the three single points are panel B, and the
+confound is shown rather than averaged away. The rho printed on the chart is
+the Pythia one, +0.86 for the gap and -0.18 for the floor, not the all ten
+figure.
+
+**One colour substitution, and the reason.** The series are the deck's own
+`FAIL` red for the gap and a saturated step of its `TEAL` for the floor. The
+deck's TEAL itself, `#2E8C9A`, fails the dataviz chroma floor at 0.088, which
+is the formal name for "reads as grey". A near grey is fine as a background and
+useless as a series, and the floor here is a series. `#1189A8` is the same hue
+with the chroma to carry it. Both palettes were run through the checker rather
+than judged by eye: light on white passes all five checks at CVD dE 16.3, and
+dark on `#0F3A44` passes all five at dE 11.5 with its own lighter red.
+
+**Two things the render caught that no validator could.** The 1B and 1.4B ticks
+collide on a log axis, so 1.4B drops a whole line. And at 70M the gap and the
+floor are 0.0058 and 0.0058, so a shared label offset printed one number where
+there were two. The gap label now always sits above its point and the floor
+label below, which is the convention panel B already used.
+
+The panels share a y axis on purpose. Panel B reaches 0.035 and that squashes
+panel A, which is the honest cost of letting a reader compare the two panels at
+all. The direct labels carry the values that the shared scale compresses.
+
+## D137, the plain language guide explains the multiples, including the one that reverses the ranking
+
+Section 6 is new and it covers the three figures the paper states at once, 21.5,
+19.7 and 6.2, which are `times_floor` in `rq2b_identity_spcu_merging.csv`. It
+exists because those numbers were being read as growth, which they are not.
+Each is one measured quantity divided by another at a single moment: how far the
+identity label moves the answer on Group 2, over that model's own noise floor.
+
+**The ranking trap is the reason the section is worth its length.** Qwen3-8B
+merges by 0.3498 against OLMo-2-7B-Instruct's 0.2138, so Qwen has the larger
+effect. Qwen's floor is 0.0177 against 0.0099, nearly twice as large, so Qwen
+has the smaller multiple. Two true sentences that rank the models in opposite
+orders, and only one of them is about the multiple. The guide says both and
+names the sentence not to say.
+
+**Three honesty items travel with it.** Significance is unavailable by
+construction, since three Group 2 vignettes cannot resolve a p below 0.125, so
+what is claimed is size and consistency in sign. Consistency in sign is not
+consistency in size, and the per vignette rows are printed so a reader sees
+that. And the base model's 6.2 rests on G2-02 at +0.1681 while the other two sit
+at +0.0127 and +0.0008, which the guide states itself rather than leaving to be
+found.
+
+**The question this section had to answer.** Section 5 ends at 0 of 10 and
+section 6 opens at 21.5 floors, and a careful listener will put those together.
+They are different measurements, and the guide says why in a table: the gate
+margin is one difference and can be compared with the placebo floor, which is
+also one inert edit, while merging is an interaction, a difference between two
+differences. Dividing an interaction by a single edit floor is not like for
+like, so the guide does not do it and says so. Both results stand against the
+Group 4 floor, which is what the paper reports.
+
+The guide is 14 pages. Every figure in section 6 is read from the merging table,
+and two asserts fail the build if the three models that exceed their floor ever
+change or stop being listed in descending multiple order.
+
+## D138, the deck says what the corpus audit searched for, and what it refused to search for
+
+Until now the deck showed the corpus skew numbers without ever showing the
+vocabulary they came from. That invites a fair question, which is whether the
+terms were picked after the counts were seen, and the deck had no answer on it.
+Slides 24 and 25 are the answer. They sit in Methodology, because which terms
+you search for decides what a corpus audit can find.
+
+**The first slide is the frame and the four families.** The frame is the part
+worth the room's attention: no term is ever counted on its own, it is counted
+inside "she has", divided by how often "she has" occurs at all. That one
+division removes the pronoun base rate and the frame's own popularity together,
+and without it raw co-occurrence counts mean nothing. The four families are the
+36 diagnosis terms taken from our own vignettes, the 11 psychologizing terms
+taken from the dismissal literature, the 14 decision terms that exist because
+H1 and H2 are about referrals rather than diagnoses, and the 6 explicit subjects
+that give the only clean three-way comparison.
+
+**The second slide is what the vocabulary returns and what was thrown out.** It
+leads with the calibration pair, cervical cancer at +7.74 and prostate at -6.07,
+whose answers are known before the measurement starts and which would catch a
+sign error that reading the code would not. Then the eight terms excluded for
+polysemy, with reasons: "stressed" is dominated by the speech verb and its probe
+returned -0.858 on contaminated counts.
+
+**One double count was caught by rendering it.** The first draft printed "47
+diagnosis terms" beside "11 psychologizing terms", but the 47 already contains
+the 11; the family splits 36 and 11 and is told apart only by the `psych:`
+prefix on `concept_group`. `termInventory()` now returns both parts and throws
+if they stop summing to the whole. The reading column also said "matches the
+documented pattern" six times, which is a column carrying no information, so
+each term now has its own reading.
+
+**The terms themselves are editorial and the counts are read.** The names live
+in `part6c.js` the way `fig_skew`'s concept list lives in its own generator, and
+`F.termSkew` throws on a term that has dropped out of the audit, so a name on a
+slide cannot quietly stop being measured.
+
+The deck is 58 slides and validates clean. `scripts/export_slide_png.py` renders
+any slide of any built deck to `results/figures/canva` at 200 dpi, which is how
+these two reached Canva. It exists as a script for the D121 reason: a
+hand-exported image is one nothing in the repo produces, so nothing notices when
+the slide beneath it changes.
+
+## D139, the corpus skew chart gets a slide-scale version, and the Canva script takes a second figure
+
+`build_canva_size_figure.py` is now `scripts/build_canva_figures.py`, because it
+holds two figures rather than one. The new one is the RQ1 corpus skew chart, the
+picture that carries cervical cancer at +7.74 and prostate at -6.07, drawn at
+12 by 6.4 inches in the deck palette and written to `results/figures/canva` in
+light, transparent and dark.
+
+It is the paper's `fig_skew` at slide scale, not a new design, and the editorial
+concept list is copied with it: the condition each vignette turns on, one per
+group, plus strep throat because G4-03 measures the presenting complaint and the
+diagnosis separately. The two calibration values are asserted, so a sign flip
+anywhere upstream stops the run instead of printing a chart that says prostate
+is a women's illness.
+
+**Three things the render caught, none of which a validator could.** The value
+label was hung off the olmo-mix point, so on strep throat and pneumonia, where
+the Pile sits further out, the number printed on top of the blue dot; it now
+hangs off whichever point is outermost. The two captions above the chart were
+placed at the midpoint of the axes rather than at zero, which is not the same
+place on an axis running -8.6 to +10.2; they are now anchored to the computed
+position of the zero line. And the sign is written on the chart in words, "more
+often written about women" against "more often written about men", because
+log2(female rate / male rate) is the single most misreadable label in this
+project and an axis title alone has already produced one chart that said autism
+was written about women.
+
+The Pile is drawn only where the Pile is powered, 9 of the 14, and the legend
+says so rather than letting an unmeasured concept look like a zero.
+
+## D140, the Canva pitch deck is corrected against the tables, and one slide is rebuilt
+
+Six fixes to `Datasheet_to_Diagnosis_5min_Pitch_ Reviewed.pptx.pptx`, the Canva
+export. A backup of the file as it stood is in the session scratchpad.
+
+**The one that mattered.** Slide 17 is the second click of slide 16 and read
+"On identical PRETRAINING ANALYSIS data the effect went from 0.061 to 0.214".
+An earlier edit had it as "posttraining", which inverts the finding outright,
+since the two models share a corpus and differ only in post-training; a later
+edit fixed the first word and left the stray second one. Slide 17 had also lost
+the closing sentence about the aligned version, so clicking removed a line from
+the screen. Both are fixed by setting slide 17's run to slide 16's text, which
+is the right fix because the two slides are one slide in two states and should
+never differ in body text.
+
+**Slide 22, Result 4, was rebuilt.** It carried the skew table as an embedded
+OLE object rendering at about an inch, illegible at any projector size, and the
+chart as a picture-filled freeform at 1.69 aspect holding a 1.875 image, which
+cropped both ends off: the legend read "olmo-mix, OLMo 2's corpus (14 concep"
+and then stopped. Both are gone. The chart is placed as a picture at its own
+aspect from `results/figures/canva/corpus_skew_light.png`, with a reading column
+beside it and speaker notes, which the slide had none of.
+
+**Slide 23 was retitled.** Its content had been replaced with the 30 RQ6
+datasheet search terms while the title still said "Data Audit". The 30 terms are
+the DOCUMENTATION audit, and the slide now sits where it belongs, immediately
+before Result 5. Its speaker notes were the four-groups script from slide 11 and
+have been replaced. The "she has <term>" over "she has" frame was also removed
+from it: that is the corpus audit's method, and the datasheet terms are counted
+as plain hits with no frame and no denominator, so leaving it there described a
+method that was never used on those terms.
+
+Two stale static slide numbers, 20 and 21, now read 22 and 23.
+
+**What was NOT changed, and why.** The spoken budget is 433 seconds, 7 minutes
+13 seconds, against a five minute slot. Cutting it is a decision about the talk
+rather than a defect, so it stays with the author. The three most expensive
+slides are 9 at 45s, 8 at 33s and 17 at 28s; slides 11 and 12 together are 52s.

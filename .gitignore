@@ -91,3 +91,28 @@ package-lock.json
 # repository someone has to read.
 # ---------------------------------------------------------------------------
 results/_backup_*/
+
+# ---------------------------------------------------------------------------
+# Second virtualenv, holding python-pptx and python-docx for the deck and
+# document builders. Same rule as .venv/: reproduce it, never commit it.
+# ---------------------------------------------------------------------------
+qa_venv/
+
+# ---------------------------------------------------------------------------
+# Clinician pack: the markdown, the review form and the compendium are the
+# research record and are tracked. The SUBDIRECTORIES are not, for two
+# reasons, and both matter more than convenience.
+#
+# 1. They carry the source guideline PDFs, which is the same copyright
+#    position as papers/ above: GINA's report is stamped "COPYRIGHTED
+#    MATERIAL - DO NOT COPY OR DISTRIBUTE" and the others are copyrighted
+#    too. Excluding them from papers/ and then shipping them here would be
+#    the same redistribution by another route.
+# 2. An outbound pack is generated per recipient and is named after a real
+#    person, so the path itself carries their name. The deck advertises this
+#    repository's URL from the closing slide, so a folder named after someone
+#    who has not published their involvement does not belong in it.
+#
+# Regenerate either with: qa_venv/bin/python scripts/build_clinician_docx.py "<name>"
+# ---------------------------------------------------------------------------
+clinician_pack/*/

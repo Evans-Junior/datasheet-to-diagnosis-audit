@@ -169,6 +169,11 @@ function postTraining() {
     mergingBase: num(r.merging_base), mergingTuned: num(r.merging_tuned),
     delta: num(r.rq2c_delta), floorCombined: num(r.floor_combined),
     timesFloor: num(r.times_combined_floor),
+    // D119. timesFloor is the RISE expressed in combined floors (0.153 / 0.0139
+    // = 11.0). It is not how much tuning multiplied the effect, and it is not
+    // the tuned value in floors either. Two slides said one of those and were
+    // out by a factor of three. The multiple is its own number.
+    ratio: num(r.merging_tuned) / num(r.merging_base),
     baseInsideOwnFloor: String(r.base_inside_own_floor) === "True",
     tunedExceedsOwnFloor: String(r.tuned_exceeds_own_floor) === "True",
     // D095: the slide needs these too. The resolution limit in particular was
@@ -271,6 +276,30 @@ function gateRerun() {
                             newFloor: num(r.matched_floor),
                             timesFloor: num(r.times_matched_floor),
                             oldGate: r.old_gate, newGate: r.new_gate }])),
+  };
+}
+
+// The placebo floor, and what requiring it does to the gate. Added for the
+// five-minute pitch deck: the result existed in results/tables but no accessor
+// read it, so every artefact that quoted "3 of 10 to 0 of 10" was typing it.
+// A typed number is a number that goes stale, which is the whole reason this
+// file exists.
+function placeboRegate() {
+  const rows = table("i4_placebo_regate.csv");
+  if (!rows.length) throw new Error("figures.js: i4_placebo_regate.csv is empty");
+  const pass = v => v === "SENSITIVE";
+  const gender = rows.filter(r => pass(r.gate));
+  return {
+    n: rows.length,
+    passGenderFloor: gender.length,
+    passBothFloors: rows.filter(r => pass(r.gate_both_floors)).length,
+    survivors: gender.map(r => ({
+      model: SHORT(r.model_id),
+      margin: num(r.mean_margin),
+      genderFloor: num(r.nuisance_floor),
+      placeboFloor: num(r.placebo_floor_max),
+      clearsBoth: pass(r.gate_both_floors),
+    })).sort((a, b) => b.margin - a.margin),
   };
 }
 
@@ -432,6 +461,88 @@ function corpusAgreement() {
   const a = rows.map(r => num(r["olmo-mix-1124"]));
   const b = rows.map(r => num(r.piletrain));
   return { rho: _spearman(a, b), n: rows.length };
+}
+
+// I4: the per-concept skew in both corpora, for the slide that shows the
+// pattern the correlation summarises. Common support only, because a concept
+// measurable in one corpus and not the other has nothing to agree about.
+//
+// SIGN. skew_log2 = log2(rate_female / rate_male), so POSITIVE is
+// female-skewed and NEGATIVE is male-skewed, after base-rate normalisation
+// (src/corpus_counts.py). A chart that gets this backwards says autism is
+// written about women, so the direction is asserted here rather than left to
+// whoever writes the next slide.
+function corpusSkewPairs() {
+  const rows = table("i4_corpus_disagreement.csv")
+    .filter(r => String(r.common_support).trim() === "True");
+  if (!rows.length) throw new Error("figures.js: no common-support concepts");
+  return rows.map(r => ({
+    concept: r.concept,
+    olmo: num(r["olmo-mix-1124"]),
+    pile: num(r.piletrain),
+    // Signed: one corpus minus the other. Take the magnitude before ranking.
+    disagreement: num(r.disagreement),
+  })).sort((a, b) => a.olmo - b.olmo);
+}
+
+// The audit vocabulary: how many terms were searched for, in which families,
+// and how many of them the corpus actually supports.
+//
+// WHY POWERED MATTERS MORE THAN MEASURED. A term is in the table whether or not
+// the corpus holds enough of it to say anything. `powered` is the column that
+// says a concept cleared the count threshold in that index. The Pile supports
+// far fewer of these than olmo-mix does, and a slide that quotes only the
+// measured count makes the two corpora look equally informative about every
+// term, which they are not.
+//
+// The term NAMES on the slide are editorial and live in the slide file. These
+// are the counts, and `termSkew` is the lookup that makes a named term fail the
+// build if it ever stops being measured.
+const PILE_IX = "v4_piletrain_llama";
+const OLMO_IX = "v4_olmo-mix-1124_llama";
+
+function termInventory() {
+  const dx = table("rq1_corpus_skew.csv");
+  const dec = table("rq1_corpus_skew_decision.csv");
+  const uniq = (rows, ix) => new Set(rows.filter(r => r["index"] === ix)
+                                         .map(r => r.concept)).size;
+  const powered = (rows, ix) => rows.filter(
+    r => r["index"] === ix && String(r.powered).trim() === "True").length;
+  // The diagnosis family holds BOTH the vignette-derived conditions and the
+  // psychologizing probes, and they are told apart only by the concept_group
+  // prefix. A slide that prints the family total beside the psych count is
+  // double counting, which is exactly what the first draft of slide 24 did.
+  const psych = r => /^psych:/.test(String(r.concept_group));
+  const out = {
+    diagnosis: uniq(dx, OLMO_IX),
+    diagnosisVignette: uniq(dx.filter(r => !psych(r)), OLMO_IX),
+    diagnosisPsych: uniq(dx.filter(psych), OLMO_IX),
+    diagnosisPoweredOlmo: powered(dx, OLMO_IX),
+    diagnosisPoweredPile: powered(dx, PILE_IX),
+    decision: uniq(dec, OLMO_IX),
+    indexes: new Set(dx.map(r => r["index"])).size,
+  };
+  if (out.diagnosisVignette + out.diagnosisPsych !== out.diagnosis) {
+    throw new Error("figures.js: the diagnosis family no longer splits cleanly "
+      + "into vignette-derived and psych: concepts");
+  }
+  if (!out.diagnosis || !out.decision) {
+    throw new Error("figures.js: the RQ1 term tables are empty. Run "
+      + ".venv/bin/python -m src.corpus_counts");
+  }
+  return out;
+}
+
+// The measured skew of ONE named term in olmo-mix, with its powered flag.
+// Throws rather than returning undefined, so a term named on a slide that has
+// dropped out of the audit stops the build instead of printing a blank.
+function termSkew(concept) {
+  const r = table("rq1_corpus_skew.csv").find(
+    x => x["index"] === OLMO_IX && x.concept === concept);
+  if (!r) throw new Error(`figures.js: "${concept}" is not in rq1_corpus_skew.csv`);
+  return { concept, skew: num(r.skew_log2),
+           powered: String(r.powered).trim() === "True",
+           female: num(r.cooccur_female), male: num(r.cooccur_male) };
 }
 
 // I4: how far apart the two corpora are on the audited concepts. Not prompt-
@@ -857,8 +968,10 @@ function guidelineCoverage() {
 module.exports = {
   CURRENT, KEY, table, hypothesis, gateTable, sizeTrend, merging, postTraining,
   reportable, liveVignettes, positiveControl, floorComparison, gateRerun,
-  rq3Spearman, rq4Linkage, corpusDisagreement, chanceRange,
-  corpusAgreement, corpusQueries, decisionCount, i3Grid, vignetteGroups,
+  rq3Spearman, rq4Linkage, corpusDisagreement, chanceRange, placeboRegate,
+  corpusAgreement, corpusSkewPairs, corpusQueries, decisionCount, i3Grid,
+  termInventory, termSkew,
+  vignetteGroups,
   corpusProbe, rq5Probe, lastUpdated, corpusReplication,
   rq4Control, rq4Trend, paraphrase, contamination, rq6Status,
   refs, cite, citeShort, guidelines, guidelineCoverage,
