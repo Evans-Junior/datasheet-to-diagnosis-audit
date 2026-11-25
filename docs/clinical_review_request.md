@@ -100,4 +100,4 @@ declining the paper does not mean declining the review.
 
 ## Contact
 
-Evans Kumi, kwakukumi14@gmail.com
+Evans Kumi, evans.kumi@mail.mcgill.ca

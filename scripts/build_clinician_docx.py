@@ -436,7 +436,7 @@ rather hear it early.
 
 With thanks,
 Evans Kumi
-kwakukumi14@gmail.com
+evans.kumi@mail.mcgill.ca
 MSc Intelligent Systems, McGill University
 """, encoding="utf-8")
     print(f"  {dest.name}")

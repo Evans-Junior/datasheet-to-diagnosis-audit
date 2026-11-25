@@ -16,7 +16,7 @@
 **Project:** From datasheet to diagnosis, gender bias in LLM health advice
 **Authors:** Evans Kumi, Aymen Boustani · MSc Intelligent Systems, McGill
 **Reviewer time:** 45–60 minutes
-**Return to:** kwakukumi14@gmail.com
+**Return to:** evans.kumi@mail.mcgill.ca
 
 > **Status, 2026-11-16: ready to send.** The workbook carries, for every one of
 > the 25 live vignettes, the verbatim guideline quote, the full scenario text as

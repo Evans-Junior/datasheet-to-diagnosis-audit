@@ -81,4 +81,4 @@ Our own review cannot validate our own work, so every result we hold currently
 reads NOT REPORTABLE. Your sign-off is what changes that, and no result is
 reported on a vignette you have not passed. That is enforced in our code.
 
-Return to: kwakukumi14@gmail.com
+Return to: evans.kumi@mail.mcgill.ca

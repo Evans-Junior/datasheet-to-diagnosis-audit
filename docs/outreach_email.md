@@ -77,7 +77,7 @@ Thank you for considering it.
 Best regards,
 Evans Kumi
 MSc Intelligent Systems, McGill University
-kwakukumi14@gmail.com
+evans.kumi@mail.mcgill.ca
 
 ---
 

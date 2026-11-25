@@ -7096,3 +7096,31 @@ has one and says `(no written verdict)` when neither does.
 
 The comparison now reports 12 cleared in writing, 13 resolved after round one, 3
 superseded, and nothing open.
+
+---
+
+## D145, the contact address becomes the McGill one, now that the repository is public
+
+The repository went public under D143's open question, and a scan of the tracked
+tree for things that should not be scraped found one: a personal Gmail address in
+eight files, including the letter sent to a prospective clinical reviewer. It is
+now `evans.kumi@mail.mcgill.ca`, which is also the right address for the approach
+itself, since the request asks a clinician to donate time to a university study.
+
+**Eight files, five of them sources.** `docs/clinical_review_request.md` and
+`docs/clinical_review_form.md` are copied verbatim into the pack by
+`scripts/build_clinician_pack.py`, which also writes the pack README from a
+literal of its own, and `scripts/build_clinician_docx.py` carries another. The
+copies in `clinician_pack/` were patched in place rather than regenerated,
+because the builder starts with `shutil.rmtree(OUT)` and the pack directory holds
+the guideline PDFs and the reviewer's own folder, neither of which is in git.
+The copies were then compared byte for byte against their sources, so the next
+real regeneration produces the same files.
+
+**Checked, not assumed.** No address remains in any tracked file, in either
+paper's PDF, in the defence site, or in any of the fourteen decks and documents
+in the project root.
+
+**The history still has it, and the history is public now.** Rewriting it would
+mean a force push over a repository whose URL is printed in a submitted paper,
+which is worse than the exposure. It is recorded here instead.

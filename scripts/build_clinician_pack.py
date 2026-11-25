@@ -179,7 +179,7 @@ def main() -> int:
         "reads NOT REPORTABLE. Your sign-off is what changes that, and no result is",
         "reported on a vignette you have not passed. That is enforced in our code.",
         "",
-        "Return to: kwakukumi14@gmail.com",
+        "Return to: evans.kumi@mail.mcgill.ca",
     ]
     (OUT / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
