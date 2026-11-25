@@ -7124,3 +7124,49 @@ in the project root.
 **The history still has it, and the history is public now.** Rewriting it would
 mean a force push over a repository whose URL is printed in a submitted paper,
 which is worse than the exposure. It is recorded here instead.
+
+---
+
+## D146, the colon count comes down across the paper, and the page budget is defended by bisection
+
+The author asked for far fewer colons and for prose that reads as a person wrote
+it, without losing any explanation. The body went from 58 prose colons to 3, the
+generated appendix and the extra appendix from 17 to 0.
+
+**Three colons stay, and each for a reason.** `Keywords:` is a standard label.
+`because of: age, sex or gender` is quoted verbatim from the joint replacement
+guideline. `Sex for clinical use: female` is the literal field format the prompts
+use, so changing it would misreport the instrument.
+
+**Most replacements are a full stop, not a comma.** A colon that introduces an
+explanation usually reads better as two sentences, and a colon that introduces a
+list reads better with the list named first. Run-in labels in the validation
+appendix became `\textbf{Determinism.}` rather than `\textbf{Determinism}:`,
+which is the same typographic device without the punctuation.
+
+**The page budget nearly broke, and finding out why took a bisection.** The body
+was already at exactly ten pages with the last line of the conclusion on the last
+line of the page, so there was no slack at all. The rewrites ended up ten words
+SHORTER than the original and still spilled onto an eleventh page, because a
+colon replaced by a full stop changes where lines break, and a single extra line
+early on pushes a float, which repacks every page after it. Guessing was useless.
+A harness in the scratchpad reapplied the rewrites in cutoff order with
+`difflib`, built each version and reported which sheet References landed on,
+which found the one costly rewrite in four builds. It was the
+``two quite different worlds'' sentence, which sits against a float boundary.
+
+**The slack came from a real duplication, not from cutting explanation.** The
+four validation tests were summarised in the scoring subsection and then given in
+full a few paragraphs later. The summary is gone and the Appendix~F pointer moved
+onto the full version, which is four lines recovered and nothing lost.
+
+**Verified by rebuilding both papers**, v2 at ten body pages with References on
+sheet 12 and v1 at ten with References on sheet 13, no unresolved references in
+either. Tectonic reproduces the committed pagination exactly, which is what makes
+this checkable locally rather than by compiling on Overleaf and counting by eye.
+
+**Two source files outside the papers changed.** The silence-grade sentence, the
+placebo-criterion sentence and the four validation labels live in
+`scripts/build_paper_appendix.py`, and the handedness rejection reason lives in
+`configs/placebo_arms.yaml`. Editing the generated `appendix.tex` would have
+lasted until the next regeneration, which is the trap D142 already recorded.

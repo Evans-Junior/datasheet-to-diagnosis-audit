@@ -120,9 +120,9 @@ can be rebuilt and checked against the data it reports.
 # ---------------------------------------------------------------- B
 w(r"\subsection*{B\quad The 25 live vignettes, their governing guidelines and silence grades}")
 w(r"""
-\noindent Column \textbf{D029} is the grade from Table~\ref{tab:silence}:
-0~names the disparity, 1~states invariance outright, 2~stratifies by sex
-elsewhere but not here, 3~never mentions sex. Entries of 0/1 do both and are
+\noindent Column \textbf{D029} is the grade from Table~\ref{tab:silence},
+where 0~names the disparity, 1~states invariance outright, 2~stratifies by sex
+elsewhere but not here, and 3~never mentions sex. Entries of 0/1 do both and are
 counted once, at 1.
 """)
 w(r"\begin{longtable}{@{}llcp{5.6cm}l@{}}")
@@ -207,7 +207,7 @@ w(r"""
 \noindent An attribute qualifies as a placebo only if it is clinically inert for
 every vignette it touches, silent in the governing guideline, and \emph{not
 socially salient as a basis of health disparity}. The third criterion is the one
-that is easy to get wrong: perturbing a disparity-linked attribute would make the
+that is easy to get wrong. Perturbing a disparity-linked attribute would make the
 measurement a second bias audit, and subtracting it as a floor would subtract one
 bias from another. Three attributes qualified; nine were rejected, and the
 rejections are part of the method rather than an oversight list.
@@ -229,14 +229,14 @@ w(r"\end{table}")
 w(r"\subsection*{F\quad Instrument validation, run before any vignette was scored}")
 w(r"""
 \noindent Four tests had to pass on all ten models before the instrument was
-used. \textbf{Determinism}: identical input scored twice must give bitwise
+used. \textbf{Determinism.} Identical input scored twice must give bitwise
 identical scores, which held for 10 of 10; without it every gap would need an
-error bar. \textbf{Signal recovery}: when the prompt names the correct option in
+error bar. \textbf{Signal recovery.} When the prompt names the correct option in
 plain words the model should recover it, which only 6 of 10 did, so a null from
 the other four is instrument-limited rather than evidence. \textbf{Nuisance
-floor}: the gap on content-free prompts differing only by the gender token, which
-is not a null to be tested but the floor itself. \textbf{Score-key choice}: raw
-log-probability largely rewards shorter options, which is the empirical reason
+floor.} This is the gap on content-free prompts differing only by the gender
+token, which is not a null to be tested but the floor itself.
+\textbf{Score-key choice.} Raw log-probability largely rewards shorter options, which is the empirical reason
 the primary key is pointwise mutual information. Signal recovery is the test that
 matters most, because it is why a flat result from a model that fails it is
 reported as instrument-limited and never as fairness.

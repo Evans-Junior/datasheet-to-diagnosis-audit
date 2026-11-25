@@ -27,7 +27,7 @@ to a particular corpus.
 
 \begin{table}[htbp]
 \centering\footnotesize
-\caption{The preregistered hypotheses: what each predicts, the documented human disparity it rests on, and how it came out. H1 and H2 predicted a direction in advance; H3 is the control. H1's 95\% interval is $-0.0078$ to $-0.0019$ and its raw p-value equals the smallest value four vignettes permit ($2^{-4}=0.0625$).}
+\caption{The preregistered hypotheses, with what each predicts, the documented human disparity it rests on, and how it came out. H1 and H2 predicted a direction in advance; H3 is the control. H1's 95\% interval is $-0.0078$ to $-0.0019$ and its raw p-value equals the smallest value four vignettes permit ($2^{-4}=0.0625$).}
 \label{tab:hypdef}
 \begin{tabularx}{\textwidth}{@{}p{0.62cm}p{3.1cm}Lcp{2.9cm}@{}}
 \toprule
@@ -53,22 +53,22 @@ model's gap cannot be traced to one of them rather than the other.}
 
 \noindent H4 compares two corpora rather than reading either one. We measured the
 same clinical concepts in both, which gives every open-data model one corpus it
-trained on and one it never saw: the Pile is Pythia's, OLMo-mix is OLMo~2's, and
+trained on and one it never saw. The Pile is Pythia's, OLMo-mix is OLMo~2's, and
 each serves as the other's control. If corpus skew were the mechanism, a model's
 gaps should follow its own corpus more closely.
 
 The test fails because the two corpora agree almost perfectly on which concepts
 are gendered ($\rho = 0.976$ over the eight concepts measured in both), and they
-agree because both are built largely from the same web text: OLMo-mix draws most
+agree because both are built largely from the same web text. OLMo-mix draws most
 of its tokens from DCLM, a filtered Common~Crawl corpus~\cite{r27}, and the Pile
 carries a Common~Crawl subset of its own~\cite{r17}. With two corpora this alike
 an $n$-gram count cannot attribute a model's gap to one rather than the other,
-and the preregistered control bears that out: a model's own corpus predicted its
+and the preregistered control bears that out, since a model's own corpus predicted its
 gaps better than a corpus it never saw in only 2 of 9 cases.
 
 That is a limit of identifiability rather than a null result about the data. The
 skew we measure appears to describe how English talks about illness rather than
-one particular training set, which is itself worth knowing: it means a corpus
+one particular training set, which is itself worth knowing. It means a corpus
 swap between these two would not be expected to change a model's gender gap, and
 that any attempt to attribute such a gap to one open corpus needs corpora that
 differ from each other far more than these two do.
@@ -78,13 +78,13 @@ differ from each other far more than these two do.
 Section~\ref{sec:link} reports the size trend and the statistics that carry it.
 The figure is here because the body had to pay for the design-context material
 with its weakest result, and of the results in this paper the size trend is the
-one that survives best in a sentence: the gap rises with size, the floor does
+one that survives best in a sentence, which is that the gap rises with size, the floor does
 not, and only the Pythia series establishes it.
 
 \begin{figure}[htbp]
 \centering\includegraphics[width=0.78\textwidth]{fig_size.pdf}
 \caption{The gap rises with size while each model's own floor does not. The left
-panel is the controlled comparison: the seven Pythia models share one corpus and
+panel is the controlled comparison, where the seven Pythia models share one corpus and
 one recipe, so size alone separates them. The right panel holds three models from
 other families, each a single size on its own corpus and recipe, drawn as paired
 gap-and-floor points rather than placed on a trend line they cannot belong to;
@@ -100,9 +100,9 @@ co-occurrence with binary pronouns and sentiment, and said honestly that this
 ``does not mean that the dataset is free of gender bias''~\cite{r17}. The same
 paper included medical text ``in the hopes that it will benefit potential
 downstream applications to the medical domain'', and where the datasheet asks
-whether the corpus contains sensitive data it answers: ``We do not know the
+whether the corpus contains sensitive data it answers, ``We do not know the
 extent to which this is the case, although we expect that it does''~\cite{r4}.
-Those two statements sit in the same document and are never joined: gender was
+Those two statements sit in the same document and are never joined. Gender was
 measured, medical use was intended, and nobody asked what the first implies for
 the second.
 
@@ -111,7 +111,7 @@ contains no occurrence of ``gender'', ``sex'', ``female'', ``demographic'',
 ``bias'' or ``health''. The 58-page OLMo~2 report uses ``bias'' only of network
 architecture or in a cited title, never of social bias~\cite{r7}. Across the ten
 documents audited, two mention none of the 30 terms at all. This is term
-evidence and not a coded disclosure level: the two-coder reading that would
+evidence and not a coded disclosure level, because the two-coder reading that would
 support the stronger claim is outstanding, and is the one part of this study we
 report as unfinished rather than as a result.
 

@@ -99,7 +99,7 @@ Large language models already answer health questions, and audits show they can
 treat women and men differently when the clinical facts are identical. Those
 audits cannot say \emph{why}, because the training data of the models they test
 is closed. We use the two families whose data is public, Pythia on the Pile and
-OLMo~2 on OLMo-mix, to audit three things on one scale: gender skew in the
+OLMo~2 on OLMo-mix, to audit three things on one scale. We measure gender skew in the
 training data, gender gaps in the models' clinical answers, and what the dataset
 documentation says about either. We wrote 25 clinical vignettes, short written
 patient cases of the kind used to examine medical students, each with a correct
@@ -120,8 +120,8 @@ one. This takes the interpretable set \textbf{from 3 of 10 to 0 of 10}.
 \newline
 \textbf{3. Sex and gender held apart in the prompt.} Every model capable enough
 to audit reads the identity label \emph{as} the sex parameter, by up to
-\textbf{21.5 times its own noise floor}: the configuration of a transgender
-patient. Instruction tuning on identical data more than tripled it.
+\textbf{21.5 times its own noise floor}, which is the configuration of a
+transgender patient. Instruction tuning on identical data more than tripled it.
 \newline
 \textbf{4. Two findings that need no model.} ``The non-binary patient'' occurs
 \textbf{zero times} in either open corpus, and the OLMo-mix dataset card never
@@ -163,7 +163,7 @@ failing; the same difference inside a model applied to millions of queries is a
 policy, enacted at scale and with the appearance of neutrality.
 
 That makes it an ethics problem rather than only an engineering one, and it
-raises a question of evidence: how would anyone know? Zack et al.\ showed the
+raises a question of evidence. How would anyone know? Zack et al.\ showed the
 risk is real, finding that GPT-4 changed its diagnoses and management plans with
 the patient's stated gender and race on otherwise identical cases~\cite{r12}.
 The case that motivated this project is a patient with a pulmonary embolism, a
@@ -173,13 +173,13 @@ best-documented biases in human medicine~\cite{r18,r20}, and here a machine has
 reproduced it.
 
 
-Audits of this kind stop at the output for a structural reason: the data
+Audits of this kind stop at the output for a structural reason. The data
 commercial models are trained on is a trade secret, so the only observable is
 the answer. The strongest available finding is therefore
 ``this model is biased'', which supports no particular action. By contrast,
 ``this model is biased, the bias is present in its training data, and the
-documentation never warned anyone'' supports three: fix the data, require the
-disclosure, or decline to deploy. Moving from the first sentence to the second is
+documentation never warned anyone'' supports three actions, fix the data,
+require the disclosure, or decline to deploy. Moving from the first sentence to the second is
 the purpose of this paper.
 
 A small number of model families make that move possible by publishing their full
@@ -206,8 +206,8 @@ would have been told.}
 
 Figure~\ref{fig:method} sets out how the three audits answer them. We wrote 25
 \emph{clinical vignettes}, short written patient cases of the kind used to
-examine medical students: a few lines of history and findings, then a question
-whose correct answer is quoted from a named clinical guideline. Each vignette was
+examine medical students, a few lines of history and findings followed by a
+question whose correct answer is quoted from a named clinical guideline. Each vignette was
 expanded into arms that vary the patient's gender identity while holding fixed
 the sex parameter a guideline actually reasons over, giving 624 prompts and
 17,280 scored answer options across ten models. No effect is judged against zero;
@@ -216,7 +216,7 @@ parallel we measured gender skew around the same clinical concepts in the two
 open corpora, and read the datasheets and model reports for what they disclose.
 
 Four results follow, and they are also what this paper contributes. First, the
-\textbf{positive control}: a group of vignettes where the guideline's own answer
+\textbf{positive control}, a group of vignettes where the guideline's own answer
 changes with the sex parameter, so a model whose answer does not shift there
 cannot be read anywhere else. \textbf{7 of 10 models fail it}, which makes their
 small gender gaps blindness rather than fairness; neither closest prior audit has
@@ -224,29 +224,29 @@ such a control (\S\ref{sec:gate}). Second, the three that pass read the gender
 identity label as if it were the clinical sex parameter, by up to \textbf{21.5
 times their own noise floor}. That is the configuration of a transgender patient,
 and instruction tuning on identical data more than tripled it
-(\S\ref{sec:merge}). Third, the \textbf{placebo floor}: once an effect must
+(\S\ref{sec:merge}). Third, the \textbf{placebo floor}. Once an effect must
 also beat a clinically inert edit to the \emph{same} vignette, none survives,
 which takes the interpretable set \textbf{from 3 of 10 to 0 of 10} and bounds
 what an instrument of this size can resolve~\cite{r22} (\S\ref{sec:placebo}).
-Fourth, two findings that need no model at all: ``the non-binary patient'' occurs
-\textbf{zero times} in either open corpus, and the OLMo-mix dataset card never
+Fourth, two findings that need no model at all. The phrase ``the non-binary
+patient'' occurs \textbf{zero times} in either open corpus, and the OLMo-mix dataset card never
 mentions gender while the Pile measured it, so disclosure is a choice rather than
 a property of being open (\S\ref{sec:data},~\S\ref{sec:docs}).
 
 
 % =====================================================================
-\section{Design context: what is being built, for whom, and where it comes from}
+\section{What is being built, for whom, and where it comes from}
 \label{sec:design}
 % =====================================================================
 
 \paragraph{The design objective.} What this paper designs is not a clinical
-system but an \emph{audit instrument}: 25 counterfactual vignettes, the arms and
-two floors that make their results interpretable, and the pipeline that scores
-them. It is built for three readers: a team procuring a model, who gets a test
-that must be passed before any fairness claim is accepted; a team publishing a
-corpus, who gets the documentation fields whose absence made this study
-necessary; and an auditor with no access to training data, who gets a worked
-example of following one property from corpus to answer. Three assumptions bound
+system but an \emph{audit instrument} made of 25 counterfactual vignettes, the
+arms and two floors that make their results interpretable, and the pipeline that
+scores them. It is built for three readers. A team procuring a model gets a test
+that must be passed before any fairness claim is accepted, a team publishing a
+corpus gets the documentation fields whose absence made this study necessary, and
+an auditor with no access to training data gets a worked example of following one
+property from corpus to answer. Three assumptions bound
 it. The deployment in view is advisory rather than autonomous, so every outcome
 is a recommendation a guideline can adjudicate. The instrument reads probability
 on fixed options rather than free text, trading realism for a measurement that is
@@ -258,8 +258,8 @@ The instrument this study runs on was not designed from scratch. Five published
 audits each contributed one component of it, and the clearest way to explain why
 it has the shape it does is to set those components out in the order they were
 inherited. Table~\ref{tab:provenance} is that account, and it doubles as our
-related work: the five rows above the line are borrowed, and the two below are
-what this paper adds.
+related work, since the five rows above the line are borrowed and the two below
+are what this paper adds.
 
 \begin{table*}[!t]
 \centering\footnotesize
@@ -284,7 +284,7 @@ Judging against a floor & An effect counts only if it exceeds measured noise, ne
 
 Two further strands frame the problem rather than the instrument. On sex and
 gender in health, Cirillo et al.\ explain why this is a distinct kind of fairness
-problem: the correct clinical answer sometimes does depend on sex, so an audit
+problem. The correct clinical answer sometimes does depend on sex, so an audit
 unable to separate a legitimate difference from an illegitimate one is worse than
 useless~\cite{r11}. The HL7 Gender Harmony model supplies the operational
 separation we adopt~\cite{r2}, and some guidelines make it themselves, the
@@ -304,18 +304,18 @@ mentioned it.
 \paragraph{From commitments to choices.} Each normative commitment the
 instrument carries is taken from a published standard or finding rather than
 from our own preference, and each decides something concrete in the prompt, the
-arms or the code. Table~\ref{tab:values} is that mapping: a value stated and not
+arms or the code. Table~\ref{tab:values} is that mapping, and a value stated but not
 implemented leaves no trace in the results.
 
 \begin{table*}[!t]
 \centering\footnotesize
-\caption{Each commitment and the design decision it forced. The right-hand column is implemented, not aspirational: every entry is a field in the prompt set, an arm in the design or a check in the pipeline.}
+\caption{Each commitment and the design decision it forced. The right-hand column is implemented, not aspirational. Every entry is a field in the prompt set, an arm in the design or a check in the pipeline.}
 \label{tab:values}
 \begin{tabularx}{\textwidth}{@{}p{5.1cm}L@{}}
 \toprule
 \textbf{The commitment, and where it comes from} & \textbf{What it decided in the design} \\
 \midrule
-\rowcolor{rose} Sex for clinical use and gender identity are distinct fields, not one variable (HL7 Gender Harmony~\cite{r2}) & Two separate lines in every prompt, the sex parameter held fixed while the identity label varies. This is the architectural decision the study rests on: without it a transgender patient's configuration cannot be expressed, let alone measured. \\
+\rowcolor{rose} Sex for clinical use and gender identity are distinct fields, not one variable (HL7 Gender Harmony~\cite{r2}) & Two separate lines in every prompt, the sex parameter held fixed while the identity label varies. This is the architectural decision the study rests on, because without it a transgender patient's configuration cannot be expressed, let alone measured. \\
 Treating gender as binary is itself a harm (Dev et al.~\cite{r10}) & A non-binary arm in every vignette, measured on its own and never pooled with the man and woman arms, so it cannot be averaged out of the result it exists to produce. \\
 \rowcolor{rose} Some clinical differences by sex are legitimate (Cirillo et al.~\cite{r11}) & The design rule below, and therefore the four groups. An audit that cannot separate a warranted difference from an unwarranted one reports bias either way, which is worse than not auditing. \\
 Remove one cue at a time (EQUITRIAGE~\cite{r21}) & Patient names dropped. A name carries class and ethnicity as well as gender, so a gap measured across names is not a gender measurement. \\
@@ -342,7 +342,7 @@ it; Appendix~A gives the versions, seeds and commands.
 
 \subsection{The design rule, and the four groups that follow from it}
 
-One rule governs everything: \textbf{a gender difference counts as bias only
+One rule governs everything. \textbf{A gender difference counts as bias only
 where the clinically correct answer is the same for every patient}. Without it an
 audit cannot distinguish a model that is behaving badly from one that is
 behaving correctly, since there are real clinical decisions that should turn on
@@ -370,12 +370,11 @@ Table~\ref{tab:principles} gives each group's job.
 The table is ordered by dependence rather than by group number, because the
 groups have to be read in that order for any one of them to mean anything.
 Suppose Group~1 shows no gender difference. Two quite different worlds produce
-that result: a model that is even-handed, and a model that never noticed the
-gender word. Nothing inside Group~1 can separate them, because a zero looks
+that result, an even-handed model and one that never noticed the gender word. Nothing inside Group~1 can separate them, because a zero looks
 identical either way. Group~2 can, because there the correct answer genuinely does
 change with the sex parameter, so a model that answers identically has
 demonstrably failed to read the clinical field. Only once Group~2 holds does a
-null in Group~1 mean even-handedness. Group~4 then supplies the scale: flipping
+null in Group~1 mean even-handedness. Group~4 then supplies the scale. Flipping
 gender where nothing should move shows how far answers drift on their own, and
 that drift is the threshold Groups~1 and~3 must beat. The set began at 28
 vignettes; author review rejected two on clinical grounds and retired one as
@@ -388,11 +387,11 @@ Each of the 25 vignettes is governed by one named guideline document, 25
 documents from 13 issuing bodies, every one read at first hand and quoted
 verbatim. The difficulty is that guidelines rarely address gender directly. They
 state the correct management and say nothing about whether it varies, and silence
-is not a single thing: it may mean the question was examined and found
+is not a single thing, since it may mean the question was examined and found
 irrelevant, or that nobody ever asked. Treating those as equivalent would let the
 design rule rest on an assumption, so we grade the silence instead
 (the four levels below), and the grade travels with the vignette into the
-clinician review pack: the document we prepared for a practising clinician,
+clinician review pack, the document we prepared for a practising clinician,
 which sets each vignette beside the guideline passage it rests on and leaves the
 verdict column blank for the clinician to fill in.
 
@@ -400,7 +399,7 @@ Each guideline was graded for how strongly it warrants the claim that its answer
 is the same for every patient. Level~0, the strongest and not silence at all,
 names the disparity in the outcome we measure and tells clinicians to counteract
 it (1 vignette). Level~1 states invariance outright, for example ``do not exclude
-\ldots\ because of age, sex or gender'' (6). Level~2 is the useful category: the
+\ldots\ because of age, sex or gender'' (6). Level~2 is the useful category. The
 document stratifies by sex elsewhere, where its authors judged sex relevant, and
 not here, which makes the omission evidence rather than absence (9). Level~3
 never mentions sex anywhere, so the question may never have been asked (9). Two
@@ -408,19 +407,19 @@ rows sit between 0 and 1 and are counted at 1. Appendix~B grades every vignette.
 
 
 The nine rows at level~3 are almost all Group~4, which is the right place for
-them: a noise floor needs no invariance warrant, only the absence of a reason for
-the answer to move. The rows carrying our claims sit higher, the strongest being a
+them, since a noise floor needs no invariance warrant, only the absence of a
+reason for the answer to move. The rows carrying our claims sit higher, the strongest being a
 joint replacement referral vignette whose guideline says ``do not
 exclude people with osteoarthritis from referral for joint replacement because
 of: age, sex or gender''.
 
-\subsection{Prompts: sex held fixed, identity varied}
+\subsection{Prompts that hold sex fixed and vary identity}
 
 Each prompt opens with the sex parameter as a clinical record would (``Sex for
 clinical use: female''), then describes the patient using one of four identity
-labels: \emph{a woman}, \emph{a man}, \emph{a non-binary person}, or \emph{an
+labels, \emph{a woman}, \emph{a man}, \emph{a non-binary person}, or \emph{an
 adult} with the identity withheld. These are separate fields because the HL7 Gender
-Harmony model keeps them separate~\cite{r2}: sex for clinical use is what a
+Harmony model keeps them separate~\cite{r2}. Sex for clinical use is what a
 guideline reasons over, gender identity is how the patient is described, and a
 record that collapses them cannot represent a patient for whom they differ.
 Crossing the two sex-parameter values with the four labels gives the eight
@@ -469,7 +468,7 @@ only the one the model would have chosen, a two-option arm contributes two
 scored rows and a four-option arm four.
 
 \begin{table}[!t]\centering\footnotesize
-\caption{How 25 vignettes become 17,280 scored answer options: each arm is one
+\caption{How 25 vignettes become 17,280 scored answer options. Each arm is one
 prompt, and each prompt contributes one row per option it offers. The two forms
 are never pooled, because chance is 0.5 on a binary question and 0.25 on a
 four-option one, so the floors are measured separately for each
@@ -490,11 +489,11 @@ Per model & 25 & 624 & 1{,}728 \\
 
 \subsection{Models}
 
-We scored ten models: seven Pythia sizes from 70~million to 6.9~billion
-parameters, all trained on identical data in identical order~\cite{r6}; OLMo~2
-7B in both base and instruction-tuned form~\cite{r7}; and Qwen3~8B~\cite{r23}, a
-model of similar size whose training data was never released, the closed-data
-contrast RQ5 needs. No medical LLM with a searchable pretraining corpus fits
+We scored ten models. Seven are Pythia sizes from 70~million to 6.9~billion
+parameters, trained on identical data in identical order~\cite{r6}, two are
+OLMo~2 7B in base and instruction-tuned form~\cite{r7}, and the tenth is
+Qwen3~8B~\cite{r23}, of similar size but with training data never released, the
+closed-data contrast RQ5 needs. No medical LLM with a searchable pretraining corpus fits
 our hardware; the closest requires roughly 119\,GB against our 48\,GB.
 
 \subsection{Scoring, and the two floors}
@@ -502,12 +501,10 @@ our hardware; the closest requires roughly 119\,GB against our 48\,GB.
 
 Rather than having the models generate free text we read the probability they
 assign to each option, which is deterministic and cheap at some cost in realism.
-Four validation tests were run on all ten models before any vignette was scored,
-and Appendix~F reports them: one of the four, signal recovery, passes on only 6
-of 10, which is why a null from the other four is read as instrument-limited.
-Two outcomes are recorded for every arm: \textbf{O1}, the probability on the guideline-correct option, which is
-what a patient experiences as better or worse care, and \textbf{O2}, the
-probability on the option naming the target diagnosis. Both are needed because
+Two outcomes are recorded for every arm. \textbf{O1} is the probability on the
+guideline-correct option, which is what a patient experiences as better or worse
+care, and \textbf{O2} is the probability on the option naming the target
+diagnosis. Both are needed because
 when the correct answer is ``No'' they point in opposite directions, so reporting
 only one would invert the sign of the finding. The gender gap $\Delta$ is the
 difference in an outcome between the woman and man arms of otherwise identical
@@ -520,8 +517,8 @@ that. The first is the Group~4 floor already described, measured per model and
 separately for the two question forms (Table~\ref{tab:options}); it ranges from
 0.0051 to 0.0177. The
 second is a \emph{placebo} floor, which closes a gap the first cannot. The
-Group~4 floor applies the right manipulation to the wrong stimulus: it flips
-gender, but on a different vignette. An effect might clear it and still be a
+Group~4 floor applies the right manipulation to the wrong stimulus, flipping
+gender but on a different vignette. An effect might clear it and still be a
 model twitching at any edit at all, with the gender word merely the one that
 happened to be edited. The placebo inverts that. On the \emph{same} vignette, using the
 gender-blinded arm so no gender term is present, we swap one clinically inert
@@ -537,12 +534,12 @@ movement per model, was fixed in writing before the scores were seen
 (\S\ref{sec:placebo}).
 
 Before any vignette was scored the instrument itself had to pass four tests on
-all ten models. Identical input gave bitwise-identical scores in 10 of 10
-(determinism). When the prompt named the correct option in plain words only 6 of
-10 recovered it (signal recovery), so a null from the other four is
-uninterpretable rather than reassuring. The floor was measured on content-free
+all ten models, reported in full in Appendix~F. Identical input gave
+bitwise-identical scores in 10 of 10 (determinism). When the prompt named the
+correct option in plain words only 6 of 10 recovered it (signal recovery), so a
+null from the other four is instrument-limited rather than reassuring. The floor was measured on content-free
 prompts, and PMI was chosen over raw log-probability because raw scores largely
-reward shorter options. One lesson belongs here: an early run in 16-bit precision
+reward shorter options. One lesson belongs here. An early run in 16-bit precision
 returned a gender gap of exactly zero for every prompt, because the two answer
 probabilities rounded to the same value. A clean zero is not always a clean
 result, and all scoring now runs in 32-bit.
@@ -551,7 +548,7 @@ result, and all scoring now runs in 32-bit.
 \label{sec:hyp}
 
 Four hypotheses were frozen in a dated commit before any analysis-ready score
-existed, each resting on a documented human disparity rather than on intuition:
+existed, each resting on a documented human disparity rather than on intuition. They are
 referral endorsed less readily for women (H1), triage less urgent for women (H2),
 no gap where the condition is sex-neutral (H3, a control and so tested for
 equivalence rather than for difference), and a model's gap following the skew in
@@ -561,7 +558,7 @@ none of them carries a headline, for the reason \S\ref{sec:placebo} gives.
 
 The unit of analysis is the vignette rather than the prompt, because prompts from
 one vignette are not independent, and we cluster-bootstrap whole vignettes. This
-has a consequence we report beside every p-value: with $k$ vignettes no one-sided
+has a consequence we report beside every p-value. With $k$ vignettes no one-sided
 p-value can fall below $2^{-k}$, so a test on four vignettes cannot resolve below
 0.0625 however large the effect. The three confirmatory hypotheses are corrected
 with Holm's method~\cite{r29}. Analyses that emerged from the data rather than
@@ -581,14 +578,14 @@ because a raw count can mislead either way.
 \section{Results}
 % =====================================================================
 
-All results are \emph{tier~1}: every vignette was reviewed by the authors against
+All results are \emph{tier~1}. Every vignette was reviewed by the authors against
 a guideline passage read at first hand, but no clinician has yet signed them off.
 
-\subsection{The gate: most models cannot see a difference that is really there}
+\subsection{Why most models cannot see a difference that is really there}
 \label{sec:gate}
 
 Following the preregistration we report the positive control first. In Group~2
-the correct answer changes with the sex parameter: a pregnancy test is indicated
+the correct answer changes with the sex parameter. A pregnancy test is indicated
 before abdominal imaging when the sex parameter is female and not when it is
 male, so a model that reads the case must move when only that parameter flips.
 Figure~\ref{fig:gatemerge}a shows that \textbf{7 of 10 do not}. Every Pythia
@@ -614,8 +611,8 @@ Read Qwen's two columns. Moving down its female column, changing the label from
 0.43. Moving across from female to male with the label held at ``a man'', which
 is the change the guideline actually turns on, moves it only from 0.86 to 0.89,
 a shift of 0.03. \textbf{The social label moves the clinical answer about thirteen times as
-much as the clinical field does.} Pythia 1.4B barely moves for either: the
-signature of a model that is not being fair but is not reading the case.
+much as the clinical field does.} Pythia 1.4B barely moves for either, which is
+the signature of a model that is not being fair but is not reading the case.
 
 \subsection{Gender identity is read as the sex parameter}
 \label{sec:merge}
@@ -625,7 +622,7 @@ report it as exploratory. Within Group~2, with the sex parameter fixed and
 only the identity label varying, the correct answer never changes, so any
 movement is unwarranted by construction. Figure~\ref{fig:gatemerge}b shows that
 in all three models that pass the gate the identity label pushes the answer in
-the direction the sex parameter should: OLMo~2 7B Instruct by \textbf{21.5 times}
+the direction the sex parameter should, OLMo~2 7B Instruct by \textbf{21.5 times}
 its own noise floor, Qwen3~8B by 19.7, and OLMo~2 7B by 6.2, with all three
 vignettes agreeing in sign for each model. With three vignettes no p-value below
 0.125 is attainable, so we claim the size and the consistency, not significance.
@@ -650,7 +647,7 @@ less weight on an indicated pregnancy test; a trans woman more weight on a
 cervical screening she does not need. The Gender Harmony model separates these
 two fields precisely so a system cannot substitute one for the
 other~\cite{r2}; every model capable enough to be audited here does. Instruction tuning made it worse rather than
-better: on identical pretraining data the effect more than tripled, from 0.061 in
+better. On identical pretraining data the effect more than tripled, from 0.061 in
 OLMo~2 7B to 0.214 in its instruction-tuned version, an increase eleven times the
 two models' combined floor. Post-training, not only pretraining data, is
 implicated. In every model that can read the clinical field, withholding the
@@ -662,7 +659,7 @@ blinding result of EQUITRIAGE~\cite{r21}.
 
 Every effect reported so far has been measured against the Group~4 floor, and
 every one of them clears it. That floor, though, establishes something narrower
-than it appears to: it shows only that an effect is larger than what flipping
+than it appears to, showing only that an effect is larger than what flipping
 gender does on an unrelated case. The harder question is whether these effects
 are larger than what a clinically meaningless edit does on the very same case,
 and the answer is that none of them is (Table~\ref{tab:placebo}). Changing the
@@ -687,13 +684,13 @@ OLMo 7B-I & 0.0610 & 0.0099 & 0.1290 & no \\
 \end{table}
 
 Three things should be said honestly. First, the aggregation was fixed before the
-numbers were seen, and it had to be: under the median the gate returns exactly
+numbers were seen, and it had to be. Under the median the gate returns exactly
 the pre-placebo answer of 3 of 10, so a test whose only available outcome is the
 one already held is not a test. We report the maximum because the Group~4 floor
 is itself a maximum; the gate under each of the four aggregations we considered
 is in Appendix~D.
 
-Second, the per-vignette picture is not uniform: 3 of 9 model-vignette pairs do
+Second, the per-vignette picture is not uniform, since 3 of 9 model-vignette pairs do
 clear their own placebo movement, one of them by 30.9 times (Appendix~D). The
 gate weighs a model's mean margin against the largest placebo movement anywhere
 in its set, so one large inert swing closes it.
@@ -701,7 +698,7 @@ in its set, so one large inert swing closes it.
 Third, this is not an isolated null. Yoo reports independently that
 non-demographic control perturbations in clinical LLMs ``often induce output
 variability comparable to or greater than demographic edits''~\cite{r22}. Ours is
-that finding on a different instrument, with the tighter control: Yoo perturbs by
+that finding on a different instrument, with the tighter control. Yoo perturbs by
 paraphrase, changing the whole surface of the prompt, where we swap a single
 attribute span on an otherwise byte-identical vignette. The honest reading of 0 of 10 is therefore not
 that the models are fair, nor that the effects are absent, but that an instrument
@@ -719,14 +716,14 @@ clinical difference at all.
 \subsection{What the training data contains}
 \label{sec:data}
 
-The corpus measure (Figure~\ref{fig:skew}) behaves as it should on concepts whose answer is known:
-cervical cancer is strongly female-associated ($+7.7$) and prostate strongly
+The corpus measure (Figure~\ref{fig:skew}) behaves as it should on concepts whose answer is known,
+with cervical cancer strongly female-associated ($+7.7$) and prostate strongly
 male-associated ($-6.1$). Beyond those calibration points the pattern mirrors
 documented human bias. \emph{Panic attacks} ($+1.6$ to $+1.7$), \emph{anxiety}
 ($+1.3$ to $+1.5$) and \emph{depression} ($+1.1$) lean female, while \emph{heart
 attack} ($-0.8$), \emph{autism} and \emph{ADHD} lean male, matching the
 psychologising of women's symptoms, the under-recognition of heart disease in
-women, and the under-diagnosis of autism and ADHD in women~\cite{r18,r20}: the female
+women, and the under-diagnosis of autism and ADHD in women~\cite{r18,r20}. The female
 skew on panic and anxiety is the association behind the case in \S1. Illness
 narration as a whole leans slightly female, so concepts must be compared with one
 another rather than with zero.
@@ -774,7 +771,7 @@ the result carrying the claim, and Appendix~I plots both comparisons.
 
 Whether the data explains the gap could not be settled. H4 asks whether a
 model's gaps follow the skew in its own corpus more closely than one it never
-saw, and the two corpora cannot be told apart for the purpose: they agree on
+saw, and the two corpora cannot be told apart for the purpose, since they agree on
 which concepts are gendered ($\rho = 0.976$ over the eight measured in both),
 both being built largely from the same web text. We report a limit of
 identifiability rather than a causal link, and Appendix~H gives the argument.
@@ -783,14 +780,14 @@ identifiability rather than a causal link, and Appendix~H gives the argument.
 \label{sec:docs}
 
 Qwen3~8B passes the gate and shows the second-largest identity effect, 19.7
-times its floor, yet has no corpus to query: the behaviour is measurable and its
+times its floor, yet has no corpus to query, so the behaviour is measurable and its
 explanation is not. This is the uncomfortable result for our own thesis, because
 the models whose data can be inspected are mostly too weak to audit.
 \textbf{Auditability and capability are anti-correlated} among the models
 available to us.
 
 The documentation audit points the same way, and its headline is narrower and
-stronger than ``nobody looked'': in the Pile, gender bias was measured and
+stronger than ``nobody looked''. In the Pile, gender bias was measured and
 medical text was advertised, and the two were never joined~\cite{r4,r17}. The
 dataset card for OLMo-mix, the corpus we actually queried, contains none of our
 30 terms, and two of the ten documents mention none of them~\cite{r7}.
@@ -842,8 +839,8 @@ could not have shown that non-binary patients are absent from the corpora, or
 that two major corpora carry nearly the same skew. But openness without
 documentation leaves the work to outside auditors, and openness without
 capability leaves little worth auditing. We therefore propose three
-health-specific additions to the datasheet template~\cite{r1}: whether the
-corpus contains clinical text and from which sources; how sex and gender are
+health-specific additions to the datasheet template~\cite{r1}. They are whether
+the corpus contains clinical text and from which sources; how sex and gender are
 represented in it, including non-binary people as patients, measured rather than
 assumed; and which health uses are intended and which are out of scope. For
 deployment, they support keeping the sex parameter and the identity in separate
@@ -861,8 +858,8 @@ by both authors, who graded independently, agreed on 15 of the 23 graded by both
 (Cohen's $\kappa=0.264$), and settled the rest by discussion, so all 25 carry a
 verdict both hold. Clinical review could still change a reference answer or a gate
 verdict, and the tier~1/tier~2 split was decided after scores existed and is
-recorded as a dated deviation. The study is also small where it matters most:
-with three to eight vignettes per test the smallest attainable p-value lies
+recorded as a dated deviation. The study is also small where it matters most.
+With three to eight vignettes per test the smallest attainable p-value lies
 between 0.125 and 0.004, and several results sit at that limit, which is why we
 report the limit beside each one rather than letting a non-rejection read as an
 absence.
@@ -873,7 +870,7 @@ fixed options rather than free text, which is deterministic but less realistic
 than conversation. The open-data models were not built for clinical use, and no
 medical model with a searchable corpus fitted our hardware, so these results
 describe these models and not deployed products. Exact-phrase counts are not
-meaning: they miss paraphrase and pronoun ambiguity, only the first training
+meaning, since they miss paraphrase and pronoun ambiguity, only the first training
 stage of OLMo~2 is searchable, and corpus skew is associated with output gaps
 but not shown to cause them (\S\ref{sec:link}). And the study is English-only in
 one jurisdiction, so neither the corpus measurements nor the reference answers
@@ -887,8 +884,8 @@ We set out to trace gender bias from training data to clinical advice. The chain
 could not be completed end to end, and the reasons are the findings.
 Most open models cannot read the clinical case, so their small gaps reflect
 blindness, not equity. The capable models read gender identity as
-clinical sex, most strongly after instruction tuning: the configuration that puts
-transgender patients at risk. Those effects do not survive a control that
+clinical sex, most strongly after instruction tuning, which is the configuration
+that puts transgender patients at risk. Those effects do not survive a control that
 perturbs the same vignette with a clinically irrelevant word, which bounds what
 this instrument resolves. Only a positive control separates a model that is
 equitable from one that is blind.
@@ -898,7 +895,7 @@ equitable from one that is blind.
 % to set the paragraph one line shorter at the same size and wording, which is
 % what the primitive is for.
 \looseness=-1
-Future work, in the order it unblocks things: clinician validation, moving the
+Future work, in the order it unblocks things, is clinician validation, moving the
 study to tier~2; more arms per vignette, which the placebo result
 says is needed before an effect this size separates from generative
 instability; a fifth referral vignette, to bring H1's limit below 0.05; the

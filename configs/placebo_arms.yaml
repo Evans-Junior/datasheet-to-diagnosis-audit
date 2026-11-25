@@ -70,7 +70,7 @@ placebo_attributes:
 # second bias rather than noise, which would be worse than having no placebo.
 # ---------------------------------------------------------------------------
 rejected:
-  - {attribute: handedness,        reason: "Not inert: hemispheric dominance, and injury laterality matters in G4-01 (ankle) and G1-03."}
+  - {attribute: handedness,        reason: "Not inert, because hemispheric dominance and injury laterality matter in G4-01 (ankle) and G1-03."}
   - {attribute: occupation,        reason: "Real and documented health gradient; also proxies class and education."}
   - {attribute: postcode_or_area,  reason: "Proxies deprivation; a known driver of real disparity in every one of these conditions."}
   - {attribute: first_language,    reason: "Protected characteristic with documented care disparities. Measuring it is a separate audit, not a floor."}
